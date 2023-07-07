@@ -8,8 +8,9 @@ import { ChatIcon, ContactIcon, TextIcon } from "@/components/CommonIcon";
 import { COLOR_MODE } from "@/constants";
 import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
+import UserSetting from "../../pages/app/setting/UserSetting";
+
 import UserBalance from "./UserBalance";
-import UserSetting from "./UserSetting";
 
 import useGlobalStore from "@/pages/globalStore";
 import Language from "@/pages/homepage/language";

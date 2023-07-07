@@ -25,7 +25,7 @@ import clsx from "clsx";
 import { BillingIcon, FilterIcon } from "@/components/CommonIcon";
 import EmptyBox from "@/components/EmptyBox";
 import Pagination from "@/components/Pagination";
-import { formatDate } from "@/utils/format";
+import { formatDate, formatPrice } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
 
 import { BillingControllerFindAll } from "@/apis/v1/billings";
@@ -232,7 +232,7 @@ export default function BillingDetails() {
                     <Td className={item.state === "Done" ? "text-primary-600" : "text-error-600"}>
                       {item.state}
                     </Td>
-                    <Td className="font-medium text-grayModern-900">{item.amount}</Td>
+                    <Td className="font-medium text-grayModern-900">{formatPrice(item.amount)}</Td>
                   </Tr>
                 ))}
               </Tbody>

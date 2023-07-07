@@ -64,7 +64,7 @@ const SettingModal = (props: {
       <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
         <ModalOverlay />
         <ModalContent maxW={"80%"} width={"auto"} minW={1024}>
-          <ModalBody py={2} flex="none" minH={481} className="relative">
+          <ModalBody py={2} flex="none" minH={500} className="relative">
             <ModalCloseButton />
             <Box className="flex h-full" borderColor={borderColor}>
               <SectionList

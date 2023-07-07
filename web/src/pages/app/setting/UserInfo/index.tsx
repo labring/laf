@@ -49,7 +49,7 @@ export default function UserInfo() {
   };
 
   return (
-    <Box className={clsx("flex justify-center pb-4 text-lg", showItem === "" && "pt-12")}>
+    <Box className={clsx("flex justify-center pb-4 text-lg", showItem === "" ? "pt-12" : "pt-4")}>
       {showItem === "" && (
         <>
           <Box className="flex flex-col pr-10">

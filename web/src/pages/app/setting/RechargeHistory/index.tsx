@@ -24,7 +24,7 @@ import clsx from "clsx";
 import { ChargeIcon, FilterIcon } from "@/components/CommonIcon";
 import EmptyBox from "@/components/EmptyBox";
 import Pagination from "@/components/Pagination";
-import { formatDate } from "@/utils/format";
+import { formatDate, formatPrice } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
 
 import { AccountControllerChargeRecord } from "@/apis/v1/accounts";
@@ -163,12 +163,14 @@ export default function RechargeHistory() {
                   <Tr key={item._id} bg={index % 2 === 1 ? "#FBFBFC" : "white"}>
                     <Td className="font-medium text-grayModern-900">{item._id}</Td>
                     <Td className="text-grayModern-600">{formatDate(item.createdAt)}</Td>
-                    <Td className={item.state === "Paid" ? "text-primary-600" : "text-error-600"}>
+                    <Td className={item.phase === "Paid" ? "text-primary-600" : "text-error-600"}>
                       {item.phase}
                     </Td>
-                    <Td className="font-medium text-grayModern-900">{item.amount}</Td>
-                    <Td className="font-medium text-grayModern-900">{item.reward}</Td>
-                    <Td className="font-medium text-grayModern-900">{item.amount - item.reward}</Td>
+                    <Td className="font-medium text-grayModern-900">{formatPrice(item.amount)}</Td>
+                    <Td className="font-medium text-grayModern-900">{formatPrice(item.reward)}</Td>
+                    <Td className="font-medium text-grayModern-900">
+                      {formatPrice(item.amount - item.reward)}
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>

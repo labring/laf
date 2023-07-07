@@ -16,7 +16,7 @@ import Icons from "./Icons";
 
 import styles from "./index.module.scss";
 
-import UserSetting from "@/layouts/Header/UserSetting";
+import UserSetting from "@/pages/app/setting/UserSetting";
 import useGlobalStore from "@/pages/globalStore";
 type TIcon = {
   pageId: string;
