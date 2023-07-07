@@ -62,7 +62,7 @@ export default function UserInvite() {
             <span className="w-3/12">{formatDate(item.createdAt)}</span>
             <span className="w-7/12">{item?.username}</span>
             <span className="flex w-2/12 justify-end text-primary-600">
-              {formatPrice(item.profit)}
+              {formatPrice(item.inviteProfit)}
             </span>
           </div>
         ))}

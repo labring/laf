@@ -72,7 +72,6 @@ export default function Usage() {
   );
 
   const chartData = ((billingAmountByDayRes?.data as Array<any>) || []).map((item) => ({
-    ...item,
     totalAmount: item.totalAmount / 100,
     date: formatDate(item.day).slice(5, 10),
   }));
@@ -160,7 +159,7 @@ export default function Usage() {
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="date" axisLine={false} tickLine={false} />
             <YAxis axisLine={false} tickLine={false} />
-            <Tooltip />
+            <Tooltip formatter={(value) => ["￥" + Number(value).toFixed(2), t("Expenses")]} />
             <Area
               type="monotone"
               dataKey="totalAmount"
