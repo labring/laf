@@ -7,4 +7,5 @@ export interface AccountChargeOrderQuery {
   endTime?: Date
   page?: number
   pageSize?: number
+  channel?: string
 }

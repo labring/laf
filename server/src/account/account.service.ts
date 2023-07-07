@@ -212,6 +212,10 @@ export class AccountService {
       query['_id'] = condition.id
     }
 
+    if (condition.channel) {
+      query['channel'] = condition.channel
+    }
+
     if (condition.startTime) {
       query['createdAt'] = { $gte: condition.startTime }
     }

@@ -119,9 +119,10 @@ export class AccountController {
   @ApiResponsePagination(GetAccountChargeOrdersDto)
   @UseGuards(JwtAuthGuard)
   @Get('charge-orders')
-  async chargeRecord(
+  async getChargeRecords(
     @Req() req: IRequest,
     @Query('id') id?: string,
+    @Query('channel') channel?: string,
     @Query('startTime') startTime?: string,
     @Query('endTime') endTime?: string,
     @Query('state') state?: string,
@@ -139,6 +140,10 @@ export class AccountController {
 
     if (id) {
       query.id = new ObjectId(id)
+    }
+
+    if (channel) {
+      query.channel = channel
     }
 
     if (state) {
