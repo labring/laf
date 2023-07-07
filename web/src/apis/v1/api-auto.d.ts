@@ -197,6 +197,8 @@ declare namespace Definitions {
     createdBy?: string;
   };
 
+  export type Number = {};
+
   export type AccountChargeOrder = {
     _id?: string;
     accountId?: string;
@@ -226,7 +228,16 @@ declare namespace Definitions {
     code?: string /* gift code */;
   };
 
-  export type InviteCode = {};
+  export type InviteCode = {
+    _id?: string;
+    uid?: string;
+    code?: string;
+    state?: string;
+    name?: string;
+    description?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 
   export type CreateWebsiteDto = {
     bucketName?: string;
@@ -444,20 +455,6 @@ declare namespace Definitions {
 }
 
 declare namespace Paths {
-  namespace AuthControllerGetProfile {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-  namespace AuthControllerPat2token {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
   namespace AppControllerGetRuntimes {
     export type QueryParameters = any;
 
@@ -802,7 +799,23 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace AccountControllerGetChargeOrderAmount {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace AccountControllerGetChargeOrder {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerChargeRecord {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -1123,6 +1136,22 @@ declare namespace Paths {
   }
 
   namespace BillingControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace BillingControllerGetExpense {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace BillingControllerGetExpenseByDay {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

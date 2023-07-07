@@ -29,3 +29,43 @@ export async function BillingControllerFindAll(
     params: params,
   });
 }
+
+/**
+ * Get my total amount
+ */
+export async function BillingControllerGetExpense(
+  params: Paths.BillingControllerGetExpense.BodyParameters,
+): Promise<{
+  error: string;
+  data: Definitions.Number;
+}> {
+  // /v1/billings/amount
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/billings/amount`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Get my total amount by day
+ */
+export async function BillingControllerGetExpenseByDay(
+  params: Paths.BillingControllerGetExpenseByDay.BodyParameters,
+): Promise<{
+  error: string;
+  data: Definitions.Number;
+}> {
+  // /v1/billings/amounts
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/billings/amounts`, {
+    method: "GET",
+    params: params,
+  });
+}

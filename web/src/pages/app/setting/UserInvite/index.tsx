@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CopyIcon, InfoOutlineIcon } from "@chakra-ui/icons";
-import { Button, Input } from "@chakra-ui/react";
+import { Button, Input, useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
 
 import CopyText from "@/components/CopyText";
 import { formatDate, formatPrice } from "@/utils/format";
@@ -17,6 +18,7 @@ type InviteCode = {
 export default function UserInvite() {
   const inviteCode = (useGetInviteCode().data?.data as InviteCode)?.code;
   const inviteLink = `${window.location.origin}/signup?code=${inviteCode}`;
+  const darkMode = useColorMode().colorMode === "dark";
 
   const { t } = useTranslation();
   const [page, setPage] = useState(1);
@@ -38,21 +40,27 @@ export default function UserInvite() {
       </div>
       <div className="mb-6 mt-3 flex items-center bg-[#ECF8FF] px-4 py-2">
         <InfoOutlineIcon className="mr-1 !text-[#219BF4]" />
-        <span className="text-[#0884DD]">
-          复制推广链接，发送给其他人。当他们点击此链接注册后，将成为你的被邀请人，并且你可立刻获得XXX。
-        </span>
+        <span className="text-[#0884DD]">{t("UserInfo.InviteTips")}</span>
       </div>
       <span className="text-lg text-grayModern-500">{t("UserInfo.BonusDetails")}</span>
       <div className="pt-3">
-        <div className="flex rounded-t-md bg-[#F6F8F9] px-3 py-2 text-grayModern-500">
+        <div
+          className={clsx(
+            "flex rounded-t-md px-3 py-2",
+            !darkMode && "bg-[#F6F8F9] text-grayModern-500",
+          )}
+        >
           <span className="w-3/12">{t("UserInfo.Time")}</span>
           <span className="w-7/12">{t("UserInfo.Channel")}</span>
           <span className="flex w-2/12 justify-end">{t("UserInfo.Bonus")}</span>
         </div>
         {(profitData?.list || []).map((item: any) => (
-          <div key={item._id} className="flex px-3 py-2 text-grayModern-700">
+          <div
+            key={item._id}
+            className={darkMode ? "flex px-3 py-2" : "flex px-3 py-2 text-grayModern-700"}
+          >
             <span className="w-3/12">{formatDate(item.createdAt)}</span>
-            <span className="w-7/12">{item.user[0].username}</span>
+            <span className="w-7/12">{item?.username}</span>
             <span className="flex w-2/12 justify-end text-primary-600">
               {formatPrice(item.profit)}
             </span>

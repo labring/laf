@@ -60,11 +60,11 @@ const SettingModal = (props: {
 
       <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
         <ModalOverlay />
-        <ModalContent maxW={"80%"} width={"auto"} minW={1000}>
+        <ModalContent maxW={"80%"} width={"auto"} minW={1024}>
           <ModalBody py={2} flex="none" minH={500} className="relative">
             <ModalCloseButton />
             <Box className="flex h-full" borderColor={borderColor}>
-              <SectionList className="absolute bottom-0 left-0 top-0 min-w-[268px] rounded-l-lg border border-r-[#E4E9EE] bg-[#F4F6F8]">
+              <SectionList className="absolute bottom-0 left-0 top-0 min-w-[228px] rounded-l-lg border border-r-[#E4E9EE] bg-[#F4F6F8]">
                 <span className="relative left-6 top-5 text-2xl font-semibold">
                   {headerTitle || t("SettingPanel.Setting")}
                 </span>
@@ -72,7 +72,7 @@ const SettingModal = (props: {
                   {tabMatch.map((tab) => {
                     return (
                       <SectionList.Item
-                        className="mt-2 w-[220px] rounded-md"
+                        className="mt-2 w-[180px] rounded-md"
                         isActive={item?.key === tab.key}
                         key={tab.key}
                         onClick={() => {
@@ -88,7 +88,7 @@ const SettingModal = (props: {
                   })}
                 </div>
               </SectionList>
-              <div className="ml-[268px] w-full overflow-hidden p-2">
+              <div className="ml-[236px] w-full overflow-hidden p-2">
                 {React.cloneElement(item?.component || <></>, {
                   onClose,
                 })}

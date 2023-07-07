@@ -1,7 +1,16 @@
 import { ChangeEventHandler, useMemo, useState } from "react";
 import { DateRange, DayPicker, SelectRangeEventHandler } from "react-day-picker";
 import { CalendarIcon } from "@chakra-ui/icons";
-import { Box, Button, Input, Popover, PopoverContent, PopoverTrigger } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  useColorMode,
+} from "@chakra-ui/react";
+import clsx from "clsx";
 import { format, isAfter, isBefore, isValid, parse } from "date-fns";
 
 import "react-day-picker/dist/style.css";
@@ -16,8 +25,9 @@ export default function DateRangePicker(props: {
   const { setStartTime, setEndTime, startTime, endTime, setQueryData } = props;
   const initState = useMemo(() => ({ from: startTime, to: endTime }), [startTime, endTime]);
   const [selectedRange, setSelectedRange] = useState<DateRange>(initState);
-  const [fromValue, setFromValue] = useState<string>(initState.from);
-  const [toValue, setToValue] = useState<string>(initState.to);
+  const [fromValue, setFromValue] = useState<string>(format(initState.from, "y-MM-dd"));
+  const [toValue, setToValue] = useState<string>(format(initState.to, "y-MM-dd"));
+  const darkMode = useColorMode().colorMode === "dark";
   const onClose = () => {
     selectedRange.from && setStartTime(selectedRange.from);
     selectedRange.to && setEndTime(selectedRange.to);
@@ -66,7 +76,12 @@ export default function DateRangePicker(props: {
     setQueryData({ startTime: range?.from, endTime: range?.to });
   };
   return (
-    <div className="flex h-8 rounded-md border border-grayModern-200 bg-grayModern-100">
+    <div
+      className={clsx(
+        "flex h-8 rounded-md border border-grayModern-200",
+        !darkMode && "bg-grayModern-100",
+      )}
+    >
       <Input
         variant={"unstyled"}
         value={fromValue}

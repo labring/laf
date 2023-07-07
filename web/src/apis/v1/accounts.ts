@@ -31,6 +31,26 @@ export async function AccountControllerFindOne(
 }
 
 /**
+ * Get charge order total amount
+ */
+export async function AccountControllerGetChargeOrderAmount(
+  params: Paths.AccountControllerGetChargeOrderAmount.BodyParameters,
+): Promise<{
+  error: string;
+  data: Definitions.Number;
+}> {
+  // /v1/accounts/charge-order/amount
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/accounts/charge-order/amount`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
  * Get charge order
  */
 export async function AccountControllerGetChargeOrder(
@@ -45,6 +65,26 @@ export async function AccountControllerGetChargeOrder(
     ...params,
   };
   return request(`/v1/accounts/charge-order/${_params.id}`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * get all charge order
+ */
+export async function AccountControllerChargeRecord(
+  params: Paths.AccountControllerChargeRecord.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.AccountControllerChargeRecord.Responses;
+}> {
+  // /v1/accounts/charge-orders
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/accounts/charge-orders`, {
     method: "GET",
     params: params,
   });

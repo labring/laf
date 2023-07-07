@@ -17,6 +17,7 @@ import BillingDetails from "@/pages/app/setting/BillingDetails";
 import CardRedemption from "@/pages/app/setting/CardRedemption";
 import PATList from "@/pages/app/setting/PATList";
 import PricingStandards from "@/pages/app/setting/PricingStandards";
+import RechargeHistory from "@/pages/app/setting/RechargeHistory";
 import Usage from "@/pages/app/setting/Usage";
 import UserInfo from "@/pages/app/setting/UserInfo";
 import UserInvite from "@/pages/app/setting/UserInvite";
@@ -87,7 +88,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
             {
               key: TabKeys.RechargeHistory,
               name: String(t("SettingPanel.RechargeHistory")),
-              component: <></>,
+              component: <RechargeHistory />,
               icon: <ChargeIcon boxSize={4} />,
             },
             {

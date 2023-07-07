@@ -545,13 +545,25 @@
     "InviteLink": "Invite Link",
     "BonusDetails": "Bonus Details",
     "Bonus": "Bonus",
-    "Channel": "Channel",
-    "Time": "Time"
+    "Channel": "Username",
+    "Time": "Time",
+    "InviteTips": "Copy the referral link and send it to others. When they click on this link to register, they will become your invited users, and you will immediately receive bonus."
   },
   "Reset": "Reset",
   "SettingModal": {
     "Exchange": "Exange"
   },
   "MyIncomeandExpenses": "My Income and Expenses",
-  "Expenses": "Expenses"
+  "Expenses": "Expenses",
+  "OrderNumber": "Order Number",
+  "Bonus amount": "Bonus amount",
+  "Total payment amount": "Total payment amount",
+  "Day": "Day",
+  "Week": "Week",
+  "Month": "Month",
+  "Year": "Year",
+  "Hour": "Hour",
+  "Core": "Core",
+  "No History": "No History",
+  "MyIncomeAndExpenses": "My Income And Expenses"
 }
