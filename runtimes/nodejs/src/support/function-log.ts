@@ -21,7 +21,7 @@ FunctionConsole.write = (message: string, ctx: FunctionContext) => {
     created_at: new Date(),
   }
 
-  axios.post(Config.LOG_SERVER_URL, {
+  axios.post(`${Config.LOG_SERVER_URL}/function/log`, {
     appid: Config.APPID,
     log: doc,
   })

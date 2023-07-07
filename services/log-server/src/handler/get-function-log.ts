@@ -9,7 +9,6 @@ const getFunctionLog: RequestHandler = async (req, res) => {
   >
 
   if (!appid) {
-    console.log(11)
     return res.status(400).send('appid is required')
   }
 

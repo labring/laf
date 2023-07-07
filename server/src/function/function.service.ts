@@ -322,7 +322,7 @@ export class FunctionService {
     },
   ) {
     const res = await this.httpService.axiosRef.get(
-      ServerConfig.LOG_SERVER_URL,
+      `${ServerConfig.LOG_SERVER_URL}/function/log`,
       {
         params: {
           ...params,

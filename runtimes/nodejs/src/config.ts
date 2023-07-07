@@ -57,13 +57,6 @@ export default class Config {
     return process.env.NODE_ENV === 'production'
   }
 
-  /**
-   * Expired time of function logs, in seconds
-   */
-  static get FUNCTION_LOG_EXPIRED_TIME(): number {
-    return (process.env.FUNCTION_LOG_EXPIRED_TIME ?? 3600 * 24 * 3) as number
-  }
-
   static get RUNTIME_IMAGE(): string {
     return process.env.RUNTIME_IMAGE
   }

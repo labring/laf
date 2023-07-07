@@ -22,8 +22,8 @@ app.use(
   }),
 )
 
-app.post('/log/add', addFunctionLog)
-app.get('/log/functions', getFunctionLog)
+app.post('/function/log', addFunctionLog)
+app.get('/function/log', getFunctionLog)
 app.get('/healthz', (_, res) => res.send('ok'))
 
 // @ts-ignore
