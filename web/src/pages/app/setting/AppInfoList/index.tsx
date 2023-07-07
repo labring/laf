@@ -28,7 +28,7 @@ const AppEnvList = () => {
 
   return (
     <>
-      <div className="flex h-full flex-col">
+      <div className="flex flex-col pt-12">
         <div className="flex flex-none justify-between">
           <HStack spacing={2}>
             <Box
@@ -38,7 +38,11 @@ const AppEnvList = () => {
             >
               {currentApp?.name}
             </Box>
-            <StatusBadge statusConditions={currentApp?.phase} state={currentApp?.state} />
+            <StatusBadge
+              className="rounded-full bg-primary-100"
+              statusConditions={currentApp?.phase}
+              state={currentApp?.state}
+            />
           </HStack>
           <HStack
             spacing={2}
@@ -137,23 +141,6 @@ const AppEnvList = () => {
               },
             ]}
           />
-
-          {/* <InfoDetail
-            className="mt-6"
-            title={t("SettingPanel.Subscription")}
-            leftData={[
-              {
-                key: t("CreateTime"),
-                value: `${formatDate(currentApp?.subscription?.createdAt)}`,
-              },
-            ]}
-            rightData={[
-              {
-                key: t("EndTime"),
-                value: `${formatDate(currentApp?.subscription?.expiredAt)}`,
-              },
-            ]}
-          /> */}
         </div>
       </div>
     </>

@@ -51,7 +51,7 @@ export async function UserControllerGetAvatar(
 }
 
 /**
- * Bind username
+ * Bind phone
  */
 export async function UserControllerBindPhone(params: Definitions.BindPhoneDto): Promise<{
   error: string;

@@ -9,7 +9,10 @@ function SectionList(props: {
   className?: string;
 }) {
   return (
-    <ul className={styles.sectionList + " " + props.className} style={props.style || {}}>
+    <ul
+      className={styles.sectionList + " flex flex-col overflow-y-auto " + props.className}
+      style={props.style || {}}
+    >
       {props.children}
     </ul>
   );
