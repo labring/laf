@@ -19,10 +19,9 @@ export enum PaymentChannelType {
   Stripe = 'Stripe',
   Paypal = 'Paypal',
   Google = 'Google',
-  GiftCode = 'GiftCode',
 }
 
-export class AccountChargeOrder<R = any> {
+export class GetAccountChargeOrdersDto<R = any> {
   @ApiProperty({ type: String })
   _id?: ObjectId
 
@@ -58,7 +57,6 @@ export class AccountChargeOrder<R = any> {
   @ApiProperty({ type: String })
   createdBy: ObjectId
 
-  constructor(partial: Partial<AccountChargeOrder<R>>) {
-    Object.assign(this, partial)
-  }
+  @ApiProperty({ type: Number })
+  reward: number
 }

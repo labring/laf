@@ -17,6 +17,10 @@ import {
 } from 'src/user/entities/user-password'
 import { UserProfile } from 'src/user/entities/user-profile'
 import { SmsService } from './sms.service'
+import { AccountService } from 'src/account/account.service'
+import { InvitationProfitAmount } from 'src/account/entities/invitation-profit-amount'
+import { Account } from 'src/account/entities/account'
+import { AccountTransaction } from 'src/account/entities/account-transaction'
 
 @Injectable()
 export class PhoneService {
@@ -27,6 +31,7 @@ export class PhoneService {
     private readonly smsService: SmsService,
     private readonly authService: AuthenticationService,
     private readonly userService: UserService,
+    private readonly accountService: AccountService,
   ) {}
 
   /**
@@ -74,7 +79,7 @@ export class PhoneService {
       session.startTransaction()
 
       // create user
-      const res = await this.db.collection<User>('User').insertOne(
+      const user = await this.db.collection<User>('User').insertOne(
         {
           phone,
           username: username || phone,
@@ -84,22 +89,61 @@ export class PhoneService {
         { session },
       )
 
-      // create invite relation
+      // create invite relation and add invite profit
       if (inviteCode) {
-        const result = await this.db
+        const inviteCodeInfo = await this.db
           .collection<InviteCode>('InviteCode')
           .findOne({
             code: inviteCode,
             state: InviteCodeState.Enabled,
           })
 
-        if (result) {
+        if (inviteCodeInfo) {
+          const account = await this.accountService.findOne(inviteCodeInfo.uid)
+          // get invitation Profit Amount
+          let amount = 0
+          const inviteProfit = await this.db
+            .collection<InvitationProfitAmount>('Setting')
+            .findOne({
+              settingName: 'Invitation Profit Amount',
+              active: true,
+            })
+          if (inviteProfit) {
+            amount = inviteProfit.amount
+          }
+          // update account balance
+          const accountAfterUpdate = await this.db
+            .collection<Account>('Account')
+            .findOneAndUpdate(
+              { _id: account._id },
+              {
+                $inc: { balance: amount },
+                $set: { updatedAt: new Date() },
+              },
+              { session, returnDocument: 'after' },
+            )
+
+          // add transaction record
+          const transaction = await this.db
+            .collection<AccountTransaction>('AccountTransaction')
+            .insertOne(
+              {
+                accountId: account._id,
+                amount: amount,
+                balance: accountAfterUpdate.value.balance,
+                message: 'Invitation profit',
+                createdAt: new Date(),
+              },
+              { session },
+            )
+
           await this.db.collection<InviteRelation>('InviteRelation').insertOne(
             {
-              uid: res.insertedId,
-              invitedBy: result.uid,
-              codeId: result._id,
+              uid: user.insertedId,
+              invitedBy: inviteCodeInfo.uid,
+              codeId: inviteCodeInfo._id,
               createdAt: new Date(),
+              transactionId: transaction.insertedId,
             },
             { session },
           )
@@ -109,7 +153,7 @@ export class PhoneService {
       // create profile
       await this.db.collection<UserProfile>('UserProfile').insertOne(
         {
-          uid: res.insertedId,
+          uid: user.insertedId,
           name: username,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -121,7 +165,7 @@ export class PhoneService {
         // create password
         await this.db.collection<UserPassword>('UserPassword').insertOne(
           {
-            uid: res.insertedId,
+            uid: user.insertedId,
             password: hashPassword(password),
             state: UserPasswordState.Active,
             createdAt: new Date(),
@@ -132,7 +176,7 @@ export class PhoneService {
       }
 
       await session.commitTransaction()
-      return await this.userService.findOneById(res.insertedId)
+      return await this.userService.findOneById(user.insertedId)
     } catch (err) {
       await session.abortTransaction()
       throw err
