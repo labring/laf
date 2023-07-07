@@ -21,8 +21,6 @@ export class InviteCodeProfit {
   @ApiProperty()
   profit: number
 
-  @ApiProperty({
-    type: [User],
-  })
-  user: User[]
+  @ApiProperty()
+  username: string
 }

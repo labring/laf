@@ -22,6 +22,7 @@ import {
   InviteRelation,
 } from 'src/authentication/entities/invite-code'
 import { InvitationProfitAmount } from './entities/invitation-profit-amount'
+import { AccountChargeOrderQuery } from './interface/account-query.interface'
 
 @Injectable()
 export class AccountService {
@@ -198,6 +199,99 @@ export class AccountService {
     return rewards
   }
 
+  async getAllChargeOrders(
+    userid: ObjectId,
+    condition: AccountChargeOrderQuery,
+  ) {
+    const query = {
+      createdBy: userid,
+      phase: condition.phase ? condition.phase : AccountChargePhase.Paid,
+    }
+
+    if (condition.id) {
+      query['_id'] = condition.id
+    }
+
+    if (condition.startTime) {
+      query['createdAt'] = { $gte: condition.startTime }
+    }
+
+    if (condition.endTime) {
+      query['createdAt'] = { $lte: condition.endTime }
+    }
+
+    const total = await this.db
+      .collection<AccountChargeOrder>('AccountChargeOrder')
+      .countDocuments(query)
+
+    const orders = await this.db
+      .collection<AccountChargeOrder>('AccountChargeOrder')
+      .aggregate([
+        { $match: query },
+        {
+          $lookup: {
+            from: 'AccountTransaction',
+            localField: '_id',
+            foreignField: 'orderId',
+            as: 'transaction',
+          },
+        },
+        { $sort: { createdAt: -1 } },
+        { $skip: (condition.page - 1) * condition.pageSize },
+        { $limit: condition.pageSize },
+        { $unwind: '$transaction' },
+        {
+          $addFields: {
+            reward: '$transaction.reward',
+          },
+        },
+        {
+          $project: {
+            transaction: 0,
+          },
+        },
+      ])
+      .toArray()
+
+    const res = {
+      total,
+      list: orders,
+      page: condition.page,
+      pageSize: condition.pageSize,
+    }
+
+    return res
+  }
+
+  async getUserRecharge(userid: ObjectId, condition: AccountChargeOrderQuery) {
+    const query = {
+      createdBy: userid,
+      phase: AccountChargePhase.Paid,
+    }
+    if (condition.endTime) {
+      query['createdAt'] = { $lte: condition.endTime }
+    }
+    if (condition.startTime) {
+      query['createdAt'] = { $gte: condition.startTime }
+    }
+
+    const rechargeAmount = await this.db
+      .collection<AccountChargeOrder>('AccountChargeOrder')
+      .aggregate([
+        { $match: query },
+        {
+          $group: {
+            _id: null,
+            totalAmount: {
+              $sum: '$amount',
+            },
+          },
+        },
+      ])
+      .toArray()
+    return rechargeAmount.length > 0 ? rechargeAmount[0].totalAmount : 0
+  }
+
   // gift code
   async useGiftCode(userid: ObjectId, code: string) {
     const client = SystemDatabase.client
@@ -226,7 +320,7 @@ export class AccountService {
             accountId: account._id,
             amount: giftCode.creditAmount,
             balance: res.value.balance,
-            message: 'Gift Code Redemption',
+            message: 'Gift code redemption',
             createdAt: new Date(),
           },
           { session },
@@ -314,12 +408,12 @@ export class AccountService {
       .findOne({
         settingName: 'Invitation Profit Amount',
       })
-
+    const query = {
+      invitedBy: uid,
+    }
     const pipe = [
       {
-        $match: {
-          invitedBy: uid,
-        },
+        $match: query,
       },
       {
         $lookup: {
@@ -332,23 +426,30 @@ export class AccountService {
       { $sort: { createdAt: -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
+      { $unwind: '$user' },
+      {
+        $addFields: {
+          username: '$user.username',
+          inviteProfit: inviteProfit ? inviteProfit.amount : 0,
+        },
+      },
+      {
+        $project: {
+          user: 0,
+        },
+      },
     ]
 
     const total = await this.db
       .collection<InviteRelation>('InviteRelation')
-      .countDocuments({ invitedBy: uid })
+      .countDocuments(query)
 
     const inviteCodeProfits = await this.db
       .collection<InviteRelation>('InviteRelation')
       .aggregate(pipe)
       .toArray()
 
-    inviteCodeProfits.forEach((item) => {
-      item.profit = inviteProfit ? inviteProfit.amount : 0
-      item.user[0].username = item.user[0].username.slice(0, 2)
-      item.user[0].email = null
-      item.user[0].phone = null
-    })
+    console.log(JSON.stringify(inviteCodeProfits, null, 2))
 
     const res = {
       list: inviteCodeProfits,

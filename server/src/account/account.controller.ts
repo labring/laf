@@ -45,6 +45,7 @@ import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { AccountChargeReward } from './entities/account-charge-reward'
 import { InviteCode } from 'src/authentication/entities/invite-code'
 import { InviteCodeProfit } from './dto/invite-code.dto'
+import { AccountChargeOrderQuery } from './interface/account-query.interface'
 
 @ApiTags('Account')
 @Controller('accounts')
@@ -57,7 +58,6 @@ export class AccountController {
     private readonly paymentService: PaymentChannelService,
     private readonly wechatPayService: WeChatPayService,
   ) {}
-
   /**
    * Get account info
    */
@@ -70,6 +70,29 @@ export class AccountController {
     const data = await this.accountService.findOne(user._id)
     data.balance = Math.floor(data.balance)
     return ResponseUtil.ok(data)
+  }
+
+  /**
+   * Get charge order total amount
+   */
+  @ApiOperation({ summary: 'Get charge order total amount' })
+  @ApiResponseObject(Number)
+  @UseGuards(JwtAuthGuard)
+  @Get('charge-order/amount')
+  async getChargeOrderAmount(
+    @Req() req: IRequest,
+    @Query('startTime') startTime?: string,
+    @Query('endTime') endTime?: string,
+  ) {
+    const user = req.user
+    const query: AccountChargeOrderQuery = {
+      startTime: startTime
+        ? new Date(startTime)
+        : new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+      endTime: endTime ? new Date(endTime) : new Date(),
+    }
+    const amount = await this.accountService.getUserRecharge(user._id, query)
+    return ResponseUtil.ok(amount)
   }
 
   /**
@@ -86,6 +109,55 @@ export class AccountController {
       new ObjectId(id),
     )
     return ResponseUtil.ok(data)
+  }
+
+  /**
+   * get all charge order
+   */
+  @ApiOperation({ summary: 'get all charge order' })
+  @ApiResponsePagination(AccountChargeOrder)
+  @UseGuards(JwtAuthGuard)
+  @Get('charge-orders')
+  async chargeRecord(
+    @Req() req: IRequest,
+    @Query('id') id?: string,
+    @Query('startTime') startTime?: string,
+    @Query('endTime') endTime?: string,
+    @Query('state') state?: string,
+    @Query('page') page?: number,
+    @Query('pageSize') pageSize?: number,
+  ) {
+    const query: AccountChargeOrderQuery = {
+      page: page || 1,
+      pageSize: pageSize || 12,
+    }
+
+    if (query.pageSize > 100) {
+      query.pageSize = 100
+    }
+
+    if (id) {
+      query.id = new ObjectId(id)
+    }
+
+    if (state) {
+      query.phase = state
+    }
+
+    if (startTime) {
+      query.startTime = new Date(startTime)
+    }
+
+    if (endTime) {
+      query.endTime = new Date(endTime)
+    }
+
+    const res = await this.accountService.getAllChargeOrders(
+      req.user._id,
+      query,
+    )
+
+    return ResponseUtil.ok(res)
   }
 
   /**
@@ -292,6 +364,9 @@ export class AccountController {
   ) {
     page = page || 1
     pageSize = pageSize || 12
+    if (pageSize > 100) {
+      pageSize = 100
+    }
     const res = await this.accountService.getInviteProfit(
       req.user._id,
       page,

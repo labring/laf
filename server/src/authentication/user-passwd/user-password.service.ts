@@ -79,7 +79,7 @@ export class UserPasswordService {
         if (inviteCodeInfo) {
           const account = await this.accountService.findOne(inviteCodeInfo.uid)
           // get invitation Profit Amount
-          let amount: number
+          let amount = 0
           const inviteProfit = await this.db
             .collection<InvitationProfitAmount>('Setting')
             .findOne({
@@ -87,10 +87,7 @@ export class UserPasswordService {
             })
           if (inviteProfit) {
             amount = inviteProfit.amount
-          } else {
-            amount = 0
           }
-
           // update account balance
           const accountAfterUpdate = await this.db
             .collection<Account>('Account')
@@ -111,7 +108,7 @@ export class UserPasswordService {
                 accountId: account._id,
                 amount: amount,
                 balance: accountAfterUpdate.value.balance,
-                message: 'invitation Profit',
+                message: 'Invitation profit',
                 createdAt: new Date(),
               },
               { session },

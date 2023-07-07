@@ -7,14 +7,7 @@ import { Decimal } from 'decimal.js'
 import * as assert from 'assert'
 import { ApplicationBilling } from './entities/application-billing'
 import { CalculatePriceDto } from './dto/calculate-price.dto'
-
-export interface BillingQuery {
-  appid?: string
-  startTime?: Date
-  endTime?: Date
-  page: number
-  pageSize: number
-}
+import { BillingQuery } from './interface/billing-query.interface'
 
 @Injectable()
 export class BillingService {
@@ -34,7 +27,11 @@ export class BillingService {
     }
 
     if (condition.appid) {
-      query['appid'] = condition.appid
+      query['appid'] = { $in: condition.appid }
+    }
+
+    if (condition.state) {
+      query['state'] = condition.state
     }
 
     const { page, pageSize } = condition
@@ -67,6 +64,41 @@ export class BillingService {
       .findOne({ _id: id })
 
     return billing
+  }
+
+  async getExpenseTotal(userId: ObjectId, condition?: BillingQuery) {
+    const query = { createdBy: userId }
+
+    if (condition.endTime) {
+      query['endAt'] = { $lte: condition.endTime }
+    }
+
+    if (condition.startTime) {
+      query['startAt'] = { $gte: condition.startTime }
+    }
+
+    if (condition.appid) {
+      query['appid'] = { $in: condition.appid }
+    }
+
+    if (condition.state) {
+      query['state'] = condition.state
+    }
+
+    const totalExpense = await this.db
+      .collection<ApplicationBilling>('ApplicationBilling')
+      .aggregate([
+        { $match: query },
+        {
+          $group: {
+            _id: null,
+            totalAmount: { $sum: '$amount' },
+          },
+        },
+      ])
+      .toArray()
+
+    return totalExpense.length > 0 ? totalExpense[0].totalAmount : 0
   }
 
   async calculatePrice(dto: CalculatePriceDto) {
