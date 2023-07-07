@@ -455,28 +455,13 @@ declare namespace Definitions {
 }
 
 declare namespace Paths {
-  namespace AuthControllerGetProfile {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-  namespace AuthControllerPat2token {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
   namespace AppControllerGetRuntimes {
     export type QueryParameters = any;
 
-    export type BodyParameters = any;
+    export type BodyParameters = Definitions.CreateFunctionDto;
 
     export type Responses = any;
   }
-
   namespace FunctionControllerCreate {
     export type QueryParameters = any;
 
