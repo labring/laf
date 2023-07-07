@@ -248,6 +248,10 @@ export class InstanceService {
         name: 'RESTART_AT',
         value: new Date().getTime().toString(),
       },
+      {
+        name: 'LOG_SERVER_URL',
+        value: app.region.logServerUrl,
+      },
     ]
 
     // merge env from app configuration, override if exists

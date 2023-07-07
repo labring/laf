@@ -66,6 +66,7 @@ export class InitializerService {
         apiUrl: ServerConfig.DEFAULT_REGION_APISIX_API_URL,
         apiKey: ServerConfig.DEFAULT_REGION_APISIX_API_KEY,
       },
+      logServerUrl: ServerConfig.DEFAULT_REGION_LOG_SERVER_URL,
       updatedAt: new Date(),
       createdAt: new Date(),
       state: 'Active',

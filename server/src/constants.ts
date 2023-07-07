@@ -17,6 +17,13 @@ export class ServerConfig {
     return process.env.METERING_DATABASE_URL
   }
 
+  static get LOG_SERVER_URL() {
+    if (!process.env.LOG_SERVER_URL) {
+      throw new Error('LOG_SERVER_URL is not defined')
+    }
+    return process.env.LOG_SERVER_URL
+  }
+
   static get JWT_SECRET() {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET is not defined')
@@ -142,6 +149,10 @@ export class ServerConfig {
 
   static get DEFAULT_REGION_MINIO_ROOT_SECRET_KEY() {
     return process.env.DEFAULT_REGION_MINIO_ROOT_SECRET_KEY
+  }
+
+  static get DEFAULT_REGION_LOG_SERVER_URL() {
+    return process.env.DEFAULT_REGION_LOG_SERVER_URL
   }
 }
 

@@ -46,6 +46,7 @@ export class Region {
   databaseConf: RegionDatabaseConf
   gatewayConf: RegionGatewayConf
   storageConf: RegionStorageConf
+  logServerUrl: string
 
   @ApiProperty()
   tls: boolean
