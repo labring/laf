@@ -100,12 +100,14 @@ const CreateModal = (props: {
 
   const onSubmit = async (data: any) => {
     let res: any = {};
-    if (isEdit) {
+    if (isEdit && functionItem.name !== data.name) {
       res = await updateFunctionMutation.mutateAsync({
         ...data,
         name: functionItem.name,
         newName: data.name,
       });
+    } else if (isEdit && functionItem.name === data.name) {
+      res = await updateFunctionMutation.mutateAsync(data);
     } else {
       res = await createFunctionMutation.mutateAsync(data);
     }

@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { CopyIcon, EditIcon } from "@chakra-ui/icons";
+import { CopyIcon } from "@chakra-ui/icons";
 import { HStack, Input, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
@@ -15,7 +15,6 @@ import DeployButton from "../DeployButton";
 import CreateModal from "../FunctionPanel/CreateModal";
 import PromptModal from "../FunctionPanel/CreateModal/PromptModal";
 
-import EditDomain from "./EditDomain";
 import FunctionDetailPopOver from "./FunctionDetailPopOver";
 
 import useFunctionCache from "@/hooks/useFunctionCache";
@@ -60,12 +59,7 @@ function EditorPanel() {
 
           <HStack spacing={1}>
             <div className={clsx("flex items-center", !darkMode && "bg-[#F6F8F9]")}>
-              <CopyText text={getFunctionUrl()}>
-                <Input w={"200px"} size="xs" readOnly value={getFunctionUrl()} />
-              </CopyText>
-              <EditDomain>
-                <EditIcon className="mx-2 cursor-pointer !text-grayModern-300" />
-              </EditDomain>
+              <Input w={"200px"} size="xs" readOnly value={getFunctionUrl()} />
               <CopyText
                 text={getFunctionUrl()}
                 className="mr-3 cursor-pointer !text-grayModern-300"

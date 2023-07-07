@@ -61,10 +61,12 @@ export default function AvatarEditor(props: { img: string | null; handleBack: an
       const imgData = await getCroppedImg(imgRef.current, crop);
       const formData = new FormData();
       formData.append("avatar", imgData);
-      updateAvatar.mutateAsync(formData);
-      updateUserInfo();
-      showSuccess(t("UserInfo.EditAvatarSuccess"));
-      handleBack();
+      const res = await updateAvatar.mutateAsync(formData);
+      if (!res.error) {
+        updateUserInfo();
+        showSuccess(t("UserInfo.EditAvatarSuccess"));
+        handleBack();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [crop]);

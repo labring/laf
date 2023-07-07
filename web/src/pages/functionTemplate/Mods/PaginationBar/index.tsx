@@ -3,15 +3,26 @@ import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from
 import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
-const PaginationBar = (props: { page: number; setPage: any; total?: number; pageSize: number }) => {
-  const { page, setPage, total, pageSize } = props;
+const PaginationBar = (props: {
+  page: number;
+  setPage: any;
+  total?: number;
+  pageSize: number;
+  className?: string;
+}) => {
+  const { page, setPage, total, pageSize, className } = props;
   const { t } = useTranslation();
   const totalPage = Math.ceil((total || 0) / pageSize);
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
 
   return (
-    <div className="flex w-full flex-wrap-reverse items-center justify-end pb-8 pr-8 pt-4 text-lg">
+    <div
+      className={clsx(
+        "flex w-full flex-wrap-reverse items-center justify-end pb-8 pr-8 pt-4 text-lg",
+        className,
+      )}
+    >
       <span className="mr-4">
         {t("Template.Total")}: {total}
       </span>

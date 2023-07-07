@@ -189,7 +189,19 @@
     "UserName": "UserName",
     "Email": "Email",
     "PassWord": "PassWord",
-    "UserInvite": "UserInvite"
+    "UserInvite": "UserInvite",
+    "UserCenter": "User Center",
+    "CostOverview": "Cost Overview",
+    "CardRedemption": "Card Redemption",
+    "BillingDetails": "Billing Details",
+    "RechargeHistory": "Recharge History",
+    "PricingStandards": "Pricing Standards",
+    "EnterGiftCode": "Enter Gift Code",
+    "ExchangeSuccess": "Exchange Success",
+    "Domain": "Custom Domain",
+    "MyAccount": "My Account",
+    "CostTrend": "Cost Trend",
+    "Balance": "Balance"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -244,7 +256,8 @@
     "InstantUpload": "Instant Upload",
     "parsing": "parsing",
     "DomainUpdateSuccess": "Domain Update Success",
-    "DomainDeleteSuccess": "Domain Delete Success"
+    "DomainDeleteSuccess": "Domain Delete Success",
+    "CustomApplicationDomain": "Custom Application Domain"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -447,7 +460,7 @@
   "PleaseCloseApplicationFirst": "Please close your application first.",
   "custom": "Custom",
   "CostTime": "CostTime",
-  "Duration": "Duration",
+  "Duration": "Trade Time",
   "State": "State",
   "TotalAmount": "Total",
   "AIWelcomeMessage": "Hello, I am Laf AI Development Assistant, how can I help you?",
@@ -529,7 +542,29 @@
     "EditPasswordSuccess": "Edit Password Success",
     "EditPhoneSuccess": "Edit Phone Success",
     "EditAvatarSuccess": "Edit Avatar Success",
-    "Change": "Change"
+    "Change": "Change",
+    "InviteLink": "Invite Link",
+    "BonusDetails": "Bonus Details",
+    "Bonus": "Bonus",
+    "Channel": "Username",
+    "Time": "Time",
+    "InviteTips": "Copy the referral link and send it to others. When they click on this link to register, they will become your invited users, and you will immediately receive bonus."
   },
-  "Reset": "Reset"
+  "Reset": "Reset",
+  "SettingModal": {
+    "Exchange": "Exange"
+  },
+  "MyIncomeandExpenses": "My Income and Expenses",
+  "Expenses": "Expenses",
+  "OrderNumber": "Order Number",
+  "Bonus amount": "Bonus amount",
+  "Total payment amount": "Total payment amount",
+  "Day": "Day",
+  "Week": "Week",
+  "Month": "Month",
+  "Year": "Year",
+  "Hour": "Hour",
+  "Core": "Core",
+  "No History": "No History",
+  "MyIncomeAndExpenses": "My Income And Expenses"
 }

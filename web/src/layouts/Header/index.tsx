@@ -4,12 +4,11 @@ import { HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
-import { ChatIcon, ContactIcon, TextIcon } from "@/components/CommonIcon";
+import { ChatIcon, TextIcon } from "@/components/CommonIcon";
 import { COLOR_MODE } from "@/constants";
 import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
-import UserBalance from "./UserBalance";
-import UserSetting from "./UserSetting";
+import UserSetting from "../../pages/app/setting/UserSetting";
 
 import useGlobalStore from "@/pages/globalStore";
 import Language from "@/pages/homepage/language";
@@ -40,11 +39,11 @@ const Header = (props: { width: string }) => {
       ref: "https://forum.laf.run/",
       icon: <ChatIcon color={darkMode ? "#FFFFFF" : "#5A646E"} />,
     },
-    {
-      text: t("HomePage.NavBar.contact"),
-      ref: "https://www.wenjuan.com/s/I36ZNbl/",
-      icon: <ContactIcon />,
-    },
+    // {
+    //   text: t("HomePage.NavBar.contact"),
+    //   ref: "https://www.wenjuan.com/s/I36ZNbl/",
+    //   icon: <ContactIcon />,
+    // },
   ];
 
   useEffect(() => {
@@ -115,7 +114,6 @@ const Header = (props: { width: string }) => {
                 </a>
               );
             })}
-            <UserBalance />
             <Language fontSize={20} />
             <div
               className="mr-8 cursor-pointer pb-1"

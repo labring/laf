@@ -17,10 +17,14 @@ const colorScheme: {
   Restarting: "blue",
   Created: "warn",
 };
-export default function StatusBadge(props: { statusConditions?: string; state?: string }) {
-  const { statusConditions = APP_PHASE_STATUS.Started, state } = props;
+export default function StatusBadge(props: {
+  statusConditions?: string;
+  state?: string;
+  className?: string;
+}) {
+  const { statusConditions = APP_PHASE_STATUS.Started, state, className } = props;
   return (
-    <div className="flex items-center">
+    <div className={clsx("flex items-center", className)}>
       <div
         className={clsx(
           styles.badgeStyle,

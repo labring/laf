@@ -95,6 +95,7 @@ module.exports = {
         },
         error: {
           100: "#FDECEE",
+          400: "#FF8492",
           500: "#F16979",
           600: "#ED4458",
         },
@@ -127,6 +128,7 @@ module.exports = {
         },
         frostyNightfall: {
           200: "#EAEBF0",
+          300: "#D5D6E1"
         },
       },
     },

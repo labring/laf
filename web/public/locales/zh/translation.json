@@ -189,7 +189,19 @@
     "UserName": "用户名",
     "Email": "邮箱",
     "PassWord": "密码",
-    "UserInvite": "我的推广"
+    "UserInvite": "我的推广",
+    "UserCenter": "用户中心",
+    "CostOverview": "成本总览",
+    "CardRedemption": "点卡兑换",
+    "BillingDetails": "账单明细",
+    "RechargeHistory": "充值记录",
+    "PricingStandards": "计价标准",
+    "EnterGiftCode": "输入卡密",
+    "ExchangeSuccess": "兑换成功",
+    "Domain": "域名设置",
+    "MyAccount": "我的账户",
+    "CostTrend": "成本趋势",
+    "Balance": "余额"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -244,7 +256,8 @@
     "InstantUpload": "立即上传",
     "RemoveHost": "取消静态托管",
     "DomainUpdateSuccess": "域名修改成功",
-    "DomainDeleteSuccess": "域名删除成功"
+    "DomainDeleteSuccess": "域名删除成功",
+    "CustomApplicationDomain": "自定义应用域名"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
@@ -490,7 +503,7 @@
   "PleaseCloseApplicationFirst": "请先关闭应用",
   "custom": "自定义",
   "CostTime": "扣费时间",
-  "Duration": "计费周期",
+  "Duration": "交易时间",
   "State": "状态",
   "TotalAmount": "总费用",
   "AIWelcomeMessage": "你好，我是 Laf AI 开发助理，请问有什么可以帮助您的吗？",
@@ -529,7 +542,29 @@
     "EditPasswordSuccess": "密码修改成功",
     "EditPhoneSuccess": "电话号修改成功",
     "EditAvatarSuccess": "头像更新成功",
-    "Change": "更改"
+    "Change": "更改",
+    "InviteLink": "推广链接",
+    "BonusDetails": "奖励明细",
+    "Bonus": "奖励",
+    "Channel": "用户名",
+    "Time": "时间",
+    "InviteTips": "复制推广链接，发送给其他人。当他们点击此链接注册后，将成为你的被邀请人，并且你可立刻获得佣金。"
   },
-  "Reset": "重置"
+  "Reset": "重置",
+  "SettingModal": {
+    "Exchange": "兑换"
+  },
+  "MyIncomeandExpenses": "我的收支",
+  "Expenses": "支出",
+  "OrderNumber": "订单号",
+  "Bonus amount": "赠送金额",
+  "Total payment amount": "实付金额",
+  "Day": "天",
+  "Week": "周",
+  "Month": "月",
+  "Year": "年",
+  "Hour": "小时",
+  "Core": "核",
+  "No History": "暂无记录",
+  "MyIncomeAndExpenses": "我的收支"
 }
