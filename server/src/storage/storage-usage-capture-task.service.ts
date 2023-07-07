@@ -18,7 +18,7 @@ export class StorageUsageCaptureTaskService {
   private readonly logger = new Logger(StorageUsageCaptureTaskService.name)
   private readonly db = SystemDatabase.db
   private readonly lockTimeout = 60 * 60 // in second
-  private readonly limit = pLimit(4) // concurrency limit: 4
+  private readonly limit = pLimit(2) // concurrency limit: 2
 
   private getLockTime() {
     // halfway through each hour
