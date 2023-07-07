@@ -99,9 +99,7 @@ export default function DependenceList() {
                         {!packageItem?.builtin ? (
                           <span className=" ml-2 hidden w-[10px] group-hover:inline-block">
                             <ConfirmButton
-                              onSuccessAction={(e) => {
-                                e.stopPropagation();
-                                e.preventDefault();
+                              onSuccessAction={() => {
                                 delPackageMutation.mutate({ name: packageItem?.name });
                               }}
                               headerText={String(t("Delete"))}

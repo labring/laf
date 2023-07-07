@@ -16,6 +16,7 @@ import SettingModal, { TabKeys } from "@/pages/app/setting";
 import BillingDetails from "@/pages/app/setting/BillingDetails";
 import CardRedemption from "@/pages/app/setting/CardRedemption";
 import PATList from "@/pages/app/setting/PATList";
+import PricingStandards from "@/pages/app/setting/PricingStandards";
 import Usage from "@/pages/app/setting/Usage";
 import UserInfo from "@/pages/app/setting/UserInfo";
 import UserInvite from "@/pages/app/setting/UserInvite";
@@ -92,7 +93,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
             {
               key: TabKeys.PricingStandards,
               name: String(t("SettingPanel.PricingStandards")),
-              component: <></>,
+              component: <PricingStandards />,
               icon: <StandardIcon boxSize={4} />,
             },
           ]}

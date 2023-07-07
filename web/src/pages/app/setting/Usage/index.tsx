@@ -1,71 +1,100 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Avatar, Button } from "@chakra-ui/react";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis } from "recharts";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import ChargeButton from "@/components/ChargeButton";
 import { CostIcon, ExpendIcon, RechargeIcon } from "@/components/CommonIcon";
+import DateRangePicker from "@/components/DateRangePicker";
 import { formatPrice, hidePhoneNumber } from "@/utils/format";
 
+import { BillingControllerFindAll } from "@/apis/v1/billings";
 import useGlobalStore from "@/pages/globalStore";
 import { useAccountQuery } from "@/pages/home/service";
 
 const data = [
   {
-    name: "Page A",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
+    name: "Day 1",
+    total: 4000,
   },
   {
-    name: "Page B",
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
+    name: "Day 2",
+    total: 3000,
   },
   {
-    name: "Page C",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
+    name: "Day 3",
+    total: 2000,
   },
   {
-    name: "Page D",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
+    name: "Day 4",
+    total: 2780,
   },
   {
-    name: "Page E",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
+    name: "Day 5",
+    total: 4000,
   },
   {
-    name: "Page F",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
+    name: "Day 6",
+    total: 3000,
   },
   {
-    name: "Page G",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
+    name: "Day 7",
+    total: 2000,
   },
 ];
+
+const DEFAULT_QUERY_DATA = {
+  appid: [],
+  startTime: "",
+  endTime: "",
+  page: 1,
+  pageSize: 10,
+  state: "",
+};
 
 export default function Usage() {
   const { userInfo } = useGlobalStore((state) => state);
   const { data: accountRes } = useAccountQuery();
+  const { t } = useTranslation();
+  const [startTime, setStartTime] = React.useState<Date | null>(null);
+  const [endTime, setEndTime] = React.useState<Date | null>(null);
+  const [queryData, setQueryData] = React.useState(DEFAULT_QUERY_DATA);
+
+  const { data: billingRes } = useQuery(["billing", queryData], async () => {
+    return BillingControllerFindAll({
+      ...queryData,
+    });
+  });
+
+  console.log(billingRes);
+
   return (
     <div>
       <div className="flex items-center pb-6 pt-2 text-2xl">
-        <CostIcon boxSize={5} mr={3} />
-        成本总览
+        <span className="pr-4">
+          <CostIcon boxSize={5} mr={3} />
+          {t("SettingPanel.Usage")}
+        </span>
+        <DateRangePicker
+          startTime={startTime}
+          endTime={endTime}
+          setStartTime={setStartTime}
+          setEndTime={setEndTime}
+          setQueryData={setQueryData}
+        />
       </div>
       <div className="flex pb-6">
         <div className="flex flex-col pr-4">
-          <span>我的账户</span>
+          <span>{t("SettingPanel.MyAccount")}</span>
           <div className="mt-3 flex h-36 w-[306px] flex-col justify-between rounded-lg bg-primary-500 px-6 text-white">
             <div className="flex items-center justify-between pt-3 text-lg">
               <span>{hidePhoneNumber(userInfo?.phone || "")}</span>
@@ -75,19 +104,19 @@ export default function Usage() {
             </div>
             <div className="flex items-end justify-between pb-5">
               <span className="flex flex-col">
-                <span>余额</span>
-                <span className="text-[24px]">￥ {formatPrice(accountRes?.data?.balance)}</span>
+                <span>{t("Balance")}</span>
+                <span className="text-[24px]">{formatPrice(accountRes?.data?.balance)}</span>
               </span>
               <ChargeButton>
                 <Button bg={"white"} textColor={"black"} _hover={{ bg: "primary.100" }}>
-                  充值
+                  {t("ChargeNow")}
                 </Button>
               </ChargeButton>
             </div>
           </div>
         </div>
         <div>
-          <span>我的收支</span>
+          <span>{t("MyIncomeandExpenses")}</span>
           <div className="mt-3 flex">
             <div className="mr-4 h-36 w-36 rounded-lg border border-grayModern-200 bg-[#F4F6F8]">
               <div className="flex w-full justify-center pt-6">
@@ -95,7 +124,7 @@ export default function Usage() {
                   <ExpendIcon className="!text-white" w={"16px"} h={"16px"} />
                 </div>
               </div>
-              <div className="flex w-full justify-center pt-3">支出</div>
+              <div className="flex w-full justify-center pt-3">{t("Expenses")}</div>
               <div className="flex w-full justify-center pt-3 text-xl">￥ 120.00</div>
             </div>
             <div className="h-36 w-36 rounded-lg border border-grayModern-200 bg-[#F4F6F8]">
@@ -104,22 +133,24 @@ export default function Usage() {
                   <RechargeIcon className="!text-white" w={"16px"} h={"16px"} />
                 </div>
               </div>
-              <div className="flex w-full justify-center pt-3">充值</div>
+              <div className="flex w-full justify-center pt-3">{t("ChargeNow")}</div>
               <div className="flex w-full justify-center pt-3 text-xl">￥ 120.00</div>
             </div>
           </div>
         </div>
       </div>
-      <span>成本趋势</span>
-      <ResponsiveContainer width={626} height={160} className="mt-3">
-        <AreaChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-          <XAxis dataKey="name" />
-          {/* <YAxis /> */}
-          <Tooltip />
-          <Area type="monotone" dataKey="uv" stroke="#66CBCA" fill="#E6F6F6" />
-        </AreaChart>
-      </ResponsiveContainer>
+      <span>{t("SettingPanel.CostTrend")}</span>
+      <div className="mt-3 h-[160px] w-[626px]">
+        <ResponsiveContainer width={"100%"} height={"100%"}>
+          <AreaChart data={data} margin={{ left: -24 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="name" axisLine={false} tickLine={false} />
+            <YAxis axisLine={false} tickLine={false} />
+            <Tooltip />
+            <Area type="monotone" dataKey="total" stroke="#66CBCA" fill="#E6F6F6" strokeWidth={2} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

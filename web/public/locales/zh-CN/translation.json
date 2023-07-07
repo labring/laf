@@ -198,7 +198,9 @@
     "PricingStandards": "计价标准",
     "EnterGiftCode": "输入卡密",
     "ExchangeSuccess": "兑换成功",
-    "Domain": "域名设置"
+    "Domain": "域名设置",
+    "MyAccount": "我的账户",
+    "CostTrend": "成本趋势"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -549,5 +551,7 @@
   "Reset": "重置",
   "SettingModal": {
     "Exchange": "兑换"
-  }
+  },
+  "MyIncomeandExpenses": "我的收支",
+  "Expenses": "支出"
 }

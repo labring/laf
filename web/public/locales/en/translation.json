@@ -198,7 +198,9 @@
     "PricingStandards": "Pricing Standards",
     "EnterGiftCode": "Enter Gift Code",
     "ExchangeSuccess": "Exchange Success",
-    "Domain": "Custom Domain"
+    "Domain": "Custom Domain",
+    "MyAccount": "My Account",
+    "CostTrend": "Cost Trend"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -549,5 +551,7 @@
   "Reset": "Reset",
   "SettingModal": {
     "Exchange": "Exange"
-  }
+  },
+  "MyIncomeandExpenses": "My Income and Expenses",
+  "Expenses": "Expenses"
 }
