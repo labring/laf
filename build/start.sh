@@ -10,7 +10,9 @@ fi
 # *************** Environment Variables ************** #
 
 ## envs - global
-HTTP_SCHEMA=${HTTP_SCHEMA:-http}
+EXTERNAL_HTTP_SCHEMA=${EXTERNAL_HTTP_SCHEMA:-https}
+INTERNAL_HTTP_SCHEMA=${INTERNAL_HTTP_SCHEMA:-http}
+
 NAMESPACE=${NAMESPACE:-laf-system}
 PASSWD_OR_SECRET=$(tr -cd 'a-z0-9' </dev/urandom |head -c32)
 
@@ -57,8 +59,8 @@ helm install apisix -n ${NAMESPACE} \
 MINIO_ROOT_ACCESS_KEY=minio-root-user
 MINIO_ROOT_SECRET_KEY=$PASSWD_OR_SECRET
 MINIO_DOMAIN=oss.${DOMAIN}
-MINIO_EXTERNAL_ENDPOINT="${HTTP_SCHEMA}://${MINIO_DOMAIN}"
-MINIO_INTERNAL_ENDPOINT="${HTTP_SCHEMA}://minio.${NAMESPACE}.svc.cluster.local:9000"
+MINIO_EXTERNAL_ENDPOINT="${EXTERNAL_HTTP_SCHEMA}://${MINIO_DOMAIN}"
+MINIO_INTERNAL_ENDPOINT="${INTERNAL_HTTP_SCHEMA}://minio.${NAMESPACE}.svc.cluster.local:9000"
 
 helm install minio -n ${NAMESPACE} \
     --set rootUser=${MINIO_ROOT_ACCESS_KEY} \
@@ -77,7 +79,7 @@ helm install server -n ${NAMESPACE} \
     --set meteringDatabaseUrl=${METERING_DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
     --set apiServerHost=api.${DOMAIN} \
-    --set apiServerUrl=${HTTP_SCHEMA}://api.${DOMAIN} \
+    --set apiServerUrl=${EXTERNAL_HTTP_SCHEMA}://api.${DOMAIN} \
     --set siteName=${DOMAIN} \
     --set default_region.database_url=${DATABASE_URL} \
     --set default_region.minio_domain=${MINIO_DOMAIN} \
