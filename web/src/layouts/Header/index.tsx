@@ -10,8 +10,6 @@ import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
 import UserSetting from "../../pages/app/setting/UserSetting";
 
-import UserBalance from "./UserBalance";
-
 import useGlobalStore from "@/pages/globalStore";
 import Language from "@/pages/homepage/language";
 
@@ -116,7 +114,6 @@ const Header = (props: { width: string }) => {
                 </a>
               );
             })}
-            <UserBalance />
             <Language fontSize={20} />
             <div
               className="mr-8 cursor-pointer pb-1"

@@ -200,7 +200,8 @@
     "ExchangeSuccess": "Exchange Success",
     "Domain": "Custom Domain",
     "MyAccount": "My Account",
-    "CostTrend": "Cost Trend"
+    "CostTrend": "Cost Trend",
+    "Balance": "Balance"
   },
   "StoragePanel": {
     "All": "Total Capacity",

@@ -73,6 +73,7 @@ export default function Usage() {
 
   const chartData = ((billingAmountByDayRes?.data as Array<any>) || []).map((item) => ({
     ...item,
+    totalAmount: item.totalAmount / 100,
     date: formatDate(item.day).slice(5, 10),
   }));
 

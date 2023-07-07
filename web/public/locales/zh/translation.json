@@ -200,7 +200,8 @@
     "ExchangeSuccess": "兑换成功",
     "Domain": "域名设置",
     "MyAccount": "我的账户",
-    "CostTrend": "成本趋势"
+    "CostTrend": "成本趋势",
+    "Balance": "余额"
   },
   "StoragePanel": {
     "All": "总容量",
