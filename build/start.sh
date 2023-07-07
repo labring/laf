@@ -71,9 +71,13 @@ helm install minio -n ${NAMESPACE} \
 
 ## 4. install laf-server
 SERVER_JWT_SECRET=$PASSWD_OR_SECRET
+LOG_SERVER_URL="http://log-server-0.log-server.${NAMESPACE}.svc.cluster.local:5060"
+LOG_SERVER_DATABASE_URL="mongodb://log-server:${PASSWD_OR_SECRET}@mongodb-0.mongo.${NAMESPACE}.svc.cluster.local:27017/functions-log?authSource=admin&replicaSet=rs0&w=majority"
 helm install server -n ${NAMESPACE} \
     --set databaseUrl=${DATABASE_URL} \
     --set meteringDatabaseUrl=${METERING_DATABASE_URL} \
+    --set logServerDatabaseUrl=${LOG_SERVER_DATABASE_URL} \
+    --set logServerUrl=${LOG_SERVER_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
     --set apiServerHost=api.${DOMAIN} \
     --set apiServerUrl=${HTTP_SCHEMA}://api.${DOMAIN} \
@@ -90,6 +94,7 @@ helm install server -n ${NAMESPACE} \
     --set default_region.apisix_api_url=${APISIX_API_URL} \
     --set default_region.apisix_api_key=${APISIX_API_KEY} \
     --set default_region.apisix_public_port=80 \
+    --set default_region.log_server_url=${LOG_SERVER_URL} \
     ./charts/laf-server
 
 ## 6. install laf-web
