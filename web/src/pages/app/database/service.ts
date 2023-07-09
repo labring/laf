@@ -48,13 +48,14 @@ export const useEntryDataQuery = (params: any, onSuccess: (data: any) => void) =
       if (!currentDB) return;
       const { pageSize = 10, page = 1, _id } = params;
 
-      // const query = _id ? { _id } : {};
       const parse_query = (q: string) => {
-        try {
-          return parse(q, { mode: "strict" });
-        } catch (err) {
+        // no find { and }
+        if (/^[^{}]*$/.test(q)) {
           return { _id: q };
         }
+        try {
+          return parse(q, { mode: "strict" });
+        } catch (err) {}
       };
       const query = _id ? parse_query(_id) : {};
       if (!query) {
