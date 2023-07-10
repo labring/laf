@@ -25,6 +25,7 @@
     "clsx": "^1.2.1",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
+    "ejson-shell-parser": "^1.2.4",
     "framer-motion": "^10.12.16",
     "i18next": "^22.5.0",
     "i18next-browser-languagedetector": "7.0.1",
