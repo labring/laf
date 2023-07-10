@@ -81,8 +81,8 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
           <AvatarGroup size={"sm"} max={10}>
             {usedBy.map((item) => {
               return (
-                <Box className="my-5 mr-2" key={item.users[0].username}>
-                  <Avatar size="sm" name={item.users[0].username} src={getAvatarUrl(item.uid)} />
+                <Box className="my-5 mr-2" key={item.uid}>
+                  <Avatar size="sm" name={item.uid} src={getAvatarUrl(item.uid)} />
                 </Box>
               );
             })}
