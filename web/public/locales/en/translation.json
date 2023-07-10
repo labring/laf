@@ -182,7 +182,6 @@
     "UserInfo": "UserInfo",
     "noAuth": "Not Authenticated",
     "showAuth": "Go to Auth",
-    "ShutDown": "ShutDown",
     "Subscription": "Subscription Info",
     "Usage": "Usage",
     "Avatar": "Avatar",
@@ -201,7 +200,8 @@
     "Domain": "Custom Domain",
     "MyAccount": "My Account",
     "CostTrend": "Cost Trend",
-    "Balance": "Balance"
+    "Balance": "Balance",
+    "Pause": "Pause"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -394,7 +394,8 @@
       "start": "Start Now",
       "stars": "3.9K",
       "funcTemplate": "Function market",
-      "appMarket": "Application Market"
+      "appMarket": "Application Market",
+      "community": "Community"
     },
     "HomePage": {
       "slogan": "Write Code as effortlessly as Blogging",
@@ -552,9 +553,8 @@
   },
   "Reset": "Reset",
   "SettingModal": {
-    "Exchange": "Exange"
+    "Exchange": "Exchange"
   },
-  "MyIncomeandExpenses": "My Income and Expenses",
   "Expenses": "Expenses",
   "OrderNumber": "Order Number",
   "Bonus amount": "Bonus amount",

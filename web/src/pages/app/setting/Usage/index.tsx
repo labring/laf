@@ -16,7 +16,8 @@ import {
 import ChargeButton from "@/components/ChargeButton";
 import { CostIcon, ExpendIcon, RechargeIcon } from "@/components/CommonIcon";
 import DateRangePicker from "@/components/DateRangePicker";
-import { formatDate, formatPrice, hidePhoneNumber } from "@/utils/format";
+import { formatDate, formatOriginalPrice, formatPrice, hidePhoneNumber } from "@/utils/format";
+import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
 import { AccountControllerGetChargeOrderAmount } from "@/apis/v1/accounts";
 import { BillingControllerGetExpense, BillingControllerGetExpenseByDay } from "@/apis/v1/billings";
@@ -37,14 +38,17 @@ export default function Usage() {
   const { userInfo } = useGlobalStore((state) => state);
   const { data: accountRes } = useAccountQuery();
 
-  const { data: billingAmountRes } = useQuery(["billing", startTime, endTime], async () => {
-    return BillingControllerGetExpense({
-      startTime: startTime?.toISOString(),
-      endTime: endTime?.toISOString(),
-    });
-  });
+  const { data: billingAmountRes, isLoading: billLoading } = useQuery(
+    ["billing", startTime, endTime],
+    async () => {
+      return BillingControllerGetExpense({
+        startTime: startTime?.toISOString(),
+        endTime: endTime?.toISOString(),
+      });
+    },
+  );
 
-  const { data: chargeOrderAmountRes } = useQuery(
+  const { data: chargeOrderAmountRes, isLoading: chargeLoading } = useQuery(
     ["chargeOrderAmount", startTime, endTime],
     async () => {
       return AccountControllerGetChargeOrderAmount({
@@ -65,7 +69,7 @@ export default function Usage() {
   );
 
   const chartData = ((billingAmountByDayRes?.data as Array<any>) || []).map((item) => ({
-    totalAmount: item.totalAmount / 100,
+    totalAmount: item.totalAmount,
     date: formatDate(item.day).slice(5, 10),
   }));
 
@@ -90,7 +94,13 @@ export default function Usage() {
             <div className="flex items-center justify-between pt-3 text-lg">
               <span>{hidePhoneNumber(userInfo?.phone || "")}</span>
               <span className="flex items-center">
-                {userInfo?.username} <Avatar className="ml-2" width={9} height={9} src="" />
+                {userInfo?.username}{" "}
+                <Avatar
+                  className="ml-2"
+                  width={9}
+                  height={9}
+                  src={getAvatarUrl(userInfo?._id || "")}
+                />
               </span>
             </div>
             <div className="flex items-end justify-between pb-5">
@@ -122,7 +132,11 @@ export default function Usage() {
               </div>
               <div className="flex w-full justify-center pt-3">{t("Expenses")}</div>
               <div className="flex w-full justify-center pt-3 text-xl">
-                {formatPrice(billingAmountRes?.data as number)}
+                {billLoading ? (
+                  <Spinner size={"sm"} />
+                ) : (
+                  formatOriginalPrice(billingAmountRes?.data as number)
+                )}
               </div>
             </div>
             <div
@@ -138,7 +152,11 @@ export default function Usage() {
               </div>
               <div className="flex w-full justify-center pt-3">{t("ChargeNow")}</div>
               <div className="flex w-full justify-center pt-3 text-xl">
-                {formatPrice(chargeOrderAmountRes?.data as number)}
+                {chargeLoading ? (
+                  <Spinner size={"sm"} />
+                ) : (
+                  formatPrice(chargeOrderAmountRes?.data as number)
+                )}
               </div>
             </div>
           </div>
@@ -156,7 +174,9 @@ export default function Usage() {
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="date" axisLine={false} tickLine={false} />
               <YAxis axisLine={false} tickLine={false} />
-              <Tooltip formatter={(value) => ["￥" + Number(value).toFixed(2), t("Expenses")]} />
+              <Tooltip
+                formatter={(value) => [formatOriginalPrice(Number(value), 3), t("Expenses")]}
+              />
               <Area
                 type="monotone"
                 dataKey="totalAmount"

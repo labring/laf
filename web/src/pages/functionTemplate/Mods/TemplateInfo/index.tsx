@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { Avatar, Box, Tooltip, useColorMode } from "@chakra-ui/react";
+import { Avatar, AvatarGroup, Box, Tooltip, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import FileTypeIcon from "@/components/FileTypeIcon";
+import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
 import UseTemplate from "./UseTemplate";
 
@@ -77,15 +78,15 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
               {usedBy.length}
             </span>
           </div>
-          <div className="flex w-full overflow-auto">
+          <AvatarGroup size={"sm"} max={10}>
             {usedBy.map((item) => {
               return (
-                <Box className="my-5 mr-2" key={item.users[0].username}>
-                  <Avatar size="sm" name={item.users[0].username} />
+                <Box className="my-5 mr-2" key={item.uid}>
+                  <Avatar size="sm" name={item.uid} src={getAvatarUrl(item.uid)} />
                 </Box>
               );
             })}
-          </div>
+          </AvatarGroup>
         </Box>
       </div>
     </div>

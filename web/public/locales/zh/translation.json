@@ -182,7 +182,6 @@
     "CodeTip": "请输入四位数字验证码",
     "TelTip": "请输入有效的手机号码",
     "Registered": "注册时间",
-    "ShutDown": "关闭应用",
     "Subscription": "订阅信息",
     "Usage": "费用中心",
     "Avatar": "头像",
@@ -201,7 +200,8 @@
     "Domain": "域名设置",
     "MyAccount": "我的账户",
     "CostTrend": "成本趋势",
-    "Balance": "余额"
+    "Balance": "余额",
+    "Pause": "暂停应用"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -394,7 +394,8 @@
       "start": "立即开发",
       "stars": "3.9K",
       "funcTemplate": "函数市场",
-      "appMarket": "应用市场"
+      "appMarket": "应用市场",
+      "community": "用户群"
     },
     "HomePage": {
       "slogan": "像写博客一样写代码",
@@ -548,13 +549,13 @@
     "Bonus": "奖励",
     "Channel": "用户名",
     "Time": "时间",
-    "InviteTips": "复制推广链接，发送给其他人。当他们点击此链接注册后，将成为你的被邀请人，并且你可立刻获得佣金。"
+    "InviteTips": "将推广链接复制并发送给其他人。当他们通过该链接注册并成为你的邀请对象后，你将立即获得奖励金额。"
   },
   "Reset": "重置",
   "SettingModal": {
     "Exchange": "兑换"
   },
-  "MyIncomeandExpenses": "我的收支",
+  "MyIncomeAndExpenses": "我的收支",
   "Expenses": "支出",
   "OrderNumber": "订单号",
   "Bonus amount": "赠送金额",
@@ -565,6 +566,5 @@
   "Year": "年",
   "Hour": "小时",
   "Core": "核",
-  "No History": "暂无记录",
-  "MyIncomeAndExpenses": "我的收支"
+  "No History": "暂无记录"
 }

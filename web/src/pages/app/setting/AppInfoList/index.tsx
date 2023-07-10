@@ -92,7 +92,7 @@ const AppEnvList = () => {
                 }}
               >
                 <RiShutDownLine size={16} className="mr-1" />
-                {t("SettingPanel.ShutDown")}
+                {t("SettingPanel.Pause")}
               </Button>
             ) : null}
 

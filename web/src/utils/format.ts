@@ -85,6 +85,10 @@ export function formatPrice(price?: number) {
   return price ? "¥" + (price / 100).toFixed(2) : "-";
 }
 
+export function formatOriginalPrice(price?: number, fixedNumber?: number) {
+  return price ? "¥" + price.toFixed(fixedNumber || 2) : "-";
+}
+
 export function convertMoney(money: number) {
   return money * 100;
 }
