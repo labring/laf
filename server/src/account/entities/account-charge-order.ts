@@ -20,6 +20,7 @@ export enum PaymentChannelType {
   Paypal = 'Paypal',
   Google = 'Google',
   GiftCode = 'GiftCode',
+  InviteCode = 'InviteCode',
 }
 
 export class AccountChargeOrder<R = any> {
