@@ -16,7 +16,7 @@ import {
 import ChargeButton from "@/components/ChargeButton";
 import { CostIcon, ExpendIcon, RechargeIcon } from "@/components/CommonIcon";
 import DateRangePicker from "@/components/DateRangePicker";
-import { formatDate, formatPrice, hidePhoneNumber } from "@/utils/format";
+import { formatDate, formatOriginalPrice, formatPrice, hidePhoneNumber } from "@/utils/format";
 import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
 import { AccountControllerGetChargeOrderAmount } from "@/apis/v1/accounts";
@@ -135,7 +135,7 @@ export default function Usage() {
                 {billLoading ? (
                   <Spinner size={"sm"} />
                 ) : (
-                  "￥" + (billingAmountRes?.data as number)?.toFixed(2)
+                  formatOriginalPrice(billingAmountRes?.data as number)
                 )}
               </div>
             </div>
@@ -155,7 +155,7 @@ export default function Usage() {
                 {chargeLoading ? (
                   <Spinner size={"sm"} />
                 ) : (
-                  "￥" + ((chargeOrderAmountRes?.data as number) / 100)?.toFixed(2)
+                  formatPrice(chargeOrderAmountRes?.data as number)
                 )}
               </div>
             </div>
@@ -174,7 +174,9 @@ export default function Usage() {
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="date" axisLine={false} tickLine={false} />
               <YAxis axisLine={false} tickLine={false} />
-              <Tooltip formatter={(value) => ["￥" + Number(value).toFixed(3), t("Expenses")]} />
+              <Tooltip
+                formatter={(value) => [formatOriginalPrice(Number(value), 3), t("Expenses")]}
+              />
               <Area
                 type="monotone"
                 dataKey="totalAmount"
