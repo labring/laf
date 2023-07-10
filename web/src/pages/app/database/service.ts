@@ -54,7 +54,7 @@ export const useEntryDataQuery = (params: any, onSuccess: (data: any) => void) =
           return { _id: q };
         }
         try {
-          return parse(q, { mode: "strict" });
+          return parse(q);
         } catch (err) {}
       };
       const query = _id ? parse_query(_id) : {};
