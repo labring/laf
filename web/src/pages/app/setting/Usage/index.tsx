@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Avatar, Button, useColorMode } from "@chakra-ui/react";
+import { Avatar, Button, Center, Spinner, useColorMode } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import {
@@ -23,28 +23,21 @@ import { BillingControllerGetExpense, BillingControllerGetExpenseByDay } from "@
 import useGlobalStore from "@/pages/globalStore";
 import { useAccountQuery } from "@/pages/home/service";
 
-const DEFAULT_QUERY_DATA = {
-  appid: [],
-  startTime: "",
-  endTime: "",
-  page: 1,
-  pageSize: 10,
-  state: "",
-};
+const DATA_DURATION = 6 * 24 * 60 * 60 * 1000;
 
 export default function Usage() {
-  const { userInfo } = useGlobalStore((state) => state);
-  const { data: accountRes } = useAccountQuery();
   const { t } = useTranslation();
   const darkMode = useColorMode().colorMode === "dark";
-
   const [startTime, setStartTime] = React.useState<Date | null>(
-    new Date(new Date().getTime() - 6 * 24 * 60 * 60 * 1000),
+    new Date(new Date().getTime() - DATA_DURATION),
   );
-  const [endTime, setEndTime] = React.useState<Date | null>(new Date());
-  const [queryData, setQueryData] = React.useState(DEFAULT_QUERY_DATA);
 
-  const { data: billingAmountRes } = useQuery(["billing", queryData], async () => {
+  const [endTime, setEndTime] = React.useState<Date | null>(new Date());
+
+  const { userInfo } = useGlobalStore((state) => state);
+  const { data: accountRes } = useAccountQuery();
+
+  const { data: billingAmountRes } = useQuery(["billing", startTime, endTime], async () => {
     return BillingControllerGetExpense({
       startTime: startTime?.toISOString(),
       endTime: endTime?.toISOString(),
@@ -61,7 +54,7 @@ export default function Usage() {
     },
   );
 
-  const { data: billingAmountByDayRes } = useQuery(
+  const { data: billingAmountByDayRes, isLoading: billingLoading } = useQuery(
     ["billingByDay", startTime, endTime],
     async () => {
       return BillingControllerGetExpenseByDay({
@@ -88,7 +81,6 @@ export default function Usage() {
           endTime={endTime}
           setStartTime={setStartTime}
           setEndTime={setEndTime}
-          setQueryData={setQueryData}
         />
       </div>
       <div className="flex pb-6 pl-8">
@@ -154,21 +146,27 @@ export default function Usage() {
       </div>
       <span className="pl-8">{t("SettingPanel.CostTrend")}</span>
       <div className="mt-3 h-[160px] w-[660px] pl-8">
-        <ResponsiveContainer width={"100%"} height={"100%"}>
-          <AreaChart data={chartData} margin={{ left: -24 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="date" axisLine={false} tickLine={false} />
-            <YAxis axisLine={false} tickLine={false} />
-            <Tooltip formatter={(value) => ["￥" + Number(value).toFixed(2), t("Expenses")]} />
-            <Area
-              type="monotone"
-              dataKey="totalAmount"
-              stroke="#66CBCA"
-              fill="#E6F6F6"
-              strokeWidth={2}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
+        {billingLoading ? (
+          <Center className="h-full w-full">
+            <Spinner />
+          </Center>
+        ) : (
+          <ResponsiveContainer width={"100%"} height={"100%"}>
+            <AreaChart data={chartData} margin={{ left: -24 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="date" axisLine={false} tickLine={false} />
+              <YAxis axisLine={false} tickLine={false} />
+              <Tooltip formatter={(value) => ["￥" + Number(value).toFixed(2), t("Expenses")]} />
+              <Area
+                type="monotone"
+                dataKey="totalAmount"
+                stroke="#66CBCA"
+                fill="#E6F6F6"
+                strokeWidth={2}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   );
