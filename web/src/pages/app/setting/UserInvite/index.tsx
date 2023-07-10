@@ -6,16 +6,17 @@ import clsx from "clsx";
 
 import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
+import Pagination from "@/components/Pagination";
 import { formatDate, formatPrice } from "@/utils/format";
+import getPageInfo from "@/utils/getPageInfo";
 
 import { useGetInviteCode, useGetInviteCodeProfit } from "./service";
-
-import PaginationBar from "@/pages/functionTemplate/Mods/PaginationBar";
+const LIMIT_OPTIONS = [5, 20, 100];
 
 export default function UserInvite() {
   const darkMode = useColorMode().colorMode === "dark";
   const { t } = useTranslation();
-  const [page, setPage] = useState(1);
+  const [queryData, setQueryData] = useState({ page: 1, pageSize: 5 });
 
   const inviteCodeQuery = useGetInviteCode();
   const inviteCode = inviteCodeQuery.data?.data?.code;
@@ -23,7 +24,7 @@ export default function UserInvite() {
     ? "Loading..."
     : `${window.location.origin}/signup?code=${inviteCode}`;
 
-  const profitQuery = useGetInviteCodeProfit({ page: page, pageSize: 5 });
+  const profitQuery = useGetInviteCodeProfit(queryData);
   const profitData = profitQuery.data?.data;
 
   return (
@@ -74,12 +75,10 @@ export default function UserInvite() {
           <Spinner />
         </Center>
       ) : profitData?.list && profitData?.list.length > 0 ? (
-        <PaginationBar
-          className="!p-0"
-          page={page}
-          setPage={setPage}
-          pageSize={5}
-          total={profitData?.total}
+        <Pagination
+          options={LIMIT_OPTIONS}
+          values={getPageInfo(profitData)}
+          onChange={(values: any) => setQueryData(values)}
         />
       ) : (
         <Center style={{ minHeight: 200 }}>
