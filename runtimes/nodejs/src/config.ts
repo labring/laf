@@ -80,4 +80,8 @@ export default class Config {
   static get LOG_SERVER_URL(): string { 
     return process.env.LOG_SERVER_URL || ''
   }
+
+  static get LOG_SERVER_TOKEN(): string { 
+    return process.env.LOG_SERVER_TOKEN || ''
+  }
 }

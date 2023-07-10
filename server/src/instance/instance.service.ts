@@ -18,6 +18,7 @@ import { ClusterService } from 'src/region/cluster/cluster.service'
 import { SystemDatabase } from 'src/system-database'
 import { ApplicationWithRelations } from 'src/application/entities/application'
 import { ApplicationService } from 'src/application/application.service'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class InstanceService {
@@ -29,6 +30,7 @@ export class InstanceService {
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
     private readonly applicationService: ApplicationService,
+    private readonly jwtService: JwtService,
   ) {}
 
   public async create(appid: string) {
@@ -250,7 +252,18 @@ export class InstanceService {
       },
       {
         name: 'LOG_SERVER_URL',
-        value: app.region.logServerUrl,
+        value: app.region.logServerConf.apiUrl,
+      },
+      {
+        name: 'LOG_SERVER_TOKEN',
+        value: this.jwtService.sign(
+          {
+            appid: app.appid,
+          },
+          {
+            secret: app.region.logServerConf.secret,
+          },
+        ),
       },
     ]
 

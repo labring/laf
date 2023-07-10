@@ -1,12 +1,18 @@
 import { RequestHandler } from 'express'
 import { DatabaseAgent } from '../db'
 import ensureCollectionExist from '../helper/ensure-collection-exist'
+import Config from '../config'
 
 const getFunctionLog: RequestHandler = async (req, res) => {
   let { page, pageSize, requestId, functionName, appid } = req.query as Record<
     string,
     any
-  >
+    >
+  const token = req.headers['x-token'] as string
+
+  if (!token || Config.JWT_SECRET !== token) { 
+    return res.status(403).send('forbidden')
+  }
 
   if (!appid) {
     return res.status(400).send('appid is required')

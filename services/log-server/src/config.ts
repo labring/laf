@@ -41,4 +41,11 @@ export default class Config {
   static get LOG_SIZE(): number {
     return (process.env.LOG_SIZE ?? 10 * 1024 * 1024) as number // 10 MB
   }
+
+  static get JWT_SECRET(): string {
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined')
+    }
+    return process.env.JWT_SECRET
+  }
 }

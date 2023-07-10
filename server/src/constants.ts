@@ -31,6 +31,13 @@ export class ServerConfig {
     return process.env.JWT_SECRET
   }
 
+  static get LOG_SERVER_SECRET() {
+    if (!process.env.LOG_SERVER_SECRET) {
+      throw new Error('LOG_SERVER_SECRET is not defined')
+    }
+    return process.env.LOG_SERVER_SECRET
+  }
+
   static get JWT_EXPIRES_IN() {
     return process.env.JWT_EXPIRES_IN || '7d'
   }
@@ -153,6 +160,10 @@ export class ServerConfig {
 
   static get DEFAULT_REGION_LOG_SERVER_URL() {
     return process.env.DEFAULT_REGION_LOG_SERVER_URL
+  }
+
+  static get DEFAULT_REGION_LOG_SERVER_SECRET() {
+    return process.env.DEFAULT_REGION_LOG_SERVER_SECRET
   }
 }
 
