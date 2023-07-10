@@ -201,7 +201,8 @@
     "Domain": "域名设置",
     "MyAccount": "我的账户",
     "CostTrend": "成本趋势",
-    "Balance": "余额"
+    "Balance": "余额",
+    "Pause": "暂停应用"
   },
   "StoragePanel": {
     "All": "总容量",

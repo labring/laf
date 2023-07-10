@@ -198,7 +198,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                             }}
                           >
                             <a className="text-primary block" href="/stop">
-                              {t("SettingPanel.ShutDown")}
+                              {t("SettingPanel.Pause")}
                             </a>
                           </MenuItem>
                         )}

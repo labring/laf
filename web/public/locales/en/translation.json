@@ -182,7 +182,7 @@
     "UserInfo": "UserInfo",
     "noAuth": "Not Authenticated",
     "showAuth": "Go to Auth",
-    "ShutDown": "ShutDown",
+    "ShutDown": "Pause",
     "Subscription": "Subscription Info",
     "Usage": "Usage",
     "Avatar": "Avatar",
@@ -201,7 +201,8 @@
     "Domain": "Custom Domain",
     "MyAccount": "My Account",
     "CostTrend": "Cost Trend",
-    "Balance": "Balance"
+    "Balance": "Balance",
+    "Pause": "Pause"
   },
   "StoragePanel": {
     "All": "Total Capacity",

@@ -58,7 +58,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
         />
       </PopoverTrigger>
       <PopoverContent w={300} borderRadius={12} mr={6}>
-        <PopoverBody>
+        <PopoverBody className="cursor-auto">
           <div
             className={clsx(
               "flex w-full justify-end pb-3 pr-7 pt-2 text-lg",
