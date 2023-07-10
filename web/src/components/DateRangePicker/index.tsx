@@ -20,9 +20,8 @@ export default function DateRangePicker(props: {
   setEndTime: any;
   startTime: any;
   endTime: any;
-  setQueryData: any;
 }) {
-  const { setStartTime, setEndTime, startTime, endTime, setQueryData } = props;
+  const { setStartTime, setEndTime, startTime, endTime } = props;
   const initState = useMemo(() => ({ from: startTime, to: endTime }), [startTime, endTime]);
   const [selectedRange, setSelectedRange] = useState<DateRange>(initState);
   const [fromValue, setFromValue] = useState<string>(format(initState.from, "y-MM-dd"));
@@ -73,7 +72,6 @@ export default function DateRangePicker(props: {
         setToValue("");
       }
     }
-    setQueryData({ startTime: range?.from, endTime: range?.to });
   };
   return (
     <div
