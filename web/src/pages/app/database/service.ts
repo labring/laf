@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import parse from "ejson-shell-parser";
+import parse, { ParseMode } from "ejson-shell-parser";
 import { t } from "i18next";
 
 import useDBMStore from "./store";
@@ -54,7 +54,9 @@ export const useEntryDataQuery = (params: any, onSuccess: (data: any) => void) =
           return { _id: q };
         }
         try {
-          return parse(q, { mode: "strict" });
+          return parse(q, {
+            mode: ParseMode.Strict,
+          });
         } catch (err) {}
       };
       const query = _id ? parse_query(_id) : {};
