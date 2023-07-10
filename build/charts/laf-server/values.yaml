@@ -5,8 +5,6 @@
 apiServerHost: ""
 databaseUrl: ""
 meteringDatabaseUrl: ""
-logServerDatabaseUrl: ""
-logServerUrl: ""
 apiServerUrl: ""
 siteName: "laf"
 # init default region conf
@@ -28,6 +26,8 @@ default_region:
   website_domain: ""
   # log-server
   log_server_url: ""
+  log_server_secret: ""
+  log_server_database_url: ""
 jwt:
   secret: laf_server_abc123
   expires_in: 7d

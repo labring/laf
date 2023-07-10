@@ -165,6 +165,10 @@ export class ServerConfig {
   static get DEFAULT_REGION_LOG_SERVER_SECRET() {
     return process.env.DEFAULT_REGION_LOG_SERVER_SECRET
   }
+
+  static get DEFAULT_REGION_LOG_SERVER_DATABASE_URL() {
+    return process.env.DEFAULT_REGION_LOG_SERVER_DATABASE_URL
+  }
 }
 
 export const LABEL_KEY_USER_ID = 'laf.dev/user.id'

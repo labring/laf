@@ -53,8 +53,6 @@ spec:
               value: {{ .Values.databaseUrl | quote}}
             - name: METERING_DATABASE_URL
               value: {{ .Values.meteringDatabaseUrl | quote}}
-            - name: LOG_SERVER_URL
-              value: {{ .Values.logServerUrl| quote}}
             - name: JWT_SECRET
               value: {{ .Values.jwt.secret | quote}}
             - name: API_SERVER_URL
@@ -87,6 +85,10 @@ spec:
               value: {{ .Values.default_region.apisix_api_key }}
             - name: DEFAULT_REGION_LOG_SERVER_URL
               value: {{ .Values.default_region.log_server_url }}
+            - name: DEFAULT_REGION_LOG_SERVER_SECRET
+              value: {{ .Values.default_region.log_server_secret }}
+            - name: DEFAULT_REGION_LOG_SERVER_DATABASE_URL
+              value: {{ .Values.default_region.log_server_database_url }}
             - name: SITE_NAME
               value: {{ .Values.siteName | quote}}
       {{- with .Values.nodeSelector }}

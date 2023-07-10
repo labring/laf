@@ -14,8 +14,6 @@ spec:
       labels:
         {{- include "log-server.selectorLabels" . | nindent 8 }}
     spec:
-      securityContext:
-        runAsNonRoot: true
       containers:
         - image: docker.io/lafyun/log-server:latest
           imagePullPolicy: Always
@@ -34,7 +32,9 @@ spec:
               port: http 
           env:
             - name: DB_URI
-              value: {{ .Values.logServerDatabaseUrl | quote }}
+              value: {{ .Values.default_region.log_server_database_url | quote }}
+            - name: JWT_SECRET
+              value: {{ .Values.default_region.log_server_secret | quote }}
 --- 
 apiVersion: v1
 kind: Service

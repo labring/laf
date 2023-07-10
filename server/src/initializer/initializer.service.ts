@@ -69,6 +69,7 @@ export class InitializerService {
       logServerConf: {
         apiUrl: ServerConfig.DEFAULT_REGION_LOG_SERVER_URL,
         secret: ServerConfig.DEFAULT_REGION_LOG_SERVER_SECRET,
+        databaseUrl: ServerConfig.DEFAULT_REGION_LOG_SERVER_DATABASE_URL,
       },
       updatedAt: new Date(),
       createdAt: new Date(),

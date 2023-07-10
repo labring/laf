@@ -35,6 +35,7 @@ export type RegionStorageConf = {
 export type LogServerConf = {
   apiUrl: string
   secret: string
+  databaseUrl: string
 }
 
 export class Region {
