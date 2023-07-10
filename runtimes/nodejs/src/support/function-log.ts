@@ -1,6 +1,5 @@
 import axios from 'axios'
 import Config from '../config'
-import { DatabaseAgent } from '../db'
 import { FunctionConsole, FunctionContext } from './function-engine'
 
 export interface IFunctionLog {
@@ -11,8 +10,7 @@ export interface IFunctionLog {
 }
 
 FunctionConsole.write = (message: string, ctx: FunctionContext) => {
-  const db = DatabaseAgent.db
-  if (!db) return
+  if (!Config.LOG_SERVER_URL) return
 
   const doc = {
     request_id: ctx.requestId,
