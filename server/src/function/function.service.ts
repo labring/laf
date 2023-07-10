@@ -3,7 +3,6 @@ import { compileTs2js } from '../utils/lang'
 import {
   APPLICATION_SECRET_KEY,
   CN_PUBLISHED_FUNCTIONS,
-  ServerConfig,
   TASK_LOCK_INIT_TIME,
 } from '../constants'
 import { CreateFunctionDto } from './dto/create-function.dto'
@@ -22,6 +21,7 @@ import { TriggerService } from 'src/trigger/trigger.service'
 import { TriggerPhase } from 'src/trigger/entities/cron-trigger'
 import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
 import { HttpService } from '@nestjs/axios'
+import { RegionService } from 'src/region/region.service'
 
 @Injectable()
 export class FunctionService {
@@ -33,6 +33,7 @@ export class FunctionService {
     private readonly jwtService: JwtService,
     private readonly triggerService: TriggerService,
     private readonly httpService: HttpService,
+    private readonly regionService: RegionService,
   ) {}
   async create(appid: string, userid: ObjectId, dto: CreateFunctionDto) {
     await this.db.collection<CloudFunction>('CloudFunction').insertOne({
@@ -321,12 +322,17 @@ export class FunctionService {
       functionName?: string
     },
   ) {
+    const region = await this.regionService.findByAppId(appid)
+
     const res = await this.httpService.axiosRef.get(
-      `${ServerConfig.LOG_SERVER_URL}/function/log`,
+      `${region.logServerConf.apiUrl}/function/log`,
       {
         params: {
           ...params,
           appid,
+        },
+        headers: {
+          'x-token': region.logServerConf.secret,
         },
       },
     )

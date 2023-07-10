@@ -17,25 +17,11 @@ export class ServerConfig {
     return process.env.METERING_DATABASE_URL
   }
 
-  static get LOG_SERVER_URL() {
-    if (!process.env.LOG_SERVER_URL) {
-      throw new Error('LOG_SERVER_URL is not defined')
-    }
-    return process.env.LOG_SERVER_URL
-  }
-
   static get JWT_SECRET() {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET is not defined')
     }
     return process.env.JWT_SECRET
-  }
-
-  static get LOG_SERVER_SECRET() {
-    if (!process.env.LOG_SERVER_SECRET) {
-      throw new Error('LOG_SERVER_SECRET is not defined')
-    }
-    return process.env.LOG_SERVER_SECRET
   }
 
   static get JWT_EXPIRES_IN() {
