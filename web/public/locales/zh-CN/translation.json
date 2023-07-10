@@ -394,7 +394,8 @@
       "start": "立即开发",
       "stars": "3.9K",
       "funcTemplate": "函数市场",
-      "appMarket": "应用市场"
+      "appMarket": "应用市场",
+      "community": "用户群"
     },
     "HomePage": {
       "slogan": "像写博客一样写代码",
