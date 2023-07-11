@@ -122,7 +122,7 @@ const AppEnvList = () => {
         <div className="mt-8 flex flex-grow justify-center space-x-5 overflow-auto">
           <InfoDetail
             title={t("SettingPanel.BaseInfo")}
-            Data={[
+            data={[
               { key: "APP ID", value: currentApp?.appid },
               { key: t("HomePanel.Region"), value: currentRegion?.displayName },
               { key: t("HomePanel.RuntimeName"), value: currentApp?.runtime.name },
@@ -132,7 +132,7 @@ const AppEnvList = () => {
           />
           <InfoDetail
             title={t("SettingPanel.Detail")}
-            Data={[
+            data={[
               {
                 key: "CPU",
                 value: `${currentApp?.bundle?.resource?.limitCPU! / 1000} ${t("Unit.CPU")}`,

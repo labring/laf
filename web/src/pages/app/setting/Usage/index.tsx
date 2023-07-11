@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar, Button, Center, Spinner, useColorMode } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
@@ -25,8 +25,6 @@ import useGlobalStore from "@/pages/globalStore";
 import { useAccountQuery } from "@/pages/home/service";
 
 const DATA_DURATION = 6 * 24 * 60 * 60 * 1000;
-const TIME_OFFSET = 8 * 60 * 60 * 1000;
-const ONE_DAY = 24 * 60 * 60 * 1000;
 
 export default function Usage() {
   const { t } = useTranslation();
@@ -46,21 +44,12 @@ export default function Usage() {
   const { userInfo } = useGlobalStore((state) => state);
   const { data: accountRes } = useAccountQuery();
 
-  const convertToChinaStandardTime = (utcTime: any, isEndTime: boolean) => {
-    const utcDate = new Date(utcTime);
-    if (isEndTime) {
-      return new Date(utcDate.getTime() + TIME_OFFSET + ONE_DAY - 1).toISOString();
-    } else {
-      return new Date(utcDate.getTime() + TIME_OFFSET).toISOString();
-    }
-  };
-
   const { data: billingAmountRes, isLoading: billLoading } = useQuery(
     ["billing", startTime, endTime],
     async () => {
       return BillingControllerGetExpense({
-        startTime: convertToChinaStandardTime(startTime, false),
-        endTime: convertToChinaStandardTime(endTime, true),
+        startTime: startTime?.getTime(),
+        endTime: endTime?.getTime(),
       });
     },
   );
@@ -69,8 +58,8 @@ export default function Usage() {
     ["chargeOrderAmount", startTime, endTime],
     async () => {
       return AccountControllerGetChargeOrderAmount({
-        startTime: convertToChinaStandardTime(startTime, false),
-        endTime: convertToChinaStandardTime(endTime, true),
+        startTime: startTime?.getTime(),
+        endTime: endTime?.getTime(),
       });
     },
   );
@@ -79,18 +68,22 @@ export default function Usage() {
     ["billingByDay", startTime, endTime],
     async () => {
       return BillingControllerGetExpenseByDay({
-        startTime: convertToChinaStandardTime(startTime, false),
-        endTime: convertToChinaStandardTime(endTime, true),
+        startTime: startTime?.getTime(),
+        endTime: endTime?.getTime(),
       });
     },
   );
 
-  const chartData = ((billingAmountByDayRes?.data as Array<any>) || [])
-    .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime())
-    .map((item) => ({
-      totalAmount: item.totalAmount,
-      date: formatDate(item.day).slice(5, 10),
-    }));
+  const chartData = useMemo(
+    () =>
+      ((billingAmountByDayRes?.data as Array<any>) || [])
+        .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime())
+        .map((item) => ({
+          totalAmount: item.totalAmount,
+          date: formatDate(item.day).slice(5, 10),
+        })),
+    [billingAmountByDayRes?.data],
+  );
 
   return (
     <div>
