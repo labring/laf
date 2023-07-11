@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Avatar, Button, Center, Spinner, useColorMode } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
@@ -29,11 +29,17 @@ const DATA_DURATION = 6 * 24 * 60 * 60 * 1000;
 export default function Usage() {
   const { t } = useTranslation();
   const darkMode = useColorMode().colorMode === "dark";
-  const [startTime, setStartTime] = React.useState<Date | null>(
-    new Date(new Date().getTime() - DATA_DURATION),
-  );
-
-  const [endTime, setEndTime] = React.useState<Date | null>(new Date());
+  const [endTime, setEndTime] = React.useState<Date | null>(() => {
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    return today;
+  });
+  const [startTime, setStartTime] = React.useState<Date | null>(() => {
+    const today = new Date();
+    today.setTime(today.getTime() - DATA_DURATION);
+    today.setHours(0, 0, 0, 0);
+    return today;
+  });
 
   const { userInfo } = useGlobalStore((state) => state);
   const { data: accountRes } = useAccountQuery();
@@ -42,8 +48,8 @@ export default function Usage() {
     ["billing", startTime, endTime],
     async () => {
       return BillingControllerGetExpense({
-        startTime: startTime?.toISOString(),
-        endTime: endTime?.toISOString(),
+        startTime: startTime?.getTime(),
+        endTime: endTime?.getTime(),
       });
     },
   );
@@ -52,8 +58,8 @@ export default function Usage() {
     ["chargeOrderAmount", startTime, endTime],
     async () => {
       return AccountControllerGetChargeOrderAmount({
-        startTime: startTime?.toISOString(),
-        endTime: endTime?.toISOString(),
+        startTime: startTime?.getTime(),
+        endTime: endTime?.getTime(),
       });
     },
   );
@@ -62,16 +68,22 @@ export default function Usage() {
     ["billingByDay", startTime, endTime],
     async () => {
       return BillingControllerGetExpenseByDay({
-        startTime: startTime?.toISOString(),
-        endTime: endTime?.toISOString(),
+        startTime: startTime?.getTime(),
+        endTime: endTime?.getTime(),
       });
     },
   );
 
-  const chartData = ((billingAmountByDayRes?.data as Array<any>) || []).map((item) => ({
-    totalAmount: item.totalAmount,
-    date: formatDate(item.day).slice(5, 10),
-  }));
+  const chartData = useMemo(
+    () =>
+      ((billingAmountByDayRes?.data as Array<any>) || [])
+        .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime())
+        .map((item) => ({
+          totalAmount: item.totalAmount,
+          date: formatDate(item.day).slice(5, 10),
+        })),
+    [billingAmountByDayRes?.data],
+  );
 
   return (
     <div>
