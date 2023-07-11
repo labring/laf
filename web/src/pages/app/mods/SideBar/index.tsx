@@ -68,7 +68,7 @@ export default function SideBar() {
       pageId: Pages.userSetting,
       component: (
         <UserSetting
-          name={userInfo?.profile?.name || ""}
+          name={userInfo?.username || ""}
           avatar={getAvatarUrl(userInfo?._id || "")}
           width={"28px"}
         />

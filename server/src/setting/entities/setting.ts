@@ -10,6 +10,7 @@ export enum SettingKey {
   SiteFavicon = 'site_favicon',
   SiteUrl = 'site_url',
   SiteFooter = 'site_footer',
+  InvitationProfit = 'invitation_profit',
 
   AIPilotApiUrl = 'ai_pilot_api_url',
 }

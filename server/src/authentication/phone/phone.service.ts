@@ -18,9 +18,17 @@ import {
 import { UserProfile } from 'src/user/entities/user-profile'
 import { SmsService } from './sms.service'
 import { AccountService } from 'src/account/account.service'
-import { InvitationProfitAmount } from 'src/account/entities/invitation-profit-amount'
 import { Account } from 'src/account/entities/account'
 import { AccountTransaction } from 'src/account/entities/account-transaction'
+import {
+  AccountChargeOrder,
+  AccountChargePhase,
+  Currency,
+  PaymentChannelType,
+} from 'src/account/entities/account-charge-order'
+import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { ObjectId } from 'mongodb'
+import { Setting, SettingKey } from 'src/setting/entities/setting'
 
 @Injectable()
 export class PhoneService {
@@ -103,14 +111,31 @@ export class PhoneService {
           // get invitation Profit Amount
           let amount = 0
           const inviteProfit = await this.db
-            .collection<InvitationProfitAmount>('Setting')
+            .collection<Setting>('Setting')
             .findOne({
-              settingName: 'Invitation Profit Amount',
-              active: true,
+              key: SettingKey.InvitationProfit,
+              public: true,
             })
           if (inviteProfit) {
-            amount = inviteProfit.amount
+            amount = parseFloat(inviteProfit.value)
           }
+          // add invite-code charge order
+          await this.db
+            .collection<AccountChargeOrder>('AccountChargeOrder')
+            .insertOne(
+              {
+                accountId: account._id,
+                amount: amount,
+                currency: Currency.CNY,
+                phase: AccountChargePhase.Paid,
+                channel: PaymentChannelType.InviteCode,
+                createdBy: new ObjectId(inviteCodeInfo.uid),
+                lockedAt: TASK_LOCK_INIT_TIME,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              { session },
+            )
           // update account balance
           const accountAfterUpdate = await this.db
             .collection<Account>('Account')

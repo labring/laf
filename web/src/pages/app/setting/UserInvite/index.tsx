@@ -1,28 +1,31 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CopyIcon, InfoOutlineIcon } from "@chakra-ui/icons";
-import { Button, Input, useColorMode } from "@chakra-ui/react";
+import { Button, Center, Input, Spinner, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import CopyText from "@/components/CopyText";
+import EmptyBox from "@/components/EmptyBox";
+import Pagination from "@/components/Pagination";
 import { formatDate, formatPrice } from "@/utils/format";
+import getPageInfo from "@/utils/getPageInfo";
 
 import { useGetInviteCode, useGetInviteCodeProfit } from "./service";
-
-import PaginationBar from "@/pages/functionTemplate/Mods/PaginationBar";
-
-type InviteCode = {
-  code: string;
-};
+const LIMIT_OPTIONS = [5, 20, 100];
 
 export default function UserInvite() {
-  const inviteCode = (useGetInviteCode().data?.data as InviteCode)?.code;
-  const inviteLink = `${window.location.origin}/signup?code=${inviteCode}`;
   const darkMode = useColorMode().colorMode === "dark";
-
   const { t } = useTranslation();
-  const [page, setPage] = useState(1);
-  const profitData = useGetInviteCodeProfit({ page: page, pageSize: 5 }).data?.data;
+  const [queryData, setQueryData] = useState({ page: 1, pageSize: 5 });
+
+  const inviteCodeQuery = useGetInviteCode();
+  const inviteCode = inviteCodeQuery.data?.data?.code;
+  const inviteLink = inviteCodeQuery.isLoading
+    ? "Loading..."
+    : `${window.location.origin}/signup?code=${inviteCode}`;
+
+  const profitQuery = useGetInviteCodeProfit(queryData);
+  const profitData = profitQuery.data?.data;
 
   return (
     <div className="pt-10">
@@ -67,13 +70,23 @@ export default function UserInvite() {
           </div>
         ))}
       </div>
-      <PaginationBar
-        className="!p-0"
-        page={page}
-        setPage={setPage}
-        pageSize={5}
-        total={profitData?.total}
-      />
+      {profitQuery.isLoading ? (
+        <Center style={{ minHeight: 200 }}>
+          <Spinner />
+        </Center>
+      ) : profitData?.list && profitData?.list.length > 0 ? (
+        <Pagination
+          options={LIMIT_OPTIONS}
+          values={getPageInfo(profitData)}
+          onChange={(values: any) => setQueryData(values)}
+        />
+      ) : (
+        <Center style={{ minHeight: 200 }}>
+          <EmptyBox>
+            <span>{t("No History")}</span>
+          </EmptyBox>
+        </Center>
+      )}
     </div>
   );
 }

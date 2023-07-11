@@ -3,12 +3,14 @@ import { DateRange, DayPicker, SelectRangeEventHandler } from "react-day-picker"
 import { useTranslation } from "react-i18next";
 import { CalendarIcon } from "@chakra-ui/icons";
 import {
+  Center,
   Popover,
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
   Radio,
   RadioGroup,
+  Spinner,
   Table,
   TableContainer,
   Tbody,
@@ -25,7 +27,7 @@ import clsx from "clsx";
 import { BillingIcon, FilterIcon } from "@/components/CommonIcon";
 import EmptyBox from "@/components/EmptyBox";
 import Pagination from "@/components/Pagination";
-import { formatDate, formatPrice } from "@/utils/format";
+import { formatDate } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
 
 import { BillingControllerFindAll } from "@/apis/v1/billings";
@@ -53,7 +55,7 @@ export default function BillingDetails() {
   const [selectedAppList, setSelectedAppList] = useState<any>([]);
   const [selectedRange, setSelectedRange] = useState<DateRange>();
 
-  const { data: billingRes } = useQuery(["billing", queryData], async () => {
+  const { data: billingRes, isLoading } = useQuery(["billing", queryData], async () => {
     return BillingControllerFindAll({
       ...queryData,
     });
@@ -219,7 +221,7 @@ export default function BillingDetails() {
                 </Th>
               </Tr>
             </Thead>
-            {billingRes?.data.list && billingRes?.data.list.length > 0 && (
+            {!isLoading && billingRes?.data.list && billingRes?.data.list.length > 0 && (
               <Tbody bg={"none"}>
                 {(billingRes?.data?.list || []).map((item: any, index: number) => (
                   <Tr key={item._id} bg={index % 2 === 1 ? "#FBFBFC" : "white"}>
@@ -232,20 +234,25 @@ export default function BillingDetails() {
                     <Td className={item.state === "Done" ? "text-primary-600" : "text-error-600"}>
                       {item.state}
                     </Td>
-                    <Td className="font-medium text-grayModern-900">{formatPrice(item.amount)}</Td>
+                    <Td className="font-medium text-grayModern-900">￥{item.amount}</Td>
                   </Tr>
                 ))}
               </Tbody>
             )}
           </Table>
-          {!(billingRes?.data.list && billingRes?.data.list.length > 0) && (
-            <div className="py-28">
+          {isLoading && (
+            <Center className="min-h-[360px]">
+              <Spinner />
+            </Center>
+          )}
+          {!isLoading && !(billingRes?.data.list && billingRes?.data.list.length > 0) && (
+            <Center className="min-h-[360px]">
               <EmptyBox>
                 <span>{t("No History")}</span>
               </EmptyBox>
-            </div>
+            </Center>
           )}
-          {billingRes?.data.list && billingRes?.data.list.length > 0 && (
+          {!isLoading && billingRes?.data.list && billingRes?.data.list.length > 0 && (
             <div className="p-2">
               <Pagination
                 options={LIMIT_OPTIONS}

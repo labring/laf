@@ -82,8 +82,8 @@ export class AccountController {
   @Get('charge-order/amount')
   async getChargeOrderAmount(
     @Req() req: IRequest,
-    @Query('startTime') startTime?: string,
-    @Query('endTime') endTime?: string,
+    @Query('startTime') startTime?: number,
+    @Query('endTime') endTime?: number,
   ) {
     const user = req.user
     const query: AccountChargeOrderQuery = {

@@ -107,7 +107,7 @@ export default function SignUp() {
 
     if (res?.data) {
       showSuccess(t("AuthPanel.SignUpSuccess"));
-      navigate("/login", { replace: true });
+      navigate("/dashboard", { replace: true });
     }
   };
 

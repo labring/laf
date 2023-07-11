@@ -7,8 +7,10 @@ import {
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
+  useColorMode,
   VStack,
 } from "@chakra-ui/react";
+import clsx from "clsx";
 
 import {
   BillingIcon,
@@ -16,11 +18,14 @@ import {
   ChargeIcon,
   ContactIcon,
   CostIcon,
+  DiscordIcon,
   ExitIcon,
+  GroupIcon,
   InviteIcon,
   PATIcon,
   StandardIcon,
   UserIcon,
+  WechatIcon,
 } from "@/components/CommonIcon";
 
 import UserBalance from "@/layouts/Header/UserBalance";
@@ -36,6 +41,8 @@ import UserInvite from "@/pages/app/setting/UserInvite";
 
 export default function UserSetting(props: { name: string; avatar?: string; width: string }) {
   const { t } = useTranslation();
+  const darkMode = useColorMode().colorMode === "dark";
+
   return (
     <Popover>
       <PopoverTrigger>
@@ -51,8 +58,13 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
         />
       </PopoverTrigger>
       <PopoverContent w={300} borderRadius={12} mr={6}>
-        <PopoverBody>
-          <div className="flex w-full justify-end pb-3 pr-7 pt-2 text-lg">
+        <PopoverBody className="cursor-auto">
+          <div
+            className={clsx(
+              "flex w-full justify-end pb-3 pr-7 pt-2 text-lg",
+              darkMode ? "text-white" : "text-grayModern-600",
+            )}
+          >
             <span
               className="flex cursor-pointer items-center hover:text-error-500"
               onClick={() => {
@@ -73,10 +85,16 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               color="white"
               boxShadow="base"
             />
-            <span className="text-2xl">{props.name}</span>
+            <span className={clsx("text-2xl", darkMode ? "text-white" : "text-grayModern-900")}>
+              {props.name}
+            </span>
             <UserBalance />
           </VStack>
-          <VStack className="mx-6" pt={5} spacing={0}>
+          <VStack
+            className={clsx("mx-6", darkMode ? "text-white" : "text-grayModern-600")}
+            pt={5}
+            spacing={0}
+          >
             <div className="w-full">
               <SettingModal
                 tabMatch={[
@@ -104,7 +122,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               >
                 <div className="flex cursor-pointer items-center justify-between rounded-sm px-1 py-3 text-lg hover:bg-[#F4F6F8]">
                   <span className="flex items-center">
-                    <UserIcon boxSize={4} mr={3} />
+                    <UserIcon fontSize={20} mr={3} />
                     {t("SettingPanel.UserCenter")}
                   </span>
                   <ChevronRightIcon />
@@ -150,14 +168,14 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               >
                 <div className="flex cursor-pointer items-center justify-between rounded-sm px-1 py-3 text-lg hover:bg-[#F4F6F8] ">
                   <span className="flex items-center">
-                    <BillingIcon boxSize={4} mr={3} />
+                    <BillingIcon fontSize={20} mr={3} />
                     {t("SettingPanel.Usage")}
                   </span>
                   <ChevronRightIcon />
                 </div>
               </SettingModal>
             </div>
-            <Divider className="mx-6" />
+            <Divider />
             <div
               className="flex w-full cursor-pointer items-center justify-between rounded-sm px-1 py-3 text-lg hover:bg-[#F4F6F8]"
               onClick={() => {
@@ -165,10 +183,34 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               }}
             >
               <span className="flex items-center">
-                <ContactIcon boxSize={4} mr={3} />
+                <ContactIcon fontSize={20} mr={3} />
                 {t("HomePage.NavBar.contact")}
               </span>
               <ChevronRightIcon />
+            </div>
+            <div className="flex w-full items-center justify-between px-1 py-3 text-lg">
+              <span className="flex items-center">
+                <GroupIcon fontSize={20} mr={3} />
+                {t("HomePage.NavBar.community")}
+              </span>
+              <span>
+                <a
+                  href="https://w4mci7-images.oss.laf.run/wechat.png"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mr-1"
+                >
+                  <WechatIcon className="cursor-pointer !text-grayModern-400" fontSize={20} />
+                </a>
+                <a
+                  href="https://discord.com/channels/1061659231599738901/1098516786170839050"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mr-1"
+                >
+                  <DiscordIcon className="cursor-pointer !text-grayModern-400" fontSize={20} />
+                </a>
+              </span>
             </div>
           </VStack>
         </PopoverBody>

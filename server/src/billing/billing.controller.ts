@@ -119,8 +119,8 @@ export class BillingController {
   @Get('amount')
   async getExpense(
     @Req() req: IRequest,
-    @Query('startTime') startTime?: string,
-    @Query('endTime') endTime?: string,
+    @Query('startTime') startTime?: number,
+    @Query('endTime') endTime?: number,
     @Query('appid') appid?: string[],
     @Query('state') state?: string,
   ) {
@@ -149,8 +149,8 @@ export class BillingController {
   @Get('amounts')
   async getExpenseByDay(
     @Req() req: IRequest,
-    @Query('startTime') startTime?: string,
-    @Query('endTime') endTime?: string,
+    @Query('startTime') startTime?: number,
+    @Query('endTime') endTime?: number,
     @Query('appid') appid?: string[],
     @Query('state') state?: string,
   ) {

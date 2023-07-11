@@ -301,6 +301,8 @@ export type TFunctionTemplate = {
 export type TemplateList = {
   list: TFunctionTemplate[];
   total: number;
+  page: number;
+  pageSize: number;
 };
 
 export type TLogItem = {

@@ -144,8 +144,8 @@ export default function DataPanel() {
 
   return (
     <>
-      <Panel.Header className="my-1 w-full flex-shrink-0">
-        <div className="flex items-center">
+      <Panel.Header className="my-1 flex-shrink-0">
+        <div className="flex items-center flex-1">
           <AddDataModal
             schema={currentData.data ? currentData.data : {}}
             onSuccessSubmit={(id: string, count: number) => {
@@ -184,14 +184,15 @@ export default function DataPanel() {
             {t("RefreshData")}
           </Button>
           <form
+            className="flex flex-1"
             onSubmit={(event) => {
               event?.preventDefault();
               refresh(search);
             }}
           >
-            <div className="my-4 flex justify-between">
-              <HStack spacing={2}>
-                <InputGroup className="mr-4" width="300px">
+            <div className="my-4 flex justify-between flex-1">
+              <HStack spacing={2} className="flex flex-1">
+                <InputGroup className="mr-4 flex-1">
                   <InputLeftElement
                     height={"8"}
                     pointerEvents="none"

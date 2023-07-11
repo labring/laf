@@ -20,9 +20,8 @@ export default function DateRangePicker(props: {
   setEndTime: any;
   startTime: any;
   endTime: any;
-  setQueryData: any;
 }) {
-  const { setStartTime, setEndTime, startTime, endTime, setQueryData } = props;
+  const { setStartTime, setEndTime, startTime, endTime } = props;
   const initState = useMemo(() => ({ from: startTime, to: endTime }), [startTime, endTime]);
   const [selectedRange, setSelectedRange] = useState<DateRange>(initState);
   const [fromValue, setFromValue] = useState<string>(format(initState.from, "y-MM-dd"));
@@ -73,12 +72,11 @@ export default function DateRangePicker(props: {
         setToValue("");
       }
     }
-    setQueryData({ startTime: range?.from, endTime: range?.to });
   };
   return (
     <div
       className={clsx(
-        "flex h-8 rounded-md border border-grayModern-200",
+        "flex h-8 w-64 rounded-md border border-grayModern-200",
         !darkMode && "bg-grayModern-100",
       )}
     >
@@ -86,14 +84,14 @@ export default function DateRangePicker(props: {
         variant={"unstyled"}
         value={fromValue}
         onChange={handleFromChange}
-        className="!w-24 !pl-4"
+        className="flex-1 text-center"
       />
       <Box>-</Box>
       <Input
         variant={"unstyled"}
         value={toValue}
         onChange={handleToChange}
-        className="!w-20 !pl-2"
+        className="flex-1 text-center"
       />
       <Popover onClose={onClose}>
         <PopoverTrigger>

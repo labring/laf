@@ -24,7 +24,7 @@ export default function StatusBadge(props: {
 }) {
   const { statusConditions = APP_PHASE_STATUS.Started, state, className } = props;
   return (
-    <div className={clsx("flex items-center", className)}>
+    <div className={clsx("flex", className)}>
       <div
         className={clsx(
           styles.badgeStyle,
@@ -38,7 +38,9 @@ export default function StatusBadge(props: {
       (state !== APP_PHASE_STATUS.Restarting && statusConditions === APP_PHASE_STATUS.Stopped) ? (
         ""
       ) : (
-        <Spinner size="xs" />
+        <div className="flex items-center pr-2">
+          <Spinner size="xs" />
+        </div>
       )}
     </div>
   );
