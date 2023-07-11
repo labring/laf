@@ -22,6 +22,8 @@ import { CloudFunctionHistory } from './entities/cloud-function-history'
 import { TriggerService } from 'src/trigger/trigger.service'
 import { TriggerPhase } from 'src/trigger/entities/cron-trigger'
 import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
+import { CloudFunctionRecycleBin } from './entities/cloud-function-recycle-bin'
+import { CloudFunctionRecycleBinQuery } from './interface/cloud-function-query.interface'
 
 @Injectable()
 export class FunctionService {
@@ -196,6 +198,9 @@ export class FunctionService {
 
     await this.deleteHistory(res.value)
     await this.unpublish(appid, name)
+
+    // add this function to rcycle bin
+    await this.addToRecycleBin(res.value)
     return res.value
   }
 
@@ -220,6 +225,24 @@ export class FunctionService {
           { session },
         )
         await coll.insertOne(func, { session })
+      })
+    } finally {
+      await session.endSession()
+      await client.close()
+    }
+  }
+
+  async publishMany(funcs: CloudFunction[]) {
+    const { db, client } = await this.databaseService.findAndConnect(
+      funcs[0].appid,
+    )
+    const session = client.startSession()
+    try {
+      await session.withTransaction(async () => {
+        const coll = db.collection(CN_PUBLISHED_FUNCTIONS)
+        const funcNames = funcs.map((func) => func.name)
+        await coll.deleteMany({ name: { $in: funcNames } }, { session })
+        await coll.insertMany(funcs, { session })
       })
     } finally {
       await session.endSession()
@@ -396,5 +419,101 @@ export class FunctionService {
         appid,
       })
     return res
+  }
+
+  async addToRecycleBin(func: CloudFunction) {
+    const res = await this.db
+      .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
+      .insertOne(func)
+    return res
+  }
+
+  async getRecycleBinStorage(appid: string) {
+    const res = await this.db
+      .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
+      .countDocuments({ appid })
+    return res
+  }
+
+  async getRecycleBin(appid: string, condition: CloudFunctionRecycleBinQuery) {
+    const query = {
+      appid,
+    }
+    if (condition.name) {
+      query['name'] = {
+        $regex: condition.name,
+        $options: 'i',
+      }
+    }
+
+    if (condition.startTime) {
+      query['createdAt'] = { $gte: condition.startTime }
+    }
+
+    if (condition.endTime) {
+      if (condition.startTime) {
+        query['createdAt']['$lte'] = condition.endTime
+      } else {
+        query['createdAt'] = { $lte: condition.endTime }
+      }
+    }
+
+    const total = await this.db
+      .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
+      .countDocuments(query)
+
+    const functions = await this.db
+      .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
+      .find(query)
+      .skip((condition.page - 1) * condition.pageSize)
+      .limit(condition.pageSize)
+      .toArray()
+
+    const res = {
+      total,
+      list: functions,
+      page: condition.page,
+      pageSize: condition.pageSize,
+    }
+    return res
+  }
+
+  async emptyRecycleBin(appid: string) {
+    const res = await this.db
+      .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
+      .deleteMany({ appid })
+    return res
+  }
+
+  async deleteFromRecycleBin(ids: ObjectId[]) {
+    const res = await this.db
+      .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
+      .deleteMany({ _id: { $in: ids } })
+    return res
+  }
+
+  async restoreDeletedCloudFunctions(ids: ObjectId[]) {
+    const client = SystemDatabase.client
+    const session = client.startSession()
+    try {
+      session.startTransaction()
+
+      const res = await this.db
+        .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
+        .find({ _id: { $in: ids } })
+        .toArray()
+
+      await this.db
+        .collection<CloudFunction>('CloudFunction')
+        .insertMany(res, { session })
+
+      await this.publishMany(res)
+    } catch (err) {
+      await session.abortTransaction()
+      this.logger.error(err)
+      throw err
+    } finally {
+      await session.endSession()
+    }
   }
 }
