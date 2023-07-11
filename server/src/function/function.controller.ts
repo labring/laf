@@ -288,7 +288,7 @@ export class FunctionController {
   }
 
   /**
-   * Get function history
+   * Get function Recycle bin
    */
   @ApiOperation({ summary: 'Get cloud function recycle bin' })
   @ApiResponsePagination(CloudFunctionRecycleBin)
@@ -309,9 +309,20 @@ export class FunctionController {
     if (query.pageSize > 100) {
       query.pageSize = 100
     }
+    if (startTime) {
+      query.startTime = new Date(startTime)
+    }
+    if (endTime) {
+      query.endTime = new Date(endTime)
+    }
     if (keyword) {
       query.name = keyword
     }
-    // return ResponseUtil.ok(res)
+    const res = await this.functionsService.getRecycleBin(appid, query)
+    return ResponseUtil.ok(res)
   }
+
+  // delete all
+  // delete
+  // restore
 }
