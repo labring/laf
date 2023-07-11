@@ -25,7 +25,7 @@ import {
   PaymentChannelType,
 } from 'src/account/entities/account-charge-order'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
-import { Setting } from 'src/setting/entities/setting'
+import { Setting, SettingKey } from 'src/setting/entities/setting'
 
 @Injectable()
 export class UserPasswordService {
@@ -90,7 +90,7 @@ export class UserPasswordService {
           const inviteProfit = await this.db
             .collection<Setting>('Setting')
             .findOne({
-              key: 'Invitation Profit Amount',
+              key: SettingKey.InvitationProfit,
               public: true,
             })
           if (inviteProfit) {
