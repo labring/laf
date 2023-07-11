@@ -575,14 +575,7 @@ export class FunctionTemplateService {
   ) {
     const pipe = [
       { $match: { templateId: templateId } },
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'uid',
-          foreignField: '_id',
-          as: 'users',
-        },
-      },
+      { $project: { uid: 1, _id: 0 } },
       { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
@@ -595,12 +588,6 @@ export class FunctionTemplateService {
     const total = await this.db
       .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
       .countDocuments({ templateId })
-
-    usedBy.forEach((item) => {
-      item.users[0].username = item.users[0].username.slice(0, 3)
-      item.users[0].email = null
-      item.users[0].phone = null
-    })
 
     const res = {
       list: usedBy,

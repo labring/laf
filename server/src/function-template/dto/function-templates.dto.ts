@@ -2,15 +2,14 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { HttpMethod } from 'src/function/entities/cloud-function'
 import { EnvironmentVariable } from 'src/application/entities/application-configuration'
 import { ObjectId } from 'mongodb'
-import { User } from 'src/user/entities/user'
-import { FunctionTemplate } from './function-template'
+import { FunctionTemplate } from '../entities/function-template'
 
-class FunctionTemplateItemSourceSwagger {
+class FunctionTemplateItemSource {
   @ApiProperty({ description: 'The source code of the function' })
   code: string
 }
 
-class FunctionTemplateItemSwagger {
+class FunctionTemplateItems {
   @ApiProperty({ type: String })
   _id?: ObjectId
 
@@ -24,7 +23,7 @@ class FunctionTemplateItemSwagger {
   desc: string
 
   @ApiProperty()
-  source: FunctionTemplateItemSourceSwagger
+  source: FunctionTemplateItemSource
 
   @ApiProperty({ type: [String], enum: HttpMethod })
   methods: HttpMethod[]
@@ -35,7 +34,7 @@ class FunctionTemplateItemSwagger {
   @ApiProperty()
   updatedAt: Date
 }
-export class FunctionTemplateSwagger {
+export class FunctionTemplatesDto {
   @ApiProperty({ type: String })
   _id?: ObjectId
 
@@ -69,33 +68,11 @@ export class FunctionTemplateSwagger {
   @ApiProperty()
   updatedAt: Date
 
-  @ApiPropertyOptional({ type: [FunctionTemplateItemSwagger] })
-  items: FunctionTemplateItemSwagger[]
+  @ApiPropertyOptional({ type: [FunctionTemplateItems] })
+  items: FunctionTemplateItems[]
 }
 
-export class GetFunctionTemplateUsedBySwagger {
-  @ApiProperty({ type: String })
-  _id: ObjectId
-
-  @ApiProperty({ type: String })
-  uid: ObjectId
-
-  @ApiProperty({ type: String })
-  templateId: ObjectId
-
-  @ApiProperty()
-  createdAt: Date
-
-  @ApiProperty()
-  updatedAt: Date
-
-  @ApiProperty({
-    type: [User],
-  })
-  users: User[]
-}
-
-export class GetMyStaredFunctionTemplateSwagger {
+export class GetMyStaredFunctionTemplatesDto {
   @ApiProperty({ type: String })
   _id: ObjectId
 
@@ -114,11 +91,11 @@ export class GetMyStaredFunctionTemplateSwagger {
   @ApiProperty({ type: [FunctionTemplate] })
   functionTemplate: FunctionTemplate[]
 
-  @ApiProperty({ type: [FunctionTemplateItemSwagger] })
-  items: FunctionTemplateItemSwagger[]
+  @ApiProperty({ type: [FunctionTemplateItems] })
+  items: FunctionTemplateItems[]
 }
 
-export class GetMyRecentUseFunctionTemplateSwagger {
+export class GetMyRecentUseFunctionTemplatesDto {
   @ApiProperty({ type: String })
   _id: ObjectId
 
@@ -137,6 +114,6 @@ export class GetMyRecentUseFunctionTemplateSwagger {
   @ApiProperty({ type: [FunctionTemplate] })
   functionTemplate: FunctionTemplate[]
 
-  @ApiProperty({ type: [FunctionTemplateItemSwagger] })
-  items: FunctionTemplateItemSwagger[]
+  @ApiProperty({ type: [FunctionTemplateItems] })
+  items: FunctionTemplateItems[]
 }
