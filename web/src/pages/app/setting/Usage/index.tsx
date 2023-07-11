@@ -25,25 +25,42 @@ import useGlobalStore from "@/pages/globalStore";
 import { useAccountQuery } from "@/pages/home/service";
 
 const DATA_DURATION = 6 * 24 * 60 * 60 * 1000;
+const TIME_OFFSET = 8 * 60 * 60 * 1000;
+const ONE_DAY = 24 * 60 * 60 * 1000;
 
 export default function Usage() {
   const { t } = useTranslation();
   const darkMode = useColorMode().colorMode === "dark";
-  const [startTime, setStartTime] = React.useState<Date | null>(
-    new Date(new Date().getTime() - DATA_DURATION),
-  );
-
-  const [endTime, setEndTime] = React.useState<Date | null>(new Date());
+  const [endTime, setEndTime] = React.useState<Date | null>(() => {
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    return today;
+  });
+  const [startTime, setStartTime] = React.useState<Date | null>(() => {
+    const today = new Date();
+    today.setTime(today.getTime() - DATA_DURATION);
+    today.setHours(0, 0, 0, 0);
+    return today;
+  });
 
   const { userInfo } = useGlobalStore((state) => state);
   const { data: accountRes } = useAccountQuery();
+
+  const convertToChinaStandardTime = (utcTime: any, isEndTime: boolean) => {
+    const utcDate = new Date(utcTime);
+    if (isEndTime) {
+      return new Date(utcDate.getTime() + TIME_OFFSET + ONE_DAY - 1).toISOString();
+    } else {
+      return new Date(utcDate.getTime() + TIME_OFFSET).toISOString();
+    }
+  };
 
   const { data: billingAmountRes, isLoading: billLoading } = useQuery(
     ["billing", startTime, endTime],
     async () => {
       return BillingControllerGetExpense({
-        startTime: startTime?.toISOString(),
-        endTime: endTime?.toISOString(),
+        startTime: convertToChinaStandardTime(startTime, false),
+        endTime: convertToChinaStandardTime(endTime, true),
       });
     },
   );
@@ -52,8 +69,8 @@ export default function Usage() {
     ["chargeOrderAmount", startTime, endTime],
     async () => {
       return AccountControllerGetChargeOrderAmount({
-        startTime: startTime?.toISOString(),
-        endTime: endTime?.toISOString(),
+        startTime: convertToChinaStandardTime(startTime, false),
+        endTime: convertToChinaStandardTime(endTime, true),
       });
     },
   );
@@ -62,16 +79,18 @@ export default function Usage() {
     ["billingByDay", startTime, endTime],
     async () => {
       return BillingControllerGetExpenseByDay({
-        startTime: startTime?.toISOString(),
-        endTime: endTime?.toISOString(),
+        startTime: convertToChinaStandardTime(startTime, false),
+        endTime: convertToChinaStandardTime(endTime, true),
       });
     },
   );
 
-  const chartData = ((billingAmountByDayRes?.data as Array<any>) || []).map((item) => ({
-    totalAmount: item.totalAmount,
-    date: formatDate(item.day).slice(5, 10),
-  }));
+  const chartData = ((billingAmountByDayRes?.data as Array<any>) || [])
+    .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime())
+    .map((item) => ({
+      totalAmount: item.totalAmount,
+      date: formatDate(item.day).slice(5, 10),
+    }));
 
   return (
     <div>
