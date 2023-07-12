@@ -566,5 +566,10 @@
   "Hour": "Hour",
   "Core": "Core",
   "No History": "No History",
-  "MyIncomeAndExpenses": "My Income And Expenses"
+  "MyIncomeAndExpenses": "My Income And Expenses",
+  "RecycleBin": "Recycle Bin",
+  "Restore": "Restore",
+  "CheckAll": "Check All",
+  "Select": "Select",
+  "ClearRecycleBin": "Clear Recycle Bin"
 }
