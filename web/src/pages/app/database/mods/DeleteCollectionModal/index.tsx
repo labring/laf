@@ -51,6 +51,7 @@ function DeleteCollectionModal(props: { database: any }) {
         }}
         icon={<DeleteIcon />}
         text={t("Delete")}
+        className="hover:!text-error-600"
       />
 
       <Modal isOpen={isOpen} onClose={onClose}>
