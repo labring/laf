@@ -1,12 +1,17 @@
 import { useState } from "react";
 import { Button } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
 import { useSendSmsCodeMutation } from "@/pages/auth/service";
 import useGlobalStore from "@/pages/globalStore";
 
-export function SendSmsCodeButton(props: { phone: string }) {
-  const { phone } = props;
+export function SendSmsCodeButton(props: {
+  getPhone: any;
+  className?: string;
+  phoneNumber?: string;
+}) {
+  const { getPhone, className, phoneNumber } = props;
   const [isSendSmsCode, setIsSendSmsCode] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const sendSmsCodeMutation = useSendSmsCodeMutation();
@@ -14,6 +19,8 @@ export function SendSmsCodeButton(props: { phone: string }) {
   const { showSuccess, showError } = useGlobalStore();
 
   const handleSendSmsCode = async () => {
+    const phone = getPhone(phoneNumber);
+
     if (isSendSmsCode) {
       return;
     }
@@ -49,7 +56,7 @@ export function SendSmsCodeButton(props: { phone: string }) {
 
   return (
     <Button
-      className="w-20"
+      className={clsx("w-20", className)}
       variant={isSendSmsCode ? "thirdly_disabled" : "thirdly"}
       onClick={handleSendSmsCode}
     >

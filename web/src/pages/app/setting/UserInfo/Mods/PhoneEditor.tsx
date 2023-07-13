@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { ChevronLeftIcon } from "@chakra-ui/icons";
 import {
@@ -14,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 
 import { SendSmsCodeButton } from "@/components/SendSmsCodeButton";
+import SmsCodeInput from "@/components/SmsCodeInput";
 
 import { useBindPhoneMutation } from "../service";
 
@@ -29,8 +29,6 @@ type FormData = {
 export default function PhoneEditor(props: { handleBack: any }) {
   const { handleBack } = props;
   const { t } = useTranslation();
-  const [oldPhone, setOldPhone] = useState("");
-  const [newPhone, setNewPhone] = useState("");
   const bindPhone = useBindPhoneMutation();
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
@@ -40,6 +38,8 @@ export default function PhoneEditor(props: { handleBack: any }) {
   const {
     register,
     handleSubmit,
+    control,
+    getValues,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
@@ -67,9 +67,9 @@ export default function PhoneEditor(props: { handleBack: any }) {
       >
         <ChevronLeftIcon boxSize={6} /> {t("Back")}
       </span>
-      <VStack className="flex w-full flex-col">
-        <span className="w-full text-center text-xl">{t("UserInfo.EditPhone")}</span>
-        <Box className="flex flex-col">
+      <VStack className="flex">
+        <span className="text-center text-xl">{t("UserInfo.EditPhone")}</span>
+        <Box className="flex w-[265px] flex-col pt-4">
           <FormControl
             isInvalid={!!errors?.oldPhoneNumber}
             className="flex flex-col justify-center"
@@ -78,58 +78,64 @@ export default function PhoneEditor(props: { handleBack: any }) {
             <InputGroup>
               <Input
                 {...register("oldPhoneNumber", { required: true })}
-                width={64}
                 bg={!darkMode ? "#F8FAFB" : "none"}
                 border={"1px"}
+                height={"32px"}
                 borderColor={"#D5D6E1"}
-                onChange={(e) => {
-                  setOldPhone(e.target.value);
-                }}
               />
-              <InputRightElement width="6rem">
-                <SendSmsCodeButton phone={oldPhone} />
+              <InputRightElement width="6rem" height={8}>
+                <SendSmsCodeButton
+                  getPhone={getValues}
+                  phoneNumber={"oldPhoneNumber"}
+                  className="!h-6 !text-[12px]"
+                />
               </InputRightElement>
             </InputGroup>
           </FormControl>
           <FormControl isInvalid={!!errors.oldSmsCode} className="flex flex-col justify-center">
-            <div className="py-2">{t("UserInfo.OldSmsNumber")}</div>
-            <Input
-              {...register("oldSmsCode", { required: true })}
-              width={64}
-              bg={!darkMode ? "#F8FAFB" : "none"}
-              border={"1px"}
-              borderColor={"#D5D6E1"}
+            <div className="pb-2 pt-4">{t("UserInfo.OldSmsNumber")}</div>
+            <Controller
+              name="oldSmsCode"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <div>
+                  <SmsCodeInput value={value} onChange={onChange} />
+                </div>
+              )}
             />
           </FormControl>
           <FormControl isInvalid={!!errors.newPhoneNumber} className="flex flex-col justify-center">
-            <div className="py-2">{t("UserInfo.NewPhoneNumber")}</div>
+            <div className="pb-2 pt-4">{t("UserInfo.NewPhoneNumber")}</div>
             <InputGroup>
               <Input
                 {...register("newPhoneNumber", { required: true })}
-                width={64}
                 bg={!darkMode ? "#F8FAFB" : "none"}
                 border={"1px"}
+                height={"32px"}
                 borderColor={"#D5D6E1"}
-                onChange={(e) => {
-                  setNewPhone(e.target.value);
-                }}
               />
-              <InputRightElement width="6rem">
-                <SendSmsCodeButton phone={newPhone} />
+              <InputRightElement width="6rem" height={8}>
+                <SendSmsCodeButton
+                  getPhone={getValues}
+                  phoneNumber={"newPhoneNumber"}
+                  className="!h-6 !text-[12px]"
+                />
               </InputRightElement>
             </InputGroup>
           </FormControl>
           <FormControl isInvalid={!!errors.newSmsCode} className="flex flex-col justify-center">
-            <div className="py-2">{t("UserInfo.NewSmsNumber")}</div>
-            <Input
-              {...register("newSmsCode", { required: true })}
-              width={64}
-              bg={!darkMode ? "#F8FAFB" : "none"}
-              border={"1px"}
-              borderColor={"#D5D6E1"}
+            <div className="pb-2 pt-4">{t("UserInfo.NewSmsNumber")}</div>
+            <Controller
+              name="newSmsCode"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <div>
+                  <SmsCodeInput value={value} onChange={onChange} />
+                </div>
+              )}
             />
           </FormControl>
-          <Button width={64} mt={8} onClick={handleSubmit(onSubmit)}>
+          <Button mt={8} onClick={handleSubmit(onSubmit)}>
             {t("Save")}
           </Button>
         </Box>

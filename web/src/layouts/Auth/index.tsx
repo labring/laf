@@ -11,7 +11,7 @@ export default function LoginReg() {
   const darkMode = colorMode === COLOR_MODE.dark;
   return (
     <div
-      className={clsx(styles.container, { "bg-[#edf1f5]": !darkMode, "bg-lafDark-300": darkMode })}
+      className={clsx(styles.container, { "bg-[#F5F6F8]": !darkMode, "bg-lafDark-300": darkMode })}
     >
       <div className="absolute left-[120px] top-[120px]">
         <div

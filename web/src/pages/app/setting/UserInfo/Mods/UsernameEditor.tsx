@@ -40,7 +40,7 @@ export default function UsernameEditor(props: { handleBack: any }) {
       </span>
       <VStack className="flex w-full flex-col">
         <span className="w-full text-center text-xl">{t("UserInfo.EditUserName")}</span>
-        <Box className="flex flex-col pt-16">
+        <Box className="flex w-[265px] flex-col pt-16">
           <FormControl isInvalid={!!errors?.username} className="flex flex-col justify-center">
             <div className="pb-2">{t("UserInfo.UserName")}</div>
             <Input
@@ -48,13 +48,13 @@ export default function UsernameEditor(props: { handleBack: any }) {
                 required: true,
               })}
               defaultValue={userInfo?.username}
-              width={64}
+              height={8}
               bg={!darkMode ? "#F8FAFB" : "none"}
               border={"1px"}
               borderColor={"#D5D6E1"}
             />
           </FormControl>
-          <Button width={64} mt={8} onClick={handleSubmit(onSubmit)} type="submit">
+          <Button mt={8} onClick={handleSubmit(onSubmit)} type="submit">
             {t("Save")}
           </Button>
         </Box>

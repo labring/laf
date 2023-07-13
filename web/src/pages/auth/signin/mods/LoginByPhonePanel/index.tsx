@@ -117,6 +117,8 @@ export default function LoginByPhonePanel({
             type="tel"
             id="phone"
             placeholder={t("AuthPanel.PhonePlaceholder") || ""}
+            bg={"#F8FAFB"}
+            border={"1px solid #D5D6E1"}
           />
           <InputRightElement width="6rem">
             <Button
@@ -144,6 +146,8 @@ export default function LoginByPhonePanel({
           })}
           id="validationCode"
           placeholder={t("AuthPanel.ValidationCodeTip") || ""}
+          bg={"#F8FAFB"}
+          border={"1px solid #D5D6E1"}
         />
       </FormControl>
       <div className="mt-10">
