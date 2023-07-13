@@ -28,14 +28,12 @@ type FormData = {
   confirmPassword: string;
 };
 
-export default function ResetPassword(props: { isModal?: boolean; handleBack?: any }) {
-  const { isModal, handleBack } = props;
+export default function ResetPassword() {
   const resetPasswordMutation = useResetPasswordMutation();
   const { showSuccess, showError } = useGlobalStore();
   const navigate = useNavigate();
 
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
 
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
@@ -43,6 +41,7 @@ export default function ResetPassword(props: { isModal?: boolean; handleBack?: a
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
@@ -68,29 +67,22 @@ export default function ResetPassword(props: { isModal?: boolean; handleBack?: a
 
     const res = await resetPasswordMutation.mutateAsync(params);
 
-    if (res?.data && !isModal) {
+    if (res?.data) {
       showSuccess(t("AuthPanel.ResetPasswordSuccess"));
       navigate("/login", { replace: true });
-    } else if (res?.data && isModal) {
-      showSuccess(t("AuthPanel.ResetPasswordSuccess"));
-      handleBack();
     }
   };
 
   return (
     <div
       className={clsx(
-        !isModal
-          ? "absolute left-1/2 top-1/2 w-[560px] -translate-y-1/2 rounded-[10px] p-[65px]"
-          : "pt-10",
-        { "bg-white": !darkMode, "bg-lafDark-100": darkMode && !isModal },
+        "absolute left-1/2 top-1/2 w-[560px] -translate-y-1/2 rounded-[10px] p-[65px]",
+        { "bg-white": !darkMode, "bg-lafDark-100": darkMode },
       )}
     >
-      {!isModal ? (
-        <div className="mb-[45px]">
-          <img src="/logo.png" alt="logo" width={40} className="mr-4" />
-        </div>
-      ) : null}
+      <div className="mb-[45px]">
+        <img src="/logo.png" alt="logo" width={40} className="mr-4" />
+      </div>
       <div className="mb-[65px]">
         <FormControl isInvalid={!!errors?.phone} className="mb-6 flex items-center">
           <FormLabel className="w-20" htmlFor="phone">
@@ -108,12 +100,11 @@ export default function ResetPassword(props: { isModal?: boolean; handleBack?: a
               type="tel"
               id="phone"
               placeholder={t("AuthPanel.PhonePlaceholder") || ""}
-              onChange={(e) => {
-                setPhoneNumber(e.target.value);
-              }}
+              bg={"#F8FAFB"}
+              border={"1px solid #D5D6E1"}
             />
             <InputRightElement width="6rem">
-              <SendSmsCodeButton phone={phoneNumber} />
+              <SendSmsCodeButton getPhone={getValues} phoneNumber={"phone"} />
             </InputRightElement>
           </InputGroup>
         </FormControl>
@@ -132,6 +123,8 @@ export default function ResetPassword(props: { isModal?: boolean; handleBack?: a
             })}
             id="validationCode"
             placeholder={t("AuthPanel.ValidationCodePlaceholder") || ""}
+            bg={"#F8FAFB"}
+            border={"1px solid #D5D6E1"}
           />
         </FormControl>
         <FormControl isInvalid={!!errors.password} className="mb-6 flex items-center">
@@ -146,6 +139,8 @@ export default function ResetPassword(props: { isModal?: boolean; handleBack?: a
               })}
               id="password"
               placeholder={t("AuthPanel.PasswordPlaceholder") || ""}
+              bg={"#F8FAFB"}
+              border={"1px solid #D5D6E1"}
             />
             <InputRightElement width="2rem">
               {isShowPassword ? (
@@ -168,6 +163,8 @@ export default function ResetPassword(props: { isModal?: boolean; handleBack?: a
               })}
               id="confirmPassword"
               placeholder={t("AuthPanel.ConfirmPassword") || ""}
+              bg={"#F8FAFB"}
+              border={"1px solid #D5D6E1"}
             />
             <InputRightElement width="2rem">
               {isShowPassword ? (
@@ -181,24 +178,18 @@ export default function ResetPassword(props: { isModal?: boolean; handleBack?: a
         <div className="mb-6">
           <Button
             type="submit"
-            className={clsx("w-full", !isModal ? "pb-5 pt-5" : "")}
+            className={clsx("w-full", "pb-5 pt-5")}
             isLoading={resetPasswordMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
           >
             {t("AuthPanel.ResetPassword")}
           </Button>
         </div>
-        {!isModal && (
-          <div className="mt-2 flex justify-end">
-            <Button
-              size="xs"
-              variant={"text"}
-              onClick={() => navigate("/login", { replace: true })}
-            >
-              {t("AuthPanel.ToLogin")}
-            </Button>
-          </div>
-        )}
+        <div className="mt-2 flex justify-end">
+          <Button size="xs" variant={"text"} onClick={() => navigate("/login", { replace: true })}>
+            {t("AuthPanel.ToLogin")}
+          </Button>
+        </div>
       </div>
     </div>
   );
