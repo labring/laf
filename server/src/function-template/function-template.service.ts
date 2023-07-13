@@ -1621,7 +1621,10 @@ export class FunctionTemplateService {
 
     if (user.phone && user.username) {
       if (user.phone == user.username) {
-        user.username = user.username.slice(0, 3)
+        user.username =
+          user.username.slice(0, 3) +
+          'x'.repeat(user.username.length - 6) +
+          user.username.slice(-3)
       }
     }
 
