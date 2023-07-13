@@ -199,7 +199,7 @@ export class FunctionService {
     await this.deleteHistory(res.value)
     await this.unpublish(appid, name)
 
-    // add this function to rcycle bin
+    // add this function to recycle bin
     await this.functionRecycleBinService.addToRecycleBin(res.value)
     return res.value
   }

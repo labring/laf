@@ -5,12 +5,17 @@ import { FunctionController } from './function.controller'
 import { FunctionService } from './function.service'
 import { DatabaseModule } from 'src/database/database.module'
 import { TriggerService } from 'src/trigger/trigger.service'
-import { RecycleBinModule } from 'src/recycle-bin/recycle-bin.module'
+import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
 
 @Module({
-  imports: [ApplicationModule, DatabaseModule, RecycleBinModule],
+  imports: [ApplicationModule, DatabaseModule],
   controllers: [FunctionController],
-  providers: [FunctionService, JwtService, TriggerService],
+  providers: [
+    FunctionService,
+    JwtService,
+    TriggerService,
+    FunctionRecycleBinService,
+  ],
   exports: [FunctionService],
 })
 export class FunctionModule {}

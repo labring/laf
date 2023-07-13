@@ -16,6 +16,7 @@ import { WebsiteService } from 'src/website/website.service'
 import { AccountModule } from 'src/account/account.module'
 import { BundleService } from './bundle.service'
 import { ResourceService } from 'src/billing/resource.service'
+import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
 
 @Module({
   imports: [StorageModule, DatabaseModule, GatewayModule, AccountModule],
@@ -24,6 +25,7 @@ import { ResourceService } from 'src/billing/resource.service'
     ApplicationService,
     ApplicationTaskService,
     InstanceService,
+    FunctionRecycleBinService,
     JwtService,
     FunctionService,
     EnvironmentVariableService,

@@ -1,12 +1,26 @@
 import { Module } from '@nestjs/common'
 import { FunctionRecycleBinController } from './cloud-function/function-recycle-bin.controller'
 import { FunctionRecycleBinService } from './cloud-function/function-recycle-bin.service'
-import { FunctionModule } from 'src/function/function.module'
+import { FunctionService } from 'src/function/function.service'
+import { DatabaseService } from 'src/database/database.service'
+import { JwtService } from '@nestjs/jwt'
+import { TriggerService } from 'src/trigger/trigger.service'
+import { MongoService } from 'src/database/mongo.service'
+import { RegionService } from 'src/region/region.service'
+import { ApplicationService } from 'src/application/application.service'
 
 @Module({
-  imports: [FunctionModule],
   controllers: [FunctionRecycleBinController],
-  providers: [FunctionRecycleBinService],
+  providers: [
+    ApplicationService,
+    DatabaseService,
+    JwtService,
+    TriggerService,
+    FunctionRecycleBinService,
+    FunctionService,
+    MongoService,
+    RegionService,
+  ],
   exports: [FunctionRecycleBinService],
 })
 export class RecycleBinModule {}

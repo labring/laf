@@ -31,6 +31,7 @@ import { CloudFunctionHistory } from './entities/cloud-function-history'
 import { CloudFunction } from './entities/cloud-function'
 import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
 import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
+import { Storage_Limit } from 'src/constants'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
@@ -219,7 +220,7 @@ export class FunctionController {
     const recycleBinStorage =
       await this.functionRecycleBinService.getRecycleBinStorage(appid)
 
-    if (recycleBinStorage >= 3) {
+    if (recycleBinStorage >= Storage_Limit) {
       return ResponseUtil.error('Recycle bin is full, please free up space')
     }
 

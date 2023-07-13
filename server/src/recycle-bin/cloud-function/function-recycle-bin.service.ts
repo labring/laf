@@ -19,7 +19,7 @@ export class FunctionRecycleBinService {
   async addToRecycleBin(func: CloudFunction) {
     const res = await this.db
       .collection<RecycleBin>('RecycleBin')
-      .insertOne({ type: DataType.FUNCTION, data: func })
+      .insertOne({ type: DataType.FUNCTION, data: func, createdAt: new Date() })
     return res
   }
 
@@ -60,9 +60,15 @@ export class FunctionRecycleBinService {
 
     const functions = await this.db
       .collection<RecycleBin>('RecycleBin')
-      .find(query)
-      .skip((condition.page - 1) * condition.pageSize)
-      .limit(condition.pageSize)
+      .aggregate([
+        { $match: query },
+        {
+          $replaceRoot: { newRoot: '$data' },
+        },
+        { $sort: { createdAt: -1 } },
+        { $skip: (condition.page - 1) * condition.pageSize },
+        { $limit: condition.pageSize },
+      ])
       .toArray()
 
     const res = {
@@ -110,6 +116,15 @@ export class FunctionRecycleBinService {
       const insertResults = await this.db
         .collection<CloudFunction>('CloudFunction')
         .insertMany(functions, { session })
+
+      await this.db.collection<RecycleBin>('RecycleBin').deleteMany(
+        {
+          type: DataType.FUNCTION,
+          'data._id': { $in: ids },
+          'data.appid': appid,
+        },
+        { session },
+      )
 
       await this.functionService.publishMany(functions)
 

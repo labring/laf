@@ -5,4 +5,5 @@ export enum DataType {
 export class RecycleBin {
   type: DataType
   data: any
+  createdAt: Date
 }
