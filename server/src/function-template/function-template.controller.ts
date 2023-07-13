@@ -27,10 +27,8 @@ import { ObjectId } from 'mongodb'
 import { FunctionService } from 'src/function/function.service'
 import { BundleService } from 'src/application/bundle.service'
 import { DependencyService } from 'src/dependency/dependency.service'
-import {
-  FunctionTemplateSwagger,
-  GetFunctionTemplateUsedBySwagger,
-} from './entities/swagger-help'
+import { GetFunctionTemplateUsedByDto } from './dto/function-template-usedBy.dto'
+import { FunctionTemplatesDto } from './dto/function-templates.dto'
 
 @ApiTags('FunctionTemplate')
 @ApiBearerAuth('Authorization')
@@ -49,7 +47,7 @@ export class FunctionTemplateController {
    * @returns
    */
   @ApiOperation({ summary: 'create a function template' })
-  @ApiResponseArray(FunctionTemplateSwagger)
+  @ApiResponseArray(FunctionTemplatesDto)
   @UseGuards(JwtAuthGuard)
   @Post()
   async createFunctionTemplate(
@@ -81,7 +79,7 @@ export class FunctionTemplateController {
   }
 
   @ApiOperation({ summary: 'use a function template' })
-  @ApiResponseArray(FunctionTemplateSwagger)
+  @ApiResponseArray(FunctionTemplatesDto)
   @UseGuards(JwtAuthGuard)
   @Post(':templateId/:appid')
   async useFunctionTemplate(
@@ -137,7 +135,7 @@ export class FunctionTemplateController {
   }
 
   @ApiOperation({ summary: 'update a function template' })
-  @ApiResponseArray(FunctionTemplateSwagger)
+  @ApiResponseArray(FunctionTemplatesDto)
   @UseGuards(JwtAuthGuard)
   @Patch('update/:id')
   async updateFunctionTemplate(
@@ -169,7 +167,7 @@ export class FunctionTemplateController {
   }
 
   @ApiOperation({ summary: 'delete a function template' })
-  @ApiResponseArray(FunctionTemplateSwagger)
+  @ApiResponseArray(FunctionTemplatesDto)
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteFunctionTemplate(
@@ -246,7 +244,7 @@ export class FunctionTemplateController {
   }
 
   @ApiOperation({ summary: 'get people who use this function template' })
-  @ApiResponsePagination(GetFunctionTemplateUsedBySwagger)
+  @ApiResponsePagination(GetFunctionTemplateUsedByDto)
   @UseGuards(JwtAuthGuard)
   @Get(':id/used-by')
   async getFunctionTemplateUsedBy(
@@ -262,6 +260,9 @@ export class FunctionTemplateController {
     asc = asc === 0 ? Number(asc) : 1
     page = page ? Number(page) : 1
     pageSize = pageSize ? Number(pageSize) : 10
+    if (pageSize > 100) {
+      pageSize = 100
+    }
     const found = await this.functionTemplateService.findOneFunctionTemplate(
       new ObjectId(templateId),
     )
@@ -283,7 +284,7 @@ export class FunctionTemplateController {
    * For example, if the value of sort is hot, then asc's sort is the star field
    */
   @ApiOperation({ summary: 'get my function template' })
-  @ApiResponsePagination(FunctionTemplateSwagger)
+  @ApiResponsePagination(FunctionTemplatesDto)
   @UseGuards(JwtAuthGuard)
   @Get('my')
   async getMyFunctionTemplate(
@@ -295,11 +296,14 @@ export class FunctionTemplateController {
     @Query('type') type: string,
     @Req() req: IRequest,
   ) {
-    if (type === 'default' && keyword) {
-      asc = asc === 0 ? Number(asc) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
+    asc = asc === 0 ? Number(asc) : 1
+    page = page ? Number(page) : 1
+    pageSize = pageSize ? Number(pageSize) : 10
+    if (pageSize > 100) {
+      pageSize = 100
+    }
 
+    if (type === 'default' && keyword) {
       const res =
         await this.functionTemplateService.findMyFunctionTemplatesByName(
           asc,
@@ -312,11 +316,7 @@ export class FunctionTemplateController {
     }
 
     if (type === 'default' && sort === 'hot') {
-      asc = asc === 0 ? Number(asc) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
       const hot = true
-
       const res = await this.functionTemplateService.findMyFunctionTemplates(
         asc,
         page,
@@ -328,10 +328,6 @@ export class FunctionTemplateController {
     }
 
     if (type === 'default') {
-      asc = asc === 0 ? Number(asc) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-
       const res = await this.functionTemplateService.findMyFunctionTemplates(
         asc,
         page,
@@ -345,10 +341,6 @@ export class FunctionTemplateController {
      * stared function template
      */
     if (type === 'stared' && keyword) {
-      asc = asc === 0 ? Number(asc) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-
       const condition = {
         asc,
         page,
@@ -364,9 +356,6 @@ export class FunctionTemplateController {
     }
 
     if (type === 'stared' && sort === 'hot') {
-      asc = asc === 0 ? Number(asc) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
       const condition = {
         page,
         pageSize,
@@ -382,10 +371,6 @@ export class FunctionTemplateController {
     }
 
     if (type === 'stared') {
-      asc = asc === 0 ? Number(asc) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-
       const condition = {
         asc,
         page,
@@ -403,10 +388,6 @@ export class FunctionTemplateController {
      * recent used function template
      */
     if (type === 'recentUsed' && keyword) {
-      asc = asc === 0 ? Number(asc) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-
       const condition = {
         asc,
         page,
@@ -422,10 +403,6 @@ export class FunctionTemplateController {
     }
 
     if (type === 'recentUsed' && sort === 'hot') {
-      asc = asc === 0 ? Number(asc) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-
       const condition = {
         asc,
         page,
@@ -441,10 +418,6 @@ export class FunctionTemplateController {
     }
 
     if (type === 'recentUsed') {
-      asc = asc === 0 ? Number(asc) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-
       const condition = {
         asc,
         page,
@@ -460,7 +433,7 @@ export class FunctionTemplateController {
   }
 
   @ApiOperation({ summary: 'get all recommend function template' })
-  @ApiResponsePagination(FunctionTemplateSwagger)
+  @ApiResponsePagination(FunctionTemplatesDto)
   @UseGuards(JwtAuthGuard)
   @Get('recommend')
   async getRecommendFunctionTemplate(
@@ -473,6 +446,9 @@ export class FunctionTemplateController {
     asc = asc === 0 ? Number(asc) : 1
     page = page ? Number(page) : 1
     pageSize = pageSize ? Number(pageSize) : 10
+    if (pageSize > 100) {
+      pageSize = 100
+    }
 
     const condition = {
       page,
@@ -491,7 +467,7 @@ export class FunctionTemplateController {
   }
 
   @ApiOperation({ summary: 'get one function template' })
-  @ApiResponseArray(FunctionTemplateSwagger)
+  @ApiResponseArray(FunctionTemplatesDto)
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getOneFunctionTemplate(
@@ -523,7 +499,7 @@ export class FunctionTemplateController {
   }
 
   @ApiOperation({ summary: 'get all function template' })
-  @ApiResponsePagination(FunctionTemplateSwagger)
+  @ApiResponsePagination(FunctionTemplatesDto)
   @UseGuards(JwtAuthGuard)
   @Get()
   async getAllFunctionTemplate(
@@ -533,11 +509,13 @@ export class FunctionTemplateController {
     @Query('keyword') keyword: string,
     @Query('sort') sort: string,
   ) {
+    asc = asc === 0 ? Number(asc) : 1
+    page = page ? Number(page) : 1
+    pageSize = pageSize ? Number(pageSize) : 10
+    if (pageSize > 100) {
+      pageSize = 100
+    }
     if (keyword) {
-      asc = asc === 0 ? Number(asc) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-
       const res =
         await this.functionTemplateService.findFunctionTemplatesByName(
           asc,
@@ -549,10 +527,6 @@ export class FunctionTemplateController {
     }
 
     if (sort === 'hot') {
-      asc = asc === 0 ? Number(asc) : 1
-      page = page ? Number(page) : 1
-      pageSize = pageSize ? Number(pageSize) : 10
-
       const hot = true
       const res = await this.functionTemplateService.findFunctionTemplates(
         asc,
@@ -562,10 +536,6 @@ export class FunctionTemplateController {
       )
       return ResponseUtil.ok(res)
     }
-
-    asc = asc === 0 ? Number(asc) : 1
-    page = page ? Number(page) : 1
-    pageSize = pageSize ? Number(pageSize) : 10
 
     const res = await this.functionTemplateService.findFunctionTemplates(
       asc,

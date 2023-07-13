@@ -27,7 +27,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
   const envValue = useRef(convertToEnv(environmentQuery?.data?.data));
   return (
     <>
-      <div className="absolute bottom-0 left-[280px] right-6 top-10 flex h-full flex-grow flex-col py-4">
+      <div className="absolute bottom-0 left-[280px] right-6 top-10 mr-6 flex h-full flex-grow flex-col py-4">
         <div
           className={clsx("relative h-[360px] rounded border", {
             "border-frostyNightfall-200": !(colorMode === COLOR_MODE.dark),

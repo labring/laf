@@ -1,6 +1,6 @@
 {
   "name": "laf-server",
-  "version": "1.0.0-beta.9",
+  "version": "1.0.0-beta.10",
   "description": "laf server",
   "author": "maslow(wangfugen@126.com)",
   "private": true,
@@ -24,8 +24,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@alicloud/dysmsapi20170525": "^2.0.23",
-    "@alicloud/openapi-client": "^0.4.5",
+    "@alicloud/dysmsapi20170525": "^2.0.22",
+    "@alicloud/openapi-client": "^0.4.1",
     "@alicloud/tea-util": "^1.4.5",
     "@aws-sdk/client-s3": "^3.245.0",
     "@aws-sdk/client-sts": "^3.226.0",
@@ -81,7 +81,6 @@
     "@types/npm-package-arg": "^6.1.1",
     "@types/passport-jwt": "^3.0.7",
     "@types/passport-local": "^1.0.34",
-    "@types/sharp": "^0.32.0",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",

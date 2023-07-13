@@ -2,10 +2,11 @@ import { useTranslation } from "react-i18next";
 import { MdPlayCircleOutline, MdRestartAlt } from "react-icons/md";
 import { RiDeleteBin6Line, RiShutDownLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, HStack, useColorMode } from "@chakra-ui/react";
+import { Box, Button, HStack, useColorMode, VStack } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import { APP_PHASE_STATUS, APP_STATUS, COLOR_MODE, Routes } from "@/constants/index";
+import { formatDate } from "@/utils/format";
 
 import InfoDetail from "./InfoDetail";
 
@@ -28,22 +29,20 @@ const AppEnvList = () => {
 
   return (
     <>
-      <div className="flex flex-col pt-12">
-        <div className="flex flex-none justify-between">
-          <HStack spacing={2}>
-            <Box
-              className={clsx("text-xl font-medium", {
-                "text-grayModern-100": darkMode,
-              })}
-            >
-              {currentApp?.name}
-            </Box>
-            <StatusBadge
-              className="rounded-full bg-primary-100"
-              statusConditions={currentApp?.phase}
-              state={currentApp?.state}
-            />
-          </HStack>
+      <div className="flex flex-col pt-10">
+        <VStack spacing={0}>
+          <StatusBadge
+            className="mb-3 rounded-full bg-primary-100"
+            statusConditions={currentApp?.phase}
+            state={currentApp?.state}
+          />
+          <Box
+            className={clsx("!mb-4 text-[20px] font-medium", {
+              "text-grayModern-100": darkMode,
+            })}
+          >
+            {currentApp?.name}
+          </Box>
           <HStack
             spacing={2}
             divider={
@@ -58,7 +57,9 @@ const AppEnvList = () => {
                 currentApp?.phase !== APP_PHASE_STATUS.Stopped &&
                 currentApp?.phase !== APP_PHASE_STATUS.Started
               }
-              variant={"text"}
+              color={"grayModern.600"}
+              bg={"none"}
+              _hover={{ color: "primary.600" }}
               onClick={() => {
                 updateCurrentApp(
                   currentApp!,
@@ -85,7 +86,9 @@ const AppEnvList = () => {
                 className="mr-2"
                 fontWeight={"semibold"}
                 size={"sm"}
-                variant={"text"}
+                color={"grayModern.600"}
+                bg={"none"}
+                _hover={{ color: "primary.600" }}
                 onClick={(event: any) => {
                   event?.preventDefault();
                   updateCurrentApp(currentApp!, APP_STATUS.Stopped);
@@ -102,25 +105,34 @@ const AppEnvList = () => {
                 navigate(Routes.dashboard);
               }}
             >
-              <Button className="mr-2" fontWeight={"semibold"} size={"sm"} variant={"warnText"}>
+              <Button
+                className="mr-2"
+                fontWeight={"semibold"}
+                size={"sm"}
+                color={"grayModern.600"}
+                bg={"none"}
+                _hover={{ color: "error.500" }}
+              >
                 <RiDeleteBin6Line size={16} className="mr-1" />
                 {t("SettingPanel.Delete")}
               </Button>
             </DeleteAppModal>
           </HStack>
-        </div>
-        <div className="mt-4 flex flex-grow flex-col overflow-auto">
+        </VStack>
+        <div className="mt-8 flex flex-grow justify-center space-x-5 overflow-auto">
           <InfoDetail
             title={t("SettingPanel.BaseInfo")}
-            leftData={[
-              { key: "APPID", value: currentApp?.appid },
+            data={[
+              { key: "APP ID", value: currentApp?.appid },
               { key: t("HomePanel.Region"), value: currentRegion?.displayName },
+              { key: t("HomePanel.RuntimeName"), value: currentApp?.runtime.name },
+              { key: t("CreateTime"), value: formatDate(currentApp.createdAt) },
             ]}
-            rightData={[{ key: t("HomePanel.RuntimeName"), value: currentApp?.runtime.name }]}
+            className={darkMode ? "w-60" : "w-60 bg-[#F8FAFB]"}
           />
           <InfoDetail
             title={t("SettingPanel.Detail")}
-            leftData={[
+            data={[
               {
                 key: "CPU",
                 value: `${currentApp?.bundle?.resource?.limitCPU! / 1000} ${t("Unit.CPU")}`,
@@ -129,8 +141,6 @@ const AppEnvList = () => {
                 key: t("Spec.RAM"),
                 value: `${currentApp?.bundle?.resource.limitMemory} ${t("Unit.MB")}`,
               },
-            ]}
-            rightData={[
               {
                 key: t("Spec.Database"),
                 value: `${currentApp?.bundle?.resource.databaseCapacity! / 1024} ${t("Unit.GB")}`,
@@ -140,6 +150,7 @@ const AppEnvList = () => {
                 value: `${currentApp?.bundle?.resource.storageCapacity! / 1024} ${t("Unit.GB")}`,
               },
             ]}
+            className={darkMode ? "w-60" : "w-60 bg-[#F8FAFB]"}
           />
         </div>
       </div>

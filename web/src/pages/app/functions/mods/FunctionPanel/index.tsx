@@ -215,7 +215,11 @@ export default function FunctionList() {
                           headerText={String(t("Delete"))}
                           bodyText={String(t("FunctionPanel.DeleteConfirm"))}
                         >
-                          <IconText icon={<DeleteIcon />} text={t("Delete")} />
+                          <IconText
+                            icon={<DeleteIcon />}
+                            text={t("Delete")}
+                            className="hover:!text-error-600"
+                          />
                         </ConfirmButton>
                       </>
                     </MoreButton>
