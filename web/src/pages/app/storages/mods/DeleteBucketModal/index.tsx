@@ -42,6 +42,7 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
       <IconText
         icon={<DeleteIcon />}
         text={t("Delete")}
+        className="hover:!text-error-600"
         onClick={() => {
           reset();
           onOpen();
