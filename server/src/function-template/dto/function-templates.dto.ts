@@ -9,6 +9,13 @@ class FunctionTemplateItemSource {
   code: string
 }
 
+class UserInfo {
+  @ApiPropertyOptional()
+  username?: string
+  @ApiPropertyOptional()
+  email?: string
+}
+
 class FunctionTemplateItems {
   @ApiProperty({ type: String })
   _id?: ObjectId
@@ -70,6 +77,9 @@ export class FunctionTemplatesDto {
 
   @ApiPropertyOptional({ type: [FunctionTemplateItems] })
   items: FunctionTemplateItems[]
+
+  @ApiPropertyOptional({ type: UserInfo })
+  user?: UserInfo
 }
 
 export class GetMyStaredFunctionTemplatesDto {
