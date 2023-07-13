@@ -571,5 +571,9 @@
   "Restore": "Restore",
   "CheckAll": "Check All",
   "Select": "Select",
-  "ClearRecycleBin": "Clear Recycle Bin"
+  "ClearRecycleBin": "Clear Recycle Bin",
+  "RestoreSuccess": "successfully restored",
+  "EmptySuccess": "successfully empty",
+  "RecycleBinEmpty": "Recycle Bin Empty",
+  "SelectOne": "At least select one"
 }

@@ -29,7 +29,7 @@ import Pagination from "@/components/Pagination";
 import { formatDate, formatPrice } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
 
-import { AccountControllerChargeRecord } from "@/apis/v1/accounts";
+import { AccountControllerGetChargeRecords } from "@/apis/v1/accounts";
 
 const LIMIT_OPTIONS = [10, 20, 100, 200];
 const DEFAULT_QUERY_DATA = {
@@ -51,7 +51,7 @@ export default function RechargeHistory() {
   const [selectedRange, setSelectedRange] = useState<DateRange>();
 
   const { data: rechargeRes, isLoading } = useQuery(["recharge", queryData], async () => {
-    return AccountControllerChargeRecord({
+    return AccountControllerGetChargeRecords({
       ...queryData,
     });
   });

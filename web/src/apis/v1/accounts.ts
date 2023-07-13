@@ -73,11 +73,11 @@ export async function AccountControllerGetChargeOrder(
 /**
  * get all charge order
  */
-export async function AccountControllerChargeRecord(
-  params: Paths.AccountControllerChargeRecord.BodyParameters,
+export async function AccountControllerGetChargeRecords(
+  params: Paths.AccountControllerGetChargeRecords.BodyParameters,
 ): Promise<{
   error: string;
-  data: Paths.AccountControllerChargeRecord.Responses;
+  data: Paths.AccountControllerGetChargeRecords.Responses;
 }> {
   // /v1/accounts/charge-orders
   let _params: { [key: string]: any } = {

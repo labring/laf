@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { HStack } from "@chakra-ui/react";
+import { HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import { DeleteIcon } from "@/components/CommonIcon";
@@ -17,6 +17,7 @@ import StatusBadge from "@/pages/home/mods/StatusBadge";
 function StatusBar() {
   const { t } = useTranslation();
   const { currentApp } = useGlobalStore((state) => state);
+  const darkMode = useColorMode().colorMode === "dark";
 
   return (
     <Panel className="!flex-row justify-between">
@@ -44,7 +45,9 @@ function StatusBar() {
           </CreateAppModal>
         </div>
         <RecycleBinModal>
-          <div className="flex cursor-pointer items-center text-grayModern-500">
+          <div
+            className={clsx("flex cursor-pointer items-center", !darkMode && "text-grayModern-500")}
+          >
             <DeleteIcon boxSize={4} />
             {t("RecycleBin")}
           </div>
