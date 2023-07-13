@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, Length } from 'class-validator'
+import { IsNotEmpty, Length, MaxLength } from 'class-validator'
 
 export class UseGiftCodeDto {
   @ApiProperty({
@@ -7,6 +7,6 @@ export class UseGiftCodeDto {
     type: 'string',
   })
   @IsNotEmpty()
-  @Length(16, 16)
+  @Length(8, 64)
   code: string
 }
