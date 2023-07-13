@@ -416,7 +416,6 @@ const theme = extendTheme({
     },
     error: {
       100: "#FDECEE",
-      200: "#FFD6DB",
       500: "#F16979",
       600: "#ED4458",
     },
