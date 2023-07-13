@@ -22,8 +22,7 @@ import { CloudFunctionHistory } from './entities/cloud-function-history'
 import { TriggerService } from 'src/trigger/trigger.service'
 import { TriggerPhase } from 'src/trigger/entities/cron-trigger'
 import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
-import { CloudFunctionRecycleBin } from './entities/cloud-function-recycle-bin'
-import { CloudFunctionRecycleBinQuery } from './interface/cloud-function-query.interface'
+import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
 
 @Injectable()
 export class FunctionService {
@@ -34,6 +33,7 @@ export class FunctionService {
     private readonly databaseService: DatabaseService,
     private readonly jwtService: JwtService,
     private readonly triggerService: TriggerService,
+    private readonly functionRecycleBinService: FunctionRecycleBinService,
   ) {}
   async create(appid: string, userid: ObjectId, dto: CreateFunctionDto) {
     await this.db.collection<CloudFunction>('CloudFunction').insertOne({
@@ -200,7 +200,7 @@ export class FunctionService {
     await this.unpublish(appid, name)
 
     // add this function to rcycle bin
-    await this.addToRecycleBin(res.value)
+    await this.functionRecycleBinService.addToRecycleBin(res.value)
     return res.value
   }
 
@@ -419,101 +419,5 @@ export class FunctionService {
         appid,
       })
     return res
-  }
-
-  async addToRecycleBin(func: CloudFunction) {
-    const res = await this.db
-      .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
-      .insertOne(func)
-    return res
-  }
-
-  async getRecycleBinStorage(appid: string) {
-    const res = await this.db
-      .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
-      .countDocuments({ appid })
-    return res
-  }
-
-  async getRecycleBin(appid: string, condition: CloudFunctionRecycleBinQuery) {
-    const query = {
-      appid,
-    }
-    if (condition.name) {
-      query['name'] = {
-        $regex: condition.name,
-        $options: 'i',
-      }
-    }
-
-    if (condition.startTime) {
-      query['createdAt'] = { $gte: condition.startTime }
-    }
-
-    if (condition.endTime) {
-      if (condition.startTime) {
-        query['createdAt']['$lte'] = condition.endTime
-      } else {
-        query['createdAt'] = { $lte: condition.endTime }
-      }
-    }
-
-    const total = await this.db
-      .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
-      .countDocuments(query)
-
-    const functions = await this.db
-      .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
-      .find(query)
-      .skip((condition.page - 1) * condition.pageSize)
-      .limit(condition.pageSize)
-      .toArray()
-
-    const res = {
-      total,
-      list: functions,
-      page: condition.page,
-      pageSize: condition.pageSize,
-    }
-    return res
-  }
-
-  async emptyRecycleBin(appid: string) {
-    const res = await this.db
-      .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
-      .deleteMany({ appid })
-    return res
-  }
-
-  async deleteFromRecycleBin(ids: ObjectId[]) {
-    const res = await this.db
-      .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
-      .deleteMany({ _id: { $in: ids } })
-    return res
-  }
-
-  async restoreDeletedCloudFunctions(ids: ObjectId[]) {
-    const client = SystemDatabase.client
-    const session = client.startSession()
-    try {
-      session.startTransaction()
-
-      const res = await this.db
-        .collection<CloudFunctionRecycleBin>('CloudFunctionRecycleBin')
-        .find({ _id: { $in: ids } })
-        .toArray()
-
-      await this.db
-        .collection<CloudFunction>('CloudFunction')
-        .insertMany(res, { session })
-
-      await this.publishMany(res)
-    } catch (err) {
-      await session.abortTransaction()
-      this.logger.error(err)
-      throw err
-    } finally {
-      await session.endSession()
-    }
   }
 }

@@ -10,14 +10,12 @@ import {
   HttpException,
   HttpStatus,
   Req,
-  Query,
 } from '@nestjs/common'
 import { CreateFunctionDto } from './dto/create-function.dto'
 import { UpdateFunctionDto } from './dto/update-function.dto'
 import {
   ApiResponseArray,
   ApiResponseObject,
-  ApiResponsePagination,
   ResponseUtil,
 } from '../utils/response'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
@@ -32,8 +30,7 @@ import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 import { CloudFunctionHistory } from './entities/cloud-function-history'
 import { CloudFunction } from './entities/cloud-function'
 import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
-import { CloudFunctionRecycleBin } from './entities/cloud-function-recycle-bin'
-import { CloudFunctionRecycleBinQuery } from './interface/cloud-function-query.interface'
+import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
@@ -42,6 +39,7 @@ export class FunctionController {
   constructor(
     private readonly functionsService: FunctionService,
     private readonly bundleService: BundleService,
+    private readonly functionRecycleBinService: FunctionRecycleBinService,
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
@@ -218,12 +216,13 @@ export class FunctionController {
         HttpStatus.NOT_FOUND,
       )
     }
-    const recycleBinStorage = await this.functionsService.getRecycleBinStorage(
-      appid,
-    )
-    if (recycleBinStorage >= 1000) {
+    const recycleBinStorage =
+      await this.functionRecycleBinService.getRecycleBinStorage(appid)
+
+    if (recycleBinStorage >= 3) {
       return ResponseUtil.error('Recycle bin is full, please free up space')
     }
+
     const res = await this.functionsService.removeOne(func)
     if (!res) {
       return ResponseUtil.error(i18n.t('function.delete.error'))
@@ -286,43 +285,4 @@ export class FunctionController {
     const res = await this.functionsService.getHistory(func)
     return ResponseUtil.ok(res)
   }
-
-  /**
-   * Get function Recycle bin
-   */
-  @ApiOperation({ summary: 'Get cloud function recycle bin' })
-  @ApiResponsePagination(CloudFunctionRecycleBin)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
-  @Get('recycle-bin')
-  async getRecycleBin(
-    @Param('appid') appid: string,
-    @Query('keyword') keyword?: string,
-    @Query('page') page?: number,
-    @Query('pageSize') pageSize?: number,
-    @Query('startTime') startTime?: number,
-    @Query('endTime') endTime?: number,
-  ) {
-    const query: CloudFunctionRecycleBinQuery = {
-      page: page || 1,
-      pageSize: pageSize || 12,
-    }
-    if (query.pageSize > 100) {
-      query.pageSize = 100
-    }
-    if (startTime) {
-      query.startTime = new Date(startTime)
-    }
-    if (endTime) {
-      query.endTime = new Date(endTime)
-    }
-    if (keyword) {
-      query.name = keyword
-    }
-    const res = await this.functionsService.getRecycleBin(appid, query)
-    return ResponseUtil.ok(res)
-  }
-
-  // delete all
-  // delete
-  // restore
 }
