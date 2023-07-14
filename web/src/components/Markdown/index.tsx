@@ -14,6 +14,8 @@ import { formatLinkText } from "./formatLinkText";
 import "katex/dist/katex.min.css";
 import styles from "./index.module.scss";
 
+import CreateModal from "@/pages/app/functions/mods/FunctionPanel/CreateModal";
+
 const Markdown = ({
   source,
   isChatting = false,
@@ -57,6 +59,9 @@ const Markdown = ({
               >
                 <Box flex={1}>{match?.[1]}</Box>
                 <Flex cursor={"pointer"} onClick={() => {}} alignItems={"center"}>
+                  <CreateModal aiCode={code}>
+                    <span className="pr-2">{t("Apply")}</span>
+                  </CreateModal>
                   <CopyText hideToolTip text={code}>
                     <span>{t("Copy")}</span>
                   </CopyText>
