@@ -16,6 +16,7 @@ import { WebsiteService } from 'src/website/website.service'
 import { AccountModule } from 'src/account/account.module'
 import { BundleService } from './bundle.service'
 import { ResourceService } from 'src/billing/resource.service'
+import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
 import { HttpModule } from '@nestjs/axios'
 
 @Module({
@@ -31,6 +32,7 @@ import { HttpModule } from '@nestjs/axios'
     ApplicationService,
     ApplicationTaskService,
     InstanceService,
+    FunctionRecycleBinService,
     JwtService,
     FunctionService,
     EnvironmentVariableService,

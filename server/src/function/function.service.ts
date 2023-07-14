@@ -13,13 +13,14 @@ import { CompileFunctionDto } from './dto/compile-function.dto'
 import { DatabaseService } from 'src/database/database.service'
 import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
 import { SystemDatabase } from 'src/system-database'
-import { ObjectId } from 'mongodb'
+import { ClientSession, ObjectId } from 'mongodb'
 import { CloudFunction } from './entities/cloud-function'
 import { ApplicationConfiguration } from 'src/application/entities/application-configuration'
 import { CloudFunctionHistory } from './entities/cloud-function-history'
 import { TriggerService } from 'src/trigger/trigger.service'
 import { TriggerPhase } from 'src/trigger/entities/cron-trigger'
 import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
+import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
 import { HttpService } from '@nestjs/axios'
 import { RegionService } from 'src/region/region.service'
 
@@ -32,6 +33,7 @@ export class FunctionService {
     private readonly databaseService: DatabaseService,
     private readonly jwtService: JwtService,
     private readonly triggerService: TriggerService,
+    private readonly functionRecycleBinService: FunctionRecycleBinService,
     private readonly httpService: HttpService,
     private readonly regionService: RegionService,
   ) {}
@@ -191,14 +193,33 @@ export class FunctionService {
   }
 
   async removeOne(func: CloudFunction) {
-    const { appid, name } = func
-    const res = await this.db
-      .collection<CloudFunction>('CloudFunction')
-      .findOneAndDelete({ appid, name })
+    const client = SystemDatabase.client
+    const session = client.startSession()
+    try {
+      session.startTransaction()
 
-    await this.deleteHistory(res.value)
-    await this.unpublish(appid, name)
-    return res.value
+      const { appid, name } = func
+
+      const res = await this.db
+        .collection<CloudFunction>('CloudFunction')
+        .findOneAndDelete({ appid, name }, { session })
+
+      await this.deleteHistory(res.value, session)
+
+      // add this function to recycle bin
+      await this.functionRecycleBinService.addToRecycleBin(res.value, session)
+
+      await this.unpublish(appid, name)
+
+      await session.commitTransaction()
+      return res.value
+    } catch (err) {
+      await session.abortTransaction()
+      this.logger.error(err)
+      throw err
+    } finally {
+      await session.endSession()
+    }
   }
 
   async removeAll(appid: string) {
@@ -222,6 +243,24 @@ export class FunctionService {
           { session },
         )
         await coll.insertOne(func, { session })
+      })
+    } finally {
+      await session.endSession()
+      await client.close()
+    }
+  }
+
+  async publishMany(funcs: CloudFunction[]) {
+    const { db, client } = await this.databaseService.findAndConnect(
+      funcs[0].appid,
+    )
+    const session = client.startSession()
+    try {
+      await session.withTransaction(async () => {
+        const coll = db.collection(CN_PUBLISHED_FUNCTIONS)
+        const funcNames = funcs.map((func) => func.name)
+        await coll.deleteMany({ name: { $in: funcNames } }, { session })
+        await coll.insertMany(funcs, { session })
       })
     } finally {
       await session.endSession()
@@ -371,12 +410,15 @@ export class FunctionService {
       })
   }
 
-  async deleteHistory(func: CloudFunction) {
+  async deleteHistory(func: CloudFunction, session?: ClientSession) {
     const res = await this.db
       .collection<CloudFunctionHistory>('CloudFunctionHistory')
-      .deleteMany({
-        functionId: func._id,
-      })
+      .deleteMany(
+        {
+          functionId: func._id,
+        },
+        { session },
+      )
     return res
   }
 
