@@ -8,8 +8,10 @@ import { TriggerService } from 'src/trigger/trigger.service'
 import { MongoService } from 'src/database/mongo.service'
 import { RegionService } from 'src/region/region.service'
 import { ApplicationService } from 'src/application/application.service'
+import { HttpModule } from '@nestjs/axios'
 
 @Module({
+  imports: [HttpModule],
   controllers: [FunctionRecycleBinController],
   providers: [
     ApplicationService,
