@@ -568,6 +568,15 @@
   "Core": "Core",
   "No History": "No History",
   "MyIncomeAndExpenses": "My Income And Expenses",
+  "RecycleBin": "Recycle Bin",
+  "Restore": "Restore",
+  "CheckAll": "Check All",
+  "Select": "Select",
+  "ClearRecycleBin": "Clear Recycle Bin",
+  "RestoreSuccess": "successfully restored",
+  "EmptySuccess": "successfully empty",
+  "RecycleBinEmpty": "Recycle Bin Empty",
+  "SelectOne": "At least select one",
   "Apply": "apply",
   "Developing": "Developing"
 }
