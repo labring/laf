@@ -1,6 +1,6 @@
-import { Inject, Injectable, Logger, forwardRef } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { SystemDatabase } from 'src/system-database'
-import { ObjectId } from 'mongodb'
+import { ClientSession, ObjectId } from 'mongodb'
 import { CloudFunction } from 'src/function/entities/cloud-function'
 import { DataType, RecycleBin } from '../entities/recycle-bin'
 import { CloudFunctionRecycleBinQuery } from './interface/function-recycle-bin-query.interface'
@@ -11,15 +11,15 @@ export class FunctionRecycleBinService {
   private readonly logger = new Logger(FunctionRecycleBinService.name)
   private readonly db = SystemDatabase.db
 
-  constructor(
-    @Inject(forwardRef(() => FunctionService))
-    private readonly functionService: FunctionService,
-  ) {}
+  constructor(private readonly functionService: FunctionService) {}
 
-  async addToRecycleBin(func: CloudFunction) {
+  async addToRecycleBin(func: CloudFunction, session?: ClientSession) {
     const res = await this.db
       .collection<RecycleBin>('RecycleBin')
-      .insertOne({ type: DataType.FUNCTION, data: func, createdAt: new Date() })
+      .insertOne(
+        { type: DataType.FUNCTION, data: func, createdAt: new Date() },
+        { session },
+      )
     return res
   }
 
