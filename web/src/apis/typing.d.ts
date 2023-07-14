@@ -367,3 +367,5 @@ export type TApplicationItem = {
     };
   };
 };
+
+export type TSmsCode = "Signin" | "Signup" | "ResetPassword" | "Bind" | "Unbind" | "ChangePhone";

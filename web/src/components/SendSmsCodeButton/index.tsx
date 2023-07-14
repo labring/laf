@@ -3,6 +3,7 @@ import { Button } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { TSmsCode } from "@/apis/typing";
 import { useSendSmsCodeMutation } from "@/pages/auth/service";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -10,8 +11,9 @@ export function SendSmsCodeButton(props: {
   getPhone: any;
   className?: string;
   phoneNumber?: string;
+  type: TSmsCode;
 }) {
-  const { getPhone, className, phoneNumber } = props;
+  const { getPhone, className, phoneNumber, type } = props;
   const [isSendSmsCode, setIsSendSmsCode] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const sendSmsCodeMutation = useSendSmsCodeMutation();
@@ -46,7 +48,7 @@ export function SendSmsCodeButton(props: {
 
     const res = await sendSmsCodeMutation.mutateAsync({
       phone,
-      type: "ResetPassword",
+      type,
     });
 
     if (res?.data) {
