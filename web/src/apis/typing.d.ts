@@ -296,6 +296,8 @@ export type TFunctionTemplate = {
   items: { name: string; source: { code: string } }[];
   dependencies: string[];
   environments: { name: string; value: string }[];
+  uid: string;
+  user: { username: string };
 };
 
 export type TemplateList = {
@@ -367,3 +369,5 @@ export type TApplicationItem = {
     };
   };
 };
+
+export type TSmsCode = "Signin" | "Signup" | "ResetPassword" | "Bind" | "Unbind" | "ChangePhone";

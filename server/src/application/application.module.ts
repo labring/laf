@@ -17,9 +17,16 @@ import { AccountModule } from 'src/account/account.module'
 import { BundleService } from './bundle.service'
 import { ResourceService } from 'src/billing/resource.service'
 import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
+import { HttpModule } from '@nestjs/axios'
 
 @Module({
-  imports: [StorageModule, DatabaseModule, GatewayModule, AccountModule],
+  imports: [
+    StorageModule,
+    DatabaseModule,
+    GatewayModule,
+    AccountModule,
+    HttpModule,
+  ],
   controllers: [ApplicationController, EnvironmentVariableController],
   providers: [
     ApplicationService,

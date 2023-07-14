@@ -104,7 +104,7 @@ export default function ResetPassword() {
               border={"1px solid #D5D6E1"}
             />
             <InputRightElement width="6rem">
-              <SendSmsCodeButton getPhone={getValues} phoneNumber={"phone"} />
+              <SendSmsCodeButton getPhone={getValues} phoneNumber={"phone"} type="ResetPassword" />
             </InputRightElement>
           </InputGroup>
         </FormControl>

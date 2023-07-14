@@ -143,6 +143,18 @@ export class ServerConfig {
   static get DEFAULT_REGION_MINIO_ROOT_SECRET_KEY() {
     return process.env.DEFAULT_REGION_MINIO_ROOT_SECRET_KEY
   }
+
+  static get DEFAULT_REGION_LOG_SERVER_URL() {
+    return process.env.DEFAULT_REGION_LOG_SERVER_URL
+  }
+
+  static get DEFAULT_REGION_LOG_SERVER_SECRET() {
+    return process.env.DEFAULT_REGION_LOG_SERVER_SECRET
+  }
+
+  static get DEFAULT_REGION_LOG_SERVER_DATABASE_URL() {
+    return process.env.DEFAULT_REGION_LOG_SERVER_DATABASE_URL
+  }
 }
 
 export const LABEL_KEY_USER_ID = 'laf.dev/user.id'
@@ -160,7 +172,6 @@ export const HTTP_METHODS = ['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'PATCH']
 
 export const CN_PUBLISHED_FUNCTIONS = '__functions__'
 export const CN_PUBLISHED_POLICIES = '__policies__'
-export const CN_FUNCTION_LOGS = '__function_logs__'
 export const CN_PUBLISHED_CONF = '__conf__'
 
 export const X_LAF_TRIGGER_TOKEN_KEY = 'x-laf-trigger-token'
