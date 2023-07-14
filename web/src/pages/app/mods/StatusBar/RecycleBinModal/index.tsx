@@ -30,8 +30,14 @@ import {
   useRestoreRecycleBinItemsMutation,
 } from "./service";
 
+import { TFunction, TFunctionList } from "@/apis/typing";
 import MonacoEditor from "@/pages/functionTemplate/Mods/MonacoEditor";
 import useGlobalStore from "@/pages/globalStore";
+
+const defaultQuery = {
+  page: 1,
+  pageSize: 9,
+};
 
 function FunctionItem({
   item,
@@ -53,12 +59,12 @@ function FunctionItem({
 
   return (
     <div
-      className={clsx(
-        "flex cursor-pointer items-center justify-between rounded px-3 py-2",
-        darkMode ? "hover:bg-grayModern-800" : "hover:bg-primary-100",
-        darkMode && currentFunction._id === item._id && "bg-grayModern-800",
-        !darkMode && currentFunction._id === item._id && "bg-primary-100",
-      )}
+      className={clsx("flex cursor-pointer items-center justify-between rounded px-3 py-2", {
+        "hover:bg-grayModern-800": darkMode,
+        "hover:bg-primary-100": !darkMode,
+        "bg-grayModern-800": darkMode && currentFunction._id === item._id,
+        "bg-primary-100": !darkMode && currentFunction._id === item._id,
+      })}
       onClick={() => {
         setCurrentFunction(item);
       }}
@@ -132,14 +138,11 @@ export default function RecycleBinModal(props: { children: React.ReactElement })
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
 
-  const [functionListData, setFunctionListData] = useState<any>();
-  const [currentFunction, setCurrentFunction] = useState<any>();
-  const [selectedFunctionList, setSelectedFunctionList] = useState<any>([]);
+  const [functionListData, setFunctionListData] = useState<TFunctionList>();
+  const [currentFunction, setCurrentFunction] = useState<TFunction>();
+  const [selectedFunctionList, setSelectedFunctionList] = useState<string[]>([]);
   const [showCheckBox, setShowCheckBox] = useState(false);
-  const [queryData, setQueryData] = useState<any>({
-    page: 1,
-    pageSize: 9,
-  });
+  const [queryData, setQueryData] = useState(defaultQuery);
   const [enable, setEnable] = useState(false);
 
   const queryClient = useQueryClient();
@@ -171,7 +174,7 @@ export default function RecycleBinModal(props: { children: React.ReactElement })
   );
 
   useEffect(() => {
-    if (functionListData?.list.length > 0) {
+    if (functionListData && functionListData?.list.length > 0) {
       onOpen();
     }
   }, [functionListData, onOpen]);
@@ -233,12 +236,13 @@ export default function RecycleBinModal(props: { children: React.ReactElement })
                       className="flex cursor-pointer hover:text-grayModern-900"
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (selectedFunctionList.length === functionListData.list.length) {
+                        if (selectedFunctionList.length === functionListData?.list.length) {
                           setSelectedFunctionList([]);
                         } else {
-                          setSelectedFunctionList(
-                            functionListData.list.map((item: any) => item._id),
-                          );
+                          functionListData &&
+                            setSelectedFunctionList(
+                              functionListData?.list.map((item: TFunction) => item._id),
+                            );
                         }
                       }}
                     >
@@ -293,7 +297,7 @@ export default function RecycleBinModal(props: { children: React.ReactElement })
                   </div>
                 )}
                 {functionListData &&
-                  functionListData?.list.map((item: any, index: number) => (
+                  functionListData?.list.map((item: TFunction, index: number) => (
                     <FunctionItem
                       key={index}
                       item={item}

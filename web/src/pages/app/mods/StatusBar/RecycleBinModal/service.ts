@@ -46,7 +46,7 @@ export const useRestoreRecycleBinItemsMutation = () => {
     {
       onSuccess(data) {
         if (!data.error) {
-          console.log("data", data);
+          // console.log("data", data);
         }
       },
     },
@@ -61,7 +61,7 @@ export const useEmptyRecycleBinMutation = () => {
     {
       onSuccess(data) {
         if (!data.error) {
-          console.log("data", data);
+          // console.log("data", data);
         }
       },
     },

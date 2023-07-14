@@ -274,6 +274,13 @@ export type TFunction = {
   params: any;
 };
 
+export type TFunctionList = {
+  list: TFunction[];
+  total: number;
+  page: number;
+  pageSize: number;
+};
+
 export type TMethod = "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "OPTIONS" | "PATCH";
 
 export type Source = {
