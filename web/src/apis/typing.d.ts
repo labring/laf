@@ -296,6 +296,8 @@ export type TFunctionTemplate = {
   items: { name: string; source: { code: string } }[];
   dependencies: string[];
   environments: { name: string; value: string }[];
+  uid: string;
+  user: { username: string };
 };
 
 export type TemplateList = {

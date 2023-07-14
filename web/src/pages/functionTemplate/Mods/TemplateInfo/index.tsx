@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Avatar, AvatarGroup, Box, Tooltip, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import { GithubIcon, PhoneIcon, WechatIcon } from "@/components/CommonIcon";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
@@ -22,6 +23,29 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
       <UseTemplate template={functionTemplate} />
       <div>
         <Box className="border-b-[1px]">
+          <span className="text-xl font-semibold">{t("Template.DeveloperInfo")}</span>
+          <Box className="flex max-h-40 overflow-auto py-5">
+            <Avatar
+              width={12}
+              height={12}
+              border={"2px solid #DEE0E2"}
+              src={getAvatarUrl(functionTemplate?.uid)}
+              name={functionTemplate.user.username}
+              backgroundColor={"primary.500"}
+            />
+            <div className="ml-3 flex flex-col">
+              <span className="text-lg font-semibold text-grayModern-900">
+                {functionTemplate.user.username}
+              </span>
+              <span className="space-x-1 text-grayModern-400">
+                <WechatIcon />
+                <GithubIcon />
+                <PhoneIcon />
+              </span>
+            </div>
+          </Box>
+        </Box>
+        <Box className="border-b-[1px] pt-5">
           <span className="text-xl font-semibold">{t("Template.Function")}</span>
           <Box className="max-h-40 overflow-auto py-2">
             {(functionList || []).map((item) => {
