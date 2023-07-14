@@ -19,7 +19,7 @@ export default function CopyText(props: {
     children = <CopyIcon fontSize={10} color="#999" />,
     text,
     tip,
-    className,
+    className = "cursor-pointer",
     hideToolTip,
   } = props;
 
