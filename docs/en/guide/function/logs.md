@@ -17,25 +17,3 @@ You can filter logs based on the `requestId` and the name of the cloud function.
 1. Click on a log to switch to the log section.
 2. Use the `requestId` and the name of the cloud function to search for specific logs.
 3. Click on an individual log to view detailed content.
-
-## Manual Log Cleaning
-
-The running logs of Laf cloud functions are stored in a hidden collection called `__function_logs__`. Therefore, we can use the method to manipulate the database in cloud functions to clean the logs.
-
-The following is the code to clean all logs in a cloud function:
-
-::: danger
-The following operation will delete all historical logs. Please proceed with caution.
-:::
-
-```typescript
-import cloud from '@lafjs/cloud'
-
-export async function main(ctx: FunctionContext) {
-  console.log('Hello World')
-  // Database, remove all logs
-  const db = cloud.database();
-  const res = await db.collection('__function_logs__').remove({multi:true})
-  console.log(res)
-}
-```

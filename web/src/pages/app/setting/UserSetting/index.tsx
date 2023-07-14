@@ -120,7 +120,12 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
                 headerTitle={t("SettingPanel.UserCenter")}
                 currentTab={TabKeys.UserInfo}
               >
-                <div className="flex cursor-pointer items-center justify-between rounded-sm px-1 py-3 text-lg hover:bg-[#F4F6F8]">
+                <div
+                  className={clsx(
+                    "flex cursor-pointer items-center justify-between rounded-sm px-1 py-3 text-lg",
+                    darkMode ? "hover:bg-grayModern-600" : "hover:bg-[#F4F6F8]",
+                  )}
+                >
                   <span className="flex items-center">
                     <UserIcon fontSize={20} mr={3} />
                     {t("SettingPanel.UserCenter")}
@@ -166,7 +171,12 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
                 headerTitle={t("SettingPanel.Usage")}
                 currentTab={TabKeys.CostOverview}
               >
-                <div className="flex cursor-pointer items-center justify-between rounded-sm px-1 py-3 text-lg hover:bg-[#F4F6F8] ">
+                <div
+                  className={clsx(
+                    "flex cursor-pointer items-center justify-between rounded-sm px-1 py-3 text-lg",
+                    darkMode ? "hover:bg-grayModern-600" : "hover:bg-[#F4F6F8]",
+                  )}
+                >
                   <span className="flex items-center">
                     <BillingIcon fontSize={20} mr={3} />
                     {t("SettingPanel.Usage")}
@@ -177,7 +187,10 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
             </div>
             <Divider />
             <div
-              className="flex w-full cursor-pointer items-center justify-between rounded-sm px-1 py-3 text-lg hover:bg-[#F4F6F8]"
+              className={clsx(
+                "flex w-full cursor-pointer items-center justify-between rounded-sm px-1 py-3 text-lg",
+                darkMode ? "hover:bg-grayModern-600" : "hover:bg-[#F4F6F8]",
+              )}
               onClick={() => {
                 window.open("https://www.wenjuan.com/s/I36ZNbl/", "_blank");
               }}

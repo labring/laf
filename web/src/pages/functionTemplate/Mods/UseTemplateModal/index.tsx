@@ -45,6 +45,7 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
       return ApplicationControllerFindAll({});
     },
     {
+      enabled: isOpen,
       onSuccess(data) {
         setAppList(data?.data || []);
       },

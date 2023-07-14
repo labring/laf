@@ -21,12 +21,10 @@ import xmlparser from 'express-xml-bodyparser'
 import './support/cloud-sdk'
 import { FunctionCache } from './support/function-engine/cache'
 import { DatabaseChangeStream } from './support/db-change-stream'
-import { ensureCollectionIndexes } from './support/function-log'
 
 const app = express()
 
 DatabaseAgent.accessor.ready.then(() => {
-  ensureCollectionIndexes()
   FunctionCache.initialize()
   DatabaseChangeStream.initialize()
 })

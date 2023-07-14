@@ -358,6 +358,14 @@ declare namespace Definitions {
     items?: Definitions.FunctionTemplateItemDto[] /* items of the function template */;
   };
 
+  export type DeleteRecycleBinItemsDto = {
+    ids?: string[] /* The list of item ids */;
+  };
+
+  export type RestoreRecycleBinItemsDto = {
+    ids?: string[] /* The list of item ids */;
+  };
+
   export type CreateAutoscalingDto = {
     enable?: boolean;
     minReplicas?: number;
@@ -458,10 +466,11 @@ declare namespace Paths {
   namespace AppControllerGetRuntimes {
     export type QueryParameters = any;
 
-    export type BodyParameters = Definitions.CreateFunctionDto;
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
+
   namespace FunctionControllerCreate {
     export type QueryParameters = any;
 
@@ -814,7 +823,7 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace AccountControllerChargeRecord {
+  namespace AccountControllerGetChargeRecords {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -1274,6 +1283,38 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionRecycleBinControllerDeleteRecycleBinItems {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.DeleteRecycleBinItemsDto;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionRecycleBinControllerEmptyRecycleBin {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionRecycleBinControllerGetRecycleBin {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionRecycleBinControllerRestoreRecycleBinItems {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.RestoreRecycleBinItemsDto;
 
     export type Responses = any;
   }

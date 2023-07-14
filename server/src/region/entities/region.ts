@@ -32,6 +32,12 @@ export type RegionStorageConf = {
   controlEndpoint: string
 }
 
+export type LogServerConf = {
+  apiUrl: string
+  secret: string
+  databaseUrl: string
+}
+
 export class Region {
   @ApiProperty({ type: String })
   _id?: ObjectId
@@ -46,6 +52,7 @@ export class Region {
   databaseConf: RegionDatabaseConf
   gatewayConf: RegionGatewayConf
   storageConf: RegionStorageConf
+  logServerConf: LogServerConf
 
   @ApiProperty()
   tls: boolean

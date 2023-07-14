@@ -95,7 +95,7 @@ module.exports = {
         },
         error: {
           100: "#FDECEE",
-          200: "#FDD8DC",
+          200: "#FFD6DB",
           400: "#FF8492",
           500: "#F16979",
           600: "#ED4458",
