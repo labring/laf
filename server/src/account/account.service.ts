@@ -384,10 +384,24 @@ export class AccountService {
     }
   }
 
-  async findOneGiftCode(code: string, used = false): Promise<GiftCode | null> {
+  async findOneGiftCode(
+    code: string,
+    used = false,
+    expired = false,
+  ): Promise<GiftCode | null> {
+    if (expired) {
+      const giftCode = await this.db.collection<GiftCode>('GiftCode').findOne({
+        code: code,
+        used: used,
+        expiredAt: { $lte: new Date() },
+      })
+      return giftCode
+    }
+
     const giftCode = await this.db.collection<GiftCode>('GiftCode').findOne({
       code: code,
       used: used,
+      expiredAt: { $gte: new Date() },
     })
 
     return giftCode
