@@ -37,11 +37,13 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
               <span className="text-lg font-semibold text-grayModern-900">
                 {functionTemplate.user.username}
               </span>
-              <span className="space-x-1 text-grayModern-400">
-                <WechatIcon />
-                <GithubIcon />
-                <PhoneIcon />
-              </span>
+              <Tooltip label={t("Developing")}>
+                <span className="space-x-1 text-grayModern-400">
+                  <WechatIcon />
+                  <GithubIcon />
+                  <PhoneIcon />
+                </span>
+              </Tooltip>
             </div>
           </Box>
         </Box>

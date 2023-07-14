@@ -88,7 +88,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
                   getPhone={getValues}
                   phoneNumber={"oldPhoneNumber"}
                   className="!h-6 !text-[12px]"
-                  type={"Unbind"}
+                  type="Unbind"
                 />
               </InputRightElement>
             </InputGroup>
@@ -120,7 +120,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
                   getPhone={getValues}
                   phoneNumber={"newPhoneNumber"}
                   className="!h-6 !text-[12px]"
-                  type={"Bind"}
+                  type="Bind"
                 />
               </InputRightElement>
             </InputGroup>

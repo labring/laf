@@ -103,7 +103,7 @@ export default function UserNameEditor(props: { handleBack: any }) {
                   getPhone={getValues}
                   phoneNumber={"phone"}
                   className="!h-6 !text-[12px]"
-                  type={"ResetPassword"}
+                  type="ResetPassword"
                 />
               </InputRightElement>
             </InputGroup>
