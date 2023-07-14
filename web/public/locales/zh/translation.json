@@ -498,7 +498,8 @@
     "Save": "保存",
     "Recommended": "推荐模板",
     "Confirm": "如果存在依赖包未安装，将会自动重启应用，确定使用该模板吗？",
-    "ConfirmDeleteTemplate": "确定删除模板吗"
+    "ConfirmDeleteTemplate": "确定删除模板吗?",
+    "DeveloperInfo": "开发者信息"
   },
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",
@@ -567,5 +568,6 @@
   "Hour": "小时",
   "Core": "核",
   "No History": "暂无记录",
-  "Apply": "使用"
+  "Apply": "使用",
+  "Developing": "开发中"
 }
