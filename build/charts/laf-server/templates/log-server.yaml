@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    {{- include "log-server.labels" . | nindent 4 }}
+  name: log-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "log-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata: 
+      labels:
+        {{- include "log-server.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - image: docker.io/lafyun/log-server:latest
+          imagePullPolicy: Always
+          name: log-server
+          ports:
+            - name: http
+              containerPort: 5060
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http 
+          env:
+            - name: DB_URI
+              value: {{ .Values.default_region.log_server_database_url | quote }}
+            - name: JWT_SECRET
+              value: {{ .Values.default_region.log_server_secret | quote }}
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    {{- include "log-server.labels" . | nindent 4 }}
+  name: log-server
+spec:
+  ports:
+    - name: http
+      port: 5060
+      protocol: TCP
+      targetPort: http 
+  selector:
+    {{- include "log-server.selectorLabels" . | nindent 4 }}

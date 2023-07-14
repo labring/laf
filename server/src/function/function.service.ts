@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common'
 import { compileTs2js } from '../utils/lang'
 import {
   APPLICATION_SECRET_KEY,
-  CN_FUNCTION_LOGS,
   CN_PUBLISHED_FUNCTIONS,
   TASK_LOCK_INIT_TIME,
 } from '../constants'
@@ -17,11 +16,12 @@ import { SystemDatabase } from 'src/system-database'
 import { ObjectId } from 'mongodb'
 import { CloudFunction } from './entities/cloud-function'
 import { ApplicationConfiguration } from 'src/application/entities/application-configuration'
-import { FunctionLog } from 'src/log/entities/function-log'
 import { CloudFunctionHistory } from './entities/cloud-function-history'
 import { TriggerService } from 'src/trigger/trigger.service'
 import { TriggerPhase } from 'src/trigger/entities/cron-trigger'
 import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
+import { HttpService } from '@nestjs/axios'
+import { RegionService } from 'src/region/region.service'
 
 @Injectable()
 export class FunctionService {
@@ -32,6 +32,8 @@ export class FunctionService {
     private readonly databaseService: DatabaseService,
     private readonly jwtService: JwtService,
     private readonly triggerService: TriggerService,
+    private readonly httpService: HttpService,
+    private readonly regionService: RegionService,
   ) {}
   async create(appid: string, userid: ObjectId, dto: CreateFunctionDto) {
     await this.db.collection<CloudFunction>('CloudFunction').insertOne({
@@ -320,32 +322,21 @@ export class FunctionService {
       functionName?: string
     },
   ) {
-    const { page, pageSize, requestId, functionName } = params
-    const { db, client } = await this.databaseService.findAndConnect(appid)
+    const region = await this.regionService.findByAppId(appid)
 
-    try {
-      const coll = db.collection<FunctionLog>(CN_FUNCTION_LOGS)
-      const query: any = {}
-      if (requestId) {
-        query.request_id = requestId
-      }
-      if (functionName) {
-        query.func = functionName
-      }
-
-      const data = await coll
-        .find(query, {
-          limit: pageSize,
-          skip: (page - 1) * pageSize,
-          sort: { _id: -1 },
-        })
-        .toArray()
-
-      const total = await coll.countDocuments(query)
-      return { data, total }
-    } finally {
-      await client.close()
-    }
+    const res = await this.httpService.axiosRef.get(
+      `${region.logServerConf.apiUrl}/function/log`,
+      {
+        params: {
+          ...params,
+          appid,
+        },
+        headers: {
+          'x-token': region.logServerConf.secret,
+        },
+      },
+    )
+    return res.data
   }
 
   async getHistory(func: CloudFunction) {
