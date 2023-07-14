@@ -12,9 +12,9 @@ import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/functi
   controllers: [FunctionController],
   providers: [
     FunctionService,
+    FunctionRecycleBinService,
     JwtService,
     TriggerService,
-    FunctionRecycleBinService,
   ],
   exports: [FunctionService],
 })

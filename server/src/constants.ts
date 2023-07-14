@@ -196,4 +196,4 @@ export const LIMIT_CODE_PER_IP_PER_DAY = 30 // 30 times
 export const CODE_VALIDITY = 10 * 60 * 1000 // 10 minutes (in milliseconds)
 
 // Recycle bin constants
-export const StORAGE_LIMIT = 1000 // 1000 items
+export const STORAGE_LIMIT = 1000 // 1000 items

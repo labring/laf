@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Inject, Injectable, Logger, forwardRef } from '@nestjs/common'
 import { SystemDatabase } from 'src/system-database'
 import { ClientSession, ObjectId } from 'mongodb'
 import { CloudFunction } from 'src/function/entities/cloud-function'
@@ -11,7 +11,10 @@ export class FunctionRecycleBinService {
   private readonly logger = new Logger(FunctionRecycleBinService.name)
   private readonly db = SystemDatabase.db
 
-  constructor(private readonly functionService: FunctionService) {}
+  constructor(
+    @Inject(forwardRef(() => FunctionService))
+    private readonly functionService: FunctionService,
+  ) {}
 
   async addToRecycleBin(func: CloudFunction, session?: ClientSession) {
     const res = await this.db
