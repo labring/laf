@@ -35,7 +35,7 @@ import { TApplicationItem } from "@/apis/typing";
 import { ApplicationControllerUpdateState } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
-function List(props: { appListQuery: any; setShouldRefetch: any }) {
+function List(props: { appListQuery: any; setShouldRefetch: any; updatePhase: any }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -43,7 +43,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
 
   const [searchKey, setSearchKey] = useState("");
 
-  const { appListQuery, setShouldRefetch } = props;
+  const { appListQuery, setShouldRefetch, updatePhase } = props;
   const bg = useColorModeValue("lafWhite.200", "lafDark.200");
 
   const updateAppStateMutation = useMutation((params: any) =>
@@ -165,6 +165,12 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                           display={"block"}
                           onClick={async (event) => {
                             event?.preventDefault();
+                            updatePhase(
+                              item.appid,
+                              item.phase === APP_STATUS.Stopped
+                                ? APP_STATUS.Starting
+                                : APP_STATUS.Restarting,
+                            );
                             const res = await updateAppStateMutation.mutateAsync({
                               appid: item.appid,
                               state:
@@ -190,6 +196,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                             display={"block"}
                             onClick={async (event: any) => {
                               event?.preventDefault();
+                              updatePhase(item.appid, APP_PHASE_STATUS.Stopping);
                               await updateAppStateMutation.mutateAsync({
                                 appid: item.appid,
                                 state: APP_PHASE_STATUS.Stopped,
