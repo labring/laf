@@ -21,6 +21,7 @@ import { DependencyService } from 'src/dependency/dependency.service'
 import { ApplicationService } from '../application/application.service'
 import { ApplicationConfigurationService } from 'src/application/configuration.service'
 import { FunctionService } from 'src/function/function.service'
+import { User } from 'src/user/entities/user'
 
 interface FindFunctionTemplatesParams {
   asc: number
@@ -1613,6 +1614,25 @@ export class FunctionTemplateService {
     const res = await this.db
       .collection<FunctionTemplate>('FunctionTemplate')
       .findOne({ _id: templateId })
+
+    const user = await this.db.collection<User>('User').findOne({
+      _id: res.uid,
+    })
+
+    if (user.phone && user.username) {
+      if (user.phone == user.username) {
+        user.username =
+          user.username.slice(0, 3) +
+          'x'.repeat(user.username.length - 6) +
+          user.username.slice(-3)
+      }
+    }
+
+    res['user'] = {
+      username: user?.username,
+      email: user?.email,
+    }
+
     return res
   }
 

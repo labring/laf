@@ -85,12 +85,12 @@ export class PhoneService {
 
     try {
       session.startTransaction()
-
+      const randomUsername = new ObjectId()
       // create user
       const user = await this.db.collection<User>('User').insertOne(
         {
           phone,
-          username: username || phone,
+          username: username || randomUsername.toString(),
           createdAt: new Date(),
           updatedAt: new Date(),
         },
