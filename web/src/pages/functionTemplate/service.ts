@@ -7,6 +7,7 @@ import {
   FunctionTemplateControllerGetFunctionTemplateUsedBy,
   FunctionTemplateControllerGetMyFunctionTemplate,
   FunctionTemplateControllerGetOneFunctionTemplate,
+  FunctionTemplateControllerGetRecommendFunctionTemplate,
   FunctionTemplateControllerGetUserFunctionTemplateStarState,
   FunctionTemplateControllerStarFunctionTemplate,
   FunctionTemplateControllerUpdateFunctionTemplate,
@@ -78,11 +79,11 @@ export const useFunctionTemplateStarMutation = () => {
       return FunctionTemplateControllerStarFunctionTemplate(values);
     },
     {
-      onSuccess(data) {
-        if (!data.error) {
-          console.log("data", data);
-        }
-      },
+      // onSuccess(data) {
+      //   if (!data.error) {
+      //     console.log("data", data);
+      //   }
+      // },
     },
   );
 };
@@ -126,6 +127,22 @@ export const useGetMyFunctionTemplatesQuery = (
     ["useGetMyFunctionTemplatesQuery", params],
     () => {
       return FunctionTemplateControllerGetMyFunctionTemplate(params);
+    },
+    {
+      enabled: config?.enabled,
+      onSuccess: config?.onSuccess,
+    },
+  );
+};
+
+export const useGetRecommendFunctionTemplatesQuery = (
+  params: any,
+  config?: { onSuccess?: (data: any) => void; enabled?: boolean },
+) => {
+  return useQuery(
+    ["useGetRecommendFunctionTemplatesQuery", params],
+    () => {
+      return FunctionTemplateControllerGetRecommendFunctionTemplate(params);
     },
     {
       enabled: config?.enabled,

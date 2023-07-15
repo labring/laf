@@ -53,11 +53,11 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
   return (
     <>
       <div className="mb-5 flex items-center justify-between">
-        <h2 className="flex items-center text-2xl font-semibold">
+        <h2 className="flex items-center text-2xl font-semibold phone:text-base">
           <FileTypeIcon type="app" className="mr-1 " />
           {t("HomePanel.MyApp")}
         </h2>
-        <div className="flex">
+        <div className="flex phone:px-3">
           <InputGroup className="mr-4">
             <InputLeftElement
               height={"8"}
@@ -82,9 +82,12 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
       </div>
 
       <div className="flex flex-col overflow-auto">
-        <Box bg={bg} className="mb-3 flex h-12 flex-none items-center rounded-lg px-3 lg:px-6">
+        <Box
+          bg={bg}
+          className="mb-3 flex h-12 flex-none items-center rounded-lg px-3 lg:px-6 phone:px-2"
+        >
           <div className="w-3/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
-          <div className="w-2/12 text-second ">App ID</div>
+          <div className="w-2/12 whitespace-nowrap text-second">App ID</div>
           <div className="w-2/12 pl-2 text-second">{t("HomePanel.State")}</div>
           <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div>
           <div className="w-4/12 text-second ">{t("Time")}</div>
@@ -195,7 +198,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                             }}
                           >
                             <a className="text-primary block" href="/stop">
-                              {t("SettingPanel.ShutDown")}
+                              {t("SettingPanel.Pause")}
                             </a>
                           </MenuItem>
                         )}

@@ -15,8 +15,9 @@ export default function Pagination(props: {
   values: PageValues;
   options?: number[];
   onChange: (values: PageValues) => void;
+  notShowSelect?: boolean;
 }) {
-  const { values, onChange, options } = props;
+  const { values, onChange, options, notShowSelect } = props;
   const { page, total, pageSize } = values;
   const maxPage = total && pageSize ? Math.ceil(total / pageSize) : -1;
 
@@ -38,7 +39,7 @@ export default function Pagination(props: {
       spacing={"1"}
       display="flex"
       whiteSpace={"nowrap"}
-      justifyContent={"space-between"}
+      justifyContent={!notShowSelect ? "space-between" : "flex-end"}
     >
       <HStack spacing={"1"}>
         <Text as="div" className="mr-2">
@@ -108,24 +109,26 @@ export default function Pagination(props: {
           </Button>
         </IconWrap>
       </HStack>
-      <Select
-        size="sm"
-        w="120px"
-        value={pageSize}
-        onChange={(e: any) => {
-          onChange({
-            ...values,
-            pageSize: parseInt(e.target.value),
-            page: 1,
-          });
-        }}
-      >
-        {(options || [10, 20, 30]).map((data: any) => (
-          <option key={data} value={data}>
-            {data} / {t("Page")}
-          </option>
-        ))}
-      </Select>
+      {!notShowSelect && (
+        <Select
+          size="sm"
+          w="120px"
+          value={pageSize}
+          onChange={(e: any) => {
+            onChange({
+              ...values,
+              pageSize: parseInt(e.target.value),
+              page: 1,
+            });
+          }}
+        >
+          {(options || [10, 20, 30]).map((data: any) => (
+            <option key={data} value={data}>
+              {data} / {t("Page")}
+            </option>
+          ))}
+        </Select>
+      )}
     </HStack>
   );
 }

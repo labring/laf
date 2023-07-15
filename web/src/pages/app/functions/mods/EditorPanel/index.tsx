@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { CopyIcon } from "@chakra-ui/icons";
 import { HStack, Input, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
@@ -32,7 +33,7 @@ function EditorPanel() {
       {currentFunction?.name ? (
         <Panel.Header
           className={clsx("!mb-0 h-[50px] px-2", {
-            "border-b-2": !darkMode,
+            "border-b-2 ": !darkMode,
             "border-lafWhite-400": !darkMode,
           })}
         >
@@ -57,10 +58,15 @@ function EditorPanel() {
           </HStack>
 
           <HStack spacing={1}>
-            <CopyText text={getFunctionUrl()}>
-              <Input w={"220px"} size="xs" readOnly value={getFunctionUrl()} />
-            </CopyText>
-
+            <div className={clsx("flex items-center", !darkMode && "bg-[#F6F8F9]")}>
+              <Input w={"200px"} size="xs" readOnly value={getFunctionUrl()} />
+              <CopyText
+                text={getFunctionUrl()}
+                className="mr-3 cursor-pointer !text-grayModern-300"
+              >
+                <CopyIcon />
+              </CopyText>
+            </div>
             <DeployButton />
           </HStack>
         </Panel.Header>

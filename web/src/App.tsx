@@ -32,7 +32,7 @@ const queryClient = new QueryClient({
 });
 
 function APP() {
-  useTranslation();
+  const { i18n } = useTranslation();
 
   const getSiteSettings = useSiteSettingStore((state) => state.getSiteSettings);
 
@@ -49,8 +49,9 @@ function APP() {
   });
 
   useEffect(() => {
+    document.documentElement.lang = i18n.language;
     getSiteSettings();
-  }, [getSiteSettings]);
+  }, [getSiteSettings, i18n.language]);
 
   return (
     <>

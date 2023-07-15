@@ -47,7 +47,7 @@ export default function SignIn() {
   return (
     <div
       className={clsx(
-        "absolute left-1/2 top-1/2 min-h-[500px] w-[560px] -translate-y-1/2 rounded-[10px] p-[65px] pb-[100px]",
+        "labtop:w-[560px] absolute left-1/2 top-1/2 -translate-y-1/2 rounded-[10px] p-[65px] pb-[100px] phone:left-0 phone:max-h-[400px] phone:w-screen phone:p-[45px] pc:w-[560px]",
         {
           "bg-lafDark-100": darkMode,
           "bg-white": !darkMode,

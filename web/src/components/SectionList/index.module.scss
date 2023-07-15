@@ -1,10 +1,12 @@
 .sectionList {
   overflow-y: hidden;
+  overflow-x: hidden;
+  height: 100%;
 
   li {
     cursor: pointer;
     display: flex;
-    height: 28px;
+    height: 24px;
     align-items: center;
     justify-content: space-between;
     padding: 0px 12px;
@@ -24,11 +26,11 @@
 
     &:hover,
     &.active {
-      background-color: rgba(0, 169, 157, 0.05);
-      color: var(--chakra-colors-primary-700);
+      background-color: #00B3B01A;
+      color: var(--chakra-colors-primary-600);
 
       svg {
-        fill: var(--chakra-colors-primary-700);
+        fill: var(--chakra-colors-primary-600);
       }
     }
   }

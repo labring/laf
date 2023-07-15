@@ -14,9 +14,10 @@ import {
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { SendSmsCodeButton } from "@/components/SendSmsCodeButton";
 import { COLOR_MODE } from "@/constants";
 
-import { useResetPasswordMutation, useSendSmsCodeMutation } from "@/pages/auth/service";
+import { useResetPasswordMutation } from "@/pages/auth/service";
 import useGlobalStore from "@/pages/globalStore";
 
 type FormData = {
@@ -29,13 +30,9 @@ type FormData = {
 
 export default function ResetPassword() {
   const resetPasswordMutation = useResetPasswordMutation();
-  const sendSmsCodeMutation = useSendSmsCodeMutation();
-
   const { showSuccess, showError } = useGlobalStore();
   const navigate = useNavigate();
 
-  const [isSendSmsCode, setIsSendSmsCode] = useState(false);
-  const [countdown, setCountdown] = useState(60);
   const [isShowPassword, setIsShowPassword] = useState(false);
 
   const { colorMode } = useColorMode();
@@ -43,8 +40,8 @@ export default function ResetPassword() {
 
   const {
     register,
-    getValues,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
@@ -76,45 +73,6 @@ export default function ResetPassword() {
     }
   };
 
-  const handleSendSmsCode = async () => {
-    if (isSendSmsCode) {
-      return;
-    }
-
-    const phone = getValues("phone") || "";
-    const isValidate = /^1[2-9]\d{9}$/.test(phone);
-    if (!isValidate) {
-      showError(t("AuthPanel.PhoneTip"));
-      return;
-    }
-
-    switchSmsCodeStatus();
-
-    const res = await sendSmsCodeMutation.mutateAsync({
-      phone,
-      type: "ResetPassword",
-    });
-
-    if (res?.data) {
-      showSuccess(t("AuthPanel.SmsCodeSendSuccess"));
-    }
-  };
-
-  const switchSmsCodeStatus = () => {
-    setIsSendSmsCode(true);
-    setCountdown(60);
-    const timer = setInterval(() => {
-      setCountdown((countdown) => {
-        if (countdown === 0) {
-          clearInterval(timer);
-          setIsSendSmsCode(false);
-          return 0;
-        }
-        return countdown - 1;
-      });
-    }, 1000);
-  };
-
   return (
     <div
       className={clsx(
@@ -142,15 +100,11 @@ export default function ResetPassword() {
               type="tel"
               id="phone"
               placeholder={t("AuthPanel.PhonePlaceholder") || ""}
+              bg={"#F8FAFB"}
+              border={"1px solid #D5D6E1"}
             />
             <InputRightElement width="6rem">
-              <Button
-                className="w-20"
-                variant={isSendSmsCode ? "thirdly_disabled" : "thirdly"}
-                onClick={handleSendSmsCode}
-              >
-                {isSendSmsCode ? `${countdown}s` : t("AuthPanel.getValidationCode")}
-              </Button>
+              <SendSmsCodeButton getPhone={getValues} phoneNumber={"phone"} type="ResetPassword" />
             </InputRightElement>
           </InputGroup>
         </FormControl>
@@ -169,6 +123,8 @@ export default function ResetPassword() {
             })}
             id="validationCode"
             placeholder={t("AuthPanel.ValidationCodePlaceholder") || ""}
+            bg={"#F8FAFB"}
+            border={"1px solid #D5D6E1"}
           />
         </FormControl>
         <FormControl isInvalid={!!errors.password} className="mb-6 flex items-center">
@@ -183,6 +139,8 @@ export default function ResetPassword() {
               })}
               id="password"
               placeholder={t("AuthPanel.PasswordPlaceholder") || ""}
+              bg={"#F8FAFB"}
+              border={"1px solid #D5D6E1"}
             />
             <InputRightElement width="2rem">
               {isShowPassword ? (
@@ -205,6 +163,8 @@ export default function ResetPassword() {
               })}
               id="confirmPassword"
               placeholder={t("AuthPanel.ConfirmPassword") || ""}
+              bg={"#F8FAFB"}
+              border={"1px solid #D5D6E1"}
             />
             <InputRightElement width="2rem">
               {isShowPassword ? (
@@ -218,7 +178,7 @@ export default function ResetPassword() {
         <div className="mb-6">
           <Button
             type="submit"
-            className="w-full pb-5 pt-5"
+            className={clsx("w-full", "pb-5 pt-5")}
             isLoading={resetPasswordMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
           >

@@ -142,7 +142,7 @@ export default function FileList() {
             TODO: 文件数： {currentStorage?.name}
           </span> */}
         </Panel.Header>
-        <div className="flex-grow overflow-hidden px-2 pb-2">
+        <div className="flex-grow overflow-y-scroll px-2 pb-2">
           {query.isFetching ? (
             <Center className="bg-white-200 h-full opacity-60">
               <Spinner size="lg" />

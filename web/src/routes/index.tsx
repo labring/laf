@@ -86,17 +86,6 @@ const routes = [
         ],
       },
       {
-        path: "/market/templates/:pages/:templateId",
-        element: <TemplateLayout />,
-        auth: true,
-        children: [
-          {
-            path: "/market/templates/:pages/:templateId",
-            element: () => import("@/pages/functionTemplate/funcTemplateItem"),
-          },
-        ],
-      },
-      {
         path: "/market/templates/:pages/:templateId/edit",
         element: <TemplateLayout />,
         auth: true,

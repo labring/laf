@@ -16,7 +16,6 @@ const Navbar = () => {
   const [stars, setStars] = useState<string | null>(null);
   const { t } = useTranslation();
   const navList = [
-    { text: t("HomePage.NavBar.home"), ref: "/" },
     { text: t("HomePage.NavBar.docs"), ref: String(t("HomePage.DocsLink")) },
     { text: t("HomePage.NavBar.forum"), ref: "https://forum.laf.run/" },
     { text: t("HomePage.NavBar.contact"), ref: "https://www.wenjuan.com/s/I36ZNbl/" },

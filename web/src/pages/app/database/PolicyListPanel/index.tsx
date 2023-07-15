@@ -78,7 +78,11 @@ export default function PolicyListPanel() {
                           headerText={String(t("Delete"))}
                           bodyText={t("CollectionPanel.ConformDelete")}
                         >
-                          <IconText icon={<DeleteIcon />} text={t("Delete")} />
+                          <IconText
+                            icon={<DeleteIcon />}
+                            text={t("Delete")}
+                            className="hover:!text-error-600"
+                          />
                         </ConfirmButton>
                       </>
                     </MoreButton>

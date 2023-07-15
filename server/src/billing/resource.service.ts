@@ -39,6 +39,7 @@ export class ResourceService {
     const options = await this.db
       .collection<ResourceOption>('ResourceOption')
       .find({ regionId })
+      .sort({ createdAt: 1 })
       .toArray()
 
     return options

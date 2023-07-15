@@ -57,13 +57,6 @@ export default class Config {
     return process.env.NODE_ENV === 'production'
   }
 
-  /**
-   * Expired time of function logs, in seconds
-   */
-  static get FUNCTION_LOG_EXPIRED_TIME(): number {
-    return (process.env.FUNCTION_LOG_EXPIRED_TIME ?? 3600 * 24 * 3) as number
-  }
-
   static get RUNTIME_IMAGE(): string {
     return process.env.RUNTIME_IMAGE
   }
@@ -82,5 +75,13 @@ export default class Config {
 
   static get REQUEST_LIMIT_SIZE(): string {
     return process.env.REQUEST_LIMIT_SIZE || '10mb'
+  }
+
+  static get LOG_SERVER_URL(): string { 
+    return process.env.LOG_SERVER_URL || ''
+  }
+
+  static get LOG_SERVER_TOKEN(): string { 
+    return process.env.LOG_SERVER_TOKEN || ''
   }
 }
