@@ -262,20 +262,21 @@ export default function DataPanel() {
                 const newData = { ...item };
                 delete newData._id;
                 return (
-                  <IconWrap
-                    showBg
-                    tooltip={t("Copy").toString()}
-                    size={32}
-                    className="group/icon ml-2 hover:bg-gray-200"
+                  <CopyText
+                    hideToolTip
+                    text={JSON.stringify(newData, null, 2)}
+                    tip={String(t("Copied"))}
+                    className="ml-2"
                   >
-                    <CopyText
-                      hideToolTip
-                      text={JSON.stringify(newData, null, 2)}
-                      tip={String(t("Copied"))}
+                    <IconWrap
+                      showBg
+                      tooltip={t("Copy").toString()}
+                      size={32}
+                      className="group/icon hover:bg-gray-200"
                     >
                       <CopyIcon />
-                    </CopyText>
-                  </IconWrap>
+                    </IconWrap>
+                  </CopyText>
                 );
               }}
             />

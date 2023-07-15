@@ -12,7 +12,7 @@ import { t } from "i18next";
 import IconWrap from "@/components/IconWrap";
 
 export default function DeleteButton(props: { data: any; deleteMethod: any }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onToggle, onOpen, onClose } = useDisclosure();
   return (
     <>
       <Popover
@@ -28,6 +28,7 @@ export default function DeleteButton(props: { data: any; deleteMethod: any }) {
           tooltip={t("Delete").toString()}
           size={32}
           onClick={(event: any) => {
+            onToggle();
             event?.stopPropagation();
           }}
         >
