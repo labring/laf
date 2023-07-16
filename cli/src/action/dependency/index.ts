@@ -13,7 +13,7 @@ import { AppSchema } from '../../schema/app'
 import { ProjectSchema } from '../../schema/project'
 import { getBaseDir } from '../../util/sys'
 
-export async function add(dependencyName: string, options: { targetVersion: string }) {
+export async function add(dependencyName: string, options: { targetVersion: string, remote: boolean }) {
   const appSchema = AppSchema.read()
   const dependencyDto: CreateDependencyDto = {
     name: dependencyName,
@@ -25,10 +25,13 @@ export async function add(dependencyName: string, options: { targetVersion: stri
   await dependencyControllerAdd(appSchema.appid, [dependencyDto])
   await waitApplicationState('Running')
 
-  await pullOne()
-
-  console.log(`${getEmoji('✅')} dependency ${dependencyDto.name}:${dependencyDto.spec} installed`)
-  console.log(`${getEmoji('👉')} please run \`npm install\` to install dependency`)
+  if (options.remote) {
+    console.log(`${getEmoji('✅')} dependency ${dependencyDto.name}:${dependencyDto.spec} added to remote`)
+  } else {
+    await pullOne()
+    console.log(`${getEmoji('✅')} dependency ${dependencyDto.name}:${dependencyDto.spec} installed`)
+    console.log(`${getEmoji('👉')} please run \`npm install\` to install dependency`)
+  }
 }
 
 export async function pull() {
