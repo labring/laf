@@ -65,7 +65,7 @@ async function pullOne(updateYaml: boolean = true) {
   }
 }
 
-export async function push() {
+export async function push(options: { updatePackage: boolean }) {
   const appSchema = AppSchema.read()
 
   const serverDependencies = await dependencyControllerGetDependencies(appSchema.appid)
@@ -91,8 +91,12 @@ export async function push() {
       await dependencyControllerUpdate(appSchema.appid, [updateDependencyDto])
     }
   }
-  // update package.json
-  await pullOne(false)
+
   console.log(`${getEmoji('✅')} dependency pushed`)
-  console.log(`${getEmoji('👉')} please run 'npm install' install dependencies`)
+
+  // update package.json
+  if (options.updatePackage) {
+    await pullOne(false)
+    console.log(`${getEmoji('👉')} please run 'npm install' install dependencies`)
+  }
 }

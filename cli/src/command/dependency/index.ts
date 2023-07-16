@@ -25,8 +25,9 @@ export function command(): Command {
   cmd
     .command('push')
     .description('push dependency')
-    .action(() => {
-      push()
+    .option('--no-updatePackage', 'do not update package.json')
+    .action((options) => {
+      push(options)
     })
 
   return cmd

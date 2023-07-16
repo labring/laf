@@ -19,7 +19,7 @@ export async function deploy() {
   const deploySchema = DeploySchema.read()
 
   // install dependencies
-  await pushDependency()
+  await pushDependency({ updatePackage: true })
 
   // push all functions
   await pushAllFunctions({ force: true })
