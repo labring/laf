@@ -5,6 +5,13 @@ import { FunctionRequire } from './require'
 import { logger } from '../logger'
 import assert from 'assert'
 import { InitHook } from '../init-hook'
+import { createRequire } from 'module'
+
+let coreRequireFunc = require
+export function initCoreRequireFunc(dependencyPath: string) {
+  coreRequireFunc = createRequire(dependencyPath)
+  logger.info(`coreRequireFunc initialized: ${dependencyPath}`)
+}
 
 export class FunctionCache {
   private static cache: Map<string, ICloudFunctionData> = new Map()
@@ -88,13 +95,14 @@ export class FunctionCache {
    * @returns
    */
   static requireFunc: RequireFuncType = (module: string): any => {
+
     if (module === '@/cloud-sdk') {
-      return require('@lafjs/cloud')
+      return coreRequireFunc('@lafjs/cloud')
     }
     if (module.startsWith('@/')) {
       return FunctionCache.requireCloudFunction(module.replace('@/', ''))
     }
-    return require(module) as any
+    return coreRequireFunc(module) as any
   }
 
   static getFunctionByName(funcName: string): ICloudFunctionData {

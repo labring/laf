@@ -19,11 +19,13 @@ import xmlparser from 'express-xml-bodyparser'
 
 // init static method of class
 import './support/cloud-sdk'
-import { FunctionCache } from './support/function-engine/cache'
+import { FunctionCache, initCoreRequireFunc } from './support/function-engine/cache'
 import { DatabaseChangeStream } from './support/db-change-stream'
 import { ensureCollectionIndexes } from './support/function-log'
 
-export function start() {
+export function start(options: {
+  dependencyPath?: string
+}) {
 
   const app = express()
 
@@ -32,6 +34,10 @@ export function start() {
     FunctionCache.initialize()
     DatabaseChangeStream.initialize()
   })
+
+  console.log('options.dependencyPath', options.dependencyPath)
+
+  initCoreRequireFunc(options.dependencyPath)
   
   if (process.env.NODE_ENV === 'development') {
     app.use(cors())
