@@ -332,25 +332,29 @@ export class AccountController {
   @UseGuards(JwtAuthGuard)
   @Post('gift-code')
   async giftCode(@Req() req: IRequest, @Body() dto: UseGiftCodeDto) {
-    const expiredCondition = true
+    const condition = {
+      expired: true,
+      used: null,
+    }
     const expired = await this.accountService.findOneGiftCode(
       dto.code,
-      expiredCondition,
+      condition,
     )
     if (expired) {
-      return ResponseUtil.error('gift code have expired')
+      return ResponseUtil.error('gift code has expired')
     }
 
-    const usedCondition = true
-    const used = await this.accountService.findOneGiftCode(
-      dto.code,
-      usedCondition,
-    )
+    condition.expired = false
+    condition.used = true
+    const used = await this.accountService.findOneGiftCode(dto.code, condition)
     if (used) {
-      return ResponseUtil.error('gift code have expired')
+      return ResponseUtil.error('gift code has been used')
     }
 
-    const found = await this.accountService.findOneGiftCode(dto.code)
+    condition.expired = false
+    condition.used = false
+    console.log(111)
+    const found = await this.accountService.findOneGiftCode(dto.code, condition)
     if (!found) {
       return ResponseUtil.error("gift code doesn't exist")
     }
