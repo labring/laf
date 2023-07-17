@@ -618,6 +618,24 @@ export class FunctionTemplateService {
       .aggregate(pipe)
       .toArray()
 
+    const user = await this.db.collection<User>('User').findOne({
+      _id: functionTemplate[0].uid,
+    })
+
+    if (user.phone && user.username) {
+      if (user.phone == user.username) {
+        user.username =
+          user.username.slice(0, 3) +
+          'x'.repeat(user.username.length - 6) +
+          user.username.slice(-3)
+      }
+    }
+
+    functionTemplate[0]['user'] = {
+      username: user?.username,
+      email: user?.email,
+    }
+
     return functionTemplate
   }
 
@@ -1614,24 +1632,6 @@ export class FunctionTemplateService {
     const res = await this.db
       .collection<FunctionTemplate>('FunctionTemplate')
       .findOne({ _id: templateId })
-
-    const user = await this.db.collection<User>('User').findOne({
-      _id: res.uid,
-    })
-
-    if (user.phone && user.username) {
-      if (user.phone == user.username) {
-        user.username =
-          user.username.slice(0, 3) +
-          'x'.repeat(user.username.length - 6) +
-          user.username.slice(-3)
-      }
-    }
-
-    res['user'] = {
-      username: user?.username,
-      email: user?.email,
-    }
 
     return res
   }
