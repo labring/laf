@@ -49,6 +49,7 @@ import { ResourceService } from 'src/billing/resource.service'
 import { RuntimeDomainService } from 'src/gateway/runtime-domain.service'
 import { BindCustomDomainDto } from 'src/website/dto/update-website.dto'
 import { RuntimeDomain } from 'src/gateway/entities/runtime-domain'
+import { AccountBalanceGuard } from 'src/account/account-balance.guard'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -69,7 +70,7 @@ export class ApplicationController {
   /**
    * Create application
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AccountBalanceGuard)
   @ApiOperation({ summary: 'Create application' })
   @ApiResponseObject(ApplicationWithRelations)
   @Post()
@@ -97,36 +98,15 @@ export class ApplicationController {
       return ResponseUtil.error(`runtime ${dto.runtimeId} not found`)
     }
 
-    // check if trial tier
-    const isTrialTier = await this.resource.isTrialBundle(dto)
-    if (isTrialTier) {
-      const regionId = new ObjectId(dto.regionId)
-      const bundle = await this.resource.findTrialBundle(regionId)
-      const trials = await this.application.findTrialApplications(user._id)
-      const limitOfFreeTier = bundle?.limitCountOfFreeTierPerUser || 0
-      if (trials.length >= (limitOfFreeTier || 0)) {
-        return ResponseUtil.error(
-          `you can only create ${limitOfFreeTier} trial applications`,
-        )
-      }
-    }
-
     // one user can only have 20 applications in one region
     const count = await this.application.countByUser(user._id)
     if (count > 20) {
       return ResponseUtil.error(`too many applications, limit is 20`)
     }
 
-    // check account balance
-    const account = await this.account.findOne(user._id)
-    const balance = account?.balance || 0
-    if (!isTrialTier && balance < 0) {
-      return ResponseUtil.error(`account balance is not enough`)
-    }
-
     // create application
     const appid = await this.application.tryGenerateUniqueAppid()
-    await this.application.create(user._id, appid, dto, isTrialTier)
+    await this.application.create(user._id, appid, dto)
 
     const app = await this.application.findOne(appid)
     return ResponseUtil.ok(app)
@@ -207,7 +187,7 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Update application name' })
   @ApiResponseObject(Application)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, AccountBalanceGuard)
   @Patch(':appid/name')
   async updateName(
     @Param('appid') appid: string,
@@ -222,7 +202,7 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Update application state' })
   @ApiResponseObject(Application)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, AccountBalanceGuard)
   @Patch(':appid/state')
   async updateState(
     @Param('appid') appid: string,
@@ -230,14 +210,6 @@ export class ApplicationController {
     @Req() req: IRequest,
   ) {
     const app = req.application
-    const user = req.user
-
-    // check account balance
-    const account = await this.account.findOne(user._id)
-    const balance = account?.balance || 0
-    if (balance < 0) {
-      return ResponseUtil.error(`account balance is not enough`)
-    }
 
     // check: only running application can restart
     if (
@@ -281,12 +253,11 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Update application bundle' })
   @ApiResponseObject(ApplicationBundle)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, AccountBalanceGuard)
   @Patch(':appid/bundle')
   async updateBundle(
     @Param('appid') appid: string,
     @Body() dto: UpdateApplicationBundleDto,
-    @Req() req: IRequest,
   ) {
     const error = dto.autoscaling.validate()
     if (error) {
@@ -294,26 +265,8 @@ export class ApplicationController {
     }
 
     const app = await this.application.findOne(appid)
-    const user = req.user
-    const regionId = app.regionId
 
-    // check if trial tier
-    const isTrialTier = await this.resource.isTrialBundle({
-      ...dto,
-      regionId: regionId.toString(),
-    })
-    if (isTrialTier) {
-      const bundle = await this.resource.findTrialBundle(regionId)
-      const trials = await this.application.findTrialApplications(user._id)
-      const limitOfFreeTier = bundle?.limitCountOfFreeTierPerUser || 0
-      if (trials.length >= (limitOfFreeTier || 0)) {
-        return ResponseUtil.error(
-          `you can only create ${limitOfFreeTier} trial applications`,
-        )
-      }
-    }
-
-    const doc = await this.application.updateBundle(appid, dto, isTrialTier)
+    const doc = await this.application.updateBundle(appid, dto)
 
     // restart running application if cpu or memory changed
     const origin = app.bundle
