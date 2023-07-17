@@ -16,7 +16,6 @@ export const Pages = {
 
 export enum APP_STATUS {
   // [ "Running", "Stopped", "Restarting", "Deleted" ]
-  Starting = "Starting",
   Running = "Running",
   Stopped = "Stopped",
   Restarting = "Restarting",

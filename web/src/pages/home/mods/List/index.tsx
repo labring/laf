@@ -167,9 +167,9 @@ function List(props: { appListQuery: any; setShouldRefetch: any; updatePhase: an
                             event?.preventDefault();
                             updatePhase(
                               item.appid,
-                              item.phase === APP_STATUS.Stopped
-                                ? APP_STATUS.Starting
-                                : APP_STATUS.Restarting,
+                              item.phase === APP_PHASE_STATUS.Stopped
+                                ? APP_PHASE_STATUS.Starting
+                                : APP_PHASE_STATUS.Restarting,
                             );
                             const res = await updateAppStateMutation.mutateAsync({
                               appid: item.appid,

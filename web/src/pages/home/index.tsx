@@ -43,17 +43,17 @@ function HomePage() {
   );
 
   function updatePhase(appid: string, type: keyof typeof APP_PHASE_STATUS) {
-    const newappListQueryData = appListQuery.data?.data.map((item: TApplicationItem) => {
+    const newAppListQueryData = appListQuery.data?.data.map((item: TApplicationItem) => {
       if (item.appid !== appid) return item;
       return {
         ...item,
         phase: type,
       };
     });
-    if (appListQuery.data && newappListQueryData) {
+    if (appListQuery.data && newAppListQueryData) {
       queryClient.setQueryData(APP_LIST_QUERY_KEY, {
         ...appListQuery.data,
-        data: newappListQueryData,
+        data: newAppListQueryData,
       });
     }
   }
