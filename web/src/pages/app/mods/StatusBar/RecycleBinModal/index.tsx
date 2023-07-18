@@ -177,7 +177,7 @@ export default function RecycleBinModal(props: { children: React.ReactElement })
     if (functionListData && functionListData?.list.length > 0) {
       onOpen();
     }
-  }, [functionListData, onOpen]);
+  }, [functionListData, onOpen, enable]);
 
   return (
     <>
