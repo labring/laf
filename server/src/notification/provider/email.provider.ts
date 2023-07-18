@@ -11,6 +11,8 @@ export class EmailNotificationProvider implements NotificationProvider {
     user: User,
     payload?: any,
   ) {
+    if (!user.email) return
+
     const transport = nodemailer.createTransport(config)
     await transport.sendMail({
       from: config.from,

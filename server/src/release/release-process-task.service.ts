@@ -3,7 +3,6 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { template } from 'lodash'
 import {
   Application,
-  ApplicationPhase,
   ApplicationState,
 } from 'src/application/entities/application'
 import { NotificationService } from 'src/notification/notification.service'
@@ -12,10 +11,15 @@ import { ReleaseService } from './release.service'
 import { ReleaseConfig } from './entities/release-config'
 import { UserService } from 'src/user/user.service'
 import { ServerConfig } from 'src/constants'
+import {
+  ApplicationRelease,
+  ApplicationReleasePhase,
+} from './entities/application-release'
 
 @Injectable()
 export class ReleaseProcessTaskService {
   private readonly logger = new Logger(ReleaseProcessTaskService.name)
+  private readonly lockTimeout = 60 // in second
   private readonly db = SystemDatabase.db
 
   constructor(
@@ -34,40 +38,50 @@ export class ReleaseProcessTaskService {
   }
 
   async handleRealeasingState() {
-    const apps = await this.db
-      .collection<Application>('Application')
-      .find({
-        state: ApplicationState.Releasing,
-        phase: ApplicationPhase.Stopped,
-      })
-      .toArray()
+    const res = await this.db
+      .collection<ApplicationRelease>('ApplicationRelease')
+      .findOneAndUpdate(
+        {
+          lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
+          phase: ApplicationReleasePhase.Pending,
+        },
+        {
+          $set: {
+            lockedAt: new Date(),
+          },
+        },
+      )
 
-    if (apps.length === 0) {
+    if (!res.value) {
       this.logger.debug('no releasing application')
       return
     }
+    const app = res.value
 
     const config = await this.releaseService.getReleaseConfig()
-    if (!config.enableRelease) {
-      this.logger.debug('skip releasing application')
+    if (!config) {
+      this.logger.debug('skip releasing application due to no config')
       return
     }
-    for (const app of apps) {
-      this.handleReleaseApplication(app, config).catch((err) => {
+    this.handleReleaseApplication(app, config)
+      .catch((err) => {
         this.logger.error(`handleReleaseApplication ${app.appid} error`, err)
       })
-    }
+      .finally(() => {
+        this.handleRealeasingState()
+      })
   }
 
-  async handleReleaseApplication(app: Application, config: ReleaseConfig) {
+  async handleReleaseApplication(
+    app: ApplicationRelease,
+    config: ReleaseConfig,
+  ) {
     const { enableNotification, notificationProviders, stages } = config
-
-    if (notificationProviders.length === 0) return
 
     // sort by minutesElapsed desc
     stages.sort((a, b) => b.minutesElapsed - a.minutesElapsed)
 
-    const startTime = app.forceStoppedAt
+    const startTime = app.createdAt
     const endTime = new Date()
     const diff = endTime.getTime() - startTime.getTime()
     const diffMinutes = Math.floor(diff / 60 / 1000)
@@ -83,7 +97,7 @@ export class ReleaseProcessTaskService {
     if (now > releaseTime) {
       releaseTime = now
     }
-    const releaseTimeStr = new Date(releaseTime).toLocaleString()
+    const releaseTimeStr = new Date(releaseTime).toString()
     //
 
     const user = await this.userService.findOneById(app.createdBy)
@@ -91,7 +105,10 @@ export class ReleaseProcessTaskService {
     for (const [idx, item] of stages.entries()) {
       if (diffMinutes < item.minutesElapsed) continue
 
-      if (enableNotification) {
+      const tickTime = startTime.getTime() + item.minutesElapsed * 60 * 1000 + 1
+      if (tickTime <= app.tickedAt.getTime()) return
+
+      if (enableNotification && notificationProviders.length > 0) {
         const _template = template(item.notificationTemplate)
         const payload = {
           appid: app.appid,
@@ -117,23 +134,58 @@ export class ReleaseProcessTaskService {
 
       // release
       if (idx === 0) {
-        await this.releaseApplication(app)
+        await this.releaseApplication(app, tickTime)
+      } else {
+        await this.db
+          .collection<ApplicationRelease>('ApplicationRelease')
+          .updateOne(app._id, {
+            $set: {
+              updatedAt: new Date(),
+              tickedAt: new Date(tickTime),
+            },
+          })
       }
       break
     }
   }
 
-  async releaseApplication(app: Application) {
-    await this.db.collection<Application>('Application').updateOne(
-      {
-        _id: app._id,
-      },
-      {
-        $set: {
-          state: ApplicationState.Deleted,
-          updatedAt: new Date(),
-        },
-      },
-    )
+  async releaseApplication(app: ApplicationRelease, tickTime: number) {
+    const session = SystemDatabase.client.startSession()
+    try {
+      await session.withTransaction(async () => {
+        await this.db.collection<Application>('Application').updateOne(
+          {
+            appid: app.appid,
+          },
+          {
+            $set: {
+              state: ApplicationState.Deleted,
+              updatedAt: new Date(),
+            },
+          },
+          {
+            session,
+          },
+        )
+
+        await this.db
+          .collection<ApplicationRelease>('ApplicationRelease')
+          .updateOne(
+            app._id,
+            {
+              $set: {
+                phase: ApplicationReleasePhase.Done,
+                updatedAt: new Date(),
+                tickedAt: new Date(tickTime),
+              },
+            },
+            {
+              session,
+            },
+          )
+      })
+    } finally {
+      await session.endSession()
+    }
   }
 }

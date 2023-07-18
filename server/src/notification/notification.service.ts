@@ -29,10 +29,10 @@ export class NotificationService {
       this.logger.error(`invalid notification type: ${type}`)
       return
     }
-    console.log('send notification', type, content, user, payload)
-    return
 
     const conf = await this.getProviderConf(type)
+    this.logger.log(`send notification: `, type, content, user, payload, conf)
+
     if (!conf || !conf.enable || !conf.config) return
 
     return await NotificationAdaptor[type].sendNotification(
