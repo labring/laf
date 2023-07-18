@@ -62,7 +62,9 @@ export class ReleaseStateTaskService {
     try {
       await session.withTransaction(async () => {
         await this.db.collection<Application>('Application').updateOne(
-          app._id,
+          {
+            _id: app._id,
+          },
           {
             $set: {
               state: ApplicationState.Releasing,
@@ -191,7 +193,9 @@ export class ReleaseStateTaskService {
         await this.db
           .collection<ApplicationRelease>('ApplicationRelease')
           .updateOne(
-            app._id,
+            {
+              _id: app._id,
+            },
             {
               $set: {
                 phase: ApplicationReleasePhase.Cancel,

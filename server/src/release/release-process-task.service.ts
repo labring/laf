@@ -106,7 +106,7 @@ export class ReleaseProcessTaskService {
       if (diffMinutes < item.minutesElapsed) continue
 
       const tickTime = startTime.getTime() + item.minutesElapsed * 60 * 1000 + 1
-      if (tickTime <= app.tickedAt.getTime()) return
+      if (tickTime <= app.tickedAt.getTime()) break
 
       if (enableNotification && notificationProviders.length > 0) {
         const _template = template(item.notificationTemplate)
@@ -138,12 +138,17 @@ export class ReleaseProcessTaskService {
       } else {
         await this.db
           .collection<ApplicationRelease>('ApplicationRelease')
-          .updateOne(app._id, {
-            $set: {
-              updatedAt: new Date(),
-              tickedAt: new Date(tickTime),
+          .updateOne(
+            {
+              _id: app._id,
             },
-          })
+            {
+              $set: {
+                updatedAt: new Date(),
+                tickedAt: new Date(tickTime),
+              },
+            },
+          )
       }
       break
     }
@@ -171,7 +176,9 @@ export class ReleaseProcessTaskService {
         await this.db
           .collection<ApplicationRelease>('ApplicationRelease')
           .updateOne(
-            app._id,
+            {
+              _id: app._id,
+            },
             {
               $set: {
                 phase: ApplicationReleasePhase.Done,
