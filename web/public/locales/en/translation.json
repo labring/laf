@@ -94,7 +94,7 @@
     "Function": "Function",
     "FunctionList": "Functions",
     "FunctionName": "Function Name",
-    "FunctionNameTip": "The unique identifier of the function, such as get-user",
+    "FunctionNameTip": "The unique identifier of the function, such as get-user, can be used to create folders in the form of 'user/get-user'.",
     "InterfaceDebug": "Debug",
     "Methods": "Method",
     "Name": "KEY",

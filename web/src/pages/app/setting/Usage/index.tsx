@@ -90,7 +90,7 @@ export default function Usage() {
       <div className="flex items-center pb-6 pt-2 text-2xl">
         <span className="pr-4">
           <CostIcon boxSize={5} mr={3} />
-          {t("SettingPanel.Usage")}
+          {t("SettingPanel.CostOverview")}
         </span>
         <DateRangePicker
           startTime={startTime}
