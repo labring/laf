@@ -12,6 +12,7 @@ export const APP_LIST_QUERY_KEY = ["appListQuery"];
 
 function HomePage() {
   const [shouldRefetch, setShouldRefetch] = useState(true);
+
   useEffect(() => {
     setTimeout(() => {
       setShouldRefetch(true);
@@ -39,22 +40,11 @@ function HomePage() {
     },
   );
 
-  if (appListQuery.isLoading) {
-    return null;
-  }
-
   return (appListQuery.data?.data || []).length === 0 ? (
     <Empty />
   ) : (
     <div className="mx-auto mt-10 flex w-11/12 flex-col lg:w-8/12">
-      <List
-        appListQuery={appListQuery}
-        setShouldRefetch={() => {
-          setTimeout(() => {
-            setShouldRefetch(true);
-          }, 1500);
-        }}
-      />
+      <List appListQuery={appListQuery} />
     </div>
   );
 }
