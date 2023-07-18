@@ -25,6 +25,7 @@ import { AuthenticationModule } from './authentication/authentication.module'
 import { FunctionTemplateModule } from './function-template/function-template.module'
 import { MulterModule } from '@nestjs/platform-express'
 import { RecycleBinModule } from './recycle-bin/recycle-bin.module'
+import { ReleaseModule } from './release/release.module'
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { RecycleBinModule } from './recycle-bin/recycle-bin.module'
     FunctionTemplateModule,
     MulterModule.register(),
     RecycleBinModule,
+    ReleaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

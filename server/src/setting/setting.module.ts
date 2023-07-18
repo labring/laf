@@ -5,5 +5,6 @@ import { SettingController } from './setting.controller'
 @Module({
   providers: [SettingService],
   controllers: [SettingController],
+  exports: [SettingService],
 })
 export class SettingModule {}

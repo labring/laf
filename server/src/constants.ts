@@ -155,6 +155,14 @@ export class ServerConfig {
   static get DEFAULT_REGION_LOG_SERVER_DATABASE_URL() {
     return process.env.DEFAULT_REGION_LOG_SERVER_DATABASE_URL
   }
+
+  static get DISABLED_RELEASE_PROCESS_TASK() {
+    return process.env.DISABLED_RELEASE_PROCESS_TASK === 'true'
+  }
+
+  static get DISABLED_RELEASE_STATE_TASK() {
+    return process.env.DISABLED_RELEASE_STATE_TASK === 'true'
+  }
 }
 
 export const LABEL_KEY_USER_ID = 'laf.dev/user.id'

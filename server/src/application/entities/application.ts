@@ -22,6 +22,7 @@ export enum ApplicationState {
   Stopped = 'Stopped',
   Restarting = 'Restarting',
   Deleted = 'Deleted',
+  Releasing = 'Releasing',
 }
 
 export class Application {
@@ -61,6 +62,8 @@ export class Application {
   createdBy: ObjectId
 
   billingLockedAt: Date
+
+  forceStoppedAt?: Date
 
   constructor(partial: Partial<Application>) {
     Object.assign(this, partial)
