@@ -95,10 +95,9 @@ export default function PolicyDataList() {
         >
           <Button
             disabled={store.currentPolicy === undefined}
-            colorScheme="primary"
-            className="mr-2"
-            style={{ width: "114px" }}
-            leftIcon={<AddIcon />}
+            leftIcon={<AddIcon fontSize={10} className="text-grayModern-500" />}
+            variant="textGhost"
+            size="xs"
           >
             {t("CollectionPanel.AddRules")}
           </Button>
