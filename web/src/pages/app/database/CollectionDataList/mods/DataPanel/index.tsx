@@ -145,7 +145,7 @@ export default function DataPanel() {
   return (
     <>
       <Panel.Header className="my-1 flex-shrink-0">
-        <div className="flex items-center flex-1">
+        <div className="flex flex-1 items-center">
           <AddDataModal
             schema={currentData.data ? currentData.data : {}}
             onSuccessSubmit={(id: string, count: number) => {
@@ -190,7 +190,7 @@ export default function DataPanel() {
               refresh(search);
             }}
           >
-            <div className="my-4 flex justify-between flex-1">
+            <div className="my-4 flex flex-1 justify-between">
               <HStack spacing={2} className="flex flex-1">
                 <InputGroup className="mr-4 flex-1">
                   <InputLeftElement
