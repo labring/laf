@@ -144,9 +144,7 @@ function CreateWebsiteModal() {
                 <FormLabel>CNAME</FormLabel>
                 <InputGroup size="sm">
                   <Input variant="filled" value={cnameDomain} readOnly />
-                  <InputRightAddon
-                    children={<CopyText text={cnameDomain} className="cursor-pointer" />}
-                  />
+                  <InputRightAddon children={<CopyText text={cnameDomain} />} />
                 </InputGroup>
               </FormControl>
               <FormControl>

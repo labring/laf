@@ -37,9 +37,7 @@ export default function CustomDomain() {
           <FormLabel>CNAME</FormLabel>
           <InputGroup>
             <Input variant="filled" value={currentApp?.domain?.domain} readOnly />
-            <InputRightAddon
-              children={<CopyText text={currentApp?.domain?.domain} className="cursor-pointer" />}
-            />
+            <InputRightAddon children={<CopyText text={currentApp?.domain?.domain} />} />
           </InputGroup>
         </FormControl>
         <FormControl className="py-4">
