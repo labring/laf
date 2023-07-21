@@ -31,6 +31,9 @@ import { SmsVerifyCodeType } from 'src/authentication/entities/sms-verify-code'
 import { BindUsernameDto } from './dto/bind-username.dto'
 import { UpdateAvatarDto } from './dto/update-avatar.dto'
 import { ObjectId } from 'mongodb'
+import { EmailService } from 'src/authentication/email/email.service'
+import { EmailVerifyCodeType } from 'src/authentication/entities/email-verify-code'
+import { BindEmailDto } from './dto/bind-email.dto'
 
 @ApiTags('User')
 @ApiBearerAuth('Authorization')
@@ -39,6 +42,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly smsService: SmsService,
+    private readonly emailService: EmailService,
   ) {}
 
   /**
@@ -138,6 +142,38 @@ export class UserController {
     // bind phone
     const res = await this.userService.updateUser(req.user._id, {
       phone: newPhoneNumber,
+    })
+    return res
+  }
+
+  /**
+   * Bind email
+   */
+  @ApiOperation({ summary: 'Bind email' })
+  @ApiResponseObject(UserWithProfile)
+  @UseGuards(JwtAuthGuard)
+  @Post('bind/email')
+  async bindEmail(@Body() dto: BindEmailDto, @Req() req: IRequest) {
+    const { email, code } = dto
+
+    const err = await this.emailService.validateCode(
+      email,
+      code,
+      EmailVerifyCodeType.Bind,
+    )
+    if (err) {
+      return ResponseUtil.error(err)
+    }
+
+    // check email if have already been bound
+    const user = await this.userService.findOneByEmail(email)
+    if (user) {
+      return ResponseUtil.error('email has already been bound')
+    }
+
+    // bind email
+    const res = await this.userService.updateUser(req.user._id, {
+      email,
     })
     return res
   }

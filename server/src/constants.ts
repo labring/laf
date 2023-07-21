@@ -199,6 +199,7 @@ export const GB = 1024 * MB
 // auth constants
 export const PHONE_AUTH_PROVIDER_NAME = 'phone'
 export const PASSWORD_AUTH_PROVIDER_NAME = 'user-password'
+export const EMAIL_AUTH_PROVIDER_NAME = 'email'
 
 // Sms constants
 export const ALISMS_KEY = 'alisms'
