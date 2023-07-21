@@ -26,6 +26,7 @@ type State = {
   deleteCurrentApp(): void;
   currentPageId: string | undefined;
   setCurrentPage: (pageId: string) => void;
+  avatarUpdatedAt: string;
   updateUserInfo(): void;
   visitedViews: string[];
 
@@ -46,6 +47,8 @@ const useGlobalStore = create<State>()(
       currentPageId: undefined,
 
       visitedViews: [],
+
+      avatarUpdatedAt: "",
 
       setCurrentPage: (pageId) => {
         set((state) => {
@@ -79,6 +82,7 @@ const useGlobalStore = create<State>()(
         const userInfoRes = await UserControllerGetProfile({});
         set((state) => {
           state.userInfo = userInfoRes.data;
+          state.avatarUpdatedAt = new Date().toISOString();
         });
       },
 
