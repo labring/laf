@@ -286,6 +286,11 @@ declare namespace Definitions {
     pat?: string /* PAT */;
   };
 
+  export type SendEmailCodeDto = {
+    email?: string;
+    type?: string /* verify code type */;
+  };
+
   export type CreatePATDto = {
     name?: string;
     expiresIn?: number;
@@ -306,6 +311,11 @@ declare namespace Definitions {
     newPhoneNumber?: string /* new phone number */;
     oldSmsCode?: string /* sms verify code for old phone number */;
     newSmsCode?: string /* sms verify code for new phone number */;
+  };
+
+  export type BindEmailDto = {
+    email?: string;
+    code?: string /* verify code */;
   };
 
   export type BindUsernameDto = {
@@ -991,6 +1001,14 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace EmailControllerSendCode {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.SendEmailCodeDto;
+
+    export type Responses = any;
+  }
+
   namespace PatControllerCreate {
     export type QueryParameters = any;
 
@@ -1035,6 +1053,14 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.BindPhoneDto;
+
+    export type Responses = any;
+  }
+
+  namespace UserControllerBindEmail {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindEmailDto;
 
     export type Responses = any;
   }

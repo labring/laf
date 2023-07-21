@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
   AuthenticationControllerGetProviders,
+  EmailControllerSendCode,
   PhoneControllerSendCode,
   PhoneControllerSignin,
   UserPasswordControllerReset,
@@ -100,6 +101,19 @@ export const useGetProvidersQuery = (onSuccess: (result: any) => void) => {
     },
     {
       onSuccess,
+    },
+  );
+};
+
+export const useSendEmailCodeMutation = (config?: { onSuccess: (result: any) => void }) => {
+  return useMutation(
+    (values: any) => {
+      return EmailControllerSendCode(values);
+    },
+    {
+      onSuccess: async (result) => {
+        config?.onSuccess(result);
+      },
     },
   );
 };

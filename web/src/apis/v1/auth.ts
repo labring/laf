@@ -155,3 +155,21 @@ export async function AuthenticationControllerPat2token(params: Definitions.Pat2
     data: params,
   });
 }
+
+/**
+ * Send email verify code
+ */
+export async function EmailControllerSendCode(params: Definitions.SendEmailCodeDto): Promise<{
+  error: string;
+  data: Paths.EmailControllerSendCode.Responses;
+}> {
+  // /v1/auth/email/code
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/auth/email/code`, {
+    method: "POST",
+    data: params,
+  });
+}

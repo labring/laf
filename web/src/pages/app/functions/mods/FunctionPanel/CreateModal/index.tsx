@@ -225,10 +225,7 @@ const CreateModal = (props: {
                         <TemplatePopOver template={item}>
                           <div
                             onClick={() => {
-                              const currentURL = window.location.pathname;
-                              const lastIndex = currentURL.lastIndexOf("/");
-                              const newURL = currentURL.substring(0, lastIndex) + `/${item._id}`;
-                              navigate(newURL);
+                              navigate(changeURL(`/${item._id}`));
                             }}
                           >
                             <FuncTemplate>
