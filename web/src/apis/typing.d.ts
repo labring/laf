@@ -274,6 +274,13 @@ export type TFunction = {
   params: any;
 };
 
+export type TFunctionList = {
+  list: TFunction[];
+  total: number;
+  page: number;
+  pageSize: number;
+};
+
 export type TMethod = "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "OPTIONS" | "PATCH";
 
 export type Source = {
@@ -296,11 +303,15 @@ export type TFunctionTemplate = {
   items: { name: string; source: { code: string } }[];
   dependencies: string[];
   environments: { name: string; value: string }[];
+  uid: string;
+  user: { username: string };
 };
 
 export type TemplateList = {
   list: TFunctionTemplate[];
   total: number;
+  page: number;
+  pageSize: number;
 };
 
 export type TLogItem = {
@@ -365,3 +376,5 @@ export type TApplicationItem = {
     };
   };
 };
+
+export type TSmsCode = "Signin" | "Signup" | "ResetPassword" | "Bind" | "Unbind" | "ChangePhone";

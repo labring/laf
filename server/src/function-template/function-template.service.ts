@@ -21,6 +21,7 @@ import { DependencyService } from 'src/dependency/dependency.service'
 import { ApplicationService } from '../application/application.service'
 import { ApplicationConfigurationService } from 'src/application/configuration.service'
 import { FunctionService } from 'src/function/function.service'
+import { User } from 'src/user/entities/user'
 
 interface FindFunctionTemplatesParams {
   asc: number
@@ -575,14 +576,7 @@ export class FunctionTemplateService {
   ) {
     const pipe = [
       { $match: { templateId: templateId } },
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'uid',
-          foreignField: '_id',
-          as: 'users',
-        },
-      },
+      { $project: { uid: 1, _id: 0 } },
       { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
@@ -595,12 +589,6 @@ export class FunctionTemplateService {
     const total = await this.db
       .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
       .countDocuments({ templateId })
-
-    usedBy.forEach((item) => {
-      item.users[0].username = item.users[0].username.slice(0, 3)
-      item.users[0].email = null
-      item.users[0].phone = null
-    })
 
     const res = {
       list: usedBy,
@@ -629,6 +617,24 @@ export class FunctionTemplateService {
       .collection<FunctionTemplate>('FunctionTemplate')
       .aggregate(pipe)
       .toArray()
+
+    const user = await this.db.collection<User>('User').findOne({
+      _id: functionTemplate[0].uid,
+    })
+
+    if (user.phone && user.username) {
+      if (user.phone == user.username) {
+        user.username =
+          user.username.slice(0, 3) +
+          'x'.repeat(user.username.length - 6) +
+          user.username.slice(-3)
+      }
+    }
+
+    functionTemplate[0]['user'] = {
+      username: user?.username,
+      email: user?.email,
+    }
 
     return functionTemplate
   }
@@ -1626,6 +1632,7 @@ export class FunctionTemplateService {
     const res = await this.db
       .collection<FunctionTemplate>('FunctionTemplate')
       .findOne({ _id: templateId })
+
     return res
   }
 

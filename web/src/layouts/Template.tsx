@@ -22,7 +22,7 @@ export default function TemplateLayout() {
       <div
         className={clsx(
           "sticky top-0 z-50 flex justify-center",
-          darkMode ? "" : "border-b border-[#E4E9EE] bg-gray-100",
+          darkMode ? "" : "border-b border-[#E4E9EE] bg-[#F8FAFB]",
         )}
       >
         <Header width="max-w-screen-xl" />

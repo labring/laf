@@ -7,14 +7,7 @@ import { Decimal } from 'decimal.js'
 import * as assert from 'assert'
 import { ApplicationBilling } from './entities/application-billing'
 import { CalculatePriceDto } from './dto/calculate-price.dto'
-
-export interface BillingQuery {
-  appid?: string
-  startTime?: Date
-  endTime?: Date
-  page: number
-  pageSize: number
-}
+import { BillingQuery } from './interface/billing-query.interface'
 
 @Injectable()
 export class BillingService {
@@ -34,7 +27,11 @@ export class BillingService {
     }
 
     if (condition.appid) {
-      query['appid'] = condition.appid
+      query['appid'] = { $in: condition.appid }
+    }
+
+    if (condition.state) {
+      query['state'] = condition.state
     }
 
     const { page, pageSize } = condition
@@ -67,6 +64,101 @@ export class BillingService {
       .findOne({ _id: id })
 
     return billing
+  }
+
+  async getExpenseByDay(userId: ObjectId, condition?: BillingQuery) {
+    const query = { createdBy: userId }
+
+    if (condition.endTime) {
+      query['endAt'] = { $lte: condition.endTime }
+    }
+
+    if (condition.startTime) {
+      query['startAt'] = { $gte: condition.startTime }
+    }
+
+    if (condition.appid) {
+      query['appid'] = { $in: condition.appid }
+    }
+
+    if (condition.state) {
+      query['state'] = condition.state
+    }
+    const pipeline = [
+      {
+        $match: query,
+      },
+      {
+        $project: {
+          day: {
+            $dateToString: { format: '%Y-%m-%d', date: '$endAt' },
+          },
+          amount: 1,
+        },
+      },
+      {
+        $group: {
+          _id: '$day',
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          day: {
+            $dateFromString: {
+              dateString: '$_id',
+              format: '%Y-%m-%d',
+            },
+          },
+          totalAmount: 1,
+        },
+      },
+      {
+        $sort: { day: -1 },
+      },
+    ]
+    const expense = await this.db
+      .collection<ApplicationBilling>('ApplicationBilling')
+      .aggregate(pipeline)
+      .toArray()
+
+    return expense
+  }
+
+  async getExpense(userId: ObjectId, condition?: BillingQuery) {
+    const query = { createdBy: userId }
+
+    if (condition.endTime) {
+      query['endAt'] = { $lte: condition.endTime }
+    }
+
+    if (condition.startTime) {
+      query['startAt'] = { $gte: condition.startTime }
+    }
+
+    if (condition.appid) {
+      query['appid'] = { $in: condition.appid }
+    }
+
+    if (condition.state) {
+      query['state'] = condition.state
+    }
+
+    const totalExpense = await this.db
+      .collection<ApplicationBilling>('ApplicationBilling')
+      .aggregate([
+        { $match: query },
+        {
+          $group: {
+            _id: null,
+            totalAmount: { $sum: '$amount' },
+          },
+        },
+      ])
+      .toArray()
+
+    return totalExpense.length > 0 ? totalExpense[0].totalAmount : 0
   }
 
   async calculatePrice(dto: CalculatePriceDto) {

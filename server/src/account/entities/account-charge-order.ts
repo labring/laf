@@ -19,6 +19,8 @@ export enum PaymentChannelType {
   Stripe = 'Stripe',
   Paypal = 'Paypal',
   Google = 'Google',
+  GiftCode = 'GiftCode',
+  InviteCode = 'InviteCode',
 }
 
 export class AccountChargeOrder<R = any> {

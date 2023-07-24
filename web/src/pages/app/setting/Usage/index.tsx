@@ -1,89 +1,204 @@
-import { useState } from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { HStack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import { Avatar, Button, Center, Spinner, useColorMode } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import ChargeButton from "@/components/ChargeButton";
-import Pagination from "@/components/Pagination";
-import { formatDate, formatPrice } from "@/utils/format";
-import getPageInfo from "@/utils/getPageInfo";
+import { CostIcon, ExpendIcon, RechargeIcon } from "@/components/CommonIcon";
+import DateRangePicker from "@/components/DateRangePicker";
+import { formatDate, formatOriginalPrice, formatPrice, hidePhoneNumber } from "@/utils/format";
+import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
-import { BillingControllerFindAll } from "@/apis/v1/billings";
+import { AccountControllerGetChargeOrderAmount } from "@/apis/v1/accounts";
+import { BillingControllerGetExpense, BillingControllerGetExpenseByDay } from "@/apis/v1/billings";
+import useGlobalStore from "@/pages/globalStore";
 import { useAccountQuery } from "@/pages/home/service";
 
-const LIMIT_OPTIONS = [7, 20, 100, 200];
-const DEFAULT_PAGE_INFO = {
-  page: 1,
-  pageSize: 7,
-};
+const DATA_DURATION = 6 * 24 * 60 * 60 * 1000;
 
 export default function Usage() {
-  const { data: accountRes } = useAccountQuery();
-
-  const [queryData, setQueryData] = useState(DEFAULT_PAGE_INFO);
-
-  const { data: billingRes } = useQuery(["billing", queryData], async () => {
-    return BillingControllerFindAll({
-      ...queryData,
-    });
+  const { t } = useTranslation();
+  const darkMode = useColorMode().colorMode === "dark";
+  const [endTime, setEndTime] = React.useState<Date | null>(() => {
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    return today;
+  });
+  const [startTime, setStartTime] = React.useState<Date | null>(() => {
+    const today = new Date();
+    today.setTime(today.getTime() - DATA_DURATION);
+    today.setHours(0, 0, 0, 0);
+    return today;
   });
 
-  const { t } = useTranslation();
+  const { userInfo } = useGlobalStore((state) => state);
+  const { data: accountRes } = useAccountQuery();
+
+  const { data: billingAmountRes, isLoading: billLoading } = useQuery(
+    ["billing", startTime, endTime],
+    async () => {
+      return BillingControllerGetExpense({
+        startTime: startTime?.getTime(),
+        endTime: endTime?.getTime(),
+      });
+    },
+  );
+
+  const { data: chargeOrderAmountRes, isLoading: chargeLoading } = useQuery(
+    ["chargeOrderAmount", startTime, endTime],
+    async () => {
+      return AccountControllerGetChargeOrderAmount({
+        startTime: startTime?.getTime(),
+        endTime: endTime?.getTime(),
+      });
+    },
+  );
+
+  const { data: billingAmountByDayRes, isLoading: billingLoading } = useQuery(
+    ["billingByDay", startTime, endTime],
+    async () => {
+      return BillingControllerGetExpenseByDay({
+        startTime: startTime?.getTime(),
+        endTime: endTime?.getTime(),
+      });
+    },
+  );
+
+  const chartData = useMemo(
+    () =>
+      ((billingAmountByDayRes?.data as Array<any>) || [])
+        .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime())
+        .map((item) => ({
+          totalAmount: item.totalAmount,
+          date: formatDate(item.day).slice(5, 10),
+        })),
+    [billingAmountByDayRes?.data],
+  );
+
   return (
     <div>
-      <h1 className="mb-4 text-2xl font-bold">Usage</h1>
-      <HStack className="mt-4">
-        <span className=" text-grayModern-500">{t("Balance")}:</span>
-        <span>{formatPrice(accountRes?.data?.balance)}</span>
-        <ChargeButton>
-          <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
-        </ChargeButton>
-      </HStack>
-
-      <div className="mt-4 rounded border">
-        <TableContainer>
-          <Table variant="striped" colorScheme="gray" size={"sm"}>
-            <Thead>
-              <Tr>
-                <Th>AppId</Th>
-                <Th>{t("SpecItem.cpu")}</Th>
-                <Th>{t("SpecItem.memory")}</Th>
-                <Th>{t("Spec.Database")}</Th>
-                <Th>{t("Spec.Storage")}</Th>
-                <Th>{t("TotalAmount")}</Th>
-                <Th>{t("State")}</Th>
-                <Th>{t("Duration")}</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {(billingRes?.data?.list || []).map((item: any) => (
-                <Tr key={item._id}>
-                  <Td>{item.appid}</Td>
-                  <Td>{item.detail?.cpu?.amount}</Td>
-                  <Td>{item.detail?.memory?.amount}</Td>
-                  <Td>{item.detail?.databaseCapacity?.amount}</Td>
-                  <Td>{item.detail?.storageCapacity?.amount}</Td>
-                  <Td>{item.amount}</Td>
-                  <Td>{item.state}</Td>
-                  <Td>
-                    {formatDate(item.startAt)} - {formatDate(item.endAt)}
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-          <div className="p-4">
-            <Pagination
-              options={LIMIT_OPTIONS}
-              values={getPageInfo(billingRes?.data)}
-              onChange={(values: any) => {
-                setQueryData({
-                  ...values,
-                });
-              }}
-            />
+      <div className="flex items-center pb-6 pt-2 text-2xl">
+        <span className="pr-4">
+          <CostIcon boxSize={5} mr={3} />
+          {t("SettingPanel.Usage")}
+        </span>
+        <DateRangePicker
+          startTime={startTime}
+          endTime={endTime}
+          setStartTime={setStartTime}
+          setEndTime={setEndTime}
+        />
+      </div>
+      <div className="flex pb-6 pl-8">
+        <div className="flex flex-col pr-4">
+          <span>{t("SettingPanel.MyAccount")}</span>
+          <div className="mt-3 flex h-36 w-[306px] flex-col justify-between rounded-lg bg-primary-500 px-6 text-white">
+            <div className="flex items-center justify-between pt-3 text-lg">
+              <span>{hidePhoneNumber(userInfo?.phone || "")}</span>
+              <span className="flex items-center">
+                {userInfo?.username}{" "}
+                <Avatar
+                  className="ml-2"
+                  width={9}
+                  height={9}
+                  src={getAvatarUrl(userInfo?._id || "")}
+                />
+              </span>
+            </div>
+            <div className="flex items-end justify-between pb-5">
+              <span className="flex flex-col">
+                <span>{t("Balance")}</span>
+                <span className="text-[24px]">{formatPrice(accountRes?.data?.balance)}</span>
+              </span>
+              <ChargeButton>
+                <Button bg={"white"} textColor={"black"} _hover={{ bg: "primary.100" }}>
+                  {t("ChargeNow")}
+                </Button>
+              </ChargeButton>
+            </div>
           </div>
-        </TableContainer>
+        </div>
+        <div>
+          <span>{t("MyIncomeAndExpenses")}</span>
+          <div className="mt-3 flex">
+            <div
+              className={clsx(
+                "mr-4 h-36 w-36 rounded-lg border border-grayModern-200",
+                !darkMode && "bg-[#F4F6F8]",
+              )}
+            >
+              <div className="flex w-full justify-center pt-6">
+                <div className="flex h-7 w-8 items-center justify-center rounded-lg bg-blue-600">
+                  <ExpendIcon className="!text-white" w={"16px"} h={"16px"} />
+                </div>
+              </div>
+              <div className="flex w-full justify-center pt-3">{t("Expenses")}</div>
+              <div className="flex w-full justify-center pt-3 text-xl">
+                {billLoading ? (
+                  <Spinner size={"sm"} />
+                ) : (
+                  formatOriginalPrice(billingAmountRes?.data as number)
+                )}
+              </div>
+            </div>
+            <div
+              className={clsx(
+                "h-36 w-36 rounded-lg border border-grayModern-200",
+                !darkMode && "bg-[#F4F6F8]",
+              )}
+            >
+              <div className="flex w-full justify-center pt-6">
+                <div className="flex h-7 w-8 items-center justify-center rounded-lg bg-adora-600">
+                  <RechargeIcon className="!text-white" w={"16px"} h={"16px"} />
+                </div>
+              </div>
+              <div className="flex w-full justify-center pt-3">{t("ChargeNow")}</div>
+              <div className="flex w-full justify-center pt-3 text-xl">
+                {chargeLoading ? (
+                  <Spinner size={"sm"} />
+                ) : (
+                  formatPrice(chargeOrderAmountRes?.data as number)
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span className="pl-8">{t("SettingPanel.CostTrend")}</span>
+      <div className="mt-3 h-[160px] w-[660px] pl-8">
+        {billingLoading ? (
+          <Center className="h-full w-full">
+            <Spinner />
+          </Center>
+        ) : (
+          <ResponsiveContainer width={"100%"} height={"100%"}>
+            <AreaChart data={chartData} margin={{ left: -24 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="date" axisLine={false} tickLine={false} />
+              <YAxis axisLine={false} tickLine={false} />
+              <Tooltip
+                formatter={(value) => [formatOriginalPrice(Number(value), 3), t("Expenses")]}
+              />
+              <Area
+                type="monotone"
+                dataKey="totalAmount"
+                stroke="#66CBCA"
+                fill="#E6F6F6"
+                strokeWidth={2}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   );

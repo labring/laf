@@ -131,6 +131,13 @@ const Button = defineStyleConfig({
       },
     },
 
+    warn: {
+      bg: "lafDark.300",
+      _hover: {
+        bg: "error.500",
+      },
+    },
+
     warnText: {
       color: "error.500",
       _hover: {
@@ -412,6 +419,8 @@ const theme = extendTheme({
     },
     error: {
       100: "#FDECEE",
+      200: "#FDD8DC",
+      400: "#FF8492",
       500: "#F16979",
       600: "#ED4458",
     },

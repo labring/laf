@@ -1,11 +1,18 @@
 import { Controller, Get, Logger, Query, Req, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
-import { ApiResponsePagination, ResponseUtil } from 'src/utils/response'
-import { BillingQuery, BillingService } from './billing.service'
+import {
+  ApiResponseArray,
+  ApiResponseObject,
+  ApiResponsePagination,
+  ResponseUtil,
+} from 'src/utils/response'
+import { BillingService } from './billing.service'
+import { BillingQuery } from './interface/billing-query.interface'
 
 import { ApplicationBilling } from './entities/application-billing'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { IRequest } from 'src/utils/interface'
+import { BillingsByDayDto } from './dto/billings.dto'
 
 @ApiTags('Billing')
 @ApiBearerAuth('Authorization')
@@ -26,6 +33,7 @@ export class BillingController {
     type: String,
     description: 'appid',
     required: false,
+    isArray: true,
   })
   @ApiQuery({
     name: 'startTime',
@@ -55,10 +63,17 @@ export class BillingController {
     required: false,
     example: 10,
   })
+  @ApiQuery({
+    name: 'state',
+    type: String,
+    description: 'billing state',
+    required: false,
+  })
   @Get()
   async findAll(
     @Req() req: IRequest,
-    @Query('appid') appid?: string,
+    @Query('appid') appid?: string[],
+    @Query('state') state?: string,
     @Query('startTime') startTime?: string,
     @Query('endTime') endTime?: string,
     @Query('page') page?: number,
@@ -77,6 +92,10 @@ export class BillingController {
       query.appid = appid
     }
 
+    if (state) {
+      query.state = state
+    }
+
     if (startTime) {
       query.startTime = new Date(startTime)
     }
@@ -89,5 +108,68 @@ export class BillingController {
 
     const billings = await this.billing.query(user._id, query)
     return ResponseUtil.ok(billings)
+  }
+
+  /**
+   * Get my total expense
+   */
+  @ApiOperation({ summary: 'Get my total amount' })
+  @ApiResponseObject(Number)
+  @UseGuards(JwtAuthGuard)
+  @Get('amount')
+  async getExpense(
+    @Req() req: IRequest,
+    @Query('startTime') startTime?: number,
+    @Query('endTime') endTime?: number,
+    @Query('appid') appid?: string[],
+    @Query('state') state?: string,
+  ) {
+    // default is 24 hours
+    const query: BillingQuery = {
+      startTime: startTime
+        ? new Date(startTime)
+        : new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+      endTime: endTime ? new Date(endTime) : new Date(),
+    }
+    if (appid) {
+      query.appid = appid
+    }
+    if (state) {
+      query.state = state
+    }
+    const user = req.user
+
+    const expenseTotal = await this.billing.getExpense(user._id, query)
+    return ResponseUtil.ok(expenseTotal)
+  }
+
+  @ApiOperation({ summary: 'Get my total amount by day' })
+  @ApiResponseArray(BillingsByDayDto)
+  @UseGuards(JwtAuthGuard)
+  @Get('amounts')
+  async getExpenseByDay(
+    @Req() req: IRequest,
+    @Query('startTime') startTime?: number,
+    @Query('endTime') endTime?: number,
+    @Query('appid') appid?: string[],
+    @Query('state') state?: string,
+  ) {
+    // default is 7 days
+    const query: BillingQuery = {
+      startTime: startTime
+        ? new Date(startTime)
+        : new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 7),
+      endTime: endTime ? new Date(endTime) : new Date(),
+    }
+    if (appid) {
+      query.appid = appid
+    }
+    if (state) {
+      query.state = state
+    }
+    const user = req.user
+
+    const expenseTotal = await this.billing.getExpenseByDay(user._id, query)
+    return ResponseUtil.ok(expenseTotal)
   }
 }

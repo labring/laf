@@ -16,7 +16,7 @@ import Icons from "./Icons";
 
 import styles from "./index.module.scss";
 
-import UserSetting from "@/layouts/Header/UserSetting";
+import UserSetting from "@/pages/app/setting/UserSetting";
 import useGlobalStore from "@/pages/globalStore";
 type TIcon = {
   pageId: string;
@@ -68,7 +68,7 @@ export default function SideBar() {
       pageId: Pages.userSetting,
       component: (
         <UserSetting
-          name={userInfo?.profile?.name || ""}
+          name={userInfo?.username || ""}
           avatar={getAvatarUrl(userInfo?._id || "")}
           width={"28px"}
         />

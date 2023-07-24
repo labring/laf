@@ -10,6 +10,7 @@ declare namespace Definitions {
   export type CloudFunction = {};
 
   export type UpdateFunctionDto = {
+    newName?: string /* Function name is unique in the application */;
     description?: string;
     methods?: string[];
     code?: string /* The source code of the function */;
@@ -91,6 +92,21 @@ declare namespace Definitions {
     resource?: Definitions.ApplicationBundleResource;
     autoscaling?: Definitions.Autoscaling;
     isTrialTier?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type BindCustomDomainDto = {
+    domain?: string;
+  };
+
+  export type RuntimeDomain = {
+    _id?: string;
+    appid?: string;
+    domain?: string;
+    customDomain?: string;
+    state?: string;
+    phase?: string;
     createdAt?: string;
     updatedAt?: string;
   };
@@ -181,6 +197,8 @@ declare namespace Definitions {
     createdBy?: string;
   };
 
+  export type Number = {};
+
   export type AccountChargeOrder = {
     _id?: string;
     accountId?: string;
@@ -206,13 +224,24 @@ declare namespace Definitions {
     result?: Definitions.WeChatPaymentCreateOrderResult;
   };
 
+  export type UseGiftCodeDto = {
+    code?: string /* gift code */;
+  };
+
+  export type InviteCode = {
+    _id?: string;
+    uid?: string;
+    code?: string;
+    state?: string;
+    name?: string;
+    description?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
   export type CreateWebsiteDto = {
     bucketName?: string;
     state?: string;
-  };
-
-  export type BindCustomDomainDto = {
-    domain?: string;
   };
 
   export type PasswdSignupDto = {
@@ -329,6 +358,14 @@ declare namespace Definitions {
     items?: Definitions.FunctionTemplateItemDto[] /* items of the function template */;
   };
 
+  export type DeleteRecycleBinItemsDto = {
+    ids?: string[] /* The list of item ids */;
+  };
+
+  export type RestoreRecycleBinItemsDto = {
+    ids?: string[] /* The list of item ids */;
+  };
+
   export type CreateAutoscalingDto = {
     enable?: boolean;
     minReplicas?: number;
@@ -398,16 +435,6 @@ declare namespace Definitions {
     value?: string;
   };
 
-  export type RuntimeDomain = {
-    _id?: string;
-    appid?: string;
-    domain?: string;
-    state?: string;
-    phase?: string;
-    createdAt?: string;
-    updatedAt?: string;
-  };
-
   export type WeChatPaymentCreateOrderResult = {
     code_url?: string;
   };
@@ -436,36 +463,6 @@ declare namespace Definitions {
 }
 
 declare namespace Paths {
-  namespace ApplicationControllerCheckResolved {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-  namespace ApplicationControllerRemove {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-  namespace AuthControllerGetProfile {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerPat2token {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
   namespace AppControllerGetRuntimes {
     export type QueryParameters = any;
 
@@ -590,6 +587,30 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.UpdateApplicationBundleDto;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationControllerBindDomain {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindCustomDomainDto;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationControllerCheckResolved {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindCustomDomainDto;
 
     export type Responses = any;
   }
@@ -786,7 +807,23 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace AccountControllerGetChargeOrderAmount {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace AccountControllerGetChargeOrder {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerGetChargeRecords {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -811,6 +848,30 @@ declare namespace Paths {
   }
 
   namespace AccountControllerWechatNotify {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerGiftCode {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UseGiftCodeDto;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerInviteCode {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerInviteCodeProfit {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -1090,6 +1151,22 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace BillingControllerGetExpense {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace BillingControllerGetExpenseByDay {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace ResourceControllerCalculatePrice {
     export type QueryParameters = any;
 
@@ -1206,6 +1283,38 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionRecycleBinControllerDeleteRecycleBinItems {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.DeleteRecycleBinItemsDto;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionRecycleBinControllerEmptyRecycleBin {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionRecycleBinControllerGetRecycleBin {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionRecycleBinControllerRestoreRecycleBinItems {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.RestoreRecycleBinItemsDto;
 
     export type Responses = any;
   }

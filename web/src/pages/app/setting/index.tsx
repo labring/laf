@@ -26,9 +26,14 @@ export type TTabItem = {
 };
 
 export const TabKeys = {
-  Usage: "usage",
+  CostOverview: "cost-overview",
+  CardRedemption: "card-redemption",
+  BillingDetails: "billing-details",
+  RechargeHistory: "recharge-history",
+  PricingStandards: "pricing-standards",
   UserInfo: "user-info",
   PAT: "pat",
+  UserInvite: "user-invite",
 };
 
 const SettingModal = (props: {
@@ -56,15 +61,15 @@ const SettingModal = (props: {
         },
       })}
 
-      <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent maxW={"80%"} width={"auto"} minW={960}>
-          <ModalBody py={2} flex="none" minH={481} className="relative">
+        <ModalContent maxW={"80%"} width={"auto"} minW={1024}>
+          <ModalBody py={2} flex="none" minH={500} className="relative">
             <ModalCloseButton />
             <Box className="flex h-full" borderColor={borderColor}>
               <SectionList
                 className={clsx(
-                  "absolute bottom-0 left-0 top-0 min-w-[268px] rounded-l-lg",
+                  "absolute bottom-0 left-0 top-0 min-w-[228px] rounded-l-lg",
                   !darkMode && "border border-r-[#E4E9EE] bg-[#F4F6F8]",
                 )}
               >
@@ -75,7 +80,10 @@ const SettingModal = (props: {
                   {tabMatch.map((tab) => {
                     return (
                       <SectionList.Item
-                        className="mt-2 !h-[42px] w-[220px] rounded-md"
+                        className={clsx(
+                          "mt-2 !h-[42px] w-[180px] rounded-md",
+                          !darkMode && "!text-grayModern-600 ",
+                        )}
                         isActive={item?.key === tab.key}
                         key={tab.key}
                         onClick={() => {
@@ -91,7 +99,7 @@ const SettingModal = (props: {
                   })}
                 </div>
               </SectionList>
-              <div className="ml-[268px] w-full overflow-hidden p-2 pt-10">
+              <div className="ml-[236px] w-full overflow-hidden p-2">
                 {React.cloneElement(item?.component || <></>, {
                   onClose,
                 })}

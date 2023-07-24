@@ -58,6 +58,7 @@ export const useSignupMutation = (config?: { onSuccess: (result: any) => void })
     {
       onSuccess: async (result) => {
         if (!result.error) {
+          localStorage.setItem("token", result?.data.token);
           config?.onSuccess(result);
         }
       },

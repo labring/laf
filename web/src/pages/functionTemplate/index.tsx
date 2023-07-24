@@ -20,7 +20,9 @@ import clsx from "clsx";
 import { debounce } from "lodash";
 
 import EmptyBox from "@/components/EmptyBox";
+import Pagination from "@/components/Pagination";
 import { changeURL } from "@/utils/format";
+import getPageInfo from "@/utils/getPageInfo";
 
 import TemplateCard from "./Mods/TemplateCard/TemplateCard";
 import FuncTemplateItem from "./FuncTemplateItem";
@@ -33,8 +35,6 @@ import {
 import styles from "./Mods/SideBar/index.module.scss";
 
 import { TemplateList } from "@/apis/typing";
-import PaginationBar from "@/pages/functionTemplate/Mods/PaginationBar";
-
 type queryData = {
   page: number;
   pageSize: number;
@@ -74,7 +74,6 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
     [queryData],
   );
   const [sorting, setSorting] = useState(sortList[0]);
-  const [page, setPage] = useState(1);
   const [templateList, setTemplateList] = useState<TemplateList>();
   const [searchKey, setSearchKey] = useState("");
 
@@ -106,7 +105,6 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
   const functionTemplatesQuery = useGetFunctionTemplatesQuery(
     {
       ...queryData,
-      page: page,
     },
     {
       enabled: selectedItem.value === "all",
@@ -119,7 +117,6 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
   const recommendFunctionTemplatesQuery = useGetRecommendFunctionTemplatesQuery(
     {
       ...queryData,
-      page: page,
     },
     {
       enabled: selectedItem.value === "recommended",
@@ -132,7 +129,6 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
   const myFunctionTemplatesQuery = useGetMyFunctionTemplatesQuery(
     {
       ...queryData,
-      page: page,
       pageSize: 8,
     },
     {
@@ -169,7 +165,6 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
     } else {
       setQueryData(defaultQueryData);
     }
-    setPage(1);
     window.history.replaceState(
       null,
       "",
@@ -307,36 +302,39 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                 <Spinner />
               </Center>
             ) : templateList && templateList.list.length > 0 ? (
-              <div className="flex flex-wrap">
-                {templateList.list.map((item) => (
-                  <section
-                    className={clsx(
-                      "mb-3 min-w-[18rem]",
-                      selectedItem.value === "all" || selectedItem.value === "recommended"
-                        ? "w-1/3"
-                        : "w-1/2",
-                    )}
-                    key={item._id}
-                  >
-                    <TemplateCard
-                      onClick={() => {
-                        navigate(changeURL(`/${item._id}`));
-                        setSelectedItem({ text: "", value: "" });
-                      }}
-                      template={item}
-                      templateCategory={selectedItem.value}
-                    />
-                  </section>
-                ))}
-                <PaginationBar
-                  page={page}
-                  setPage={setPage}
-                  total={templateList?.total || 0}
-                  pageSize={
-                    selectedItem.value === "all" || selectedItem.value === "recommended" ? 12 : 8
-                  }
-                />
-              </div>
+              <>
+                <div className="flex flex-wrap">
+                  {templateList.list.map((item) => (
+                    <section
+                      className={clsx(
+                        "mb-3 min-w-[18rem]",
+                        selectedItem.value === "all" || selectedItem.value === "recommended"
+                          ? "w-1/3"
+                          : "w-1/2",
+                      )}
+                      key={item._id}
+                    >
+                      <TemplateCard
+                        onClick={() => {
+                          navigate(changeURL(`/${item._id}`));
+                          setSelectedItem({ text: "", value: "" });
+                        }}
+                        template={item}
+                        templateCategory={selectedItem.value}
+                      />
+                    </section>
+                  ))}
+                </div>
+                <div className="pb-6 pt-2">
+                  <Pagination
+                    values={getPageInfo(templateList)}
+                    onChange={(values) => {
+                      setQueryData({ ...queryData, ...values });
+                    }}
+                    notShowSelect
+                  />
+                </div>
+              </>
             ) : (
               <div className="w-full pt-20">
                 <EmptyBox>

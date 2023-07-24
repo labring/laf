@@ -1,10 +1,13 @@
 import { useTranslation } from "react-i18next";
-import { HStack } from "@chakra-ui/react";
+import { HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import { DeleteIcon } from "@/components/CommonIcon";
 import Panel from "@/components/Panel";
 
 import Icons from "../SideBar/Icons";
+
+import RecycleBinModal from "./RecycleBinModal";
 
 import SysSetting from "@/pages/app/setting/SysSetting";
 import useGlobalStore from "@/pages/globalStore";
@@ -14,6 +17,7 @@ import StatusBadge from "@/pages/home/mods/StatusBadge";
 function StatusBar() {
   const { t } = useTranslation();
   const { currentApp } = useGlobalStore((state) => state);
+  const darkMode = useColorMode().colorMode === "dark";
 
   return (
     <Panel className="!flex-row justify-between">
@@ -34,13 +38,20 @@ function StatusBar() {
           {t("Spec.RAM")}: {`${currentApp?.bundle?.resource.limitMemory} ${t("Unit.MB")}`}
         </div>
         <div className={clsx("mt-1")}>
-          {/* {t("EndTime")}: {formatDate(currentApp?.subscription.expiredAt)} */}
           <CreateAppModal application={currentApp as any} type="change">
             <a className="ml-2 text-primary-500" href="/edit">
               {t("Change")}
             </a>
           </CreateAppModal>
         </div>
+        <RecycleBinModal>
+          <div
+            className={clsx("flex cursor-pointer items-center", !darkMode && "text-grayModern-500")}
+          >
+            <DeleteIcon boxSize={4} />
+            {t("RecycleBin")}
+          </div>
+        </RecycleBinModal>
       </HStack>
     </Panel>
   );

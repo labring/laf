@@ -42,12 +42,13 @@ const CreateModal = (props: {
   functionItem?: any;
   children?: React.ReactElement;
   tagList?: any;
+  aiCode?: string;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const store = useFunctionStore();
   const { showSuccess, currentApp } = useGlobalStore();
 
-  const { functionItem, children = null, tagList } = props;
+  const { functionItem, children = null, tagList, aiCode } = props;
   const isEdit = !!functionItem;
   const navigate = useNavigate();
   const [searchKey, setSearchKey] = useState("");
@@ -57,7 +58,7 @@ const CreateModal = (props: {
     description: functionItem?.desc || "",
     websocket: !!functionItem?.websocket,
     methods: functionItem?.methods || ["GET", "POST"],
-    code: functionItem?.source.code || functionTemplates[0].value.trim(),
+    code: functionItem?.source.code || aiCode || functionTemplates[0].value.trim() || "",
     tags: functionItem?.tags || [],
   };
 
@@ -100,12 +101,14 @@ const CreateModal = (props: {
 
   const onSubmit = async (data: any) => {
     let res: any = {};
-    if (isEdit) {
+    if (isEdit && functionItem.name !== data.name) {
       res = await updateFunctionMutation.mutateAsync({
         ...data,
         name: functionItem.name,
         newName: data.name,
       });
+    } else if (isEdit && functionItem.name === data.name) {
+      res = await updateFunctionMutation.mutateAsync(data);
     } else {
       res = await createFunctionMutation.mutateAsync(data);
     }
@@ -209,7 +212,7 @@ const CreateModal = (props: {
                 </div>
               </FormControl>
 
-              {isEdit ? null : (
+              {!isEdit && !aiCode && (
                 <div className="w-full">
                   {TemplateList.data?.data.list.length > 0 && (
                     <div className="pb-3 text-lg font-medium text-grayModern-700">

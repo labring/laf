@@ -15,6 +15,17 @@ import {
 import { UserProfile } from 'src/user/entities/user-profile'
 import { UserService } from 'src/user/user.service'
 import { ObjectId } from 'mongodb'
+import { AccountService } from 'src/account/account.service'
+import { Account } from 'src/account/entities/account'
+import { AccountTransaction } from 'src/account/entities/account-transaction'
+import {
+  AccountChargeOrder,
+  AccountChargePhase,
+  Currency,
+  PaymentChannelType,
+} from 'src/account/entities/account-charge-order'
+import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { Setting, SettingKey } from 'src/setting/entities/setting'
 
 @Injectable()
 export class UserPasswordService {
@@ -24,6 +35,7 @@ export class UserPasswordService {
   constructor(
     private readonly authService: AuthenticationService,
     private readonly userService: UserService,
+    private readonly accountService: AccountService,
   ) {}
 
   // Signup by username and password
@@ -39,7 +51,7 @@ export class UserPasswordService {
     try {
       session.startTransaction()
       // create user
-      const res = await this.db.collection<User>('User').insertOne(
+      const user = await this.db.collection<User>('User').insertOne(
         {
           username,
           phone,
@@ -53,7 +65,7 @@ export class UserPasswordService {
       // create password
       await this.db.collection<UserPassword>('UserPassword').insertOne(
         {
-          uid: res.insertedId,
+          uid: user.insertedId,
           password: hashPassword(password),
           state: UserPasswordState.Active,
           createdAt: new Date(),
@@ -62,21 +74,78 @@ export class UserPasswordService {
         { session },
       )
 
-      // create invite relation
+      // create invite relation and add invite profit
       if (inviteCode) {
-        const result = await this.db
+        const inviteCodeInfo = await this.db
           .collection<InviteCode>('InviteCode')
           .findOne({
             code: inviteCode,
             state: InviteCodeState.Enabled,
           })
-        if (result) {
+
+        if (inviteCodeInfo) {
+          const account = await this.accountService.findOne(inviteCodeInfo.uid)
+          // get invitation Profit Amount
+          let amount = 0
+          const inviteProfit = await this.db
+            .collection<Setting>('Setting')
+            .findOne({
+              key: SettingKey.InvitationProfit,
+              public: true,
+            })
+          if (inviteProfit) {
+            amount = parseFloat(inviteProfit.value)
+          }
+          // add invite-code charge order
+          await this.db
+            .collection<AccountChargeOrder>('AccountChargeOrder')
+            .insertOne(
+              {
+                accountId: account._id,
+                amount: amount,
+                currency: Currency.CNY,
+                phase: AccountChargePhase.Paid,
+                channel: PaymentChannelType.InviteCode,
+                createdBy: new ObjectId(inviteCodeInfo.uid),
+                lockedAt: TASK_LOCK_INIT_TIME,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              { session },
+            )
+          // update account balance
+          const accountAfterUpdate = await this.db
+            .collection<Account>('Account')
+            .findOneAndUpdate(
+              { _id: account._id },
+              {
+                $inc: { balance: amount },
+                $set: { updatedAt: new Date() },
+              },
+              { session, returnDocument: 'after' },
+            )
+
+          // add transaction record
+          const transaction = await this.db
+            .collection<AccountTransaction>('AccountTransaction')
+            .insertOne(
+              {
+                accountId: account._id,
+                amount: amount,
+                balance: accountAfterUpdate.value.balance,
+                message: 'Invitation profit',
+                createdAt: new Date(),
+              },
+              { session },
+            )
+
           await this.db.collection<InviteRelation>('InviteRelation').insertOne(
             {
-              uid: res.insertedId,
-              invitedBy: result.uid,
-              codeId: result._id,
+              uid: user.insertedId,
+              invitedBy: inviteCodeInfo.uid,
+              codeId: inviteCodeInfo._id,
               createdAt: new Date(),
+              transactionId: transaction.insertedId,
             },
             { session },
           )
@@ -86,7 +155,7 @@ export class UserPasswordService {
       // create profile
       await this.db.collection<UserProfile>('UserProfile').insertOne(
         {
-          uid: res.insertedId,
+          uid: user.insertedId,
           name: username,
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -95,7 +164,7 @@ export class UserPasswordService {
       )
 
       await session.commitTransaction()
-      return this.userService.findOneById(res.insertedId)
+      return await this.userService.findOneById(user.insertedId)
     } catch (error) {
       await session.abortTransaction()
       throw error

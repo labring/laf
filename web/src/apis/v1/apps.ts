@@ -115,7 +115,7 @@ export async function FunctionControllerUpdateDebug(
   error: string;
   data: Definitions.CloudFunction;
 }> {
-  // /v1/apps/{appid}/functions/{name}/debug
+  // /v1/apps/{appid}/functions/{name}/debug/params
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,

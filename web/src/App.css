@@ -71,3 +71,8 @@ a {
     background: black;
   }
 }
+
+.rdp-day_selected {
+  background-color: #00A9A6 !important;
+  color: white !important;
+}

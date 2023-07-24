@@ -1,6 +1,7 @@
 .sectionList {
   overflow-y: hidden;
   overflow-x: hidden;
+  height: 100%;
 
   li {
     cursor: pointer;
@@ -10,7 +11,6 @@
     justify-content: space-between;
     padding: 0px 12px;
     margin-bottom: 2px;
-    color: var(--chakra-colors-grayModern-600);
 
     span {
       vertical-align: middle;

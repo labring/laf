@@ -30,6 +30,8 @@ import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 import { CloudFunctionHistory } from './entities/cloud-function-history'
 import { CloudFunction } from './entities/cloud-function'
 import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
+import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
+import { STORAGE_LIMIT } from 'src/constants'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
@@ -38,6 +40,7 @@ export class FunctionController {
   constructor(
     private readonly functionsService: FunctionService,
     private readonly bundleService: BundleService,
+    private readonly functionRecycleBinService: FunctionRecycleBinService,
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
@@ -213,6 +216,12 @@ export class FunctionController {
         i18n.t('function.common.notFound', { args: { name } }),
         HttpStatus.NOT_FOUND,
       )
+    }
+    const recycleBinStorage =
+      await this.functionRecycleBinService.getRecycleBinStorage(appid)
+
+    if (recycleBinStorage >= STORAGE_LIMIT) {
+      return ResponseUtil.error('Recycle bin is full, please free up space')
     }
 
     const res = await this.functionsService.removeOne(func)
