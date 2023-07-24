@@ -13,6 +13,8 @@ fi
 EXTERNAL_HTTP_SCHEMA=${EXTERNAL_HTTP_SCHEMA:-https}
 INTERNAL_HTTP_SCHEMA=${INTERNAL_HTTP_SCHEMA:-http}
 
+ENABLE_APISIX_HOST_NETWORK=${ENABLE_APISIXI_HOST_NETWORK:-true}
+
 NAMESPACE=${NAMESPACE:-laf-system}
 PASSWD_OR_SECRET=$(tr -cd 'a-z0-9' </dev/urandom |head -c32)
 
@@ -40,7 +42,7 @@ APISIX_API_KEY=$PASSWD_OR_SECRET
 helm install apisix -n ${NAMESPACE} \
     --set apisix.kind=DaemonSet \
     --set apisix.securityContext.runAsUser=0 \
-    --set apisix.hostNetwork=false \
+    --set apisix.hostNetwork="${ENABLE_APISIX_HOST_NETWORK}" \
     --set admin.credentials.admin=${APISIX_API_KEY} \
     --set etcd.enabled=true \
     --set etcd.host[0]="http://apisix-etcd:2379" \
