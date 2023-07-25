@@ -82,11 +82,11 @@ export function formatPort(port: number | undefined) {
 }
 
 export function formatPrice(price?: number) {
-  return price ? "¥" + (price / 100).toFixed(2) : "-";
+  return price ? "¥" + (price / 100).toFixed(2) : "¥0.00";
 }
 
 export function formatOriginalPrice(price?: number, fixedNumber?: number) {
-  return price ? "¥" + price.toFixed(fixedNumber || 2) : "-";
+  return price ? "¥" + price.toFixed(fixedNumber || 2) : "¥0.00";
 }
 
 export function convertMoney(money: number) {

@@ -16,13 +16,14 @@ import useGlobalStore from "@/pages/globalStore";
 
 interface IProps {
   className?: string;
+  isModal?: boolean;
   template: TFunctionTemplate;
   templateCategory: string;
   onClick: () => void;
 }
 
 const TemplateCard = (props: IProps) => {
-  const { onClick, className, templateCategory, template } = props;
+  const { onClick, className, templateCategory, template, isModal } = props;
   const { colorMode } = useColorMode();
   const navigate = useNavigate();
   const deleteFunctionMutation = useDeleteFunctionTemplateMutation();
@@ -34,7 +35,7 @@ const TemplateCard = (props: IProps) => {
   return (
     <div className={className}>
       <div
-        className="mr-4 cursor-pointer rounded-lg border-[1px]"
+        className={clsx("cursor-pointer rounded-lg border-[1px]", isModal ? "pb-4" : "mr-4")}
         style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
         onMouseEnter={(e) => {
           e.currentTarget.style.outlineWidth = "2px";
@@ -51,8 +52,9 @@ const TemplateCard = (props: IProps) => {
             <div className={clsx("mb-3 flex justify-between pt-4")}>
               <div
                 className={clsx(
-                  "flex items-center text-2xl font-semibold",
+                  "flex items-center font-semibold",
                   templateCategory === "my" ? "w-9/12" : "w-full",
+                  isModal ? "text-xl" : "text-2xl",
                 )}
               >
                 <div className="truncate">{template.name}</div>
@@ -126,22 +128,24 @@ const TemplateCard = (props: IProps) => {
               })}
             </div>
 
-            <div className="my-3 flex items-center justify-between">
-              <span
-                className={clsx(
-                  "flex items-center pr-2",
-                  darkMode ? "text-gray-300" : "text-grayModern-500",
-                )}
-              >
-                <TimeIcon className="mr-1.5" />
-                {t("Template.updatedAt")} {formatDate(template.updatedAt)}
-              </span>
-              <div className="flex text-base">
-                <span className="pl-2">
-                  <LikeIcon /> {template.star}
+            {!isModal && (
+              <div className="my-3 flex items-center justify-between">
+                <span
+                  className={clsx(
+                    "flex items-center pr-2",
+                    darkMode ? "text-gray-300" : "text-grayModern-500",
+                  )}
+                >
+                  <TimeIcon className="mr-1.5" />
+                  {t("Template.updatedAt")} {formatDate(template.updatedAt)}
                 </span>
+                <div className="flex text-base">
+                  <span className="pl-2">
+                    <LikeIcon /> {template.star}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </TemplatePopOver>
       </div>

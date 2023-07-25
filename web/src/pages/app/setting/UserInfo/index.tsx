@@ -21,7 +21,7 @@ import useGlobalStore from "@/pages/globalStore";
 export default function UserInfo() {
   const [showItem, setShowItem] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const { userInfo } = useGlobalStore((state) => state);
+  const { userInfo, avatarUpdatedAt } = useGlobalStore((state) => state);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { colorMode } = useColorMode();
@@ -57,7 +57,7 @@ export default function UserInfo() {
             <Avatar
               size={"xl"}
               name={userInfo?.username}
-              src={getAvatarUrl(userInfo?._id || "")}
+              src={getAvatarUrl(userInfo?._id, avatarUpdatedAt)}
               bgColor="primary.500"
               color="white"
               boxShadow="base"

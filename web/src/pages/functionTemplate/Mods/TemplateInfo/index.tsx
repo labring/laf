@@ -22,31 +22,33 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
     <div>
       <UseTemplate template={functionTemplate} />
       <div>
-        <Box className="border-b-[1px]">
-          <span className="text-xl font-semibold">{t("Template.DeveloperInfo")}</span>
-          <Box className="flex max-h-40 overflow-auto py-5">
-            <Avatar
-              width={12}
-              height={12}
-              border={"2px solid #DEE0E2"}
-              src={getAvatarUrl(functionTemplate?.uid)}
-              name={functionTemplate.user.username}
-              backgroundColor={"primary.500"}
-            />
-            <div className="ml-3 flex flex-col">
-              <span className="text-lg font-semibold text-grayModern-900">
-                {functionTemplate.user.username}
-              </span>
-              <Tooltip label={t("Developing")}>
-                <span className="space-x-1 text-grayModern-400">
-                  <WechatIcon />
-                  <GithubIcon />
-                  <PhoneIcon />
+        {functionTemplate.user?.username && (
+          <Box className="border-b-[1px]">
+            <span className="text-xl font-semibold">{t("Template.DeveloperInfo")}</span>
+            <Box className="flex max-h-40 overflow-auto py-5">
+              <Avatar
+                width={12}
+                height={12}
+                border={"2px solid #DEE0E2"}
+                src={getAvatarUrl(functionTemplate?.uid)}
+                name={functionTemplate.user?.username}
+                backgroundColor={"primary.500"}
+              />
+              <div className="ml-3 flex flex-col">
+                <span className="text-lg font-semibold text-grayModern-900">
+                  {functionTemplate.user?.username}
                 </span>
-              </Tooltip>
-            </div>
+                <Tooltip label={t("Developing")}>
+                  <span className="space-x-1 text-grayModern-400">
+                    <WechatIcon />
+                    <GithubIcon />
+                    <PhoneIcon />
+                  </span>
+                </Tooltip>
+              </div>
+            </Box>
           </Box>
-        </Box>
+        )}
         <Box className="border-b-[1px] pt-5">
           <span className="text-xl font-semibold">{t("Template.Function")}</span>
           <Box className="max-h-40 overflow-auto py-2">

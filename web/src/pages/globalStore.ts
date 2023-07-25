@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-import { APP_STATUS, CHAKRA_UI_COLOR_MODE_KEY } from "@/constants";
+import { APP_PHASE_STATUS, APP_STATUS, CHAKRA_UI_COLOR_MODE_KEY } from "@/constants";
 import { formatPort } from "@/utils/format";
 
 import { TApplicationDetail, TRegion, TRuntime } from "@/apis/typing";
@@ -26,6 +26,7 @@ type State = {
   deleteCurrentApp(): void;
   currentPageId: string | undefined;
   setCurrentPage: (pageId: string) => void;
+  avatarUpdatedAt: string;
   updateUserInfo(): void;
   visitedViews: string[];
 
@@ -46,6 +47,8 @@ const useGlobalStore = create<State>()(
       currentPageId: undefined,
 
       visitedViews: [],
+
+      avatarUpdatedAt: "",
 
       setCurrentPage: (pageId) => {
         set((state) => {
@@ -79,6 +82,7 @@ const useGlobalStore = create<State>()(
         const userInfoRes = await UserControllerGetProfile({});
         set((state) => {
           state.userInfo = userInfoRes.data;
+          state.avatarUpdatedAt = new Date().toISOString();
         });
       },
 
@@ -93,7 +97,11 @@ const useGlobalStore = create<State>()(
           set((state) => {
             if (state.currentApp) {
               state.currentApp.phase =
-                newState === APP_STATUS.Restarting ? "Restarting" : "Stopping";
+                newState === APP_STATUS.Running
+                  ? APP_PHASE_STATUS.Starting
+                  : newState === APP_STATUS.Restarting
+                  ? "Restarting"
+                  : APP_PHASE_STATUS.Stopping;
             }
           });
         }

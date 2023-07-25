@@ -94,7 +94,7 @@
     "Function": "函数",
     "FunctionList": "函数列表",
     "FunctionName": "函数名",
-    "FunctionNameTip": "函数唯一标识, 如 get-user",
+    "FunctionNameTip": "函数唯一标识，如 get-user，可以使用 user/get-user 的形式来创建文件夹",
     "InterfaceDebug": "接口调试",
     "Methods": "请求方法",
     "Name": "参数名",

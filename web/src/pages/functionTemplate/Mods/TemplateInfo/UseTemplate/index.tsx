@@ -5,8 +5,9 @@ import clsx from "clsx";
 
 import { FilledHeartIcon, HeartIcon } from "@/components/CommonIcon";
 
-import { useFunctionTemplateStarMutation, useGetStarStateQuery } from "../../service";
-import UseTemplateModal from "../UseTemplateModal";
+import { useFunctionTemplateStarMutation, useGetStarStateQuery } from "../../../service";
+
+import UseTemplateModal from "./UseTemplateModal";
 
 import { TFunctionTemplate } from "@/apis/typing";
 

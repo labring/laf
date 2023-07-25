@@ -165,7 +165,7 @@ export default function RecycleBinModal(props: { children: React.ReactElement })
         setFunctionListData(data.data);
         setCurrentFunction(data.data.list[0]);
         setEnable(false);
-        if (data.data.list.length === 0) {
+        if (data.data.total === 0) {
           onClose();
           showSuccess(t("RecycleBinEmpty"));
         }
@@ -177,7 +177,7 @@ export default function RecycleBinModal(props: { children: React.ReactElement })
     if (functionListData && functionListData?.list.length > 0) {
       onOpen();
     }
-  }, [functionListData, onOpen]);
+  }, [functionListData, onOpen, enable]);
 
   return (
     <>
@@ -314,8 +314,10 @@ export default function RecycleBinModal(props: { children: React.ReactElement })
                     <Pagination
                       values={getPageInfo(functionListData)}
                       onChange={(values: any) => {
+                        setEnable(true);
                         setQueryData({
-                          ...values,
+                          page: values.page,
+                          pageSize: values.pageSize,
                         });
                       }}
                       notShowSelect

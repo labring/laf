@@ -59,7 +59,9 @@ function EditorPanel() {
 
           <HStack spacing={1}>
             <div className={clsx("flex items-center", !darkMode && "bg-[#F6F8F9]")}>
-              <Input w={"200px"} size="xs" readOnly value={getFunctionUrl()} />
+              <CopyText text={getFunctionUrl()}>
+                <Input w={"200px"} size="xs" readOnly value={getFunctionUrl()} />
+              </CopyText>
               <CopyText
                 text={getFunctionUrl()}
                 className="mr-3 cursor-pointer !text-grayModern-300"
