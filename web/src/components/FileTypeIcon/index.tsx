@@ -36,8 +36,9 @@ export default function FileTypeIcon(props: {
   type: string;
   className?: string;
   fontSize?: number;
+  width?: string;
 }) {
-  const { type, className, fontSize } = props;
+  const { type, className, fontSize, width = "18px" } = props;
 
   switch (type) {
     case FileType.app:
@@ -141,7 +142,7 @@ export default function FileTypeIcon(props: {
       );
     case FileType.folder:
       return (
-        <Icon viewBox="0 0 20 16" width="18px" className="align-middle">
+        <Icon viewBox="0 0 20 16" width={width} className="align-middle">
           <path
             d="M2 16C1.45 16 0.979333 15.8043 0.588 15.413C0.196 15.021 0 14.55 0 14V2C0 1.45 0.196 0.979333 0.588 0.588C0.979333 0.196 1.45 0 2 0H8L10 2H18C18.55 2 19.021 2.196 19.413 2.588C19.8043 2.97933 20 3.45 20 4V14C20 14.55 19.8043 15.021 19.413 15.413C19.021 15.8043 18.55 16 18 16H2Z"
             fill="#47C8BF"
