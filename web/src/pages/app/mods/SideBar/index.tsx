@@ -27,7 +27,7 @@ type TIcon = {
 export default function SideBar() {
   const { pageId } = useParams();
   const navigate = useNavigate();
-  const { currentApp, setCurrentPage, userInfo, regions = [] } = useGlobalStore();
+  const { currentApp, setCurrentPage, userInfo, avatarUpdatedAt, regions = [] } = useGlobalStore();
   const currentRegion =
     regions.find((item: any) => item._id === currentApp?.regionId) || regions[0];
 
@@ -69,7 +69,7 @@ export default function SideBar() {
       component: (
         <UserSetting
           name={userInfo?.username || ""}
-          avatar={getAvatarUrl(userInfo?._id || "")}
+          avatar={getAvatarUrl(userInfo?._id, avatarUpdatedAt)}
           width={"28px"}
         />
       ),

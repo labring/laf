@@ -20,7 +20,7 @@ import useGlobalStore from "@/pages/globalStore";
 export default function UserInfo() {
   const [showItem, setShowItem] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const { userInfo } = useGlobalStore((state) => state);
+  const { userInfo, avatarUpdatedAt } = useGlobalStore((state) => state);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { colorMode } = useColorMode();
@@ -56,7 +56,7 @@ export default function UserInfo() {
             <Avatar
               size={"xl"}
               name={userInfo?.username}
-              src={getAvatarUrl(userInfo?._id || "")}
+              src={getAvatarUrl(userInfo?._id, avatarUpdatedAt)}
               bgColor="primary.500"
               color="white"
               boxShadow="base"
@@ -130,18 +130,6 @@ export default function UserInfo() {
                 </span>
               </span>
             </div>
-            {/* <div className="flex flex-col pb-4">
-              <span className="pb-3 text-xl text-grayModern-900">
-                {t("SettingPanel.Email")}:
-              </span>
-              <span>{userInfo?.email ? userInfo?.email : t("NoInfo")}</span>
-            </div>
-            <div className="flex flex-col pb-4">
-              <span className=" pb-3 text-xl text-grayModern-900">
-                {t("SettingPanel.Registered")}:
-              </span>
-              <span>{formatDate(userInfo?.createdAt)}</span>
-            </div> */}
           </Box>
         </>
       )}

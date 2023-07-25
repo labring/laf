@@ -75,3 +75,11 @@ export const COLOR_MODE = {
 };
 
 export const LAF_AI_URL = "https://htr4n1.laf.run/laf-gpt";
+
+export const DEFAULT_CODE = `import cloud from '@lafjs/cloud'
+
+export default async function (ctx: FunctionContext) {
+  console.log('Hello World')
+  return { data: 'hi, laf' }
+}
+`;

@@ -97,8 +97,6 @@ export default function CreateFuncTemplate() {
       const id = match ? match[1] : "";
       setIsEdit(true);
       setTemplateId(id);
-    } else {
-      console.log("error");
     }
   }, [location.pathname]);
 

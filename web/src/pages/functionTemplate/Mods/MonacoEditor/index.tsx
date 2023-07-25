@@ -10,7 +10,8 @@ import { COLOR_MODE } from "@/constants";
 import "@/components/Editor/userWorker";
 
 import AddFunctionModal from "../../CreateFuncTemplate/Mods/AddFunctionModal";
-import FunctionPopOver from "../FunctionPopover";
+
+import FunctionPopOver from "./FunctionPopover";
 
 monaco?.editor.defineTheme("lafEditorTheme", {
   base: "vs",
