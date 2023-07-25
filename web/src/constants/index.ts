@@ -35,13 +35,12 @@ export enum SUPPORTED_METHODS {
 export enum APP_PHASE_STATUS {
   Creating = "Creating",
   Created = "Created",
-  Started = "Started",
   Starting = "Starting",
-  Restarting = "Restarting",
-  Deleting = "Deleting",
-  Deleted = "Deleted",
+  Started = "Started",
   Stopping = "Stopping",
   Stopped = "Stopped",
+  Deleting = "Deleting",
+  Deleted = "Deleted",
 }
 
 export enum BUCKET_POLICY_TYPE {
@@ -76,3 +75,11 @@ export const COLOR_MODE = {
 };
 
 export const LAF_AI_URL = "https://htr4n1.laf.run/laf-gpt";
+
+export const DEFAULT_CODE = `import cloud from '@lafjs/cloud'
+
+export default async function (ctx: FunctionContext) {
+  console.log('Hello World')
+  return { data: 'hi, laf' }
+}
+`;

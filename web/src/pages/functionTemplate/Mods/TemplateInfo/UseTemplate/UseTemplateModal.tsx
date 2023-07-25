@@ -18,7 +18,7 @@ import { APP_STATUS } from "@/constants";
 import { formatDate } from "@/utils/format";
 import getRegionById from "@/utils/getRegionById";
 
-import { useFunctionTemplateUseMutation } from "../../service";
+import { useFunctionTemplateUseMutation } from "../../../service";
 
 import {
   ApplicationControllerFindAll,

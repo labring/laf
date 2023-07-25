@@ -141,21 +141,21 @@ export default function PolicyDataList() {
               }}
               toolComponent={(item: any) => {
                 return (
-                  <IconWrap
-                    showBg
-                    tooltip={t("Copy").toString()}
-                    size={32}
-                    className="group/icon ml-2 hover:bg-rose-100"
+                  <CopyText
+                    hideToolTip
+                    text={JSON.stringify(item.value, null, 2)}
+                    tip={String(t("Copied"))}
+                    className="ml-2 hover:bg-gray-200"
                   >
-                    <CopyText
-                      hideToolTip
-                      text={JSON.stringify(item.value, null, 2)}
-                      tip={String(t("Copied"))}
-                      className="group-hover/icon:text-error-500"
+                    <IconWrap
+                      showBg
+                      tooltip={t("Copy").toString()}
+                      size={32}
+                      className="group/icon"
                     >
                       <CopyIcon />
-                    </CopyText>
-                  </IconWrap>
+                    </IconWrap>
+                  </CopyText>
                 );
               }}
             />
