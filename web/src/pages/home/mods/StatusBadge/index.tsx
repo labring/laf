@@ -16,6 +16,7 @@ const colorScheme: {
   Stopped: "error",
   Restarting: "blue",
   Created: "warn",
+  Releasing: "warn",
 };
 export default function StatusBadge(props: {
   statusConditions?: string;
@@ -23,44 +24,39 @@ export default function StatusBadge(props: {
   className?: string;
 }) {
   const { statusConditions = APP_PHASE_STATUS.Started, state, className } = props;
+
+  const getStatus = (statusConditions: string, state: string) => {
+    if (
+      statusConditions === APP_PHASE_STATUS.Started ||
+      statusConditions === APP_PHASE_STATUS.Stopped
+    ) {
+      return state;
+    }
+    return statusConditions;
+  };
+
   return (
     <>
-      {state === "Restarting" ? (
-        <div className={clsx("flex", className)}>
-          <div
-            className={clsx(
-              styles.badgeStyle,
-              styles[colorScheme["Restarting"]],
-              "px-2 py-1 lg:px-3",
-            )}
-          >
-            <span>{"Restarting"}</span>
-          </div>
+      <div className={clsx("flex", className)}>
+        <div
+          className={clsx(
+            styles.badgeStyle,
+            styles[colorScheme[statusConditions]],
+            "px-2 py-1 lg:px-3",
+          )}
+        >
+          <span>{getStatus(statusConditions, state || "")}</span>
+        </div>
+        {statusConditions === APP_PHASE_STATUS.Started ||
+        statusConditions === APP_PHASE_STATUS.Stopped ||
+        statusConditions === APP_PHASE_STATUS.Releasing ? (
+          ""
+        ) : (
           <div className="flex items-center pr-2">
             <Spinner size="xs" />
           </div>
-        </div>
-      ) : (
-        <div className={clsx("flex", className)}>
-          <div
-            className={clsx(
-              styles.badgeStyle,
-              styles[colorScheme[statusConditions]],
-              "px-2 py-1 lg:px-3",
-            )}
-          >
-            <span>{statusConditions}</span>
-          </div>
-          {statusConditions === APP_PHASE_STATUS.Started ||
-          statusConditions === APP_PHASE_STATUS.Stopped ? (
-            ""
-          ) : (
-            <div className="flex items-center pr-2">
-              <Spinner size="xs" />
-            </div>
-          )}
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 }
