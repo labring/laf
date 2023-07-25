@@ -310,10 +310,7 @@ export class AccountService {
     const client = SystemDatabase.client
     const session = client.startSession()
 
-    const giftCode = await this.findOneGiftCode(code, {
-      expired: false,
-      used: false,
-    })
+    const giftCode = await this.findOneGiftCode(code)
     const account = await this.findOne(userid)
 
     try {
@@ -387,32 +384,10 @@ export class AccountService {
     }
   }
 
-  async findOneGiftCode(
-    code: string,
-    condition?: any,
-  ): Promise<GiftCode | null> {
-    if (condition.expired) {
-      const giftCode = await this.db.collection<GiftCode>('GiftCode').findOne({
-        code: code,
-        expiredAt: { $lte: new Date() },
-      })
-      return giftCode
-    }
-
-    if (condition.used) {
-      const giftCode = await this.db.collection<GiftCode>('GiftCode').findOne({
-        code: code,
-        used: true,
-      })
-      return giftCode
-    }
-
+  async findOneGiftCode(code: string): Promise<GiftCode | null> {
     const giftCode = await this.db.collection<GiftCode>('GiftCode').findOne({
       code: code,
-      used: false,
-      expiredAt: { $gte: new Date() },
     })
-
     return giftCode
   }
 
