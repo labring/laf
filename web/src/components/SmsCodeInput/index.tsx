@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Input, useColorMode } from "@chakra-ui/react";
 const CODE_NUMBER = 6;
 
@@ -10,16 +10,14 @@ export default function SmsCodeInput(props: {
   const inputsRefs = useRef<Array<HTMLInputElement | null>>([]);
   const darkMode = useColorMode().colorMode === "dark";
 
-  useEffect(() => {
-    if (value) {
-      const updatedValues = value.split("").slice(0, CODE_NUMBER);
-      inputsRefs.current.forEach((input, index) => {
-        if (input) {
-          input.value = updatedValues[index] || "";
-        }
-      });
-    }
-  }, [value]);
+  if (value) {
+    const updatedValues = value.split("").slice(0, CODE_NUMBER);
+    inputsRefs.current.forEach((input, index) => {
+      if (input) {
+        input.value = updatedValues[index] || "";
+      }
+    });
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const inputValue = e.target.value;
