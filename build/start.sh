@@ -42,7 +42,7 @@ APISIX_API_KEY=$PASSWD_OR_SECRET
 helm install apisix -n ${NAMESPACE} \
     --set apisix.kind=DaemonSet \
     --set apisix.securityContext.runAsUser=0 \
-    --set apisix.hostNetwork=${ENABLE_APISIX_HOST_NETWORK}" \
+    --set apisix.hostNetwork="${ENABLE_APISIX_HOST_NETWORK}" \
     --set admin.credentials.admin=${APISIX_API_KEY} \
     --set etcd.enabled=true \
     --set etcd.host[0]="http://apisix-etcd:2379" \
