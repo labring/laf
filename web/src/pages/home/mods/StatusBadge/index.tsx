@@ -16,7 +16,6 @@ const colorScheme: {
   Stopped: "error",
   Restarting: "blue",
   Created: "warn",
-  Releasing: "warn",
 };
 export default function StatusBadge(props: {
   statusConditions?: string;
@@ -48,8 +47,7 @@ export default function StatusBadge(props: {
           <span>{getStatus(statusConditions, state || "")}</span>
         </div>
         {statusConditions === APP_PHASE_STATUS.Started ||
-        statusConditions === APP_PHASE_STATUS.Stopped ||
-        statusConditions === APP_PHASE_STATUS.Releasing ? (
+        statusConditions === APP_PHASE_STATUS.Stopped ? (
           ""
         ) : (
           <div className="flex items-center pr-2">
