@@ -1,20 +1,21 @@
-import { useForm } from "react-hook-form";
-import { MdKeyboardArrowLeft } from "react-icons/md";
+import { Controller, useForm } from "react-hook-form";
+import { ChevronLeftIcon } from "@chakra-ui/icons";
 import {
+  Box,
   Button,
   FormControl,
   FormErrorMessage,
-  FormLabel,
   Input,
-  useColorMode,
+  InputGroup,
+  InputRightElement,
   VStack,
 } from "@chakra-ui/react";
-import clsx from "clsx";
 import { t } from "i18next";
 
-import { COLOR_MODE } from "@/constants";
+import { SendSmsCodeButton } from "@/components/SendSmsCodeButton";
+import SmsCodeInput from "@/components/SmsCodeInput";
 
-export default function AuthDetail(props: { onBack: () => void }) {
+export default function AuthDetail(props: { handleBack: () => void }) {
   type FormData = {
     tel: string;
     code: string;
@@ -23,45 +24,30 @@ export default function AuthDetail(props: { onBack: () => void }) {
   };
   const {
     register,
-    reset,
     handleSubmit,
+    getValues,
+    control,
     formState: { errors },
   } = useForm<FormData>();
 
-  const { colorMode } = useColorMode();
-  const darkMode = colorMode === COLOR_MODE.dark;
-
+  const { handleBack } = props;
   const onSubmit = async (data: any) => {};
+
   return (
     <>
-      <p className="h-[40px] w-full flex-none text-left">
-        <span
-          className="cursor-pointer "
-          onClick={() => {
-            reset();
-            props.onBack();
-          }}
-        >
-          <MdKeyboardArrowLeft className="inline-block" fontSize={12} />
-          {t("Back")}
-        </span>
-      </p>
-      <div className="flex w-full flex-grow flex-col justify-around">
-        <p
-          className={clsx("mb-6 text-center text-xl", {
-            "text-grayModern-900": !darkMode,
-          })}
-        >
-          {t("SettingPanel.Auth")}
-        </p>
-        <VStack spacing={6} align="flex-start" className="mx-auto w-[48%]">
-          <FormControl isRequired isInvalid={!!errors?.tel} className="relative">
-            <div className="relative flex">
-              <FormLabel className="min-w-[120px]" htmlFor="tel">
-                {t("SettingPanel.Tel")}:
-              </FormLabel>
+      <span
+        onClick={() => handleBack()}
+        className="absolute left-[280px] flex cursor-pointer items-center"
+      >
+        <ChevronLeftIcon boxSize={6} /> {t("Back")}
+      </span>
+      <VStack>
+        <span className="text-center text-xl">{t("SettingPanel.Auth")}</span>
+        <Box className="flex w-[265px] flex-col pt-4">
+          <FormControl isRequired isInvalid={!!errors?.tel}>
+            <div className="pb-2">{t("SettingPanel.Tel")}</div>
+            <InputGroup>
               <Input
-                size="sm"
                 {...register("tel", {
                   required: `${t("SettingPanel.Tel")}${t("IsRequired")}`,
                   pattern: {
@@ -69,79 +55,70 @@ export default function AuthDetail(props: { onBack: () => void }) {
                     message: t("SettingPanel.TelTip"),
                   },
                 })}
+                variant="userInfo"
               />
-              <Button style={{ position: "absolute", right: "-8rem" }} variant={"secondary"}>
-                {t("SettingPanel.SendCode")}
-              </Button>
-            </div>
-            <FormErrorMessage className="absolute -bottom-4 left-[130px]  w-[250px]">
+              <InputRightElement width="6rem" height={8}>
+                <SendSmsCodeButton
+                  getPhone={getValues}
+                  phoneNumber={"tel"}
+                  className="!h-6 !text-[12px]"
+                  type="Unbind"
+                />
+              </InputRightElement>
+            </InputGroup>
+            {/* <FormErrorMessage className="absolute -bottom-4 left-[130px]  w-[250px]">
               {errors?.tel && errors?.tel?.message}
-            </FormErrorMessage>
+            </FormErrorMessage> */}
           </FormControl>
-          <FormControl isRequired isInvalid={!!errors?.code} className="relative">
-            <div className="flex">
-              <FormLabel className="min-w-[120px]" htmlFor="code">
-                {t("SettingPanel.Code")}:
-              </FormLabel>
-              <Input
-                size="sm"
-                {...register("code", {
-                  required: `${t("SettingPanel.Code")}${t("IsRequired")}`,
-                  pattern: {
-                    value: /^\d{4}$/,
-                    message: t("SettingPanel.CodeTip"),
-                  },
-                })}
-              />
-            </div>
-            <FormErrorMessage className="absolute -bottom-4 left-[130px]  w-[250px]">
+          <FormControl isRequired isInvalid={!!errors?.code}>
+            <div className="pb-2 pt-4">{t("SettingPanel.Code")}:</div>
+            <Controller
+              name="code"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <div>
+                  <SmsCodeInput value={value} onChange={onChange} />
+                </div>
+              )}
+            />
+            {/* <FormErrorMessage className="absolute -bottom-4 left-[130px]  w-[250px]">
               {errors?.code && errors?.code?.message}
-            </FormErrorMessage>
+            </FormErrorMessage> */}
           </FormControl>
-          <FormControl isRequired isInvalid={!!errors?.name} className="relative">
-            <div className="flex">
-              <FormLabel className="min-w-[120px]" htmlFor="name">
-                {t("SettingPanel.Name")}:
-              </FormLabel>
-              <Input
-                size="sm"
-                {...register("name", {
-                  required: `${t("SettingPanel.Name")}${t("IsRequired")}`,
-                })}
-              />
-            </div>
-            <FormErrorMessage className="absolute -bottom-4 left-[130px]  w-[250px]">
+          <FormControl isRequired isInvalid={!!errors?.name}>
+            <div className="pb-2 pt-4">{t("SettingPanel.Name")}:</div>
+            <Input
+              {...register("name", {
+                required: `${t("SettingPanel.Name")}${t("IsRequired")}`,
+              })}
+              variant="userInfo"
+            />
+            {/* <FormErrorMessage className="absolute -bottom-4 left-[130px]  w-[250px]">
               {errors?.name && errors?.name?.message}
-            </FormErrorMessage>
+            </FormErrorMessage> */}
           </FormControl>
-          <FormControl isRequired isInvalid={!!errors?.id} className="relative">
-            <div className="flex">
-              <FormLabel className="min-w-[120px]" htmlFor="id">
-                {t("SettingPanel.ID")}:
-              </FormLabel>
-              <Input
-                size="sm"
-                {...register("id", {
-                  required: `${t("SettingPanel.ID")}${t("IsRequired")}`,
-                  pattern: {
-                    value:
-                      /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/,
-                    message: t("SettingPanel.IDTip"),
-                  },
-                })}
-              />
-            </div>
+          <FormControl isRequired isInvalid={!!errors?.id} className="pb-8">
+            <div className="pb-2 pt-4">{t("SettingPanel.ID")}:</div>
+            <Input
+              {...register("id", {
+                required: `${t("SettingPanel.ID")}${t("IsRequired")}`,
+                pattern: {
+                  value:
+                    /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/,
+                  message: t("SettingPanel.IDTip"),
+                },
+              })}
+              variant="userInfo"
+            />
             <FormErrorMessage className="absolute -bottom-4 left-[130px] w-[250px]">
               {errors?.id && errors?.id?.message}
             </FormErrorMessage>
           </FormControl>
-        </VStack>
-        <div className="mt-6 w-full text-right">
-          <Button colorScheme="primary" type="submit" onClick={handleSubmit(onSubmit)}>
-            {t("SettingPanel.ToAuth")}
-          </Button>
-        </div>
-      </div>
+        </Box>
+        <Button width={"100%"} type="submit" onClick={handleSubmit(onSubmit)}>
+          {t("SettingPanel.ToAuth")}
+        </Button>
+      </VStack>
     </>
   );
 }

@@ -12,6 +12,7 @@ import EmailEditor from "./Mods/EmailEditor";
 import PasswordEditor from "./Mods/PasswordEditor";
 import PhoneEditor from "./Mods/PhoneEditor";
 import UsernameEditor from "./Mods/UsernameEditor";
+import AuthDetail from "./AuthDetail";
 
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -130,12 +131,31 @@ export default function UserInfo() {
                 </span>
               </span>
             </div>
+            <div className="flex flex-col pb-4">
+              <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
+                {t("SettingPanel.Email")}
+              </span>
+              <span className="flex justify-between text-base">
+                <span className={!darkMode ? "text-grayModern-700" : ""}>
+                  {userInfo?.email ? userInfo?.email : t("NoInfo")}
+                </span>
+                <span
+                  className="flex cursor-pointer items-center text-[#0884DD]"
+                  onClick={() => {
+                    setShowItem("email");
+                  }}
+                >
+                  {t("UserInfo.Change")} <ChevronRightIcon boxSize={5} />
+                </span>
+              </span>
+            </div>
           </Box>
         </>
       )}
+      {showItem === "avatar" && <AvatarEditor img={selectedImage} handleBack={handleBack} />}
       {showItem === "username" && <UsernameEditor handleBack={handleBack} />}
       {showItem === "password" && <PasswordEditor handleBack={handleBack} />}
-      {showItem === "avatar" && <AvatarEditor img={selectedImage} handleBack={handleBack} />}
+      {showItem === "auth" && <AuthDetail handleBack={handleBack} />}
       {showItem === "phone" && <PhoneEditor handleBack={handleBack} />}
       {showItem === "email" && <EmailEditor handleBack={handleBack} />}
     </Box>

@@ -353,7 +353,8 @@
     "ResetPassword": "重置密码",
     "ResetPasswordSuccess": "重置密码成功",
     "NewPassword": "新密码",
-    "SignUpSuccess": "注册成功"
+    "SignUpSuccess": "注册成功",
+    "EmailTip": "请输入有效的邮箱"
   },
   "Time": "时间",
   "CreateTime": "创建时间",
@@ -550,7 +551,11 @@
     "Bonus": "奖励",
     "Channel": "用户名",
     "Time": "时间",
-    "InviteTips": "将推广链接复制并发送给其他人。当他们通过该链接注册并成为你的邀请对象后，你将立即获得奖励金额。"
+    "InviteTips": "将推广链接复制并发送给其他人。当他们通过该链接注册并成为你的邀请对象后，你将立即获得奖励金额。",
+    "Email": "邮箱",
+    "ChangeEmail": "更改邮箱",
+    "SmsNumber": "验证码",
+    "ChangeEmailSuccess": "修改邮箱成功"
   },
   "Reset": "重置",
   "SettingModal": {
@@ -578,5 +583,6 @@
   "RecycleBinEmpty": "回收站已清空",
   "SelectOne": "请至少选择一个",
   "Apply": "使用",
-  "Developing": "开发中"
+  "Developing": "开发中",
+  "Unverified": "未认证"
 }
