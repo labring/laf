@@ -70,7 +70,6 @@ helm install minio -n ${NAMESPACE} \
     --set persistence.size=${OSS_PV_SIZE:-3Gi} \
     --set domain=${MINIO_DOMAIN} \
     --set consoleHost=minio.${DOMAIN} \
-    --set persistence.storageClass=openebs-hostpath \
     ./charts/minio
 
 
