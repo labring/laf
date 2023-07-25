@@ -17,6 +17,9 @@ export class UserProfile {
   @ApiPropertyOptional()
   name?: string
 
+  @ApiPropertyOptional()
+  isRealNameVerified?: boolean
+
   @ApiProperty()
   createdAt: Date
 
