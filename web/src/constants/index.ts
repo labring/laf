@@ -41,6 +41,7 @@ export enum APP_PHASE_STATUS {
   Stopped = "Stopped",
   Deleting = "Deleting",
   Deleted = "Deleted",
+  Releasing = "Releasing",
 }
 
 export enum BUCKET_POLICY_TYPE {
