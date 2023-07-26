@@ -8,5 +8,6 @@ export class GiftCode {
   usedBy?: ObjectId
   usedAt?: Date
   createdAt: Date
+  expiredAt?: Date
   transactionId?: ObjectId
 }
