@@ -8,8 +8,10 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
+import clsx from "clsx";
 
 import FileUpload from "@/components/FileUpload";
 
@@ -29,6 +31,7 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
   const { uploadFile } = useAwsS3();
   const [fileList, setFileList] = React.useState<TFileItem[]>([]);
   const { t } = useTranslation();
+  const darkMode = useColorMode().colorMode === "dark";
   const { onUploadSuccess, children } = props;
   return (
     <div>
@@ -82,13 +85,17 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
                 onClose();
                 showSuccess(t("StoragePanel.Success"));
               }}
+              darkMode={darkMode}
             />
             <div className="mt-2 max-h-40 overflow-auto">
               {fileList.map((item) => {
                 return (
                   <div
                     key={item.fileName}
-                    className="my-2 flex h-10 w-full items-center justify-between px-5 hover:bg-slate-100"
+                    className={clsx(
+                      "my-2 flex h-10 w-full items-center justify-between px-5",
+                      darkMode ? "hover:bg-lafDark-300" : "hover:bg-slate-100",
+                    )}
                   >
                     <span className="text-slate-500">{item.fileName}</span>
                     {item.status ? (

@@ -12,8 +12,8 @@ type TFileItem = {
 };
 
 // drag drop file component
-function FileUpload(props: { onUpload: (files: any) => void }) {
-  const { onUpload = () => {} } = props;
+function FileUpload(props: { onUpload: (files: any) => void; darkMode: boolean }) {
+  const { onUpload = () => {}, darkMode } = props;
   const [dragActive, setDragActive] = React.useState(false);
   const inputRef = React.useRef<any>(null);
   const { t } = useTranslation();
@@ -112,7 +112,8 @@ function FileUpload(props: { onUpload: (files: any) => void }) {
       <label
         className={clsx({
           [styles.labelFileUpload]: true,
-          "bg-grayModern-100": dragActive,
+          "bg-grayModern-100": dragActive && !darkMode,
+          "bg-lafDark-300": dragActive && darkMode,
         })}
         htmlFor="input-file-upload"
       >
