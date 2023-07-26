@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { DateRange, DayPicker, SelectRangeEventHandler } from "react-day-picker";
 import { useTranslation } from "react-i18next";
-import { CalendarIcon } from "@chakra-ui/icons";
 import {
   Center,
   Popover,
@@ -24,7 +23,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 
-import { BillingIcon, FilterIcon } from "@/components/CommonIcon";
+import { BillingIcon, CalendarIcon, FilterIcon } from "@/components/CommonIcon";
 import EmptyBox from "@/components/EmptyBox";
 import Pagination from "@/components/Pagination";
 import { formatDate } from "@/utils/format";
@@ -93,72 +92,75 @@ export default function BillingDetails() {
             <Thead>
               <Tr className={clsx("h-8", !darkMode && "bg-[#F4F6F8]")}>
                 <Th className="!pr-0">
-                  <span className="mr-1 font-normal !text-grayModern-700">AppId</span>
-                  <Popover>
-                    <PopoverTrigger>
-                      <span className="cursor-pointer text-grayModern-400">
-                        <FilterIcon />
-                      </span>
-                    </PopoverTrigger>
-                    <PopoverContent zIndex={99} w={24}>
-                      <PopoverBody>
-                        <div className="flex flex-col">
-                          {appList.map((app: any) => (
-                            <div key={app.appid} className="flex items-center">
-                              <input
-                                type="checkbox"
-                                className="mr-1"
-                                checked={selectedAppList.includes(app.appid)}
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    setSelectedAppList([...selectedAppList, app.appid]);
-                                  } else {
-                                    setSelectedAppList(
-                                      selectedAppList.filter((item: any) => item !== app.appid),
-                                    );
-                                  }
-                                  setQueryData({
-                                    ...queryData,
-                                    appid: e.target.checked
-                                      ? [...selectedAppList, app.appid]
-                                      : selectedAppList.filter((item: any) => item !== app.appid),
-                                  });
-                                }}
-                              />
-                              <span>{app.appid}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Popover>
+                  <span className="flex items-center">
+                    <span className="mr-1 font-normal !text-grayModern-700">AppId</span>
+                    <Popover>
+                      <PopoverTrigger>
+                        <FilterIcon className="cursor-pointer !text-grayModern-400" />
+                      </PopoverTrigger>
+                      <PopoverContent zIndex={99} w={24}>
+                        <PopoverBody>
+                          <div className="flex flex-col">
+                            {appList.map((app: any) => (
+                              <div key={app.appid} className="flex items-center">
+                                <input
+                                  type="checkbox"
+                                  className="mr-1"
+                                  checked={selectedAppList.includes(app.appid)}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedAppList([...selectedAppList, app.appid]);
+                                    } else {
+                                      setSelectedAppList(
+                                        selectedAppList.filter((item: any) => item !== app.appid),
+                                      );
+                                    }
+                                    setQueryData({
+                                      ...queryData,
+                                      appid: e.target.checked
+                                        ? [...selectedAppList, app.appid]
+                                        : selectedAppList.filter((item: any) => item !== app.appid),
+                                    });
+                                  }}
+                                />
+                                <span>{app.appid}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
+                  </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
-                    {t("Duration")}
-                  </span>
-                  <Popover>
-                    <PopoverTrigger>
-                      <span className="cursor-pointer text-grayModern-400">
-                        <CalendarIcon />
-                      </span>
-                    </PopoverTrigger>
-                    <PopoverContent zIndex={99}>
-                      <PopoverBody>
-                        <DayPicker
-                          mode="range"
-                          selected={selectedRange}
-                          onSelect={handleRangeSelect}
-                          styles={{
-                            day: {
-                              transition: "all 0.2s ease-in-out",
-                              borderRadius: "unset",
-                            },
-                          }}
+                  <span className="flex items-center">
+                    <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
+                      {t("Duration")}
+                    </span>
+                    <Popover>
+                      <PopoverTrigger>
+                        <CalendarIcon
+                          className="cursor-pointer !text-grayModern-400"
+                          boxSize="14px"
                         />
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Popover>
+                      </PopoverTrigger>
+                      <PopoverContent zIndex={99}>
+                        <PopoverBody>
+                          <DayPicker
+                            mode="range"
+                            selected={selectedRange}
+                            onSelect={handleRangeSelect}
+                            styles={{
+                              day: {
+                                transition: "all 0.2s ease-in-out",
+                                borderRadius: "unset",
+                              },
+                            }}
+                          />
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
+                  </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
                   <span className="border-l pl-2 font-normal !text-grayModern-700">
@@ -181,38 +183,38 @@ export default function BillingDetails() {
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
-                    {t("State")}
+                  <span className="flex items-center">
+                    <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
+                      {t("State")}
+                    </span>
+                    <Popover>
+                      <PopoverTrigger>
+                        <FilterIcon className="cursor-pointer !text-grayModern-400" />
+                      </PopoverTrigger>
+                      <PopoverContent w={28}>
+                        <PopoverBody>
+                          <RadioGroup className="flex flex-col lowercase">
+                            {STATE_LIST.map((item) => (
+                              <Radio
+                                key={item}
+                                name="state"
+                                value={item}
+                                checked={queryData.state === item}
+                                onChange={(e) => {
+                                  setQueryData({
+                                    ...queryData,
+                                    state: e.target.value,
+                                  });
+                                }}
+                              >
+                                {item}
+                              </Radio>
+                            ))}
+                          </RadioGroup>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
                   </span>
-                  <Popover>
-                    <PopoverTrigger>
-                      <span className="cursor-pointer text-grayModern-400">
-                        <FilterIcon />
-                      </span>
-                    </PopoverTrigger>
-                    <PopoverContent w={28}>
-                      <PopoverBody>
-                        <RadioGroup className="flex flex-col lowercase">
-                          {STATE_LIST.map((item) => (
-                            <Radio
-                              key={item}
-                              name="state"
-                              value={item}
-                              checked={queryData.state === item}
-                              onChange={(e) => {
-                                setQueryData({
-                                  ...queryData,
-                                  state: e.target.value,
-                                });
-                              }}
-                            >
-                              {item}
-                            </Radio>
-                          ))}
-                        </RadioGroup>
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Popover>
                 </Th>
                 <Th className="!px-0 !pl-2">
                   <span className="border-l pl-2 font-normal !text-grayModern-700">

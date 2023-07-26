@@ -234,6 +234,15 @@ const Input: ComponentStyleConfig = {
         paddingX: 0,
       },
     },
+
+    userInfo: {
+      field: {
+        background: "none",
+        border: "1px",
+        height: "32px",
+        borderColor: "#D5D6E1",
+      },
+    },
   },
   defaultProps: {
     size: "md",

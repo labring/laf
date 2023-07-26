@@ -69,6 +69,24 @@ export async function UserControllerBindPhone(params: Definitions.BindPhoneDto):
 }
 
 /**
+ * Bind email
+ */
+export async function UserControllerBindEmail(params: Definitions.BindEmailDto): Promise<{
+  error: string;
+  data: Definitions.UserWithProfile;
+}> {
+  // /v1/user/bind/email
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/user/bind/email`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
  * Bind username
  */
 export async function UserControllerBindUsername(params: Definitions.BindUsernameDto): Promise<{

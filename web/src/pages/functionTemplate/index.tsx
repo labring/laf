@@ -32,7 +32,7 @@ import {
   useGetRecommendFunctionTemplatesQuery,
 } from "./service";
 
-import styles from "./Mods/SideBar/index.module.scss";
+import styles from "./index.module.scss";
 
 import { TemplateList } from "@/apis/typing";
 type queryData = {
@@ -165,11 +165,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
     } else {
       setQueryData(defaultQueryData);
     }
-    window.history.replaceState(
-      null,
-      "",
-      window.location.href.replace(/\/([^/]+)\/?$/, `/${item.value}`),
-    );
+    navigate(changeURL(`/${item.value}`));
   };
 
   const handleSortListClick = (e: any) => {
@@ -184,7 +180,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
   return (
     <div className="pt-4">
       {selectedItem.value ? (
-        <div>
+        <>
           <div
             className={clsx(
               "w-45 absolute bottom-0 flex flex-col",
@@ -343,7 +339,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
               </div>
             )}
           </div>
-        </div>
+        </>
       ) : (
         <FuncTemplateItem isModal={isModal!} />
       )}

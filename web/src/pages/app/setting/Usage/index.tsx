@@ -41,7 +41,7 @@ export default function Usage() {
     return today;
   });
 
-  const { userInfo } = useGlobalStore((state) => state);
+  const { userInfo, avatarUpdatedAt } = useGlobalStore((state) => state);
   const { data: accountRes } = useAccountQuery();
 
   const { data: billingAmountRes, isLoading: billLoading } = useQuery(
@@ -90,7 +90,7 @@ export default function Usage() {
       <div className="flex items-center pb-6 pt-2 text-2xl">
         <span className="pr-4">
           <CostIcon boxSize={5} mr={3} />
-          {t("SettingPanel.Usage")}
+          {t("SettingPanel.CostOverview")}
         </span>
         <DateRangePicker
           startTime={startTime}
@@ -106,12 +106,12 @@ export default function Usage() {
             <div className="flex items-center justify-between pt-3 text-lg">
               <span>{hidePhoneNumber(userInfo?.phone || "")}</span>
               <span className="flex items-center">
-                {userInfo?.username}{" "}
+                {userInfo?.username}
                 <Avatar
                   className="ml-2"
-                  width={9}
-                  height={9}
-                  src={getAvatarUrl(userInfo?._id || "")}
+                  boxShadow="base"
+                  boxSize="9"
+                  src={getAvatarUrl(userInfo?._id, avatarUpdatedAt)}
                 />
               </span>
             </div>

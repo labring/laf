@@ -9,7 +9,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  useColorMode,
+  VStack,
 } from "@chakra-ui/react";
 
 import { SendSmsCodeButton } from "@/components/SendSmsCodeButton";
@@ -28,7 +28,6 @@ type FormData = {
 export default function UserNameEditor(props: { handleBack: any }) {
   const { handleBack } = props;
   const { t } = useTranslation();
-  const darkMode = useColorMode().colorMode === "dark";
   const [isShowPassword, setIsShowPassword] = useState(false);
   const { showSuccess, showError } = useGlobalStore();
   const resetPasswordMutation = useResetPasswordMutation();
@@ -73,14 +72,14 @@ export default function UserNameEditor(props: { handleBack: any }) {
     <>
       <span
         onClick={() => handleBack()}
-        className="absolute left-[280px] flex cursor-pointer items-center"
+        className="absolute left-[270px] flex cursor-pointer items-center"
       >
         <ChevronLeftIcon boxSize={6} /> {t("Back")}
       </span>
-      <div className="flex flex-col">
-        <span className="w-full text-center text-xl">{t("UserInfo.EditPassword")}</span>
+      <VStack spacing="0">
+        <span className="text-xl">{t("UserInfo.EditPassword")}</span>
         <div className="w-[265px] pt-5">
-          <FormControl isInvalid={!!errors?.phone} className="mb-4 flex flex-col">
+          <FormControl isInvalid={!!errors?.phone}>
             <div className="pb-2">{t("AuthPanel.Phone")}</div>
             <InputGroup>
               <Input
@@ -93,10 +92,7 @@ export default function UserNameEditor(props: { handleBack: any }) {
                 })}
                 type="tel"
                 id="phone"
-                bg={!darkMode ? "#F8FAFB" : "none"}
-                border={"1px"}
-                height={"32px"}
-                borderColor={"#D5D6E1"}
+                variant="userInfo"
               />
               <InputRightElement width="6rem" height={8}>
                 <SendSmsCodeButton
@@ -108,8 +104,8 @@ export default function UserNameEditor(props: { handleBack: any }) {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          <FormControl isInvalid={!!errors.validationCode} className="mb-4 flex flex-col">
-            <div className="pb-2">{t("AuthPanel.ValidationCode")}</div>
+          <FormControl isInvalid={!!errors.validationCode}>
+            <div className="pb-2 pt-4">{t("AuthPanel.ValidationCode")}</div>
             <Controller
               name="validationCode"
               control={control}
@@ -120,8 +116,8 @@ export default function UserNameEditor(props: { handleBack: any }) {
               )}
             />
           </FormControl>
-          <FormControl isInvalid={!!errors.password} className="mb-4 flex flex-col">
-            <div className="pb-2">{t("AuthPanel.NewPassword")}</div>
+          <FormControl isInvalid={!!errors.password}>
+            <div className="pb-2 pt-4">{t("AuthPanel.NewPassword")}</div>
             <InputGroup>
               <Input
                 type={isShowPassword ? "text" : "password"}
@@ -129,10 +125,7 @@ export default function UserNameEditor(props: { handleBack: any }) {
                   required: true,
                 })}
                 id="password"
-                bg={!darkMode ? "#F8FAFB" : "none"}
-                border={"1px"}
-                height={"32px"}
-                borderColor={"#D5D6E1"}
+                variant="userInfo"
               />
               <InputRightElement width="2rem" height={8}>
                 {isShowPassword ? (
@@ -146,8 +139,8 @@ export default function UserNameEditor(props: { handleBack: any }) {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          <FormControl isInvalid={!!errors.confirmPassword} className="mb-8 flex flex-col">
-            <div className="pb-2">{t("AuthPanel.ConfirmPassword")}</div>
+          <FormControl isInvalid={!!errors.confirmPassword}>
+            <div className="pb-2 pt-4">{t("AuthPanel.ConfirmPassword")}</div>
             <InputGroup>
               <Input
                 type={isShowPassword ? "text" : "password"}
@@ -155,10 +148,7 @@ export default function UserNameEditor(props: { handleBack: any }) {
                   required: true,
                 })}
                 id="confirmPassword"
-                bg={!darkMode ? "#F8FAFB" : "none"}
-                border={"1px"}
-                height={"32px"}
-                borderColor={"#D5D6E1"}
+                variant="userInfo"
               />
               <InputRightElement width="2rem" height={8}>
                 {isShowPassword ? (
@@ -175,13 +165,14 @@ export default function UserNameEditor(props: { handleBack: any }) {
           <Button
             type="submit"
             className="w-full"
+            mt="8"
             isLoading={resetPasswordMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
           >
             {t("AuthPanel.ResetPassword")}
           </Button>
         </div>
-      </div>
+      </VStack>
     </>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { BiRefresh } from "react-icons/bi";
 import {
   Button,
   Center,
@@ -119,6 +120,18 @@ export default function LogsPage() {
                 isLoading={logListQuery.isFetching}
               >
                 {t("Search")}
+              </Button>
+
+              <Button
+                size="xs"
+                variant="textGhost"
+                leftIcon={<BiRefresh fontSize={22} className="text-grayModern-500" />}
+                disabled={logListQuery === undefined}
+                onClick={() => {
+                  logListQuery.refetch();
+                }}
+              >
+                {t("RefreshData")}
               </Button>
             </HStack>
             <Pagination

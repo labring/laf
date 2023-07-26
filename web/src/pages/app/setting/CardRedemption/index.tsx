@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { Button, FormControl, Input } from "@chakra-ui/react";
+import { Button, FormControl, Input, useColorMode } from "@chakra-ui/react";
 
 import { CardIcon } from "@/components/CommonIcon";
 
@@ -17,6 +17,7 @@ export default function CardRedemption() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const darkMode = useColorMode().colorMode === "dark";
 
   const onSubmit = async (data: any) => {
     const res = await useGiftCode.mutateAsync({ code: data.giftCode });
@@ -40,6 +41,7 @@ export default function CardRedemption() {
             })}
             placeholder={String(t("SettingPanel.EnterGiftCode"))}
             className="mt-2 !border-frostyNightfall-300"
+            bg={!darkMode ? "#F8FAFB" : "none"}
           />
         </FormControl>
         <Button className="mt-8 w-full" onClick={handleSubmit(onSubmit)}>

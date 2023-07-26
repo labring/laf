@@ -8,7 +8,6 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  useColorMode,
   VStack,
 } from "@chakra-ui/react";
 
@@ -30,8 +29,6 @@ export default function PhoneEditor(props: { handleBack: any }) {
   const { handleBack } = props;
   const { t } = useTranslation();
   const bindPhone = useBindPhoneMutation();
-  const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
 
   const { showSuccess, updateUserInfo } = useGlobalStore();
 
@@ -67,22 +64,13 @@ export default function PhoneEditor(props: { handleBack: any }) {
       >
         <ChevronLeftIcon boxSize={6} /> {t("Back")}
       </span>
-      <VStack className="flex">
-        <span className="text-center text-xl">{t("UserInfo.EditPhone")}</span>
-        <Box className="flex w-[265px] flex-col pt-4">
-          <FormControl
-            isInvalid={!!errors?.oldPhoneNumber}
-            className="flex flex-col justify-center"
-          >
+      <VStack>
+        <span className="text-xl">{t("UserInfo.EditPhone")}</span>
+        <Box className="w-[265px] pt-4">
+          <FormControl isInvalid={!!errors?.oldPhoneNumber}>
             <div className="pb-2">{t("UserInfo.OldPhoneNumber")}</div>
             <InputGroup>
-              <Input
-                {...register("oldPhoneNumber", { required: true })}
-                bg={!darkMode ? "#F8FAFB" : "none"}
-                border={"1px"}
-                height={"32px"}
-                borderColor={"#D5D6E1"}
-              />
+              <Input {...register("oldPhoneNumber", { required: true })} variant="userInfo" />
               <InputRightElement width="6rem" height={8}>
                 <SendSmsCodeButton
                   getPhone={getValues}
@@ -93,7 +81,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          <FormControl isInvalid={!!errors.oldSmsCode} className="flex flex-col justify-center">
+          <FormControl isInvalid={!!errors.oldSmsCode}>
             <div className="pb-2 pt-4">{t("UserInfo.OldSmsNumber")}</div>
             <Controller
               name="oldSmsCode"
@@ -105,16 +93,10 @@ export default function PhoneEditor(props: { handleBack: any }) {
               )}
             />
           </FormControl>
-          <FormControl isInvalid={!!errors.newPhoneNumber} className="flex flex-col justify-center">
+          <FormControl isInvalid={!!errors.newPhoneNumber}>
             <div className="pb-2 pt-4">{t("UserInfo.NewPhoneNumber")}</div>
             <InputGroup>
-              <Input
-                {...register("newPhoneNumber", { required: true })}
-                bg={!darkMode ? "#F8FAFB" : "none"}
-                border={"1px"}
-                height={"32px"}
-                borderColor={"#D5D6E1"}
-              />
+              <Input {...register("newPhoneNumber", { required: true })} variant="userInfo" />
               <InputRightElement width="6rem" height={8}>
                 <SendSmsCodeButton
                   getPhone={getValues}
@@ -125,7 +107,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          <FormControl isInvalid={!!errors.newSmsCode} className="flex flex-col justify-center">
+          <FormControl isInvalid={!!errors.newSmsCode}>
             <div className="pb-2 pt-4">{t("UserInfo.NewSmsNumber")}</div>
             <Controller
               name="newSmsCode"
@@ -137,7 +119,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
               )}
             />
           </FormControl>
-          <Button mt={8} onClick={handleSubmit(onSubmit)}>
+          <Button mt="8" width="100%" onClick={handleSubmit(onSubmit)}>
             {t("Save")}
           </Button>
         </Box>

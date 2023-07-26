@@ -384,12 +384,10 @@ export class AccountService {
     }
   }
 
-  async findOneGiftCode(code: string, used = false): Promise<GiftCode | null> {
+  async findOneGiftCode(code: string): Promise<GiftCode | null> {
     const giftCode = await this.db.collection<GiftCode>('GiftCode').findOne({
       code: code,
-      used: used,
     })
-
     return giftCode
   }
 

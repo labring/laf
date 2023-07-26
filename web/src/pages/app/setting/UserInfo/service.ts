@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
+  UserControllerBindEmail,
   UserControllerBindPhone,
   UserControllerBindUsername,
   UserControllerGetProfile,
@@ -51,6 +52,19 @@ export const useGetUserProfile = (config?: { onSuccess: (result: any) => void })
     ["useGetUserProfileQuery"],
     () => {
       return UserControllerGetProfile({});
+    },
+    {
+      onSuccess: async (result) => {
+        config?.onSuccess(result);
+      },
+    },
+  );
+};
+
+export const useBindEmailMutation = (config?: { onSuccess: (result: any) => void }) => {
+  return useMutation(
+    (values: any) => {
+      return UserControllerBindEmail(values);
     },
     {
       onSuccess: async (result) => {
