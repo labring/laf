@@ -47,18 +47,28 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
           <div className="p-6">
             <FileUpload
               onUpload={async (files) => {
-                const newFileList = Array.from(files).map((item: any) => {
-                  return {
-                    fileName: item.webkitRelativePath ? item.webkitRelativePath : item.name,
-                    status: false,
-                  };
-                });
+                const newFileList = Array.from(files).map((item: any) => ({
+                  fileName:
+                    files[0] instanceof File
+                      ? item.webkitRelativePath
+                        ? item.webkitRelativePath.replace(/^[^/]*\//, "")
+                        : item.name
+                      : item.webkitRelativePath
+                      ? item.webkitRelativePath
+                      : item.file.name,
+                  status: false,
+                }));
                 setFileList(newFileList);
                 for (let i = 0; i < files.length; i++) {
-                  const file = files[i];
-                  const fileName = file.webkitRelativePath
-                    ? file.webkitRelativePath.replace(/^[^/]*\//, "")
-                    : file.name;
+                  const file = files[0] instanceof File ? files[i] : files[i].file;
+                  const fileName =
+                    files[0] instanceof File
+                      ? file.webkitRelativePath
+                        ? file.webkitRelativePath.replace(/^[^/]*\//, "")
+                        : file.name
+                      : files[i].webkitRelativePath
+                      ? files[i].webkitRelativePath
+                      : file.name;
                   await uploadFile(currentStorage?.name!, prefix + fileName, file, {
                     contentType: file.type,
                   });

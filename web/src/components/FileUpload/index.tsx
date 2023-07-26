@@ -6,12 +6,15 @@ import styles from "./index.module.scss";
 
 type UploadType = "file" | "folder";
 
+type TFileItem = {
+  file: File;
+  webkitRelativePath: string;
+};
+
 // drag drop file component
 function FileUpload(props: { onUpload: (files: any) => void }) {
   const { onUpload = () => {} } = props;
-  // drag state
   const [dragActive, setDragActive] = React.useState(false);
-  // ref
   const inputRef = React.useRef<any>(null);
   const { t } = useTranslation();
 
@@ -27,14 +30,50 @@ function FileUpload(props: { onUpload: (files: any) => void }) {
     }
   };
 
-  // triggers when file is dropped
   const handleDrop = function (e: any) {
     e.preventDefault();
-    e.stopPropagation();
     setDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      onUpload(e.dataTransfer.files);
+    const dataTransferItemList = e.dataTransfer.items;
+    const fileArray: TFileItem[] = [];
+    const promises = [];
+    for (const dataTransferItem of dataTransferItemList) {
+      const file = dataTransferItem.webkitGetAsEntry();
+      promises.push(handleFile(file, fileArray));
     }
+    Promise.all(promises)
+      .then(() => {
+        onUpload(fileArray);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleFile = function (file: any, fileArray: TFileItem[], webkitRelativePath = "") {
+    return new Promise((resolve, reject) => {
+      if (file.isFile) {
+        file.file(function (f: File) {
+          const newFile = new Blob([f], { type: f.type });
+          const customFile = {
+            file: new File([newFile], f.name, { type: f.type, lastModified: f.lastModified }),
+            webkitRelativePath: webkitRelativePath || f.webkitRelativePath,
+          };
+          fileArray.push(customFile);
+          resolve(null);
+        });
+      } else {
+        const dirReader = file.createReader();
+        dirReader.readEntries(function (entries: any) {
+          const promises = [];
+          for (let i = 0; i < entries.length; i++) {
+            const entry = entries[i];
+            const newPath = webkitRelativePath ? `${webkitRelativePath}/${entry.name}` : entry.name;
+            promises.push(handleFile(entry, fileArray, newPath));
+          }
+          Promise.all(promises).then(resolve).catch(reject);
+        });
+      }
+    });
   };
 
   // triggers when file is selected with click
@@ -72,10 +111,8 @@ function FileUpload(props: { onUpload: (files: any) => void }) {
       />
       <label
         className={clsx({
-          // border-color: #cbd5e1;
-          // background-color: #f8fafc;
           [styles.labelFileUpload]: true,
-          "bg-lafDark-200": dragActive,
+          "bg-grayModern-100": dragActive,
         })}
         htmlFor="input-file-upload"
       >
