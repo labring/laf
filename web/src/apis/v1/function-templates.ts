@@ -191,7 +191,7 @@ export async function FunctionTemplateControllerGetFunctionTemplateUsedBy(
 }
 
 /**
- * get my template function
+ * get my function template
  */
 export async function FunctionTemplateControllerGetMyFunctionTemplate(
   params: Paths.FunctionTemplateControllerGetMyFunctionTemplate.BodyParameters,
@@ -205,6 +205,26 @@ export async function FunctionTemplateControllerGetMyFunctionTemplate(
     ...params,
   };
   return request(`/v1/function-templates/my`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * get all recommend function template
+ */
+export async function FunctionTemplateControllerGetRecommendFunctionTemplate(
+  params: Paths.FunctionTemplateControllerGetRecommendFunctionTemplate.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.FunctionTemplateControllerGetRecommendFunctionTemplate.Responses;
+}> {
+  // /v1/function-templates/recommend
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/function-templates/recommend`, {
     method: "GET",
     params: params,
   });

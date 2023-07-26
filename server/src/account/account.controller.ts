@@ -5,6 +5,7 @@ import {
   Logger,
   Param,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -14,6 +15,7 @@ import { IRequest, IResponse } from 'src/utils/interface'
 import {
   ApiResponseArray,
   ApiResponseObject,
+  ApiResponsePagination,
   ResponseUtil,
 } from 'src/utils/response'
 import { AccountService } from './account.service'
@@ -21,6 +23,7 @@ import {
   CreateChargeOrderDto,
   CreateChargeOrderOutDto,
 } from './dto/create-charge-order.dto'
+import { UseGiftCodeDto } from './dto/use-gift-code.dto'
 import { PaymentChannelService } from './payment/payment-channel.service'
 import {
   WeChatPayChargeOrder,
@@ -40,6 +43,10 @@ import { Account } from './entities/account'
 import { AccountTransaction } from './entities/account-transaction'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { AccountChargeReward } from './entities/account-charge-reward'
+import { InviteCode } from 'src/authentication/entities/invite-code'
+import { InviteCodeProfit } from './dto/invite-code.dto'
+import { AccountChargeOrderQuery } from './interface/account-query.interface'
+import { GetAccountChargeOrdersDto } from './dto/get-charge-order.dto'
 
 @ApiTags('Account')
 @Controller('accounts')
@@ -52,7 +59,6 @@ export class AccountController {
     private readonly paymentService: PaymentChannelService,
     private readonly wechatPayService: WeChatPayService,
   ) {}
-
   /**
    * Get account info
    */
@@ -65,6 +71,29 @@ export class AccountController {
     const data = await this.accountService.findOne(user._id)
     data.balance = Math.floor(data.balance)
     return ResponseUtil.ok(data)
+  }
+
+  /**
+   * Get charge order total amount
+   */
+  @ApiOperation({ summary: 'Get charge order total amount' })
+  @ApiResponseObject(Number)
+  @UseGuards(JwtAuthGuard)
+  @Get('charge-order/amount')
+  async getChargeOrderAmount(
+    @Req() req: IRequest,
+    @Query('startTime') startTime?: number,
+    @Query('endTime') endTime?: number,
+  ) {
+    const user = req.user
+    const query: AccountChargeOrderQuery = {
+      startTime: startTime
+        ? new Date(startTime)
+        : new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+      endTime: endTime ? new Date(endTime) : new Date(),
+    }
+    const amount = await this.accountService.getUserRecharge(user._id, query)
+    return ResponseUtil.ok(amount)
   }
 
   /**
@@ -81,6 +110,60 @@ export class AccountController {
       new ObjectId(id),
     )
     return ResponseUtil.ok(data)
+  }
+
+  /**
+   * get all charge order
+   */
+  @ApiOperation({ summary: 'get all charge order' })
+  @ApiResponsePagination(GetAccountChargeOrdersDto)
+  @UseGuards(JwtAuthGuard)
+  @Get('charge-orders')
+  async getChargeRecords(
+    @Req() req: IRequest,
+    @Query('id') id?: string,
+    @Query('channel') channel?: string,
+    @Query('startTime') startTime?: string,
+    @Query('endTime') endTime?: string,
+    @Query('state') state?: string,
+    @Query('page') page?: number,
+    @Query('pageSize') pageSize?: number,
+  ) {
+    const query: AccountChargeOrderQuery = {
+      page: page || 1,
+      pageSize: pageSize || 12,
+    }
+
+    if (query.pageSize > 100) {
+      query.pageSize = 100
+    }
+
+    if (id) {
+      query.id = new ObjectId(id)
+    }
+
+    if (channel) {
+      query.channel = channel
+    }
+
+    if (state) {
+      query.phase = state
+    }
+
+    if (startTime) {
+      query.startTime = new Date(startTime)
+    }
+
+    if (endTime) {
+      query.endTime = new Date(endTime)
+    }
+
+    const res = await this.accountService.getAllChargeOrders(
+      req.user._id,
+      query,
+    )
+
+    return ResponseUtil.ok(res)
   }
 
   /**
@@ -239,5 +322,68 @@ export class AccountController {
     }
 
     return res.status(200).send()
+  }
+
+  /**
+   * Use a gift code
+   */
+  @ApiOperation({ summary: 'Use a gift code' })
+  @ApiResponseObject(Account)
+  @UseGuards(JwtAuthGuard)
+  @Post('gift-code')
+  async giftCode(@Req() req: IRequest, @Body() dto: UseGiftCodeDto) {
+    const giftCode = await this.accountService.findOneGiftCode(dto.code)
+    if (!giftCode) {
+      return ResponseUtil.error("gift code doesn't exist")
+    }
+    if (giftCode.expiredAt < new Date()) {
+      return ResponseUtil.error('gift code has expired')
+    }
+    if (giftCode.used === true) {
+      return ResponseUtil.error('gift code has been used')
+    }
+    const res = await this.accountService.useGiftCode(req.user._id, dto.code)
+    return ResponseUtil.ok(res)
+  }
+
+  /**
+   * get a invite code
+   */
+  @ApiOperation({ summary: 'get a invite code' })
+  @ApiResponseObject(InviteCode)
+  @UseGuards(JwtAuthGuard)
+  @Get('invite-code')
+  async inviteCode(@Req() req: IRequest) {
+    const found = await this.accountService.findOneInviteCode(req.user._id)
+    if (found) {
+      return ResponseUtil.ok(found)
+    }
+    const res = await this.accountService.generateInviteCode(req.user._id)
+    return ResponseUtil.ok(res)
+  }
+
+  /**
+   * get invite code profit
+   */
+  @ApiOperation({ summary: 'get invite code profit' })
+  @ApiResponsePagination(InviteCodeProfit)
+  @UseGuards(JwtAuthGuard)
+  @Get('invite-profit')
+  async inviteCodeProfit(
+    @Req() req: IRequest,
+    @Query('page') page: number,
+    @Query('pageSize') pageSize: number,
+  ) {
+    page = page || 1
+    pageSize = pageSize || 12
+    if (pageSize > 100) {
+      pageSize = 100
+    }
+    const res = await this.accountService.getInviteProfit(
+      req.user._id,
+      page,
+      pageSize,
+    )
+    return ResponseUtil.ok(res)
   }
 }

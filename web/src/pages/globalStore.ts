@@ -3,14 +3,14 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-import { APP_STATUS, CHAKRA_UI_COLOR_MODE_KEY } from "@/constants";
+import { APP_PHASE_STATUS, APP_STATUS, CHAKRA_UI_COLOR_MODE_KEY } from "@/constants";
 import { formatPort } from "@/utils/format";
 
 import { TApplicationDetail, TRegion, TRuntime } from "@/apis/typing";
 import { ApplicationControllerUpdateState } from "@/apis/v1/applications";
-import { AuthControllerGetProfile } from "@/apis/v1/profile";
 import { RegionControllerGetRegions } from "@/apis/v1/regions";
 import { AppControllerGetRuntimes } from "@/apis/v1/runtimes";
+import { UserControllerGetProfile } from "@/apis/v1/user";
 
 const { toast } = createStandaloneToast();
 
@@ -26,7 +26,8 @@ type State = {
   deleteCurrentApp(): void;
   currentPageId: string | undefined;
   setCurrentPage: (pageId: string) => void;
-
+  avatarUpdatedAt: string;
+  updateUserInfo(): void;
   visitedViews: string[];
 
   showSuccess: (text: string | React.ReactNode) => void;
@@ -47,7 +48,9 @@ const useGlobalStore = create<State>()(
 
       visitedViews: [],
 
-      setCurrentPage(pageId) {
+      avatarUpdatedAt: "",
+
+      setCurrentPage: (pageId) => {
         set((state) => {
           state.currentPageId = pageId;
           if (!state.visitedViews.includes(pageId)) {
@@ -62,7 +65,7 @@ const useGlobalStore = create<State>()(
           return;
         }
 
-        const userInfoRes = await AuthControllerGetProfile({});
+        const userInfoRes = await UserControllerGetProfile({});
 
         const runtimesRes = await AppControllerGetRuntimes({});
         const regionsRes = await RegionControllerGetRegions({});
@@ -72,6 +75,14 @@ const useGlobalStore = create<State>()(
           state.loading = false;
           state.runtimes = runtimesRes.data;
           state.regions = regionsRes.data;
+        });
+      },
+
+      updateUserInfo: async () => {
+        const userInfoRes = await UserControllerGetProfile({});
+        set((state) => {
+          state.userInfo = userInfoRes.data;
+          state.avatarUpdatedAt = new Date().toISOString();
         });
       },
 
@@ -86,7 +97,11 @@ const useGlobalStore = create<State>()(
           set((state) => {
             if (state.currentApp) {
               state.currentApp.phase =
-                newState === APP_STATUS.Restarting ? "Restarting" : "Stopping";
+                newState === APP_STATUS.Running
+                  ? APP_PHASE_STATUS.Starting
+                  : newState === APP_STATUS.Restarting
+                  ? "Restarting"
+                  : APP_PHASE_STATUS.Stopping;
             }
           });
         }
@@ -115,7 +130,9 @@ const useGlobalStore = create<State>()(
           state.currentApp = app;
 
           if (typeof state.currentApp === "object") {
-            const host = `${state.currentApp?.domain?.domain}${formatPort(state.currentApp.port)}`;
+            const host = `${
+              state.currentApp?.domain?.customDomain || state.currentApp?.domain?.domain
+            }${formatPort(state.currentApp.port)}`;
             state.currentApp.host = host;
             state.currentApp.origin = `${state.currentApp?.tls ? "https://" : "http://"}${host}`;
           }

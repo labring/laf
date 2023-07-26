@@ -50,7 +50,7 @@ function ConsolePanel() {
             return (
               <div key={item._id} className="flex ">
                 <span className="min-w-[160px] text-slate-500">
-                  [{formatDate(item.created_at, "YYYY-MM-DD hh:mm:ss")}]
+                  [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
                 </span>
                 <pre className="flex-1">{item.data}</pre>
               </div>

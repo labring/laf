@@ -21,6 +21,7 @@ import { BundleService } from 'src/application/bundle.service'
 import { ObjectId } from 'mongodb'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
+import { FunctionService } from 'src/function/function.service'
 
 @ApiTags('Trigger')
 @Controller('apps/:appid/triggers')
@@ -30,6 +31,7 @@ export class TriggerController {
   constructor(
     private readonly triggerService: TriggerService,
     private readonly bundleService: BundleService,
+    private readonly funcService: FunctionService,
   ) {}
 
   /**
@@ -55,6 +57,12 @@ export class TriggerController {
     const valid = this.triggerService.isValidCronExpression(dto.cron)
     if (!valid) {
       return ResponseUtil.error('Invalid cron expression')
+    }
+
+    // Check if the target function exists
+    const found = await this.funcService.findOne(appid, dto.target)
+    if (!found) {
+      return ResponseUtil.error("Target function doesn't exist")
     }
 
     const res = await this.triggerService.create(appid, dto)

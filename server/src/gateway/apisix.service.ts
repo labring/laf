@@ -3,12 +3,37 @@ import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespaceByAppId } from '../utils/getter'
 import { Region } from 'src/region/entities/region'
 import { WebsiteHosting } from 'src/website/entities/website'
+import { RuntimeDomain } from './entities/runtime-domain'
 
 @Injectable()
 export class ApisixService {
   private readonly logger = new Logger(ApisixService.name)
 
-  constructor(private readonly httpService: HttpService) { }
+  constructor(private readonly httpService: HttpService) {}
+
+  get gzipConf() {
+    return {
+      gzip: {
+        comp_level: 6,
+        min_length: 100,
+        types: [
+          'text/plain',
+          'text/css',
+          'text/html',
+          'text/xml',
+          'text/javascript',
+          'application/json',
+          'application/x-javascript',
+          'application/javascript',
+          'image/bmp',
+          'image/png',
+          'font/ttf',
+          'font/otf',
+          'font/eot',
+        ],
+      },
+    }
+  }
 
   async createAppRoute(region: Region, appid: string, domain: string) {
     const host = domain
@@ -39,6 +64,7 @@ export class ApisixService {
       },
       plugins: {
         cors: {},
+        ...this.gzipConf,
       },
       enable_websocket: true,
     }
@@ -50,6 +76,53 @@ export class ApisixService {
   async deleteAppRoute(region: Region, appid: string) {
     // TODO: use appid as route id instead of `app-{appid}`
     const id = `app-${appid}`
+    const res = await this.deleteRoute(region, id)
+    return res
+  }
+
+  async createAppCustomRoute(region: Region, runtimeDomain: RuntimeDomain) {
+    const appid = runtimeDomain.appid
+    const host = runtimeDomain.customDomain
+    const namespace = GetApplicationNamespaceByAppId(appid)
+    const upstreamNode = `${appid}.${namespace}:8000`
+    const upstreamHost = runtimeDomain.domain
+
+    const id = `app-custom-${appid}`
+    const data = {
+      name: id,
+      labels: {
+        type: 'runtime',
+        appid: appid,
+      },
+      uri: '/*',
+      hosts: [host],
+      priority: 9,
+      upstream: {
+        type: 'roundrobin',
+        pass_host: 'rewrite',
+        upstream_host: upstreamHost,
+        nodes: {
+          [upstreamNode]: 1,
+        },
+      },
+      timeout: {
+        connect: 60,
+        send: 600,
+        read: 600,
+      },
+      plugins: {
+        cors: {},
+        ...this.gzipConf,
+      },
+      enable_websocket: true,
+    }
+
+    const res = await this.putRoute(region, id, data)
+    return res
+  }
+
+  async deleteAppCustomRoute(region: Region, appid: string) {
+    const id = `app-custom-${appid}`
     const res = await this.deleteRoute(region, id)
     return res
   }
@@ -84,6 +157,7 @@ export class ApisixService {
       },
       plugins: {
         cors: {},
+        ...this.gzipConf,
       },
     }
 
@@ -133,14 +207,15 @@ export class ApisixService {
         read: 60,
       },
       plugins: {
-        "ext-plugin-post-req": {
-          "conf": [
+        'ext-plugin-post-req': {
+          conf: [
             {
-              "name": "try-path",
-              "value": `{\"paths\":[\"$uri\", \"$uri/\", \"/index.html\"], \"host\": \"http://${upstreamNode}/${website.bucketName}\"}`
-            }
-          ]
-        }
+              name: 'try-path',
+              value: `{\"paths\":[\"$uri\", \"$uri/\", \"/index.html\"], \"host\": \"http://${upstreamNode}/${website.bucketName}\"}`,
+            },
+          ],
+        },
+        ...this.gzipConf,
       },
     }
 

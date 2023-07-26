@@ -6,14 +6,22 @@ import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
 import { Account, BaseState } from './entities/account'
 import { ObjectId, ClientSession } from 'mongodb'
+import { GenerateInviteCode } from 'src/utils/random'
 import {
   AccountChargeOrder,
   AccountChargePhase,
   Currency,
   PaymentChannelType,
 } from './entities/account-charge-order'
+import { GiftCode } from './entities/account-gift-code'
 import { AccountTransaction } from './entities/account-transaction'
 import { AccountChargeReward } from './entities/account-charge-reward'
+import {
+  InviteCode,
+  InviteCodeState,
+  InviteRelation,
+} from 'src/authentication/entities/invite-code'
+import { AccountChargeOrderQuery } from './interface/account-query.interface'
 
 @Injectable()
 export class AccountService {
@@ -188,5 +196,319 @@ export class AccountService {
       .toArray()
 
     return rewards
+  }
+
+  async getAllChargeOrders(
+    userid: ObjectId,
+    condition: AccountChargeOrderQuery,
+  ) {
+    const query = {
+      createdBy: userid,
+      phase: condition.phase ? condition.phase : AccountChargePhase.Paid,
+    }
+
+    if (condition.id) {
+      query['_id'] = condition.id
+    }
+
+    if (condition.channel) {
+      query['channel'] = condition.channel
+    }
+
+    if (condition.startTime) {
+      query['createdAt'] = { $gte: condition.startTime }
+    }
+
+    if (condition.endTime) {
+      if (condition.startTime) {
+        query['createdAt']['$lte'] = condition.endTime
+      } else {
+        query['createdAt'] = { $lte: condition.endTime }
+      }
+    }
+
+    const total = await this.db
+      .collection<AccountChargeOrder>('AccountChargeOrder')
+      .countDocuments(query)
+
+    const orders = await this.db
+      .collection<AccountChargeOrder>('AccountChargeOrder')
+      .aggregate([
+        { $match: query },
+        {
+          $lookup: {
+            from: 'AccountTransaction',
+            localField: '_id',
+            foreignField: 'orderId',
+            as: 'transaction',
+          },
+        },
+        { $sort: { createdAt: -1 } },
+        { $skip: (condition.page - 1) * condition.pageSize },
+        { $limit: condition.pageSize },
+        { $unwind: { path: '$transaction', preserveNullAndEmptyArrays: true } },
+        {
+          $addFields: {
+            reward: '$transaction.reward',
+          },
+        },
+        {
+          $project: {
+            transaction: 0,
+          },
+        },
+      ])
+      .toArray()
+
+    const res = {
+      total,
+      list: orders,
+      page: condition.page,
+      pageSize: condition.pageSize,
+    }
+
+    return res
+  }
+
+  async getUserRecharge(userid: ObjectId, condition: AccountChargeOrderQuery) {
+    const query = {
+      createdBy: userid,
+      phase: AccountChargePhase.Paid,
+    }
+
+    if (condition.startTime) {
+      query['createdAt'] = { $gte: condition.startTime }
+    }
+
+    if (condition.endTime) {
+      if (condition.startTime) {
+        query['createdAt']['$lte'] = condition.endTime
+      } else {
+        query['createdAt'] = { $lte: condition.endTime }
+      }
+    }
+
+    const rechargeAmount = await this.db
+      .collection<AccountChargeOrder>('AccountChargeOrder')
+      .aggregate([
+        { $match: query },
+        {
+          $group: {
+            _id: null,
+            totalAmount: {
+              $sum: '$amount',
+            },
+          },
+        },
+      ])
+      .toArray()
+    return rechargeAmount.length > 0 ? rechargeAmount[0].totalAmount : 0
+  }
+
+  // gift code
+  async useGiftCode(userid: ObjectId, code: string) {
+    const client = SystemDatabase.client
+    const session = client.startSession()
+
+    const giftCode = await this.findOneGiftCode(code)
+    const account = await this.findOne(userid)
+
+    try {
+      session.startTransaction()
+      // add gift-code charge order
+      await this.db
+        .collection<AccountChargeOrder>('AccountChargeOrder')
+        .insertOne(
+          {
+            accountId: account._id,
+            amount: giftCode.creditAmount,
+            currency: Currency.CNY,
+            phase: AccountChargePhase.Paid,
+            channel: PaymentChannelType.GiftCode,
+            createdBy: new ObjectId(userid),
+            lockedAt: TASK_LOCK_INIT_TIME,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          { session },
+        )
+      // update account balance
+      const res = await this.db.collection<Account>('Account').findOneAndUpdate(
+        { _id: account._id },
+        {
+          $inc: { balance: giftCode.creditAmount },
+          $set: { updatedAt: new Date() },
+        },
+        { session, returnDocument: 'after' },
+      )
+
+      // add transaction record
+      const transaction = await this.db
+        .collection<AccountTransaction>('AccountTransaction')
+        .insertOne(
+          {
+            accountId: account._id,
+            amount: giftCode.creditAmount,
+            balance: res.value.balance,
+            message: 'Gift code redemption',
+            createdAt: new Date(),
+          },
+          { session },
+        )
+
+      // void gift code
+      await this.db.collection<GiftCode>('GiftCode').findOneAndUpdate(
+        {
+          _id: giftCode._id,
+        },
+        {
+          $set: {
+            used: true,
+            usedAt: new Date(),
+            usedBy: account._id,
+            transactionId: transaction.insertedId,
+          },
+        },
+        { session },
+      )
+
+      await session.commitTransaction()
+
+      return res.value
+    } catch (error) {
+      await session.abortTransaction()
+      this.logger.error(error)
+      throw error
+    } finally {
+      await session.endSession()
+    }
+  }
+
+  async findOneGiftCode(code: string): Promise<GiftCode | null> {
+    const giftCode = await this.db.collection<GiftCode>('GiftCode').findOne({
+      code: code,
+    })
+    return giftCode
+  }
+
+  // invite code
+  async generateInviteCode(uid: ObjectId): Promise<InviteCode | null> {
+    while (true) {
+      const nanoid = GenerateInviteCode()
+      const code = `${nanoid}`
+      const found = await this.db
+        .collection<InviteCode>('InviteCode')
+        .findOne({ code })
+
+      if (!found) {
+        const res = await this.db
+          .collection<InviteCode>('InviteCode')
+          .insertOne({
+            uid,
+            code,
+            state: InviteCodeState.Enabled,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })
+
+        const inviteCode = await this.db
+          .collection<InviteCode>('InviteCode')
+          .findOne({ _id: res.insertedId })
+
+        return inviteCode
+      }
+    }
+  }
+
+  async findOneInviteCode(uid: ObjectId): Promise<InviteCode | null> {
+    const inviteCode = await this.db
+      .collection<InviteCode>('InviteCode')
+      .findOne({
+        uid,
+      })
+
+    return inviteCode
+  }
+
+  async getInviteProfit(uid: ObjectId, page: number, pageSize: number) {
+    const query = {
+      invitedBy: uid,
+    }
+    const pipe = [
+      {
+        $match: query,
+      },
+      {
+        $lookup: {
+          from: 'User',
+          let: { userId: '$uid' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$_id', '$$userId'],
+                },
+              },
+            },
+            {
+              $project: { username: 1, _id: 0 },
+            },
+          ],
+          as: 'user',
+        },
+      },
+      {
+        $lookup: {
+          from: 'AccountTransaction',
+          let: { transactionId: '$transactionId' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ['$_id', '$$transactionId'],
+                },
+              },
+            },
+            {
+              $project: { amount: 1, _id: 0 },
+            },
+          ],
+          as: 'transaction',
+        },
+      },
+      {
+        $addFields: {
+          username: { $arrayElemAt: ['$user.username', 0] },
+          inviteProfit: { $arrayElemAt: ['$transaction.amount', 0] },
+        },
+      },
+      {
+        $project: {
+          user: 0,
+          transaction: 0,
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      { $skip: (page - 1) * pageSize },
+      { $limit: pageSize },
+    ]
+
+    const total = await this.db
+      .collection<InviteRelation>('InviteRelation')
+      .countDocuments(query)
+
+    const inviteCodeProfits = await this.db
+      .collection<InviteRelation>('InviteRelation')
+      .aggregate(pipe)
+      .toArray()
+
+    const res = {
+      list: inviteCodeProfits,
+      total,
+      page,
+      pageSize,
+    }
+
+    return res
   }
 }

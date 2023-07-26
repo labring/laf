@@ -139,44 +139,6 @@ export async function AuthenticationControllerGetProviders(
 }
 
 /**
- * Bind username
- */
-export async function AuthenticationControllerBindPhone(params: Definitions.BindPhoneDto): Promise<{
-  error: string;
-  data: Paths.AuthenticationControllerBindPhone.Responses;
-}> {
-  // /v1/auth/bind/phone
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/auth/bind/phone`, {
-    method: "POST",
-    data: params,
-  });
-}
-
-/**
- * Bind username
- */
-export async function AuthenticationControllerBindUsername(
-  params: Definitions.BindUsernameDto,
-): Promise<{
-  error: string;
-  data: Paths.AuthenticationControllerBindUsername.Responses;
-}> {
-  // /v1/auth/bind/username
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/auth/bind/username`, {
-    method: "POST",
-    data: params,
-  });
-}
-
-/**
  * Get user token by PAT
  */
 export async function AuthenticationControllerPat2token(params: Definitions.Pat2TokenDto): Promise<{
@@ -195,21 +157,19 @@ export async function AuthenticationControllerPat2token(params: Definitions.Pat2
 }
 
 /**
- * Get current user profile
+ * Send email verify code
  */
-export async function AuthenticationControllerGetProfile(
-  params: Paths.AuthenticationControllerGetProfile.BodyParameters,
-): Promise<{
+export async function EmailControllerSendCode(params: Definitions.SendEmailCodeDto): Promise<{
   error: string;
-  data: Definitions.UserWithProfile;
+  data: Paths.EmailControllerSendCode.Responses;
 }> {
-  // /v1/auth/profile
+  // /v1/auth/email/code
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
-  return request(`/v1/auth/profile`, {
-    method: "GET",
-    params: params,
+  return request(`/v1/auth/email/code`, {
+    method: "POST",
+    data: params,
   });
 }

@@ -16,7 +16,7 @@ import {
   MenuList,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
@@ -25,6 +25,7 @@ import { APP_PHASE_STATUS, APP_STATUS, Pages } from "@/constants";
 import { formatDate } from "@/utils/format";
 import getRegionById from "@/utils/getRegionById";
 
+import { APP_LIST_QUERY_KEY } from "../../index";
 import CreateAppModal from "../CreateAppModal";
 import DeleteAppModal from "../DeleteAppModal";
 import StatusBadge from "../StatusBadge";
@@ -35,7 +36,7 @@ import { TApplicationItem } from "@/apis/typing";
 import { ApplicationControllerUpdateState } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
-function List(props: { appListQuery: any; setShouldRefetch: any }) {
+function List(props: { appList: TApplicationItem[] }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -43,7 +44,8 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
 
   const [searchKey, setSearchKey] = useState("");
 
-  const { appListQuery, setShouldRefetch } = props;
+  const queryClient = useQueryClient();
+  const { appList } = props;
   const bg = useColorModeValue("lafWhite.200", "lafDark.200");
 
   const updateAppStateMutation = useMutation((params: any) =>
@@ -53,11 +55,11 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
   return (
     <>
       <div className="mb-5 flex items-center justify-between">
-        <h2 className="flex items-center text-2xl font-semibold">
+        <h2 className="flex items-center text-2xl font-semibold phone:text-base">
           <FileTypeIcon type="app" className="mr-1 " />
           {t("HomePanel.MyApp")}
         </h2>
-        <div className="flex">
+        <div className="flex phone:px-3">
           <InputGroup className="mr-4">
             <InputLeftElement
               height={"8"}
@@ -82,16 +84,19 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
       </div>
 
       <div className="flex flex-col overflow-auto">
-        <Box bg={bg} className="mb-3 flex h-12 flex-none items-center rounded-lg px-3 lg:px-6">
+        <Box
+          bg={bg}
+          className="mb-3 flex h-12 flex-none items-center rounded-lg px-3 lg:px-6 phone:px-2"
+        >
           <div className="w-3/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
-          <div className="w-2/12 text-second ">App ID</div>
+          <div className="w-2/12 whitespace-nowrap text-second">App ID</div>
           <div className="w-2/12 pl-2 text-second">{t("HomePanel.State")}</div>
           <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div>
           <div className="w-4/12 text-second ">{t("Time")}</div>
           <div className="w-1/12 min-w-[100px] pl-2 text-second">{t("Operation")}</div>
         </Box>
         <div className="flex-grow overflow-auto">
-          {(appListQuery.data?.data || [])
+          {(appList || [])
             .filter((item: TApplicationItem) => item?.name.indexOf(searchKey) >= 0)
             .map((item: TApplicationItem) => {
               return (
@@ -170,7 +175,7 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                                   : APP_STATUS.Restarting,
                             });
                             if (!res.error) {
-                              setShouldRefetch(true);
+                              queryClient.invalidateQueries(APP_LIST_QUERY_KEY);
                             }
                           }}
                         >
@@ -187,20 +192,25 @@ function List(props: { appListQuery: any; setShouldRefetch: any }) {
                             display={"block"}
                             onClick={async (event: any) => {
                               event?.preventDefault();
-                              await updateAppStateMutation.mutateAsync({
+                              const res = await updateAppStateMutation.mutateAsync({
                                 appid: item.appid,
-                                state: APP_PHASE_STATUS.Stopped,
+                                state: APP_STATUS.Stopped,
                               });
-                              setShouldRefetch(true);
+                              if (!res.error) {
+                                queryClient.invalidateQueries(APP_LIST_QUERY_KEY);
+                              }
                             }}
                           >
                             <a className="text-primary block" href="/stop">
-                              {t("SettingPanel.ShutDown")}
+                              {t("SettingPanel.Pause")}
                             </a>
                           </MenuItem>
                         )}
 
-                        <DeleteAppModal item={item} onSuccess={() => setShouldRefetch(true)}>
+                        <DeleteAppModal
+                          item={item}
+                          onSuccess={() => queryClient.invalidateQueries(APP_LIST_QUERY_KEY)}
+                        >
                           <MenuItem minH="40px" display={"block"}>
                             <a className="block text-error-500" href="/delete">
                               {t("DeleteApp")}

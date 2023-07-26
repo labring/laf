@@ -8,7 +8,10 @@ module.exports = {
       md: "768px",
       lg: "976px",
       xl: "1440px",
-      '2xl': "1680px",
+      "2xl": "1680px",
+      phone: { min: "320px", max: "480px" },
+      laptop: { min: "1024px", max: "1440px" },
+      pc: { min: "1441px" },
     },
     boxShadow: {
       DEFAULT: "0px 4px 10px rgba(191, 202, 213, 0.25)",
@@ -92,6 +95,8 @@ module.exports = {
         },
         error: {
           100: "#FDECEE",
+          200: "#FFD6DB",
+          400: "#FF8492",
           500: "#F16979",
           600: "#ED4458",
         },
@@ -103,12 +108,17 @@ module.exports = {
         },
         rose: {
           100: "#FDEAF1",
+          500: "#ED598E",
         },
         purple: {
           300: "#DBBDE9",
           400: "#C99CDF",
           600: "#A55AC9",
           700: "#7167AA",
+        },
+        adora: {
+          200: "#E6E3F7",
+          600: "#8172D8",
         },
         blue: {
           100: "#EBF7FD",
@@ -119,6 +129,7 @@ module.exports = {
         },
         frostyNightfall: {
           200: "#EAEBF0",
+          300: "#D5D6E1",
         },
       },
     },

@@ -8,7 +8,8 @@ export interface RequestInterface extends BaseRequestInterface {
 export enum EnvironmentType {
   H5 = 'h5',
   WX_MP = 'wxmp',
-  UNI_APP = 'uniapp'
+  UNI_APP = 'uniapp',
+  TARO = 'taro'
 }
 
 type GetAccessTokenFuncType = () => string

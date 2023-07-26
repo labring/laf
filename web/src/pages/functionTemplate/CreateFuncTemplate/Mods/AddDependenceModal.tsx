@@ -52,7 +52,6 @@ const AddDependenceModal = (props: {
       return existItem ? existItem : { ...item, versions: [] };
     });
     setList(list);
-    console.log(list);
   });
 
   const search = useMemo(
@@ -113,7 +112,6 @@ const AddDependenceModal = (props: {
                   </p>
                 </Box>
               </Checkbox>
-              {/* )} */}
               <div className="flex items-center space-x-2">
                 {clickItem.package === packageItem.package.name && clickItem.loading ? (
                   <Spinner size="xs" color="primary.500" />

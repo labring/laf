@@ -11,6 +11,7 @@ export function command(): Command {
     .command('add <dependencyName>')
     .description('add dependency')
     .option('-t, --targetVersion <type>', 'dependency target version')
+    .option('-r, --remote', 'add dependency to remote only', false)
     .action((dependencyName, options) => {
       add(dependencyName, options)
     })
@@ -25,8 +26,9 @@ export function command(): Command {
   cmd
     .command('push')
     .description('push dependency')
-    .action(() => {
-      push()
+    .option('--no-updatePackage', 'do not update package.json')
+    .action((options) => {
+      push(options)
     })
 
   return cmd

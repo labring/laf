@@ -82,7 +82,11 @@ export function formatPort(port: number | undefined) {
 }
 
 export function formatPrice(price?: number) {
-  return price ? (price / 100).toFixed(2) : "-";
+  return price ? "¥" + (price / 100).toFixed(2) : "¥0.00";
+}
+
+export function formatOriginalPrice(price?: number, fixedNumber?: number) {
+  return price ? "¥" + price.toFixed(fixedNumber || 2) : "¥0.00";
 }
 
 export function convertMoney(money: number) {
@@ -91,4 +95,10 @@ export function convertMoney(money: number) {
 
 export function hidePhoneNumber(phone: string) {
   return phone.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
+}
+
+export function changeURL(param: string) {
+  const currentURL = window.location.pathname;
+  const lastIndex = currentURL.lastIndexOf("/");
+  return currentURL.substring(0, lastIndex) + param;
 }

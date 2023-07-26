@@ -29,6 +29,9 @@ import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 import { CloudFunctionHistory } from './entities/cloud-function-history'
 import { CloudFunction } from './entities/cloud-function'
+import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
+import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
+import { STORAGE_LIMIT } from 'src/constants'
 
 @ApiTags('Function')
 @ApiBearerAuth('Authorization')
@@ -37,6 +40,7 @@ export class FunctionController {
   constructor(
     private readonly functionsService: FunctionService,
     private readonly bundleService: BundleService,
+    private readonly functionRecycleBinService: FunctionRecycleBinService,
     private readonly i18n: I18nService<I18nTranslations>,
   ) {}
 
@@ -125,6 +129,38 @@ export class FunctionController {
   }
 
   /**
+   * Update function debug info
+   * @param appid
+   * @param name
+   * @param dto
+   * @returns
+   */
+  @ApiResponseObject(CloudFunction)
+  @ApiOperation({ summary: 'Update function debug info' })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Patch(':name/debug/params')
+  async updateDebug(
+    @Param('appid') appid: string,
+    @Param('name') name: string,
+    @Body() dto: UpdateFunctionDebugDto,
+    @I18n() i18n: I18nContext<I18nTranslations>,
+  ) {
+    const func = await this.functionsService.findOne(appid, name)
+    if (!func) {
+      throw new HttpException(
+        i18n.t('function.common.notFound', { args: { name } }),
+        HttpStatus.NOT_FOUND,
+      )
+    }
+
+    const res = await this.functionsService.updateOneDebug(func, dto)
+    if (!res) {
+      return ResponseUtil.error(i18n.t('function.update.error'))
+    }
+    return ResponseUtil.ok(res)
+  }
+
+  /**
    * Update a function
    * @param appid
    * @param name
@@ -148,11 +184,14 @@ export class FunctionController {
         HttpStatus.NOT_FOUND,
       )
     }
-
     const res = await this.functionsService.updateOne(func, dto)
     if (!res) {
       return ResponseUtil.error(i18n.t('function.update.error'))
     }
+    if (res instanceof Error) {
+      return ResponseUtil.error(res.message)
+    }
+
     return ResponseUtil.ok(res)
   }
 
@@ -177,6 +216,12 @@ export class FunctionController {
         i18n.t('function.common.notFound', { args: { name } }),
         HttpStatus.NOT_FOUND,
       )
+    }
+    const recycleBinStorage =
+      await this.functionRecycleBinService.getRecycleBinStorage(appid)
+
+    if (recycleBinStorage >= STORAGE_LIMIT) {
+      return ResponseUtil.error('Recycle bin is full, please free up space')
     }
 
     const res = await this.functionsService.removeOne(func)

@@ -23,7 +23,7 @@ import Panel from "@/components/Panel";
 import Resize from "@/components/Resize";
 import { COLOR_MODE, Pages, PanelMinHeight } from "@/constants";
 
-import { useCompileMutation, useUpdateFunctionMutation } from "../../service";
+import { useCompileMutation, useUpdateDebugFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
 import AIChatPanel from "../AIChatPanel";
 import VersionHistoryPanel from "../VersionHistoryPanel";
@@ -44,7 +44,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
   const { t } = useTranslation();
   const { getFunctionUrl, currentFunction, setCurrentFunction, setCurrentRequestId } =
     useFunctionStore((state: any) => state);
-  const updateFunctionMutation = useUpdateFunctionMutation();
+  const updateDebugFunctionMutation = useUpdateDebugFunctionMutation();
   const globalStore = useGlobalStore((state) => state);
 
   const functionCache = useFunctionCache();
@@ -60,6 +60,7 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
   const [queryParams, setQueryParams] = useState([]);
   const [bodyParams, setBodyParams] = useState<{ contentType: string; data: any }>();
   const [headerParams, setHeaderParams] = useState([]);
+
   const functionPageConfig = useCustomSettingStore((store) => store.layoutInfo.functionPage);
   const { displayName } = useHotKey(
     DEFAULT_SHORTCUTS.send_request,
@@ -77,6 +78,10 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
     }
   }, [setRunningMethod, currentFunction]);
 
+  useEffect(() => {
+    setBodyParams(currentFunction?.params?.bodyParams);
+  }, [currentFunction]);
+
   const runningCode = async () => {
     if (isLoading || !currentFunction?._id) return;
     setIsLoading(true);
@@ -93,13 +98,8 @@ export default function DebugPanel(props: { containerRef: any; showOverlay: bool
         runningMethod: runningMethod,
       };
 
-      updateFunctionMutation.mutateAsync({
-        description: currentFunction?.desc,
-        code: currentFunction?.source.code,
-        methods: currentFunction?.methods,
-        websocket: currentFunction?.websocket,
+      updateDebugFunctionMutation.mutateAsync({
         name: currentFunction?.name,
-        tags: currentFunction?.tags,
         params: params,
       });
 

@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { t } from "i18next";
 
 import { Pages, Routes, SideBarWidth } from "@/constants/index";
+import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
 import SysSetting from "../../setting/SysSetting";
 
@@ -15,7 +16,7 @@ import Icons from "./Icons";
 
 import styles from "./index.module.scss";
 
-import UserSetting from "@/layouts/Header/UserSetting";
+import UserSetting from "@/pages/app/setting/UserSetting";
 import useGlobalStore from "@/pages/globalStore";
 type TIcon = {
   pageId: string;
@@ -26,7 +27,7 @@ type TIcon = {
 export default function SideBar() {
   const { pageId } = useParams();
   const navigate = useNavigate();
-  const { currentApp, setCurrentPage, userInfo, regions = [] } = useGlobalStore();
+  const { currentApp, setCurrentPage, userInfo, avatarUpdatedAt, regions = [] } = useGlobalStore();
   const currentRegion =
     regions.find((item: any) => item._id === currentApp?.regionId) || regions[0];
 
@@ -67,8 +68,8 @@ export default function SideBar() {
       pageId: Pages.userSetting,
       component: (
         <UserSetting
-          name={userInfo?.profile?.name || ""}
-          avatar={userInfo?.profile?.avatar}
+          name={userInfo?.username || ""}
+          avatar={getAvatarUrl(userInfo?._id, avatarUpdatedAt)}
           width={"28px"}
         />
       ),

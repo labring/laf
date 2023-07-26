@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AddIcon, EditIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import { AddIcon, EditIcon, ExternalLinkIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -36,6 +36,7 @@ import {
   usePackageSearchQuery,
   usePackageVersionsQuery,
 } from "../service";
+import { openDependenceDetail } from "..";
 
 import useGlobalStore from "@/pages/globalStore";
 
@@ -49,6 +50,7 @@ const AddDependenceModal = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [isShowChecked, setIsShowChecked] = useState(false);
   const [packageList, setPackageList] = useState<TDependenceItem[]>([]);
+  const [originPackageList, setOriginPackageList] = useState<TDependenceItem[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   usePackageQuery((data) => {
     const newList = (data || [])
@@ -62,17 +64,28 @@ const AddDependenceModal = () => {
           versions: [],
         };
       });
+    setOriginPackageList(JSON.parse(JSON.stringify(newList)));
     setPackageList(newList);
   });
 
   const addPackageMutation = useAddPackageMutation(() => {
     onClose();
-    globalStore.updateCurrentApp(globalStore.currentApp!, APP_STATUS.Restarting);
+    globalStore.updateCurrentApp(
+      globalStore.currentApp!,
+      globalStore.currentApp!.state === APP_STATUS.Stopped
+        ? APP_STATUS.Running
+        : APP_STATUS.Restarting,
+    );
   });
 
   const editPackageMutation = useEditPackageMutation(() => {
     onClose();
-    globalStore.updateCurrentApp(globalStore.currentApp!, APP_STATUS.Restarting);
+    globalStore.updateCurrentApp(
+      globalStore.currentApp!,
+      globalStore.currentApp!.state === APP_STATUS.Stopped
+        ? APP_STATUS.Running
+        : APP_STATUS.Restarting,
+    );
   });
 
   const packageSearchQuery = usePackageSearchQuery(name, (data) => {
@@ -89,7 +102,7 @@ const AddDependenceModal = () => {
     const newList: TDependenceItem[] = (isEdit ? packageList : list).map(
       (item: TDependenceItem) => {
         if (item.package.name === clickItem.package) {
-          item.versions = versions;
+          item.versions = versions?.reverse();
           if (!isEdit) {
             syncDataToCheckList(clickItem.package, item);
           }
@@ -116,6 +129,19 @@ const AddDependenceModal = () => {
     setName("");
     setList([]);
     onOpen();
+  };
+
+  const onModalClose = () => {
+    if (isEdit) {
+      setPackageList((prev) =>
+        prev.map((pkg) => {
+          const res = originPackageList.find((v) => v.package.name === pkg.package.name);
+          if (res) pkg.package.version = res.package.version;
+          return pkg;
+        }),
+      );
+    }
+    onClose();
   };
 
   const syncDataToCheckList = (targetName: string, item: TDependenceItem) => {
@@ -205,7 +231,17 @@ const AddDependenceModal = () => {
                   }
                 >
                   <Box ml={5} width="350px">
-                    <b>{packageItem.package.name}</b>
+                    <div className="flex items-center space-x-1">
+                      <b>{packageItem.package.name}</b>
+                      <ExternalLinkIcon
+                        className="!text-primary-700 hover:scale-110"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          openDependenceDetail(packageItem.package.name);
+                        }}
+                      />
+                    </div>
                     <p className="overflow-hidden text-ellipsis whitespace-nowrap text-base text-second ">
                       {packageItem.package.description}
                     </p>
@@ -273,7 +309,7 @@ const AddDependenceModal = () => {
         <AddIcon fontSize={12} />
       </IconWrap>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+      <Modal isOpen={isOpen} onClose={onModalClose} size="2xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>

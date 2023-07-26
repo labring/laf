@@ -103,7 +103,10 @@ jobs:
       # 登录 laf api
       - name: Login laf-cli
         working-directory: ${{ env.WEB_PATH }}
-        run: laf login -r ${{ env.API_URL }} $LAF_PAT
+        run: |
+          laf user add ${{ env.LAF_APPID }} -r ${{ env.API_URL }}
+          laf user switch ${{ env.LAF_APPID }}
+          laf login $LAF_PAT
       # 初始化 Laf 应用然后将编译好的代码推送到云存储
       - name: Init appid and push
         working-directory: ${{ env.WEB_PATH }}

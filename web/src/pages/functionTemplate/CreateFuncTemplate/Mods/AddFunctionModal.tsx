@@ -26,8 +26,9 @@ const AddFunctionModal = (props: {
   children?: React.ReactElement;
   functionList?: any[];
   setFunctionList?: React.Dispatch<React.SetStateAction<any[]>>;
-  setCurrentFunction?: React.Dispatch<React.SetStateAction<any>>;
+  setCurrentFunction: React.Dispatch<React.SetStateAction<any>>;
   currentFunction?: any;
+  isEdit?: boolean;
 }) => {
   const {
     children = null,
@@ -35,14 +36,30 @@ const AddFunctionModal = (props: {
     setFunctionList,
     setCurrentFunction,
     currentFunction,
+    isEdit,
   } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { showError } = useGlobalStore();
-  const defaultValues = {
-    name: "",
-    methods: ["GET", "POST"],
-    description: "",
-  };
+  const defaultValues = isEdit
+    ? {
+        name: currentFunction?.name,
+        methods: currentFunction?.methods,
+        description: currentFunction?.desc,
+      }
+    : {
+        name: "",
+        methods: ["GET", "POST"],
+        description: "",
+      };
+
+  const defaultCode = `import cloud from '@lafjs/cloud'
+
+export default async function (ctx: FunctionContext) {
+  console.log('Hello World')
+  return { data: 'hi, laf' }
+}
+`;
+
   const {
     handleSubmit,
     register,
@@ -50,15 +67,38 @@ const AddFunctionModal = (props: {
     setFocus,
     control,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues,
+  });
 
   const onSubmit = (data: any) => {
-    if (functionList?.some((item) => item.name === data.name)) {
-      showError(t("Template.FunctionNameExist"));
-    } else if (setFunctionList && setCurrentFunction) {
-      setFunctionList([...(functionList || []), { ...data, source: { code: "" } }]);
-      setCurrentFunction({ ...data, source: { code: "" } });
-      console.log("AddFunctionModal", currentFunction);
+    const updateData = {
+      name: data.name,
+      methods: data.methods,
+      desc: data.description,
+    };
+
+    if (setFunctionList) {
+      if (isEdit) {
+        setFunctionList(
+          functionList?.map((item) => {
+            if (item.name === currentFunction.name) {
+              return { ...updateData, source: { code: currentFunction.source.code } };
+            }
+            return item;
+          }) || [],
+        );
+      } else {
+        if (functionList?.some((item) => item.name === data.name)) {
+          showError(t("Template.FunctionNameExist"));
+          return;
+        }
+        setFunctionList([
+          ...(functionList || []),
+          { ...updateData, source: { code: defaultCode } },
+        ]);
+      }
+      setCurrentFunction({ ...updateData, source: { code: defaultCode } });
       onClose();
     }
   };
@@ -73,7 +113,6 @@ const AddFunctionModal = (props: {
                 functionList.find((item) => item.name === currentFunction?.name) || null,
               );
             }
-            console.log(currentFunction);
             onOpen();
             reset(defaultValues);
             setTimeout(() => {
@@ -84,10 +123,12 @@ const AddFunctionModal = (props: {
       <Modal isOpen={isOpen} onClose={onClose} size="2xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{t("FunctionPanel.AddFunction")}</ModalHeader>
+          <ModalHeader>
+            {isEdit ? t("FunctionPanel.EditFunction") : t("FunctionPanel.AddFunction")}
+          </ModalHeader>
           <ModalCloseButton />
 
-          <ModalBody className="">
+          <ModalBody>
             <div className="mb-3 flex h-12 w-full items-center border-b-2">
               <input
                 {...register("name", {

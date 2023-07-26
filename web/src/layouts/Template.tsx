@@ -18,15 +18,32 @@ export default function TemplateLayout() {
   }, [init]);
 
   return (
-    <div className={clsx("min-h-screen flex-grow", darkMode ? "" : "bg-white")}>
-      <Header bg="bg-gray-100" />
-      {loading ? (
-        <Center style={{ minHeight: 300 }}>
-          <Spinner />
-        </Center>
-      ) : (
-        <Outlet />
-      )}
-    </div>
+    <>
+      <div
+        className={clsx(
+          "sticky top-0 z-50 flex justify-center",
+          darkMode ? "" : "border-b border-[#E4E9EE] bg-[#F8FAFB]",
+        )}
+      >
+        <Header width="max-w-screen-xl" />
+      </div>
+      <div className="overflow-auto">
+        <div
+          className={clsx("fixed bottom-0 left-0 right-0 top-0 -z-40", !darkMode && "bg-white")}
+        ></div>
+
+        <div className="flex justify-center">
+          <div className="w-full max-w-screen-xl">
+            {loading ? (
+              <Center style={{ minHeight: 300 }}>
+                <Spinner />
+              </Center>
+            ) : (
+              <Outlet />
+            )}
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

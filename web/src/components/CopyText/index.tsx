@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { CopyIcon } from "@chakra-ui/icons";
 import { Tooltip, useClipboard } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
 import useGlobalStore from "@/pages/globalStore";
@@ -30,7 +31,7 @@ export default function CopyText(props: {
   return (
     <Tooltip label={hideToolTip ? "" : t("Copy")} placement="top">
       {React.cloneElement(children, {
-        className: className || "",
+        className: clsx("cursor-pointer", className),
         onClick: () => {
           onCopy();
           showSuccess(tip || t("Copied"));

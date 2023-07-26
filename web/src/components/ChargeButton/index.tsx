@@ -75,7 +75,6 @@ export default function ChargeButton(props: { amount?: number; children: React.R
       enabled: isOpen,
       onSuccess: (res) => {
         setBonus(res.data);
-        console.log(res.data);
       },
     },
   );
@@ -99,13 +98,13 @@ export default function ChargeButton(props: { amount?: number; children: React.R
               <div className="flex items-center pb-6">
                 <span className="mr-6 text-second">{t("Balance")}</span>
                 <span className="text-[24px] font-semibold">
-                  ¥ {formatPrice(accountRes?.data?.balance)}
+                  {formatPrice(accountRes?.data?.balance)}
                 </span>
               </div>
               {bonus && <p className="mb-4 text-second">{t("Recharge amount")}</p>}
               <div className="mb-5 grid grid-cols-3 gap-4">
                 {(bonus || []).map((item) => (
-                  <div className="relative">
+                  <div className="relative" key={item.amount}>
                     {item.reward && (
                       <span className="absolute left-20 top-1 z-50 whitespace-nowrap rounded-full rounded-bl-none bg-purple-200 px-4 py-[1.5px] text-[12px] text-purple-600">
                         {t("application.bonus")} ¥{item.reward / 100}

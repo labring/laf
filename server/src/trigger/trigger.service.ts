@@ -8,7 +8,7 @@ import {
   TriggerPhase,
   TriggerState,
 } from './entities/cron-trigger'
-import { ObjectId } from 'mongodb'
+import { ClientSession, ObjectId } from 'mongodb'
 
 @Injectable()
 export class TriggerService {
@@ -69,6 +69,49 @@ export class TriggerService {
     const res = await this.db
       .collection<CronTrigger>('CronTrigger')
       .updateMany({ appid }, { $set: { state: TriggerState.Deleted } })
+
+    return res
+  }
+
+  async findAllByTarget(appid: string, target: string) {
+    const docs = await this.db
+      .collection<CronTrigger>('CronTrigger')
+      .find({ appid, target })
+      .toArray()
+    return docs
+  }
+
+  async createMany(docs: CronTrigger[], session?: ClientSession) {
+    if (session) {
+      const result = await this.db
+        .collection<CronTrigger>('CronTrigger')
+        .insertMany(docs, { session })
+      return result
+    }
+    const result = await this.db
+      .collection<CronTrigger>('CronTrigger')
+      .insertMany(docs)
+    return result
+  }
+
+  async removeAllByTarget(
+    appid: string,
+    target: string,
+    session?: ClientSession,
+  ) {
+    if (session) {
+      const res = await this.db
+        .collection<CronTrigger>('CronTrigger')
+        .updateMany(
+          { appid, target },
+          { $set: { state: TriggerState.Deleted } },
+          { session },
+        )
+      return res
+    }
+    const res = await this.db
+      .collection<CronTrigger>('CronTrigger')
+      .updateMany({ appid, target }, { $set: { state: TriggerState.Deleted } })
 
     return res
   }

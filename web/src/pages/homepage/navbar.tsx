@@ -16,7 +16,6 @@ const Navbar = () => {
   const [stars, setStars] = useState<string | null>(null);
   const { t } = useTranslation();
   const navList = [
-    { text: t("HomePage.NavBar.home"), ref: "/" },
     { text: t("HomePage.NavBar.docs"), ref: String(t("HomePage.DocsLink")) },
     { text: t("HomePage.NavBar.forum"), ref: "https://forum.laf.run/" },
     { text: t("HomePage.NavBar.contact"), ref: "https://www.wenjuan.com/s/I36ZNbl/" },
@@ -44,14 +43,12 @@ const Navbar = () => {
         "https://img.shields.io/github/stars/labring/laf?style=plastic",
       );
       const str = axiosRes.data;
-
-      const reg = /textLength="250">(.*?)k<\/text>/;
+      const reg = /(\d+(\.\d+)?)(k)/;
       const match = str.match(reg);
 
       if (match) {
         const matchedText = match[1];
         setStars(`${matchedText}K`);
-        // console.log(matchedText); // 输出：4k
       } else {
         console.log("No match found");
       }
@@ -152,8 +149,7 @@ const Navbar = () => {
       <div
         className={
           showBanner
-            ? // ? "fixed top-12 z-40 flex w-full justify-between px-8 py-4 lg:hidden "
-              clsx("fixed top-12 z-40 flex w-full justify-between px-8 py-4 lg:hidden", {
+            ? clsx("fixed top-12 z-40 flex w-full justify-between px-8 py-4 lg:hidden", {
                 "bg-lafDark-100": darkMode,
                 "bg-lafWhite-600": !darkMode,
               })

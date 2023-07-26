@@ -7,11 +7,17 @@ declare namespace Definitions {
     tags?: string[];
   };
 
+  export type CloudFunction = {};
+
   export type UpdateFunctionDto = {
+    newName?: string /* Function name is unique in the application */;
     description?: string;
     methods?: string[];
     code?: string /* The source code of the function */;
     tags?: string[];
+  };
+
+  export type UpdateFunctionDebugDto = {
     params?: {};
   };
 
@@ -24,6 +30,7 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+    autoscaling?: Definitions.CreateAutoscalingDto;
     name?: string;
     state?: string;
     regionId?: string;
@@ -76,13 +83,30 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+    autoscaling?: Definitions.CreateAutoscalingDto;
   };
 
   export type ApplicationBundle = {
     _id?: string;
     appid?: string;
     resource?: Definitions.ApplicationBundleResource;
+    autoscaling?: Definitions.Autoscaling;
     isTrialTier?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type BindCustomDomainDto = {
+    domain?: string;
+  };
+
+  export type RuntimeDomain = {
+    _id?: string;
+    appid?: string;
+    domain?: string;
+    customDomain?: string;
+    state?: string;
+    phase?: string;
     createdAt?: string;
     updatedAt?: string;
   };
@@ -173,6 +197,8 @@ declare namespace Definitions {
     createdBy?: string;
   };
 
+  export type Number = {};
+
   export type AccountChargeOrder = {
     _id?: string;
     accountId?: string;
@@ -198,13 +224,24 @@ declare namespace Definitions {
     result?: Definitions.WeChatPaymentCreateOrderResult;
   };
 
+  export type UseGiftCodeDto = {
+    code?: string /* gift code */;
+  };
+
+  export type InviteCode = {
+    _id?: string;
+    uid?: string;
+    code?: string;
+    state?: string;
+    name?: string;
+    description?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
   export type CreateWebsiteDto = {
     bucketName?: string;
     state?: string;
-  };
-
-  export type BindCustomDomainDto = {
-    domain?: string;
   };
 
   export type PasswdSignupDto = {
@@ -245,19 +282,18 @@ declare namespace Definitions {
     inviteCode?: string /* invite code */;
   };
 
-  export type BindPhoneDto = {
-    phone?: string /* phone number */;
-    code?: string /* sms verify code */;
-  };
-
-  export type BindUsernameDto = {
-    username?: string /* username */;
-    phone?: string /* phone */;
-    code?: string /* sms verify code */;
-  };
-
   export type Pat2TokenDto = {
     pat?: string /* PAT */;
+  };
+
+  export type SendEmailCodeDto = {
+    email?: string;
+    type?: string /* verify code type */;
+  };
+
+  export type CreatePATDto = {
+    name?: string;
+    expiresIn?: number;
   };
 
   export type UserWithProfile = {
@@ -270,9 +306,20 @@ declare namespace Definitions {
     profile?: Definitions.UserProfile;
   };
 
-  export type CreatePATDto = {
-    name?: string;
-    expiresIn?: number;
+  export type BindPhoneDto = {
+    oldPhoneNumber?: string /* old phone number */;
+    newPhoneNumber?: string /* new phone number */;
+    oldSmsCode?: string /* sms verify code for old phone number */;
+    newSmsCode?: string /* sms verify code for new phone number */;
+  };
+
+  export type BindEmailDto = {
+    email?: string;
+    code?: string /* verify code */;
+  };
+
+  export type BindUsernameDto = {
+    username?: string /* username */;
   };
 
   export type CreateTriggerDto = {
@@ -290,6 +337,7 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+    autoscaling?: Definitions.CreateAutoscalingDto;
     regionId?: string;
   };
 
@@ -310,23 +358,30 @@ declare namespace Definitions {
     items?: Definitions.FunctionTemplateItemDto[] /* items of the function template */;
   };
 
-  export type UseFunctionTemplateDto = {
-    functionTemplateId?: string /* The ObjectId of function template */;
-    appid?: string;
-  };
-
   export type UpdateFunctionTemplateDto = {
     functionTemplateId?: any /* Function template id */;
     name?: string /* Template name */;
     dependencies?: Definitions.CreateDependencyDto[] /* Dependencies */;
     environments?: Definitions.CreateEnvironmentDto[] /* Environments */;
     private?: boolean /* Private flag */;
-    description?: string /* Template description */;
-    items?: Definitions.FunctionTemplateItemDto[] /* Template items */;
+    description?: string /* function template description */;
+    items?: Definitions.FunctionTemplateItemDto[] /* items of the function template */;
   };
 
-  export type StarFunctionTemplateDto = {
-    functionTemplateId?: string /* The ObjectId of function template */;
+  export type DeleteRecycleBinItemsDto = {
+    ids?: string[] /* The list of item ids */;
+  };
+
+  export type RestoreRecycleBinItemsDto = {
+    ids?: string[] /* The list of item ids */;
+  };
+
+  export type CreateAutoscalingDto = {
+    enable?: boolean;
+    minReplicas?: number;
+    maxReplicas?: number;
+    targetCPUUtilizationPercentage?: number;
+    targetMemoryUtilizationPercentage?: number;
   };
 
   export type Region = {
@@ -350,6 +405,14 @@ declare namespace Definitions {
     limitCountOfTrigger?: number;
     limitCountOfWebsiteHosting?: number;
     reservedTimeAfterExpired?: number;
+  };
+
+  export type Autoscaling = {
+    enable?: boolean;
+    minReplicas?: number;
+    maxReplicas?: number;
+    targetCPUUtilizationPercentage?: number;
+    targetMemoryUtilizationPercentage?: number;
   };
 
   export type Runtime = {
@@ -382,16 +445,6 @@ declare namespace Definitions {
     value?: string;
   };
 
-  export type RuntimeDomain = {
-    _id?: string;
-    appid?: string;
-    domain?: string;
-    state?: string;
-    phase?: string;
-    createdAt?: string;
-    updatedAt?: string;
-  };
-
   export type WeChatPaymentCreateOrderResult = {
     code_url?: string;
   };
@@ -412,7 +465,7 @@ declare namespace Definitions {
   };
 
   export type FunctionTemplateItemDto = {
-    name?: string /* FunctionTemplate function name */;
+    name?: string /* FunctionTemplate item name */;
     description?: string;
     methods?: string[];
     code?: string /* The source code of the function */;
@@ -421,30 +474,6 @@ declare namespace Definitions {
 
 declare namespace Paths {
   namespace AppControllerGetRuntimes {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace FunctionControllerGetHistory {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerPat2token {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerGetProfile {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -492,10 +521,26 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace FunctionControllerUpdateDebug {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdateFunctionDebugDto;
+
+    export type Responses = any;
+  }
+
   namespace FunctionControllerCompile {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.CompileFunctionDto;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionControllerGetHistory {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -552,6 +597,30 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.UpdateApplicationBundleDto;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationControllerBindDomain {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindCustomDomainDto;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace ApplicationControllerCheckResolved {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindCustomDomainDto;
 
     export type Responses = any;
   }
@@ -748,7 +817,23 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace AccountControllerGetChargeOrderAmount {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace AccountControllerGetChargeOrder {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerGetChargeRecords {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -773,6 +858,30 @@ declare namespace Paths {
   }
 
   namespace AccountControllerWechatNotify {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerGiftCode {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UseGiftCodeDto;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerInviteCode {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace AccountControllerInviteCodeProfit {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -884,22 +993,6 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace AuthenticationControllerBindPhone {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.BindPhoneDto;
-
-    export type Responses = any;
-  }
-
-  namespace AuthenticationControllerBindUsername {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.BindUsernameDto;
-
-    export type Responses = any;
-  }
-
   namespace AuthenticationControllerPat2token {
     export type QueryParameters = any;
 
@@ -908,10 +1001,10 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace AuthenticationControllerGetProfile {
+  namespace EmailControllerSendCode {
     export type QueryParameters = any;
 
-    export type BodyParameters = any;
+    export type BodyParameters = Definitions.SendEmailCodeDto;
 
     export type Responses = any;
   }
@@ -933,6 +1026,54 @@ declare namespace Paths {
   }
 
   namespace PatControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace UserControllerUpdateAvatar {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace UserControllerGetAvatar {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace UserControllerBindPhone {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindPhoneDto;
+
+    export type Responses = any;
+  }
+
+  namespace UserControllerBindEmail {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindEmailDto;
+
+    export type Responses = any;
+  }
+
+  namespace UserControllerBindUsername {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindUsernameDto;
+
+    export type Responses = any;
+  }
+
+  namespace UserControllerGetProfile {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -1036,6 +1177,22 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace BillingControllerGetExpense {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace BillingControllerGetExpenseByDay {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace ResourceControllerCalculatePrice {
     export type QueryParameters = any;
 
@@ -1076,10 +1233,18 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace FunctionTemplateControllerGetAllFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace FunctionTemplateControllerUseFunctionTemplate {
     export type QueryParameters = any;
 
-    export type BodyParameters = Definitions.UseFunctionTemplateDto;
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -1100,10 +1265,18 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace FunctionTemplateControllerGetOneFunctionTemplate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
   namespace FunctionTemplateControllerStarFunctionTemplate {
     export type QueryParameters = any;
 
-    export type BodyParameters = Definitions.StarFunctionTemplateDto;
+    export type BodyParameters = any;
 
     export type Responses = any;
   }
@@ -1124,46 +1297,6 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace FunctionTemplateControllerGetOneFunctionTemplate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace FunctionTemplateControllerGetAllFunctionTemplate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace FunctionTemplateControllerGetAllFunctionTemplateByName {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace FunctionTemplateControllerGetHotFunctionTemplate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace FunctionTemplateControllerGetMyHotFunctionTemplate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
   namespace FunctionTemplateControllerGetMyFunctionTemplate {
     export type QueryParameters = any;
 
@@ -1172,7 +1305,7 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace FunctionTemplateControllerGetMyFunctionTemplateByName {
+  namespace FunctionTemplateControllerGetRecommendFunctionTemplate {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -1180,7 +1313,15 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace FunctionTemplateControllerGetMyStaredFunctionTemplate {
+  namespace FunctionRecycleBinControllerDeleteRecycleBinItems {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.DeleteRecycleBinItemsDto;
+
+    export type Responses = any;
+  }
+
+  namespace FunctionRecycleBinControllerEmptyRecycleBin {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -1188,7 +1329,7 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace FunctionTemplateControllerGetMyRecentUseFunctionTemplate {
+  namespace FunctionRecycleBinControllerGetRecycleBin {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -1196,18 +1337,10 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace AuthControllerGetProfile {
+  namespace FunctionRecycleBinControllerRestoreRecycleBinItems {
     export type QueryParameters = any;
 
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace AuthControllerPat2token {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
+    export type BodyParameters = Definitions.RestoreRecycleBinItemsDto;
 
     export type Responses = any;
   }

@@ -5,12 +5,20 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Matches,
   MaxLength,
 } from 'class-validator'
 import { HTTP_METHODS } from '../../constants'
 import { HttpMethod } from '../entities/cloud-function'
 
 export class UpdateFunctionDto {
+  @ApiProperty({
+    description: 'Function name is unique in the application',
+  })
+  @IsOptional()
+  @Matches(/^[a-zA-Z0-9_.\-\/]{1,256}$/)
+  newName?: string
+
   @ApiPropertyOptional()
   @MaxLength(256)
   description: string
@@ -31,10 +39,6 @@ export class UpdateFunctionDto {
   @MaxLength(16, { each: true })
   @IsNotEmpty({ each: true })
   tags: string[]
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  params: any
 
   validate() {
     return null

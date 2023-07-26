@@ -144,8 +144,8 @@ export default function DataPanel() {
 
   return (
     <>
-      <Panel.Header className="my-1 w-full flex-shrink-0">
-        <div className="flex items-center">
+      <Panel.Header className="my-1 flex-shrink-0">
+        <div className="flex flex-1 items-center">
           <AddDataModal
             schema={currentData.data ? currentData.data : {}}
             onSuccessSubmit={(id: string, count: number) => {
@@ -184,14 +184,15 @@ export default function DataPanel() {
             {t("RefreshData")}
           </Button>
           <form
+            className="flex flex-1"
             onSubmit={(event) => {
               event?.preventDefault();
               refresh(search);
             }}
           >
-            <div className="my-4 flex justify-between">
-              <HStack spacing={2}>
-                <InputGroup className="mr-4" width="300px">
+            <div className="my-4 flex flex-1 justify-between">
+              <HStack spacing={2} className="flex flex-1">
+                <InputGroup className="mr-4 flex-1">
                   <InputLeftElement
                     height={"8"}
                     pointerEvents="none"
@@ -261,20 +262,21 @@ export default function DataPanel() {
                 const newData = { ...item };
                 delete newData._id;
                 return (
-                  <IconWrap
-                    showBg
-                    tooltip={t("Copy").toString()}
-                    size={32}
-                    className="group/icon ml-2 hover:bg-gray-200"
+                  <CopyText
+                    hideToolTip
+                    text={JSON.stringify(newData, null, 2)}
+                    tip={String(t("Copied"))}
+                    className="ml-2 hover:bg-gray-200"
                   >
-                    <CopyText
-                      hideToolTip
-                      text={JSON.stringify(newData, null, 2)}
-                      tip={String(t("Copied"))}
+                    <IconWrap
+                      showBg
+                      tooltip={t("Copy").toString()}
+                      size={32}
+                      className="group/icon"
                     >
                       <CopyIcon />
-                    </CopyText>
-                  </IconWrap>
+                    </IconWrap>
+                  </CopyText>
                 );
               }}
             />

@@ -1,87 +1,163 @@
-import { useState } from "react";
-import { Avatar, Box, HStack } from "@chakra-ui/react";
+import { useRef, useState } from "react";
+import { ChevronRightIcon, EditIcon } from "@chakra-ui/icons";
+import { Avatar, Box, Divider, useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
-import ChargeButton from "@/components/ChargeButton";
-import { formatDate, formatPrice, hidePhoneNumber } from "@/utils/format";
+import { hidePhoneNumber } from "@/utils/format";
+import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
+import AvatarEditor from "./Mods/AvatarEditor";
+import EmailEditor from "./Mods/EmailEditor";
+import PasswordEditor from "./Mods/PasswordEditor";
+import PhoneEditor from "./Mods/PhoneEditor";
+import UsernameEditor from "./Mods/UsernameEditor";
 import AuthDetail from "./AuthDetail";
 
-import useGlobalStore from "@/pages/globalStore";
-import { useAccountQuery } from "@/pages/home/service";
-export default function UserInfo() {
-  const [showAuth, setShowAuth] = useState(false);
+import "react-image-crop/dist/ReactCrop.css";
 
-  const { userInfo } = useGlobalStore((state) => state);
-  const { data: accountRes } = useAccountQuery();
+import useGlobalStore from "@/pages/globalStore";
+
+export default function UserInfo() {
+  const [showItem, setShowItem] = useState("");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const { userInfo, avatarUpdatedAt } = useGlobalStore((state) => state);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
+
+  const handleClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files && event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+    setShowItem("avatar");
+  };
+
+  const handleBack = () => {
+    setShowItem("");
+  };
 
   return (
-    <div className="flex min-h-[400px] flex-col">
-      {showAuth ? (
-        <AuthDetail
-          onBack={() => {
-            setShowAuth(false);
-          }}
-        />
-      ) : (
+    <Box className={clsx("flex justify-center pb-4 text-lg", showItem === "" ? "pt-12" : "pt-4")}>
+      {showItem === "" && (
         <>
-          <h1 className="mb-4 text-2xl font-bold">{t("SettingPanel.UserInfo")}</h1>
-          {/*  <div className="relative flex items-center">
-            <span className="inline-block px-2 h-[24px]  rounded-full border border-grayModern-400 text-grayModern-400 pt-[1px]">
-              {t("SettingPanel.noAuth")}
-            </span>
-            <span
-              className="absolute min-w-[70px] mt-1 text-blue-700 cursor-pointer inline-block"
-              onClick={() => {
-                setShowAuth(true);
-              }}
-            >
-              {t("SettingPanel.showAuth")}
-            </span>
-          </div> */}
-          <Box className="text-lg">
-            <HStack>
-              <span className=" text-grayModern-500">{t("SettingPanel.Avatar")}:</span>
-              <Avatar
-                size={"xs"}
-                name={userInfo?.username}
-                src={userInfo?.profile?.avatar}
-                bgColor="primary.500"
-                color="white"
-                boxShadow="base"
+          <Box className="flex flex-col pr-10">
+            <Avatar
+              size={"xl"}
+              name={userInfo?.username}
+              src={getAvatarUrl(userInfo?._id, avatarUpdatedAt)}
+              bgColor="primary.500"
+              color="white"
+              boxShadow="base"
+            />
+            <div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/gif"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
               />
-            </HStack>
-
-            <HStack className="mt-4">
-              <span className=" text-grayModern-500">{t("Balance")}:</span>
-              <span>{formatPrice(accountRes?.data?.balance)}</span>
-              <ChargeButton>
-                <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
-              </ChargeButton>
-            </HStack>
-
-            <HStack className="mt-4">
-              <span className=" text-grayModern-500">{t("SettingPanel.UserName")}:</span>
-              <span>{userInfo?.username}</span>
-            </HStack>
-
-            <HStack className="mt-4">
-              <span className=" text-grayModern-500">{t("SettingPanel.Email")}:</span>
-              <span>{userInfo?.email ? userInfo?.email : "-"}</span>
-            </HStack>
-
-            <HStack className="mt-4">
-              <span className=" text-grayModern-500">{t("SettingPanel.Tel")}:</span>
-              <span>{userInfo?.phone ? hidePhoneNumber(userInfo.phone) : t("NoInfo")}</span>
-            </HStack>
-
-            <HStack className="mt-4">
-              <span className=" text-grayModern-500">{t("SettingPanel.Registered")}:</span>
-              <span>{formatDate(userInfo?.createdAt)}</span>
-            </HStack>
+              <span
+                className="flex cursor-pointer items-center justify-center pt-3 text-base text-grayModern-600"
+                onClick={handleClick}
+              >
+                <EditIcon className="mr-1" />
+                {t("Edit")}
+              </span>
+            </div>
+          </Box>
+          <Box className="w-[270px] pt-1">
+            <div className="flex flex-col pb-4">
+              <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
+                {t("SettingPanel.UserName")}
+              </span>
+              <span className="flex justify-between text-base">
+                <span className={!darkMode ? "text-grayModern-700" : ""}>{userInfo?.username}</span>
+                <span
+                  className="flex cursor-pointer items-center text-[#0884DD]"
+                  onClick={() => {
+                    setShowItem("username");
+                  }}
+                >
+                  {t("UserInfo.Change")} <ChevronRightIcon boxSize={5} />
+                </span>
+              </span>
+            </div>
+            <div className="flex flex-col pb-4">
+              <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
+                {t("SettingPanel.PassWord")}
+              </span>
+              <span className="flex justify-between text-base">
+                <span className={!darkMode ? "text-grayModern-700" : ""}>∗∗∗∗∗∗</span>
+                <span
+                  className="flex cursor-pointer items-center text-[#0884DD]"
+                  onClick={() => {
+                    setShowItem("password");
+                  }}
+                >
+                  {t("Reset")} <ChevronRightIcon boxSize={5} />
+                </span>
+              </span>
+            </div>
+            <Divider className="text-grayModern-200" />
+            <div className="mt-4 flex flex-col pb-4">
+              <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
+                {t("SettingPanel.Tel")}
+              </span>
+              <span className="flex justify-between text-base">
+                <span className={!darkMode ? "text-grayModern-700" : ""}>
+                  {userInfo?.phone ? hidePhoneNumber(userInfo.phone) : t("NoInfo")}
+                </span>
+                <span
+                  className="flex cursor-pointer items-center text-[#0884DD]"
+                  onClick={() => {
+                    setShowItem("phone");
+                  }}
+                >
+                  {t("UserInfo.Change")} <ChevronRightIcon boxSize={5} />
+                </span>
+              </span>
+            </div>
+            <div className="flex flex-col pb-4">
+              <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
+                {t("SettingPanel.Email")}
+              </span>
+              <span className="flex justify-between text-base">
+                <span className={!darkMode ? "text-grayModern-700" : ""}>
+                  {userInfo?.email ? userInfo?.email : t("NoInfo")}
+                </span>
+                <span
+                  className="flex cursor-pointer items-center text-[#0884DD]"
+                  onClick={() => {
+                    setShowItem("email");
+                  }}
+                >
+                  {t("UserInfo.Change")} <ChevronRightIcon boxSize={5} />
+                </span>
+              </span>
+            </div>
           </Box>
         </>
       )}
-    </div>
+      {showItem === "avatar" && <AvatarEditor img={selectedImage} handleBack={handleBack} />}
+      {showItem === "username" && <UsernameEditor handleBack={handleBack} />}
+      {showItem === "password" && <PasswordEditor handleBack={handleBack} />}
+      {showItem === "auth" && <AuthDetail handleBack={handleBack} />}
+      {showItem === "phone" && <PhoneEditor handleBack={handleBack} />}
+      {showItem === "email" && <EmailEditor handleBack={handleBack} />}
+    </Box>
   );
 }
