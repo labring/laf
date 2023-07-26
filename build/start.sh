@@ -10,7 +10,11 @@ fi
 # *************** Environment Variables ************** #
 
 ## envs - global
-HTTP_SCHEMA=${HTTP_SCHEMA:-http}
+EXTERNAL_HTTP_SCHEMA=${EXTERNAL_HTTP_SCHEMA:-https}
+INTERNAL_HTTP_SCHEMA=${INTERNAL_HTTP_SCHEMA:-http}
+
+ENABLE_APISIX_HOST_NETWORK=${ENABLE_APISIX_HOST_NETWORK:-true}
+
 NAMESPACE=${NAMESPACE:-laf-system}
 PASSWD_OR_SECRET=$(tr -cd 'a-z0-9' </dev/urandom |head -c32)
 
@@ -38,7 +42,7 @@ APISIX_API_KEY=$PASSWD_OR_SECRET
 helm install apisix -n ${NAMESPACE} \
     --set apisix.kind=DaemonSet \
     --set apisix.securityContext.runAsUser=0 \
-    --set apisix.hostNetwork=true \
+    --set apisix.hostNetwork="${ENABLE_APISIX_HOST_NETWORK}" \
     --set admin.credentials.admin=${APISIX_API_KEY} \
     --set etcd.enabled=true \
     --set etcd.host[0]="http://apisix-etcd:2379" \
@@ -47,8 +51,8 @@ helm install apisix -n ${NAMESPACE} \
     --set ingress-controller.config.apisix.adminKey="${APISIX_API_KEY}" \
     --set ingress-controller.config.apisix.serviceNamespace=${NAMESPACE} \
     --set gateway.http.containerPort=80 \
-	--set gateway.stream.enabled=true \
-	--set gateway.tls.enabled=true \
+   	--set gateway.stream.enabled=true \
+  	--set gateway.tls.enabled=true \
     --set gateway.tls.containerPort=443 \
     ./charts/apisix
 
@@ -57,8 +61,8 @@ helm install apisix -n ${NAMESPACE} \
 MINIO_ROOT_ACCESS_KEY=minio-root-user
 MINIO_ROOT_SECRET_KEY=$PASSWD_OR_SECRET
 MINIO_DOMAIN=oss.${DOMAIN}
-MINIO_EXTERNAL_ENDPOINT="${HTTP_SCHEMA}://${MINIO_DOMAIN}"
-MINIO_INTERNAL_ENDPOINT="${HTTP_SCHEMA}://minio.${NAMESPACE}.svc.cluster.local:9000"
+MINIO_EXTERNAL_ENDPOINT="${EXTERNAL_HTTP_SCHEMA}://${MINIO_DOMAIN}"
+MINIO_INTERNAL_ENDPOINT="${INTERNAL_HTTP_SCHEMA}://minio.${NAMESPACE}.svc.cluster.local:9000"
 
 helm install minio -n ${NAMESPACE} \
     --set rootUser=${MINIO_ROOT_ACCESS_KEY} \
@@ -79,7 +83,7 @@ helm install server -n ${NAMESPACE} \
     --set meteringDatabaseUrl=${METERING_DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
     --set apiServerHost=api.${DOMAIN} \
-    --set apiServerUrl=${HTTP_SCHEMA}://api.${DOMAIN} \
+    --set apiServerUrl=${EXTERNAL_HTTP_SCHEMA}://api.${DOMAIN} \
     --set siteName=${DOMAIN} \
     --set default_region.database_url=${DATABASE_URL} \
     --set default_region.minio_domain=${MINIO_DOMAIN} \
