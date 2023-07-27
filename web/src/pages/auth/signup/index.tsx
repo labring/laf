@@ -169,6 +169,8 @@ export default function SignUp() {
             {...register("account", { required: true })}
             id="account"
             placeholder={t("AuthPanel.AccountPlaceholder") || ""}
+            bg={"#F8FAFB"}
+            border={"1px solid #D5D6E1"}
           />
         </FormControl>
         <FormControl isInvalid={!!errors.password} className="mb-6 flex items-center">
@@ -183,6 +185,8 @@ export default function SignUp() {
               })}
               id="password"
               placeholder={t("AuthPanel.PasswordPlaceholder") || ""}
+              bg={"#F8FAFB"}
+              border={"1px solid #D5D6E1"}
             />
             <InputRightElement width="2rem">
               {isShowPassword ? (
@@ -205,6 +209,8 @@ export default function SignUp() {
               })}
               id="confirmPassword"
               placeholder={t("AuthPanel.ConfirmPassword") || ""}
+              bg={"#F8FAFB"}
+              border={"1px solid #D5D6E1"}
             />
             <InputRightElement width="2rem">
               {isShowPassword ? (
@@ -232,6 +238,8 @@ export default function SignUp() {
                 type="tel"
                 id="phone"
                 placeholder={t("AuthPanel.PhonePlaceholder") || ""}
+                bg={"#F8FAFB"}
+                border={"1px solid #D5D6E1"}
               />
               <InputRightElement width="6rem">
                 <Button
@@ -261,6 +269,8 @@ export default function SignUp() {
               })}
               id="validationCode"
               placeholder={t("AuthPanel.ValidationCodePlaceholder") || ""}
+              bg={"#F8FAFB"}
+              border={"1px solid #D5D6E1"}
             />
           </FormControl>
         )}

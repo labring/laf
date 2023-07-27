@@ -62,6 +62,8 @@ export default function LoginByPasswordPanel({
           type="text"
           id="account"
           placeholder={t("AuthPanel.AccountPlaceholder") || ""}
+          bg={"#F8FAFB"}
+          border={"1px solid #D5D6E1"}
         />
       </FormControl>
       <FormControl isInvalid={!!errors.password} className="mb-10 flex items-center">
@@ -76,6 +78,8 @@ export default function LoginByPasswordPanel({
             })}
             id="password"
             placeholder={t("AuthPanel.PasswordPlaceholder") || ""}
+            bg={"#F8FAFB"}
+            border={"1px solid #D5D6E1"}
           />
           <InputRightElement width="2rem">
             {isShowPassword ? (

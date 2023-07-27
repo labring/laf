@@ -7,6 +7,7 @@ import { COLOR_MODE } from "@/constants";
 export default function IconText(props: {
   icon: React.ReactElement;
   text: string;
+  className?: string;
   onClick?: () => void;
 }) {
   const { colorMode } = useColorMode();
@@ -15,10 +16,14 @@ export default function IconText(props: {
   return (
     <div
       onClick={props.onClick}
-      className={clsx("flex flex-col items-center text-grayIron-600", {
-        "hover:text-black": !darkMode,
-        "hover:text-white": darkMode,
-      })}
+      className={clsx(
+        "flex flex-col items-center text-grayIron-600",
+        {
+          "hover:text-black": !darkMode,
+          "hover:text-white": darkMode,
+        },
+        props.className,
+      )}
     >
       {React.cloneElement(props.icon, {
         height: "20px",

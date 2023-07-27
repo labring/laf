@@ -35,13 +35,12 @@ export enum SUPPORTED_METHODS {
 export enum APP_PHASE_STATUS {
   Creating = "Creating",
   Created = "Created",
-  Started = "Started",
   Starting = "Starting",
-  Restarting = "Restarting",
-  Deleting = "Deleting",
-  Deleted = "Deleted",
+  Started = "Started",
   Stopping = "Stopping",
   Stopped = "Stopped",
+  Deleting = "Deleting",
+  Deleted = "Deleted",
 }
 
 export enum BUCKET_POLICY_TYPE {

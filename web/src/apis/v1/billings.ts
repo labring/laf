@@ -57,7 +57,7 @@ export async function BillingControllerGetExpenseByDay(
   params: Paths.BillingControllerGetExpenseByDay.BodyParameters,
 ): Promise<{
   error: string;
-  data: Definitions.Number;
+  data: Paths.BillingControllerGetExpenseByDay.Responses;
 }> {
   // /v1/billings/amounts
   let _params: { [key: string]: any } = {

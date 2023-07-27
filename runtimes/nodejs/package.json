@@ -6,8 +6,10 @@
   "typings": "./dist/index.d.ts",
   "private": "true",
   "scripts": {
-    "start": "node --expose-internals ./dist/index.js",
-    "dev": "NODE_ENV=development npm run start",
+    "start": "node ./dist/index.js",
+    "dev": "npx concurrently npm:dev:*",
+    "dev:start": "npx nodemon ./dist/index.js",
+    "dev:watch": "npm run watch",
     "build": "tsc -p tsconfig.json",
     "watch": "tsc -p tsconfig.json -w",
     "prepublishOnly": "npm run build",
