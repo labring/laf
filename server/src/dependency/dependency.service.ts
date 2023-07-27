@@ -47,11 +47,9 @@ export class DependencyService {
     if (!valid) return false
 
     const extras = await this.getExtras(appid)
-    const builtins = this.getBuiltins()
-    const all = extras.concat(builtins)
 
     // check if the dependency name is already existed
-    const names = all.map((dep) => npa(dep).name)
+    const names = extras.map((dep) => npa(dep).name)
     const new_names = dto.map((dep) => npa(dep.name).name)
     const has_dup = new_names.some((name) => names.includes(name))
     if (has_dup) return false
