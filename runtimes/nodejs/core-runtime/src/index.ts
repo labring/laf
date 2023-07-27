@@ -21,7 +21,6 @@ import xmlparser from 'express-xml-bodyparser'
 import './support/cloud-sdk'
 import { FunctionCache, initCoreRequireFunc } from './support/function-engine/cache'
 import { DatabaseChangeStream } from './support/db-change-stream'
-import { ensureCollectionIndexes } from './support/function-log'
 
 export function start(options: {
   dependencyPath?: string
@@ -30,7 +29,6 @@ export function start(options: {
   const app = express()
 
   DatabaseAgent.accessor.ready.then(() => {
-    ensureCollectionIndexes()
     FunctionCache.initialize()
     DatabaseChangeStream.initialize()
   })
