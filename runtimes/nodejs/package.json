@@ -30,6 +30,9 @@
     ],
     "delay": 1000
   },
+  "dependencies": {
+    "self-version": "1.0.1"
+  },
   "workspaces": [
     "core-runtime"
   ]

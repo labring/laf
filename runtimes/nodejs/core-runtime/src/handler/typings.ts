@@ -12,7 +12,7 @@ import { logger } from '../support/logger'
 import { IRequest } from '../support/types'
 import { FunctionCache } from '../support/function-engine/cache'
 
-const nodeModulesRoot = path.resolve(__dirname, '../../node_modules')
+const nodeModulesRoot = path.resolve(__dirname, '../../../node_modules')
 
 /**
  * Gets declaration files of a dependency package

@@ -63,7 +63,8 @@
     "@types/nodemailer": "^6.4.4",
     "@types/validator": "^13.1.3",
     "@types/ws": "^8.5.3",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "self-version": "1.0.0"
   },
   "nodemonConfig": {
     "ignore": [
