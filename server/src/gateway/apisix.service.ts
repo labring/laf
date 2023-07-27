@@ -4,6 +4,7 @@ import { GetApplicationNamespaceByAppId } from '../utils/getter'
 import { Region } from 'src/region/entities/region'
 import { WebsiteHosting } from 'src/website/entities/website'
 import { RuntimeDomain } from './entities/runtime-domain'
+import { APISIX_LIMIT_COUNT, APISIX_TIME_WINDOW } from 'src/constants'
 
 @Injectable()
 export class ApisixService {
@@ -217,6 +218,20 @@ export class ApisixService {
         },
         ...this.gzipConf,
       },
+    }
+
+    if (!website.isCustom) {
+      data['plugins']['limit-count'] = {
+        allow_degradation: false,
+        count: APISIX_LIMIT_COUNT,
+        disable: false,
+        key: 'remoter_addr',
+        key_type: 'constant',
+        policy: 'local',
+        rejected_code: 503,
+        show_limit_quota_header: true,
+        time_window: APISIX_TIME_WINDOW,
+      }
     }
 
     const res = await this.putRoute(region, id, data)

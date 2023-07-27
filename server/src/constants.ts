@@ -208,3 +208,7 @@ export const CODE_VALIDITY = 10 * 60 * 1000 // 10 minutes (in milliseconds)
 
 // Recycle bin constants
 export const STORAGE_LIMIT = 1000 // 1000 items
+
+// Apisix limit count constants
+export const APISIX_LIMIT_COUNT = 300 // 1000 items
+export const APISIX_TIME_WINDOW = 60 // 1000 items
