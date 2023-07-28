@@ -208,3 +208,7 @@ export const CODE_VALIDITY = 10 * 60 * 1000 // 10 minutes (in milliseconds)
 
 // Recycle bin constants
 export const STORAGE_LIMIT = 1000 // 1000 items
+
+// HTTP interceptor
+export const HTTP_INTERCEPTOR_URL = ''
+export const HTTP_INTERCEPTOR_TIMEOUT = 1000 // 1s
