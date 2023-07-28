@@ -22,7 +22,7 @@ export class AppInterceptor implements NestInterceptor {
     const response = context.switchToHttp().getResponse()
 
     const httpInterceptorResponseData: HttpInterceptorResponseDto =
-      await this.interceptorService.interceptor(context)
+      await this.interceptorService.httpInterceptor(context)
 
     if (httpInterceptorResponseData.action === HttpInterceptorAction.ALLOW) {
       return next.handle()

@@ -9,7 +9,7 @@ export class InterceptorService {
 
   private readonly logger = new Logger(InterceptorService.name)
 
-  async interceptor(context: ExecutionContext) {
+  async httpInterceptor(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest()
     const data = {
       url: request.url,
