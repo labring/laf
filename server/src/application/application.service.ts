@@ -32,12 +32,7 @@ export class ApplicationService {
    * - create bundle
    * - create application
    */
-  async create(
-    userid: ObjectId,
-    appid: string,
-    dto: CreateApplicationDto,
-    isTrialTier: boolean,
-  ) {
+  async create(userid: ObjectId, appid: string, dto: CreateApplicationDto) {
     const client = SystemDatabase.client
     const db = client.db()
     const session = client.startSession()
@@ -70,7 +65,6 @@ export class ApplicationService {
           appid,
           resource: this.buildBundleResource(dto),
           autoscaling: this.buildAutoscalingConfig(dto),
-          isTrialTier: isTrialTier,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -286,11 +280,7 @@ export class ApplicationService {
     return res.value
   }
 
-  async updateBundle(
-    appid: string,
-    dto: UpdateApplicationBundleDto,
-    isTrialTier: boolean,
-  ) {
+  async updateBundle(appid: string, dto: UpdateApplicationBundleDto) {
     const db = SystemDatabase.db
     const resource = this.buildBundleResource(dto)
     const autoscaling = this.buildAutoscalingConfig(dto)
@@ -299,7 +289,7 @@ export class ApplicationService {
       .collection<ApplicationBundle>('ApplicationBundle')
       .findOneAndUpdate(
         { appid },
-        { $set: { resource, autoscaling, updatedAt: new Date(), isTrialTier } },
+        { $set: { resource, autoscaling, updatedAt: new Date() } },
         {
           projection: {
             'bundle.resource.requestCPU': 0,
