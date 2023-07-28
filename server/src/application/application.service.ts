@@ -21,6 +21,7 @@ import {
   ApplicationBundle,
   ApplicationBundleResource,
 } from './entities/application-bundle'
+import { Team } from 'src/team/entities/team'
 
 @Injectable()
 export class ApplicationService {
@@ -35,6 +36,7 @@ export class ApplicationService {
   async create(
     userid: ObjectId,
     appid: string,
+    team: Team,
     dto: CreateApplicationDto,
     isTrialTier: boolean,
   ) {
@@ -81,11 +83,12 @@ export class ApplicationService {
       await db.collection<Application>('Application').insertOne(
         {
           appid,
+          teamId: team._id,
           name: dto.name,
           state: dto.state || ApplicationState.Running,
           phase: ApplicationPhase.Creating,
           tags: [],
-          createdBy: new ObjectId(userid),
+          createdBy: team.createdBy,
           lockedAt: TASK_LOCK_INIT_TIME,
           regionId: new ObjectId(dto.regionId),
           runtimeId: new ObjectId(dto.runtimeId),
@@ -114,6 +117,39 @@ export class ApplicationService {
       .aggregate<ApplicationWithRelations>()
       .match({
         createdBy: new ObjectId(userid),
+        phase: { $ne: ApplicationPhase.Deleted },
+      })
+      .lookup({
+        from: 'ApplicationBundle',
+        localField: 'appid',
+        foreignField: 'appid',
+        as: 'bundle',
+      })
+      .unwind('$bundle')
+      .lookup({
+        from: 'Runtime',
+        localField: 'runtimeId',
+        foreignField: '_id',
+        as: 'runtime',
+      })
+      .unwind('$runtime')
+      .project<ApplicationWithRelations>({
+        'bundle.resource.requestCPU': 0,
+        'bundle.resource.requestMemory': 0,
+      })
+      .toArray()
+
+    return doc
+  }
+
+  async findAllByTeam(teamId: ObjectId) {
+    const db = SystemDatabase.db
+
+    const doc = await db
+      .collection('Application')
+      .aggregate<ApplicationWithRelations>()
+      .match({
+        teamId,
         phase: { $ne: ApplicationPhase.Deleted },
       })
       .lookup({

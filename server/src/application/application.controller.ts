@@ -13,6 +13,7 @@ import {
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
@@ -49,6 +50,12 @@ import { ResourceService } from 'src/billing/resource.service'
 import { RuntimeDomainService } from 'src/gateway/runtime-domain.service'
 import { BindCustomDomainDto } from 'src/website/dto/update-website.dto'
 import { RuntimeDomain } from 'src/gateway/entities/runtime-domain'
+import { TeamAuthGuard } from 'src/team/team-auth.guard'
+import { TeamRole, getRoleLevel } from 'src/team/entities/team-member'
+import { TeamRoles } from 'src/team/team-role.decorator'
+import { InjectTeam, InjectTeamRole, InjectUser } from 'src/utils/decorator'
+import { User } from 'src/user/entities/user'
+import { Team } from 'src/team/entities/team'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -69,17 +76,26 @@ export class ApplicationController {
   /**
    * Create application
    */
-  @UseGuards(JwtAuthGuard)
+  @TeamRoles(TeamRole.Admin)
+  @UseGuards(JwtAuthGuard, TeamAuthGuard)
   @ApiOperation({ summary: 'Create application' })
+  @ApiQuery({
+    name: 'teamId',
+    type: String,
+    description: 'teamId',
+    required: true,
+  })
   @ApiResponseObject(ApplicationWithRelations)
   @Post()
-  async create(@Req() req: IRequest, @Body() dto: CreateApplicationDto) {
+  async create(
+    @Body() dto: CreateApplicationDto,
+    @InjectTeam() team: Team,
+    @InjectUser() user: User,
+  ) {
     const error = dto.autoscaling.validate()
     if (error) {
       return ResponseUtil.error(error)
     }
-
-    const user = req.user
 
     // check regionId exists
     const region = await this.region.findOneDesensitized(
@@ -126,7 +142,7 @@ export class ApplicationController {
 
     // create application
     const appid = await this.application.tryGenerateUniqueAppid()
-    await this.application.create(user._id, appid, dto, isTrialTier)
+    await this.application.create(user._id, appid, team, dto, isTrialTier)
 
     const app = await this.application.findOne(appid)
     return ResponseUtil.ok(app)
@@ -137,13 +153,18 @@ export class ApplicationController {
    * @param req
    * @returns
    */
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, TeamAuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get user application list' })
+  @ApiQuery({
+    name: 'teamId',
+    type: String,
+    description: 'teamId',
+    required: true,
+  })
   @ApiResponseArray(ApplicationWithRelations)
-  async findAll(@Req() req: IRequest) {
-    const user = req.user
-    const data = await this.application.findAllByUser(user._id)
+  async findAll(@InjectTeam() team: Team) {
+    const data = await this.application.findAllByTeam(team._id)
     return ResponseUtil.ok(data)
   }
 
@@ -207,7 +228,8 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Update application name' })
   @ApiResponseObject(Application)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @TeamRoles(TeamRole.Admin)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
   @Patch(':appid/name')
   async updateName(
     @Param('appid') appid: string,
@@ -222,12 +244,13 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Update application state' })
   @ApiResponseObject(Application)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
   @Patch(':appid/state')
   async updateState(
     @Param('appid') appid: string,
     @Body() dto: UpdateApplicationStateDto,
     @Req() req: IRequest,
+    @InjectTeamRole() teamRole: TeamRole,
   ) {
     const app = req.application
     const user = req.user
@@ -272,6 +295,15 @@ export class ApplicationController {
       )
     }
 
+    if (
+      [ApplicationState.Stopped, ApplicationState.Running].includes(
+        dto.state,
+      ) &&
+      getRoleLevel(teamRole) < getRoleLevel(TeamRole.Admin)
+    ) {
+      return ResponseUtil.error('no permission')
+    }
+
     const doc = await this.application.updateState(appid, dto.state)
     return ResponseUtil.ok(doc)
   }
@@ -281,7 +313,8 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Update application bundle' })
   @ApiResponseObject(ApplicationBundle)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @TeamRoles(TeamRole.Admin)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
   @Patch(':appid/bundle')
   async updateBundle(
     @Param('appid') appid: string,
@@ -334,7 +367,8 @@ export class ApplicationController {
    */
   @ApiResponseObject(RuntimeDomain)
   @ApiOperation({ summary: 'Bind custom domain to application' })
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @TeamRoles(TeamRole.Admin)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
   @Patch(':appid/domain')
   async bindDomain(
     @Param('appid') appid: string,
@@ -368,7 +402,8 @@ export class ApplicationController {
    */
   @ApiResponse({ type: ResponseUtil<boolean> })
   @ApiOperation({ summary: 'Check if domain is resolved' })
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @TeamRoles(TeamRole.Admin)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
   @Post(':appid/domain/resolved')
   async checkResolved(
     @Param('appid') appid: string,
@@ -387,7 +422,8 @@ export class ApplicationController {
    */
   @ApiResponseObject(RuntimeDomain)
   @ApiOperation({ summary: 'Remove custom domain of application' })
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @TeamRoles(TeamRole.Admin)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
   @Delete(':appid/domain')
   async remove(@Param('appid') appid: string) {
     const runtimeDomain = await this.runtimeDomain.findOne(appid)
@@ -408,7 +444,8 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Delete an application' })
   @ApiResponseObject(Application)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @TeamRoles(TeamRole.Owner)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
   @Delete(':appid')
   async delete(@Param('appid') appid: string, @Req() req: IRequest) {
     const app = req.application

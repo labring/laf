@@ -7,11 +7,15 @@ import {
 import { ApplicationService } from '../application/application.service'
 import { IRequest } from '../utils/interface'
 import { User } from 'src/user/entities/user'
+import { TeamMemberService } from 'src/team/team-member/team-member.service'
 
 @Injectable()
 export class ApplicationAuthGuard implements CanActivate {
   logger = new Logger(ApplicationAuthGuard.name)
-  constructor(private appService: ApplicationService) {}
+  constructor(
+    private readonly appService: ApplicationService,
+    private readonly memberService: TeamMemberService,
+  ) {}
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest() as IRequest
     const appid = request.params.appid
@@ -22,8 +26,9 @@ export class ApplicationAuthGuard implements CanActivate {
       return false
     }
 
-    const author_id = app.createdBy?.toString()
-    if (author_id !== user._id.toString()) {
+    const members = await this.memberService.find(app.teamId)
+    const member = members.find((m) => m.uid.equals(user._id))
+    if (!member) {
       return false
     }
 

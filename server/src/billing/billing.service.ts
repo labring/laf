@@ -8,6 +8,7 @@ import * as assert from 'assert'
 import { ApplicationBilling } from './entities/application-billing'
 import { CalculatePriceDto } from './dto/calculate-price.dto'
 import { BillingQuery } from './interface/billing-query.interface'
+import { Team } from 'src/team/entities/team'
 
 @Injectable()
 export class BillingService {
@@ -15,8 +16,8 @@ export class BillingService {
 
   constructor(private readonly resource: ResourceService) {}
 
-  async query(userId: ObjectId, condition?: BillingQuery) {
-    const query = { createdBy: userId }
+  async query(team: Team, condition?: BillingQuery) {
+    const query = { createdBy: team.createdBy }
 
     if (condition.endTime) {
       query['endAt'] = { $lte: condition.endTime }
@@ -66,8 +67,8 @@ export class BillingService {
     return billing
   }
 
-  async getExpenseByDay(userId: ObjectId, condition?: BillingQuery) {
-    const query = { createdBy: userId }
+  async getExpenseByDay(team: Team, condition?: BillingQuery) {
+    const query = { createdBy: team.createdBy }
 
     if (condition.endTime) {
       query['endAt'] = { $lte: condition.endTime }
@@ -126,8 +127,8 @@ export class BillingService {
     return expense
   }
 
-  async getExpense(userId: ObjectId, condition?: BillingQuery) {
-    const query = { createdBy: userId }
+  async getExpense(team: Team, condition?: BillingQuery) {
+    const query = { createdBy: team.createdBy }
 
     if (condition.endTime) {
       query['endAt'] = { $lte: condition.endTime }

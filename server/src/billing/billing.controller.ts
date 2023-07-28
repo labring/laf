@@ -13,6 +13,11 @@ import { ApplicationBilling } from './entities/application-billing'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { IRequest } from 'src/utils/interface'
 import { BillingsByDayDto } from './dto/billings.dto'
+import { TeamAuthGuard } from 'src/team/team-auth.guard'
+import { TeamRoles } from 'src/team/team-role.decorator'
+import { TeamRole } from 'src/team/entities/team-member'
+import { InjectTeam } from 'src/utils/decorator'
+import { Team } from 'src/team/entities/team'
 
 @ApiTags('Billing')
 @ApiBearerAuth('Authorization')
@@ -27,13 +32,20 @@ export class BillingController {
    */
   @ApiOperation({ summary: 'Get billings of an application' })
   @ApiResponsePagination(ApplicationBilling)
-  @UseGuards(JwtAuthGuard)
+  @TeamRoles(TeamRole.Admin)
+  @UseGuards(JwtAuthGuard, TeamAuthGuard)
   @ApiQuery({
     name: 'appid',
     type: String,
     description: 'appid',
     required: false,
     isArray: true,
+  })
+  @ApiQuery({
+    name: 'teamId',
+    type: String,
+    description: 'teamId',
+    required: true,
   })
   @ApiQuery({
     name: 'startTime',
@@ -72,6 +84,7 @@ export class BillingController {
   @Get()
   async findAll(
     @Req() req: IRequest,
+    @InjectTeam() team: Team,
     @Query('appid') appid?: string[],
     @Query('state') state?: string,
     @Query('startTime') startTime?: string,
@@ -104,9 +117,7 @@ export class BillingController {
       query.endTime = new Date(endTime)
     }
 
-    const user = req.user
-
-    const billings = await this.billing.query(user._id, query)
+    const billings = await this.billing.query(team, query)
     return ResponseUtil.ok(billings)
   }
 
@@ -115,10 +126,17 @@ export class BillingController {
    */
   @ApiOperation({ summary: 'Get my total amount' })
   @ApiResponseObject(Number)
-  @UseGuards(JwtAuthGuard)
+  @ApiQuery({
+    name: 'teamId',
+    type: String,
+    description: 'teamId',
+    required: true,
+  })
+  @TeamRoles(TeamRole.Admin)
+  @UseGuards(JwtAuthGuard, TeamAuthGuard)
   @Get('amount')
   async getExpense(
-    @Req() req: IRequest,
+    @InjectTeam() team: Team,
     @Query('startTime') startTime?: number,
     @Query('endTime') endTime?: number,
     @Query('appid') appid?: string[],
@@ -137,18 +155,24 @@ export class BillingController {
     if (state) {
       query.state = state
     }
-    const user = req.user
 
-    const expenseTotal = await this.billing.getExpense(user._id, query)
+    const expenseTotal = await this.billing.getExpense(team, query)
     return ResponseUtil.ok(expenseTotal)
   }
 
   @ApiOperation({ summary: 'Get my total amount by day' })
   @ApiResponseArray(BillingsByDayDto)
-  @UseGuards(JwtAuthGuard)
+  @ApiQuery({
+    name: 'teamId',
+    type: String,
+    description: 'teamId',
+    required: true,
+  })
+  @TeamRoles(TeamRole.Admin)
+  @UseGuards(JwtAuthGuard, TeamAuthGuard)
   @Get('amounts')
   async getExpenseByDay(
-    @Req() req: IRequest,
+    @InjectTeam() team: Team,
     @Query('startTime') startTime?: number,
     @Query('endTime') endTime?: number,
     @Query('appid') appid?: string[],
@@ -167,9 +191,8 @@ export class BillingController {
     if (state) {
       query.state = state
     }
-    const user = req.user
 
-    const expenseTotal = await this.billing.getExpenseByDay(user._id, query)
+    const expenseTotal = await this.billing.getExpenseByDay(team, query)
     return ResponseUtil.ok(expenseTotal)
   }
 }
