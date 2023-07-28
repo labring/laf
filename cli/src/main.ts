@@ -9,6 +9,7 @@ import { command as storageCommand } from './command/storage'
 import { command as policyCommand } from './command/policy'
 import { command as websiteCommand } from './command/website'
 import { command as deployCommand } from './command/deploy'
+import { command as triggerCommand } from './command/trigger'
 
 const program = new Command()
 program.option('-v, --version', 'output version').action((options) => {
@@ -30,5 +31,6 @@ program.addCommand(dependencyCommand())
 program.addCommand(policyCommand())
 program.addCommand(websiteCommand())
 program.addCommand(deployCommand())
+program.addCommand(triggerCommand())
 
 program.parse(process.argv)

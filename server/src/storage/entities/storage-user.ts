@@ -20,7 +20,10 @@ export class StorageUser {
   secretKey: string
   state: StorageState
   phase: StoragePhase
+  dataSize: number
   lockedAt: Date
+  usageCaptureLockedAt: Date
+  usageLimitLockedAt: Date
   createdAt: Date
   updatedAt: Date
 
