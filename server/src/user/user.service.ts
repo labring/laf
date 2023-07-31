@@ -50,6 +50,15 @@ export class UserService {
     return user
   }
 
+  // find user by email
+  async findOneByEmail(email: string) {
+    const user = await this.db.collection<User>('User').findOne({
+      email,
+    })
+
+    return user
+  }
+
   // find user by username | phone | email
   async findOneByUsernameOrPhoneOrEmail(key: string) {
     // match either username or phone or email
