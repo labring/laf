@@ -10,6 +10,8 @@ import { PolicyRuleController } from './policy/policy-rule.controller'
 import { MongoService } from './mongo.service'
 import { ApplicationService } from 'src/application/application.service'
 import { BundleService } from 'src/application/bundle.service'
+import { DatabaseUsageLimitTaskService } from './database-usage-limit-task.service'
+import { DatabaseUsageCaptureTaskService } from './database-usage-capture-task.service'
 
 @Module({
   imports: [],
@@ -27,6 +29,8 @@ import { BundleService } from 'src/application/bundle.service'
     MongoService,
     ApplicationService,
     BundleService,
+    DatabaseUsageCaptureTaskService,
+    DatabaseUsageLimitTaskService,
   ],
   exports: [
     CollectionService,

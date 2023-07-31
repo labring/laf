@@ -20,6 +20,8 @@ import { FUNCTION_SCHEMA_DIRECTORY } from '../../common/constant'
 import { confirm } from '../../common/prompts'
 import { AppSchema } from '../../schema/app'
 import { FunctionSchema } from '../../schema/function'
+import * as urlencode from 'urlencode'
+import { lstatSync } from 'fs'
 
 export async function create(
   funcName: string,
@@ -64,7 +66,7 @@ export async function list() {
 
 export async function del(funcName: string) {
   const appSchema = AppSchema.read()
-  await functionControllerRemove(appSchema.appid, funcName)
+  await functionControllerRemove(appSchema.appid, urlencode(funcName))
   if (FunctionSchema.exist(funcName)) {
     FunctionSchema.delete(funcName)
   }
@@ -77,7 +79,7 @@ export async function del(funcName: string) {
 
 async function pull(funcName: string) {
   const appSchema = AppSchema.read()
-  const func = await functionControllerFindOne(appSchema.appid, funcName)
+  const func = await functionControllerFindOne(appSchema.appid, urlencode(funcName))
   const functionSchema: FunctionSchema = {
     name: func.name,
     description: func.description,
@@ -143,7 +145,7 @@ async function push(funcName: string, isCreate: boolean) {
       code,
       tags: funcSchema.tags,
     }
-    await functionControllerUpdate(appSchema.appid, funcName, updateDto)
+    await functionControllerUpdate(appSchema.appid, urlencode(funcName), updateDto)
   }
 }
 
@@ -169,12 +171,12 @@ export async function pushAll(options: { force: boolean }) {
   for (let item of serverFuncs) {
     if (!localFuncMap.has(item.name)) {
       if (options.force) {
-        await functionControllerRemove(appSchema.appid, item.name)
+        await functionControllerRemove(appSchema.appid, urlencode(item.name))
         console.log(`${getEmoji('✅')} function ${item.name} deleted`)
       } else {
         const res = await confirm('confirm remove function ' + item.name + '?')
         if (res.value) {
-          await functionControllerRemove(appSchema.appid, item.name)
+          await functionControllerRemove(appSchema.appid, urlencode(item.name))
           console.log(`${getEmoji('✅')} function ${item.name} deleted`)
         } else {
           console.log(`${getEmoji('🎃')} cancel remove function ${item.name}`)
@@ -222,7 +224,7 @@ export async function exec(
     code,
   }
   const appSchema = AppSchema.read()
-  const func = await functionControllerCompile(appSchema.appid, funcName, compileDto)
+  const func = await functionControllerCompile(appSchema.appid, urlencode(funcName), compileDto)
 
   // transform headers json string to object. -H '{"Content-Type": "application/json"}'
   if (options.headers) {
@@ -279,11 +281,26 @@ async function printLog(appid: string, requestId: string) {
   }
 }
 
-function getLocalFuncs() {
+function getLocalFuncs(): string[] {
   const funcDir = path.join(getBaseDir(), FUNCTION_SCHEMA_DIRECTORY)
-  const files = fs.readdirSync(funcDir)
-  const funcs = files.filter((file) => file.endsWith('.ts')).map((file) => file.replace('.ts', ''))
+  const funcs = getLocalFunction(funcDir, '')
   return funcs
+}
+
+function getLocalFunction(dir: string, prefix: string): string[] {
+  const files = fs.readdirSync(dir)
+  const funcNames: string[] =[]
+  files.forEach((file) => { 
+    const filePath = path.join(dir, file)
+    const stat = lstatSync(filePath)
+    if (stat.isDirectory()) {
+      funcNames.push(...getLocalFunction(filePath, path.join(prefix || '', file)))
+    }
+    if (stat.isFile() && file.endsWith('.ts')) {
+      funcNames.push(path.join(prefix || '', file).replace(/\.ts$/, ''))
+    }
+  })
+  return funcNames
 }
 
 function removeFunction(name: string) { 

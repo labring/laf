@@ -19,7 +19,7 @@ const FuncTemplateItem = (props: { isModal: boolean }) => {
   const navigate = useNavigate();
 
   const [template, setTemplate] = useState<TFunctionTemplate>();
-  const [usedBy, setUsedBy] = useState<any[]>([]);
+  const [usedBy, setUsedBy] = useState();
   const pathname = window.location.href;
   const id = pathname.split("/").pop();
 
@@ -38,7 +38,7 @@ const FuncTemplateItem = (props: { isModal: boolean }) => {
     {
       enabled: (id as string)?.length > 12,
       onSuccess: (data: any) => {
-        setUsedBy(data.data.list);
+        setUsedBy(data.data);
       },
     },
   );

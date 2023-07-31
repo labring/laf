@@ -62,6 +62,22 @@ export class ServerConfig {
     return process.env.DISABLED_BILLING_PAYMENT_TASK === 'true'
   }
 
+  static get DISABLED_DATABASE_USAGE_CAPTURE_TASK() {
+    return process.env.DISABLED_DATABASE_USAGE_CAPTURE_TASK === 'true'
+  }
+
+  static get DISABLED_DATABASE_USAGE_LIMIT_TASK() {
+    return process.env.DISABLED_DATABASE_USAGE_LIMIT_TASK === 'true'
+  }
+
+  static get DISABLED_STORAGE_USAGE_CAPTURE_TASK() {
+    return process.env.DISABLED_STORAGE_USAGE_CAPTURE_TASK === 'true'
+  }
+
+  static get DISABLED_STORAGE_USAGE_LIMIT_TASK() {
+    return process.env.DISABLED_STORAGE_USAGE_LIMIT_TASK === 'true'
+  }
+
   static get APPID_LENGTH(): number {
     return parseInt(process.env.APPID_LENGTH || '6')
   }
@@ -181,7 +197,8 @@ export const APPLICATION_SECRET_KEY = 'SERVER_SECRET'
 // Cluster constants
 export const MINIO_COMMON_USER_GROUP = 'laf_owner_by_prefix_group'
 export const MINIO_COMMON_USER_POLICY = 'laf_owner_by_prefix'
-
+export const MINIO_READONLY_USER_GROUP = 'laf_owner_readonly_by_prefix_group'
+export const MINIO_READONLY_USER_POLICY = 'laf_owner_readonly_by_prefix'
 // Date & times
 export const ONE_DAY_IN_SECONDS = 60 * 60 * 24 // 1 day in seconds
 export const SEVEN_DAYS_IN_SECONDS = 60 * 60 * 24 * 7 // 7 days in seconds
@@ -199,6 +216,7 @@ export const GB = 1024 * MB
 // auth constants
 export const PHONE_AUTH_PROVIDER_NAME = 'phone'
 export const PASSWORD_AUTH_PROVIDER_NAME = 'user-password'
+export const EMAIL_AUTH_PROVIDER_NAME = 'email'
 
 // Sms constants
 export const ALISMS_KEY = 'alisms'
