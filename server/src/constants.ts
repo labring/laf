@@ -171,6 +171,11 @@ export class ServerConfig {
   static get DEFAULT_REGION_LOG_SERVER_DATABASE_URL() {
     return process.env.DEFAULT_REGION_LOG_SERVER_DATABASE_URL
   }
+
+  // HTTP interceptor
+  static get HTTP_INTERCEPTOR_URL() {
+    return process.env.HTTP_INTERCEPTOR_URL
+  }
 }
 
 export const LABEL_KEY_USER_ID = 'laf.dev/user.id'
@@ -228,5 +233,4 @@ export const CODE_VALIDITY = 10 * 60 * 1000 // 10 minutes (in milliseconds)
 export const STORAGE_LIMIT = 1000 // 1000 items
 
 // HTTP interceptor
-export const HTTP_INTERCEPTOR_URL = ''
-export const HTTP_INTERCEPTOR_TIMEOUT = 1000 // 1s
+export const HTTP_INTERCEPTOR_TIMEOUT = 3000 // 3s

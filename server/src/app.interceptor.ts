@@ -65,8 +65,8 @@ export class AppInterceptor implements NestInterceptor {
       return of(interceptorData.rewrite.data)
     }
     if (interceptorData.redirect) {
-      response.status(302)
-      response.redirect(interceptorData.redirect)
+      response.status(interceptorData.redirect.status || 302)
+      response.redirect(interceptorData.redirect.data)
       return of(null)
     }
     throw new ForbiddenException("You don't have permission to access")

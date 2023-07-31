@@ -6,8 +6,12 @@ class HttpInterceptorRewrite {
   status: number
   data: any
 }
+class HttpInterceptorRedirect {
+  status: number
+  data: string
+}
 export class HttpInterceptorResponseDto {
   action: HttpInterceptorAction
   rewrite?: HttpInterceptorRewrite
-  redirect?: string
+  redirect?: HttpInterceptorRedirect
 }

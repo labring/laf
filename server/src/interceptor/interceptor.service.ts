@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios'
 import { ExecutionContext, Injectable, Logger } from '@nestjs/common'
-import { HTTP_INTERCEPTOR_TIMEOUT, HTTP_INTERCEPTOR_URL } from 'src/constants'
+import { HTTP_INTERCEPTOR_TIMEOUT, ServerConfig } from 'src/constants'
 import { HttpInterceptorAction } from './dto/http-interceptor.dto'
 import { Response } from 'express'
 import { Request } from 'express'
@@ -10,7 +10,7 @@ export class InterceptorService {
   constructor(private httpService: HttpService) {}
 
   private readonly logger = new Logger(InterceptorService.name)
-  private readonly HTTP_INTERCEPTOR_URL = HTTP_INTERCEPTOR_URL
+  private readonly HTTP_INTERCEPTOR_URL = ServerConfig.HTTP_INTERCEPTOR_URL
   private readonly HTTP_INTERCEPTOR_TIMEOUT = HTTP_INTERCEPTOR_TIMEOUT
 
   async processPreInterceptor(context: ExecutionContext, requestId: string) {
@@ -52,6 +52,9 @@ export class InterceptorService {
   }
 
   async sendRequestToInterceptor(data: any) {
+    if (!this.HTTP_INTERCEPTOR_URL) {
+      return { action: HttpInterceptorAction.ALLOW }
+    }
     try {
       const response = await this.httpService.axiosRef.post(
         this.HTTP_INTERCEPTOR_URL,
@@ -61,7 +64,7 @@ export class InterceptorService {
       return response.data
     } catch (error) {
       if (error.code === 'ECONNABORTED') {
-        this.logger.error('Request timed out!')
+        this.logger.error('Request timeout!')
       } else {
         this.logger.error(error)
       }
