@@ -15,8 +15,8 @@ export function command(): Command {
     .option('-t --tags <items...>', 'tags', [])
     .option('-d --description <description>', 'function description', '')
     .action((funcName, options) => {
-      if (!/^[_A-Za-z][A-Za-z0-9-_]+$/.test(funcName)) {
-        return console.log('Function names can only contain English letters or underscores (_).')
+      if (!/^[a-zA-Z0-9_.\-/]{1,256}$/.test(funcName)) {
+        return console.log('Function names must consist of letters, numbers, periods (.), and hyphens (-), matching the regex: /^[a-zA-Z0-9.-]{1,128}$/.')
       }
       create(funcName, options)
     })
