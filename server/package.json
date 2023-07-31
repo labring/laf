@@ -62,7 +62,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "sharp": "^0.32.1",
+    "sharp": "^0.32.2",
     "typescript": "^4.9.3",
     "wechatpay-node-v3": "^2.1.1"
   },

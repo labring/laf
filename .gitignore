@@ -32,3 +32,4 @@ docs/.vitepress/.temp
 update-changelog.sh
 runtimes/nodejs-esm
 yarn.lock
+deploy/logs/sealos.log
