@@ -8,8 +8,10 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
+import clsx from "clsx";
 
 import FileUpload from "@/components/FileUpload";
 
@@ -29,6 +31,7 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
   const { uploadFile } = useAwsS3();
   const [fileList, setFileList] = React.useState<TFileItem[]>([]);
   const { t } = useTranslation();
+  const darkMode = useColorMode().colorMode === "dark";
   const { onUploadSuccess, children } = props;
   return (
     <div>
@@ -47,18 +50,28 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
           <div className="p-6">
             <FileUpload
               onUpload={async (files) => {
-                const newFileList = Array.from(files).map((item: any) => {
-                  return {
-                    fileName: item.webkitRelativePath ? item.webkitRelativePath : item.name,
-                    status: false,
-                  };
-                });
+                const newFileList = Array.from(files).map((item: any) => ({
+                  fileName:
+                    files[0] instanceof File
+                      ? item.webkitRelativePath
+                        ? item.webkitRelativePath.replace(/^[^/]*\//, "")
+                        : item.name
+                      : item.webkitRelativePath
+                      ? item.webkitRelativePath
+                      : item.file.name,
+                  status: false,
+                }));
                 setFileList(newFileList);
                 for (let i = 0; i < files.length; i++) {
-                  const file = files[i];
-                  const fileName = file.webkitRelativePath
-                    ? file.webkitRelativePath.replace(/^[^/]*\//, "")
-                    : file.name;
+                  const file = files[0] instanceof File ? files[i] : files[i].file;
+                  const fileName =
+                    files[0] instanceof File
+                      ? file.webkitRelativePath
+                        ? file.webkitRelativePath.replace(/^[^/]*\//, "")
+                        : file.name
+                      : files[i].webkitRelativePath
+                      ? files[i].webkitRelativePath
+                      : file.name;
                   await uploadFile(currentStorage?.name!, prefix + fileName, file, {
                     contentType: file.type,
                   });
@@ -72,13 +85,17 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
                 onClose();
                 showSuccess(t("StoragePanel.Success"));
               }}
+              darkMode={darkMode}
             />
             <div className="mt-2 max-h-40 overflow-auto">
               {fileList.map((item) => {
                 return (
                   <div
                     key={item.fileName}
-                    className="my-2 flex h-10 w-full items-center justify-between px-5 hover:bg-slate-100"
+                    className={clsx(
+                      "my-2 flex h-10 w-full items-center justify-between px-5",
+                      darkMode ? "hover:bg-lafDark-300" : "hover:bg-slate-100",
+                    )}
                   >
                     <span className="text-slate-500">{item.fileName}</span>
                     {item.status ? (
