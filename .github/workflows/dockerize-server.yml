@@ -6,10 +6,10 @@ on:
     branches:
       - main
     paths:
-      - "server/**"
-      - ".github/workflows/dockerize-server.yml"
-      - "!**/*.md"
-      - "!server/package-lock.json"
+      - 'server/**'
+      - '.github/workflows/dockerize-server.yml'
+      - '!**/*.md'
+      - '!server/package-lock.json'
 
 concurrency:
   group: dockerize-server-${{ github.ref }}
@@ -24,6 +24,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: server/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('server/package-lock.json') }}
+
       - name: Use Node
         uses: actions/setup-node@v3
         with:
@@ -31,7 +37,7 @@ jobs:
 
       - name: Install Package
         working-directory: server
-        run: npm cache clean --force && npm install
+        run: test -d node_modules && echo "node_modules exists" || (npm ci && npm rebuild --arch=arm64 sharp)
 
       - name: Build server
         working-directory: server
