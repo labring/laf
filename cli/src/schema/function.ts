@@ -2,6 +2,7 @@ import * as path from 'path'
 import { FUNCTION_SCHEMA_DIRECTORY, FUNCTION_SCHEMA_SUFFIX } from '../common/constant'
 import { exist, loadYamlFile, remove, writeYamlFile } from '../util/file'
 import { getBaseDir } from '../util/sys'
+import { mkdirSync } from 'fs'
 
 export class FunctionSchema {
   name: string
@@ -15,6 +16,12 @@ export class FunctionSchema {
   }
 
   static write(name: string, schema: FunctionSchema): void {
+    if (path.dirname(name) !== '.') {
+      const dir = path.join(getBaseDir(), FUNCTION_SCHEMA_DIRECTORY, path.dirname(name))
+      if (!exist(dir)) {
+        mkdirSync(dir, { recursive: true })
+      }
+    }
     const funcConfigPath = path.join(getBaseDir(), FUNCTION_SCHEMA_DIRECTORY, name + FUNCTION_SCHEMA_SUFFIX)
     return writeYamlFile(funcConfigPath, schema)
   }
