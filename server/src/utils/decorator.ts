@@ -20,3 +20,10 @@ export const InjectTeamRole = createParamDecorator(
     return request.role
   },
 )
+
+export const InjectApplication = createParamDecorator(
+  (data: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest()
+    return request.application
+  },
+)
