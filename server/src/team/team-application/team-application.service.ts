@@ -1,31 +1,43 @@
 import { Injectable } from '@nestjs/common'
 import { SystemDatabase } from 'src/system-database'
 import { TeamApplication } from '../entities/team-application'
-import { ObjectId } from 'mongodb'
+import { ClientSession, ObjectId } from 'mongodb'
 
 @Injectable()
 export class TeamApplicationService {
   private readonly db = SystemDatabase.db
 
-  async find(teamId: string) {
+  async find(teamId: ObjectId) {
     const res = await this.db
       .collection<TeamApplication>('TeamApplication')
-      .aggregate([
-        {
-          $match: {
-            teamId,
-          },
-        },
-        {
-          $lookup: {
-            from: 'Application',
-            localField: 'appid',
-            foreignField: 'appid',
-            as: 'application',
-          },
-        },
-      ])
+      .aggregate()
+      .match({
+        teamId,
+      })
+      .lookup({
+        from: 'Application',
+        localField: 'appid',
+        foreignField: 'appid',
+        as: 'application',
+      })
+      .unwind('$application')
+      .project({
+        _id: 0,
+        appid: '$application.appid',
+        name: '$application.name',
+      })
       .toArray()
+
+    return res
+  }
+
+  async findOne(teamId: ObjectId, appid: string) {
+    const res = await this.db
+      .collection<TeamApplication>('TeamApplication')
+      .findOne({
+        teamId,
+        appid,
+      })
 
     return res
   }
@@ -56,6 +68,19 @@ export class TeamApplicationService {
         appid,
       })
 
-    return res.deletedCount > 0
+    return res
+  }
+
+  async removeAll(teamId: ObjectId, session: ClientSession) {
+    const res = await this.db
+      .collection<TeamApplication>('TeamApplication')
+      .deleteMany(
+        {
+          teamId,
+        },
+        { session },
+      )
+
+    return res
   }
 }

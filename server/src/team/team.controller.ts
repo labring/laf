@@ -40,7 +40,7 @@ export class TeamController {
 
   @ApiOperation({ summary: 'Get team by invite code' })
   @ApiResponseObject(Team)
-  @Post('invite/code/:code/team')
+  @Get('invite/code/:code/team')
   async findTeamByInviteCode(@Param('code') code: string) {
     const inviteCode = await this.inviteService.findOneByCode(code)
     if (!inviteCode) {
@@ -65,8 +65,8 @@ export class TeamController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() dto: CreateTeamDto, @InjectUser() user: User) {
-    const teams = await this.teamService.findAll(user._id)
-    if (teams.length > 20) {
+    const count = await this.teamService.countTeams(user._id)
+    if (count > 40) {
       return ResponseUtil.error('team count limit exceeded')
     }
     const res = await this.teamService.create(dto.name, user._id)
@@ -79,19 +79,11 @@ export class TeamController {
   @UseGuards(JwtAuthGuard, TeamAuthGuard)
   @Delete(':teamId')
   async delete(@Param('teamId') teamId: string) {
-    const apps = await this.applicationService.findAllByTeam(
-      new ObjectId(teamId),
-    )
-    if (apps.length > 0) {
-      return ResponseUtil.error(
-        'you must delete all apps before deleting the team',
-      )
-    }
-    const [ok, res] = await this.teamService.delete(new ObjectId(teamId))
-    if (!ok) {
+    const team = await this.teamService.delete(new ObjectId(teamId))
+    if (!team) {
       return ResponseUtil.error('failed to delete team')
     }
-    return ResponseUtil.ok(res)
+    return ResponseUtil.ok(team)
   }
 
   @ApiOperation({ summary: 'Get detail of a team' })

@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 
 import { SystemDatabase } from 'src/system-database'
 import { Team } from '../entities/team'
-import { ObjectId } from 'mongodb'
+import { ClientSession, ObjectId } from 'mongodb'
 import { TeamMember, TeamRole } from '../entities/team-member'
 import { TeamInviteCode } from '../entities/team-invite-code'
 import { ApplicationService } from 'src/application/application.service'
@@ -146,5 +146,12 @@ export class TeamInviteService {
       .deleteOne({ teamId })
 
     return await this.getInviteCode(teamId)
+  }
+
+  async deleteInviteCode(teamId: ObjectId, session?: ClientSession) {
+    const res = await this.db
+      .collection<TeamInviteCode>('TeamInviteCode')
+      .deleteMany({ teamId }, { session })
+    return res
   }
 }

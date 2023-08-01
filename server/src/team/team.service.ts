@@ -4,7 +4,10 @@ import { SystemDatabase } from 'src/system-database'
 import { Team } from './entities/team'
 import { ClientSession, ObjectId } from 'mongodb'
 import { TeamMemberService } from './team-member/team-member.service'
-import { TeamRole } from './entities/team-member'
+import { TeamMember, TeamRole } from './entities/team-member'
+import { TeamApplication } from './entities/team-application'
+import { TeamInviteService } from './team-invite/team-invite.service'
+import { TeamApplicationService } from './team-application/team-application.service'
 
 @Injectable()
 export class TeamService {
@@ -14,15 +17,81 @@ export class TeamService {
   constructor(
     @Inject(forwardRef(() => TeamMemberService))
     private readonly memberService: TeamMemberService,
+    private readonly inviteService: TeamInviteService,
+    private readonly teamApplicationService: TeamApplicationService,
   ) {}
 
-  async findAll(createdBy: ObjectId) {
+  async findAll(uid: ObjectId) {
     const res = await this.db
-      .collection<Team>('Team')
-      .find({
-        createdBy,
+      .collection<TeamMember>('TeamMember')
+      .aggregate()
+      .match({ uid })
+      .lookup({
+        from: 'Team',
+        localField: 'teamId',
+        foreignField: '_id',
+        as: 'team',
+      })
+      .unwind('$team')
+      .lookup({
+        from: 'TeamMember',
+        localField: 'teamId',
+        foreignField: 'teamId',
+        as: 'member',
+      })
+      .unwind('$member')
+      .project({
+        _id: '$team._id',
+        name: '$team.name',
+        createdAt: '$team.createdAt',
+        updatedAt: '$team.updatedAt',
+        members: [
+          {
+            _id: '$member._id',
+            role: '$member.role',
+          },
+        ],
       })
       .toArray()
+    return res
+  }
+
+  async countTeams(uid: ObjectId) {
+    const count = await this.db
+      .collection<Team>('Team')
+      .countDocuments({ createdBy: uid })
+
+    return count
+  }
+
+  async findTeamsByAppidAndUid(appid: string, uid: ObjectId) {
+    const res = await this.db
+      .collection<TeamApplication>('TeamApplication')
+      .aggregate()
+      .match({ appid })
+      .lookup({
+        from: 'Team',
+        localField: 'teamId',
+        foreignField: '_id',
+        as: 'team',
+      })
+      .unwind('$team')
+      .lookup({
+        from: 'TeamMember',
+        localField: 'teamId',
+        foreignField: 'teamId',
+        as: 'member',
+      })
+      .match({ 'member.uid': uid })
+      .project({
+        _id: '$team._id',
+        name: '$team.name',
+        createdAt: '$team.createdAt',
+        updatedAt: '$team.updatedAt',
+        role: '$member.role',
+      })
+      .toArray()
+
     return res
   }
 
@@ -47,7 +116,30 @@ export class TeamService {
     return res
   }
 
-  async create(name: string, createdBy: ObjectId, defaultTeam = false) {
+  async findOneWithRole(teamId: ObjectId, uid: ObjectId) {
+    const res = await this.db
+      .collection<TeamMember>('TeamMember')
+      .aggregate()
+      .match({ teamId, uid })
+      .lookup({
+        from: 'Team',
+        localField: 'teamId',
+        foreignField: '_id',
+        as: 'team',
+      })
+      .unwind('$team')
+      .project({
+        _id: '$team._id',
+        name: '$team.name',
+        createdAt: '$team.createdAt',
+        updatedAt: '$team.updatedAt',
+        role: '$role',
+      })
+      .next()
+    return res
+  }
+
+  async create(name: string, createdBy: ObjectId) {
     const session = SystemDatabase.client.startSession()
     try {
       let team: Team
@@ -56,7 +148,6 @@ export class TeamService {
           {
             name: name,
             createdBy: createdBy,
-            default: defaultTeam,
             createdAt: new Date(),
             updatedAt: new Date(),
           },
@@ -75,6 +166,9 @@ export class TeamService {
       })
 
       return team
+    } catch (err) {
+      this.logger.error('create team error', err)
+      throw err
     } finally {
       await session.endSession()
     }
@@ -91,18 +185,20 @@ export class TeamService {
     try {
       session.startTransaction()
       // delete team
-      const res = await this.db
+      await this.db
         .collection<Team>('Team')
         .deleteOne({ _id: teamId }, { session })
 
       // delete team members
       await this.memberService.removeAll(teamId, session)
-      const ok = res.acknowledged && res.deletedCount > 0
+      await this.inviteService.deleteInviteCode(teamId, session)
+      await this.teamApplicationService.removeAll(teamId, session)
 
       await session.commitTransaction()
 
-      return [ok, team]
+      return team
     } catch (err) {
+      this.logger.error(`delete team ${teamId} error`, err)
       await session.abortTransaction()
       throw err
     } finally {
