@@ -201,7 +201,8 @@
     "MyAccount": "我的账户",
     "CostTrend": "成本趋势",
     "Balance": "余额",
-    "Pause": "暂停应用"
+    "Pause": "暂停应用",
+    "AppMonitor": "资源监控"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -584,5 +585,6 @@
   "SelectOne": "请至少选择一个",
   "Apply": "使用",
   "Developing": "开发中",
-  "Unverified": "未认证"
+  "Unverified": "未认证",
+  "i18n tip": "En"
 }

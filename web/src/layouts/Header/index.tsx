@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import ColorModeSwitch from "@/components/ColorModeSwitch";
 import { ChatIcon, TextIcon } from "@/components/CommonIcon";
+import LanguageSwitch from "@/components/LanguageSwitch";
 import { COLOR_MODE } from "@/constants";
 import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
 import UserSetting from "../../pages/app/setting/UserSetting";
 
 import useGlobalStore from "@/pages/globalStore";
-import Language from "@/pages/homepage/language";
 
 const Header = (props: { width: string }) => {
   const { width } = props;
@@ -20,7 +20,6 @@ const Header = (props: { width: string }) => {
 
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
-  const { toggleColorMode } = useColorMode();
   const [chosenItem, setChosenItem] = useState<string>("");
 
   const navList_left = [
@@ -99,16 +98,8 @@ const Header = (props: { width: string }) => {
               </a>
             );
           })}
-          <Language fontSize={20} />
-          <div
-            className="mr-8 cursor-pointer pb-1"
-            onClick={() => {
-              toggleColorMode();
-              window.dispatchEvent(new Event("ColorModeChange"));
-            }}
-          >
-            {darkMode ? <MoonIcon /> : <SunIcon boxSize={4} />}
-          </div>
+          <LanguageSwitch className="text-[20px]" />
+          <ColorModeSwitch className="ml-6 mr-8" />
           {userInfo?._id ? (
             <>
               <UserSetting

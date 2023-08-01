@@ -8,7 +8,7 @@ import clsx from "clsx";
 import { GithubIcon, MenuIcon } from "@/components/CommonIcon";
 import { COLOR_MODE, Routes } from "@/constants";
 
-import Language from "./language";
+import LanguageSwitch from "../../components/LanguageSwitch";
 
 const Navbar = () => {
   const [showBanner, setShowBanner] = useState(false);
@@ -133,7 +133,7 @@ const Navbar = () => {
                 {stars}
               </a>
             ) : null}
-            <Language fontSize={24} />
+            <LanguageSwitch className="text-[24px]" />
             <div>
               <Link
                 to={Routes.dashboard}
@@ -232,7 +232,7 @@ const Navbar = () => {
                   darkMode ? "flex px-4 py-2 hover:bg-gray-900" : "flex px-4 py-2 hover:bg-gray-100"
                 }
               >
-                <Language fontSize={24} />
+                <LanguageSwitch className="text-[24px]" />
               </div>
             </div>
           </ul>

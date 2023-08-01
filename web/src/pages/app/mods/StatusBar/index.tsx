@@ -2,8 +2,11 @@ import { useTranslation } from "react-i18next";
 import { HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import ColorModeSwitch from "@/components/ColorModeSwitch";
 import { DeleteIcon } from "@/components/CommonIcon";
+import LanguageSwitch from "@/components/LanguageSwitch";
 import Panel from "@/components/Panel";
+import { COLOR_MODE } from "@/constants";
 
 import Icons from "../SideBar/Icons";
 
@@ -17,11 +20,13 @@ import StatusBadge from "@/pages/home/mods/StatusBadge";
 function StatusBar() {
   const { t } = useTranslation();
   const { currentApp } = useGlobalStore((state) => state);
-  const darkMode = useColorMode().colorMode === "dark";
+  const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
 
   return (
     <Panel className="!flex-row justify-between">
       <HStack spacing={2}>
+        <LanguageSwitch className="!text-[12px]" />
+        <ColorModeSwitch boxSize={3} className="pr-2" />
         <div>
           {t("StatusBar.CurrentApplication")}: {currentApp?.name}
         </div>

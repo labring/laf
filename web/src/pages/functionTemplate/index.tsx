@@ -21,6 +21,7 @@ import { debounce } from "lodash";
 
 import EmptyBox from "@/components/EmptyBox";
 import Pagination from "@/components/Pagination";
+import { TEMPLATE_CATEGORY } from "@/constants";
 import { changeURL } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
 
@@ -49,11 +50,11 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
   const { t } = useTranslation();
   const sortList = [t("Template.MostStars"), t("Template.Latest")];
   const sideBar_data = [
-    { text: t("Template.Recommended"), value: "recommended" },
-    { text: t("Template.CommunityTemplate"), value: "all" },
-    { text: t("Template.My"), value: "default" },
-    { text: t("Template.StaredTemplate"), value: "stared" },
-    { text: t("Template.Recent"), value: "recentUsed" },
+    { text: t("Template.Recommended"), value: TEMPLATE_CATEGORY.recommended },
+    { text: t("Template.CommunityTemplate"), value: TEMPLATE_CATEGORY.all },
+    { text: t("Template.My"), value: TEMPLATE_CATEGORY.default },
+    { text: t("Template.StaredTemplate"), value: TEMPLATE_CATEGORY.stared },
+    { text: t("Template.Recent"), value: TEMPLATE_CATEGORY.recentUsed },
   ];
   const defaultQueryData: queryData = {
     page: 1,
@@ -102,7 +103,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
       ...queryData,
     },
     {
-      enabled: queryData.type === "all",
+      enabled: queryData.type === TEMPLATE_CATEGORY.all,
       onSuccess: (data: any) => {
         setTemplateList(data.data);
       },
@@ -114,7 +115,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
       ...queryData,
     },
     {
-      enabled: queryData.type === "recommended",
+      enabled: queryData.type === TEMPLATE_CATEGORY.recommended,
       onSuccess: (data: any) => {
         setTemplateList(data.data);
       },
@@ -151,10 +152,10 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
 
   const handleSideBarClick = (item: any) => {
     setSearchKey("");
-    if (item.value === "stared") {
-      setQueryData({ ...defaultQueryData, type: "stared" });
-    } else if (item.value === "recentUsed") {
-      setQueryData({ ...defaultQueryData, type: "recentUsed" });
+    if (item.value === TEMPLATE_CATEGORY.stared) {
+      setQueryData({ ...defaultQueryData, type: TEMPLATE_CATEGORY.stared });
+    } else if (item.value === TEMPLATE_CATEGORY.recentUsed) {
+      setQueryData({ ...defaultQueryData, type: TEMPLATE_CATEGORY.recentUsed });
     } else {
       setQueryData(defaultQueryData);
     }
@@ -202,7 +203,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
           <div
             className={clsx("flex items-center justify-between py-5", isModal ? "pl-52" : "pl-72")}
           >
-            {queryData.type === "default" ? (
+            {queryData.type === TEMPLATE_CATEGORY.default ? (
               <Button
                 onClick={() => {
                   navigate("/market/templates/create");
@@ -215,7 +216,8 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
               </Button>
             ) : null}
             <div className="flex w-full">
-              {queryData.type === "all" || queryData.type === "recommended" ? (
+              {queryData.type === TEMPLATE_CATEGORY.all ||
+              queryData.type === TEMPLATE_CATEGORY.recommended ? (
                 <InputGroup className="flex">
                   <InputLeftElement children={<Search2Icon />} height={"2.5rem"} />
                   <Input
@@ -298,7 +300,8 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                     <section
                       className={clsx(
                         "mb-3 min-w-[18rem]",
-                        queryData.type === "all" || queryData.type === "recommended"
+                        queryData.type === TEMPLATE_CATEGORY.all ||
+                          queryData.type === TEMPLATE_CATEGORY.recommended
                           ? "w-1/3"
                           : "w-1/2",
                       )}
