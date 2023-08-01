@@ -5,6 +5,7 @@ import { DomainIcon, ENVIcon, TextIcon } from "@/components/CommonIcon";
 
 import AppEnvList from "../AppEnvList";
 import AppInfoList from "../AppInfoList";
+// import AppMonitor from "../AppMonitor";
 import CustomDomain from "../CustomDomain";
 
 import { TApplicationDetail } from "@/apis/typing";
@@ -25,6 +26,12 @@ export default function SysSetting(props: {
           component: <AppInfoList />,
           icon: <TextIcon boxSize={4} />,
         },
+        // {
+        //   key: "monitor",
+        //   name: t("SettingPanel.AppMonitor"),
+        //   component: <AppMonitor />,
+        //   icon: <MonitorIcon boxSize={4} />,
+        // },
         {
           key: "env",
           name: t("SettingPanel.AppEnv"),

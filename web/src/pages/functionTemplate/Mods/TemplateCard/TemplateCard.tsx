@@ -6,6 +6,7 @@ import clsx from "clsx";
 
 import { LikeIcon, TimeIcon } from "@/components/CommonIcon";
 import IconWrap from "@/components/IconWrap";
+import { TEMPLATE_CATEGORY } from "@/constants";
 import { formatDate } from "@/utils/format";
 
 import { useDeleteFunctionTemplateMutation } from "../../service";
@@ -53,13 +54,13 @@ const TemplateCard = (props: IProps) => {
               <div
                 className={clsx(
                   "flex items-center font-semibold",
-                  templateCategory === "my" ? "w-9/12" : "w-full",
+                  templateCategory === TEMPLATE_CATEGORY.default ? "w-9/12" : "w-full",
                   isModal ? "text-xl" : "text-2xl",
                 )}
               >
                 <div className="truncate">{template.name}</div>
               </div>
-              {templateCategory === "my" && (
+              {templateCategory === TEMPLATE_CATEGORY.default && (
                 <div className="flex items-center">
                   <span
                     className={clsx(

@@ -84,3 +84,11 @@ export default async function (ctx: FunctionContext) {
   return { data: 'hi, laf' }
 }
 `;
+
+export enum TEMPLATE_CATEGORY {
+  recommended = "recommended",
+  all = "all",
+  default = "default",
+  stared = "stared",
+  recentUsed = "recentUsed",
+}
