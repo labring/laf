@@ -19,7 +19,7 @@ spec:
         - image: ghcr.io/labring/sealos-resources-metering-controller:9a013cea
           name: resource-metering
           command:
-            - /metering
+            - /manager
             - "start"
             - "--debug"
             - "--show-path"
