@@ -5,7 +5,6 @@ import {
   Patch,
   Param,
   UseGuards,
-  Req,
   Logger,
   Post,
   Delete,
@@ -13,11 +12,9 @@ import {
 import {
   ApiBearerAuth,
   ApiOperation,
-  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { IRequest } from '../utils/interface'
 import { JwtAuthGuard } from '../authentication/jwt.auth.guard'
 import {
   ApiResponseArray,
@@ -50,12 +47,11 @@ import { ResourceService } from 'src/billing/resource.service'
 import { RuntimeDomainService } from 'src/gateway/runtime-domain.service'
 import { BindCustomDomainDto } from 'src/website/dto/update-website.dto'
 import { RuntimeDomain } from 'src/gateway/entities/runtime-domain'
-import { TeamAuthGuard } from 'src/team/team-auth.guard'
 import { TeamRole, getRoleLevel } from 'src/team/entities/team-member'
 import { TeamRoles } from 'src/team/team-role.decorator'
-import { InjectTeam, InjectTeamRole, InjectUser } from 'src/utils/decorator'
+import { InjectApplication, InjectTeam, InjectUser } from 'src/utils/decorator'
 import { User } from 'src/user/entities/user'
-import { Team } from 'src/team/entities/team'
+import { TeamWithRole } from 'src/team/entities/team'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -76,22 +72,11 @@ export class ApplicationController {
   /**
    * Create application
    */
-  @TeamRoles(TeamRole.Admin)
-  @UseGuards(JwtAuthGuard, TeamAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create application' })
-  @ApiQuery({
-    name: 'teamId',
-    type: String,
-    description: 'teamId',
-    required: true,
-  })
   @ApiResponseObject(ApplicationWithRelations)
   @Post()
-  async create(
-    @Body() dto: CreateApplicationDto,
-    @InjectTeam() team: Team,
-    @InjectUser() user: User,
-  ) {
+  async create(@Body() dto: CreateApplicationDto, @InjectUser() user: User) {
     const error = dto.autoscaling.validate()
     if (error) {
       return ResponseUtil.error(error)
@@ -142,7 +127,7 @@ export class ApplicationController {
 
     // create application
     const appid = await this.application.tryGenerateUniqueAppid()
-    await this.application.create(user._id, appid, team, dto, isTrialTier)
+    await this.application.create(user._id, appid, dto, isTrialTier)
 
     const app = await this.application.findOne(appid)
     return ResponseUtil.ok(app)
@@ -153,18 +138,12 @@ export class ApplicationController {
    * @param req
    * @returns
    */
-  @UseGuards(JwtAuthGuard, TeamAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get user application list' })
-  @ApiQuery({
-    name: 'teamId',
-    type: String,
-    description: 'teamId',
-    required: true,
-  })
   @ApiResponseArray(ApplicationWithRelations)
-  async findAll(@InjectTeam() team: Team) {
-    const data = await this.application.findAllByTeam(team._id)
+  async findAll(@InjectUser() user: User) {
+    const data = await this.application.findAllByUser(user._id)
     return ResponseUtil.ok(data)
   }
 
@@ -229,7 +208,7 @@ export class ApplicationController {
   @ApiOperation({ summary: 'Update application name' })
   @ApiResponseObject(Application)
   @TeamRoles(TeamRole.Admin)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid/name')
   async updateName(
     @Param('appid') appid: string,
@@ -244,19 +223,18 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Update application state' })
   @ApiResponseObject(Application)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid/state')
   async updateState(
     @Param('appid') appid: string,
     @Body() dto: UpdateApplicationStateDto,
-    @Req() req: IRequest,
-    @InjectTeamRole() teamRole: TeamRole,
+    @InjectApplication() app: Application,
+    @InjectTeam() team: TeamWithRole,
   ) {
-    const app = req.application
-    const user = req.user
+    const userid = app.createdBy
 
     // check account balance
-    const account = await this.account.findOne(user._id)
+    const account = await this.account.findOne(userid)
     const balance = account?.balance || 0
     if (balance < 0) {
       return ResponseUtil.error(`account balance is not enough`)
@@ -299,7 +277,7 @@ export class ApplicationController {
       [ApplicationState.Stopped, ApplicationState.Running].includes(
         dto.state,
       ) &&
-      getRoleLevel(teamRole) < getRoleLevel(TeamRole.Admin)
+      getRoleLevel(team.role) < getRoleLevel(TeamRole.Admin)
     ) {
       return ResponseUtil.error('no permission')
     }
@@ -314,20 +292,19 @@ export class ApplicationController {
   @ApiOperation({ summary: 'Update application bundle' })
   @ApiResponseObject(ApplicationBundle)
   @TeamRoles(TeamRole.Admin)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid/bundle')
   async updateBundle(
     @Param('appid') appid: string,
     @Body() dto: UpdateApplicationBundleDto,
-    @Req() req: IRequest,
+    @InjectApplication() app: ApplicationWithRelations,
   ) {
     const error = dto.autoscaling.validate()
     if (error) {
       return ResponseUtil.error(error)
     }
 
-    const app = await this.application.findOne(appid)
-    const user = req.user
+    const userid = app.createdBy
     const regionId = app.regionId
 
     // check if trial tier
@@ -337,7 +314,7 @@ export class ApplicationController {
     })
     if (isTrialTier) {
       const bundle = await this.resource.findTrialBundle(regionId)
-      const trials = await this.application.findTrialApplications(user._id)
+      const trials = await this.application.findTrialApplications(userid)
       const limitOfFreeTier = bundle?.limitCountOfFreeTierPerUser || 0
       if (trials.length >= (limitOfFreeTier || 0)) {
         return ResponseUtil.error(
@@ -368,7 +345,7 @@ export class ApplicationController {
   @ApiResponseObject(RuntimeDomain)
   @ApiOperation({ summary: 'Bind custom domain to application' })
   @TeamRoles(TeamRole.Admin)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid/domain')
   async bindDomain(
     @Param('appid') appid: string,
@@ -403,7 +380,7 @@ export class ApplicationController {
   @ApiResponse({ type: ResponseUtil<boolean> })
   @ApiOperation({ summary: 'Check if domain is resolved' })
   @TeamRoles(TeamRole.Admin)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post(':appid/domain/resolved')
   async checkResolved(
     @Param('appid') appid: string,
@@ -423,7 +400,7 @@ export class ApplicationController {
   @ApiResponseObject(RuntimeDomain)
   @ApiOperation({ summary: 'Remove custom domain of application' })
   @TeamRoles(TeamRole.Admin)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':appid/domain')
   async remove(@Param('appid') appid: string) {
     const runtimeDomain = await this.runtimeDomain.findOne(appid)
@@ -445,11 +422,12 @@ export class ApplicationController {
   @ApiOperation({ summary: 'Delete an application' })
   @ApiResponseObject(Application)
   @TeamRoles(TeamRole.Owner)
-  @UseGuards(JwtAuthGuard, ApplicationAuthGuard, TeamAuthGuard)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':appid')
-  async delete(@Param('appid') appid: string, @Req() req: IRequest) {
-    const app = req.application
-
+  async delete(
+    @Param('appid') appid: string,
+    @InjectApplication() app: ApplicationWithRelations,
+  ) {
     // check: only stopped application can be deleted
     if (
       app.state !== ApplicationState.Stopped &&

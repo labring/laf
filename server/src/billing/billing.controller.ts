@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Query, Req, UseGuards } from '@nestjs/common'
+import { Controller, Get, Logger, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 import {
   ApiResponseArray,
@@ -11,13 +11,9 @@ import { BillingQuery } from './interface/billing-query.interface'
 
 import { ApplicationBilling } from './entities/application-billing'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
-import { IRequest } from 'src/utils/interface'
 import { BillingsByDayDto } from './dto/billings.dto'
-import { TeamAuthGuard } from 'src/team/team-auth.guard'
-import { TeamRoles } from 'src/team/team-role.decorator'
-import { TeamRole } from 'src/team/entities/team-member'
-import { InjectTeam } from 'src/utils/decorator'
-import { Team } from 'src/team/entities/team'
+import { InjectUser } from 'src/utils/decorator'
+import { User } from 'src/user/entities/user'
 
 @ApiTags('Billing')
 @ApiBearerAuth('Authorization')
@@ -32,20 +28,13 @@ export class BillingController {
    */
   @ApiOperation({ summary: 'Get billings of an application' })
   @ApiResponsePagination(ApplicationBilling)
-  @TeamRoles(TeamRole.Admin)
-  @UseGuards(JwtAuthGuard, TeamAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiQuery({
     name: 'appid',
     type: String,
     description: 'appid',
     required: false,
     isArray: true,
-  })
-  @ApiQuery({
-    name: 'teamId',
-    type: String,
-    description: 'teamId',
-    required: true,
   })
   @ApiQuery({
     name: 'startTime',
@@ -83,8 +72,7 @@ export class BillingController {
   })
   @Get()
   async findAll(
-    @Req() req: IRequest,
-    @InjectTeam() team: Team,
+    @InjectUser() user: User,
     @Query('appid') appid?: string[],
     @Query('state') state?: string,
     @Query('startTime') startTime?: string,
@@ -117,7 +105,7 @@ export class BillingController {
       query.endTime = new Date(endTime)
     }
 
-    const billings = await this.billing.query(team, query)
+    const billings = await this.billing.query(user._id, query)
     return ResponseUtil.ok(billings)
   }
 
@@ -126,17 +114,10 @@ export class BillingController {
    */
   @ApiOperation({ summary: 'Get my total amount' })
   @ApiResponseObject(Number)
-  @ApiQuery({
-    name: 'teamId',
-    type: String,
-    description: 'teamId',
-    required: true,
-  })
-  @TeamRoles(TeamRole.Admin)
-  @UseGuards(JwtAuthGuard, TeamAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('amount')
   async getExpense(
-    @InjectTeam() team: Team,
+    @InjectUser() user: User,
     @Query('startTime') startTime?: number,
     @Query('endTime') endTime?: number,
     @Query('appid') appid?: string[],
@@ -156,23 +137,16 @@ export class BillingController {
       query.state = state
     }
 
-    const expenseTotal = await this.billing.getExpense(team, query)
+    const expenseTotal = await this.billing.getExpense(user._id, query)
     return ResponseUtil.ok(expenseTotal)
   }
 
   @ApiOperation({ summary: 'Get my total amount by day' })
   @ApiResponseArray(BillingsByDayDto)
-  @ApiQuery({
-    name: 'teamId',
-    type: String,
-    description: 'teamId',
-    required: true,
-  })
-  @TeamRoles(TeamRole.Admin)
-  @UseGuards(JwtAuthGuard, TeamAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('amounts')
   async getExpenseByDay(
-    @InjectTeam() team: Team,
+    @InjectUser() user: User,
     @Query('startTime') startTime?: number,
     @Query('endTime') endTime?: number,
     @Query('appid') appid?: string[],
@@ -192,7 +166,7 @@ export class BillingController {
       query.state = state
     }
 
-    const expenseTotal = await this.billing.getExpenseByDay(team, query)
+    const expenseTotal = await this.billing.getExpenseByDay(user._id, query)
     return ResponseUtil.ok(expenseTotal)
   }
 }

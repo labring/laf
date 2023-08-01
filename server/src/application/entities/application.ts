@@ -35,9 +35,6 @@ export class Application {
   appid: string
 
   @ApiProperty({ type: String })
-  teamId: ObjectId
-
-  @ApiProperty({ type: String })
   regionId: ObjectId
 
   @ApiProperty({ type: String })

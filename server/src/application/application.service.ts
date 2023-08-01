@@ -21,7 +21,6 @@ import {
   ApplicationBundle,
   ApplicationBundleResource,
 } from './entities/application-bundle'
-import { Team } from 'src/team/entities/team'
 
 @Injectable()
 export class ApplicationService {
@@ -36,7 +35,6 @@ export class ApplicationService {
   async create(
     userid: ObjectId,
     appid: string,
-    team: Team,
     dto: CreateApplicationDto,
     isTrialTier: boolean,
   ) {
@@ -83,12 +81,11 @@ export class ApplicationService {
       await db.collection<Application>('Application').insertOne(
         {
           appid,
-          teamId: team._id,
           name: dto.name,
           state: dto.state || ApplicationState.Running,
           phase: ApplicationPhase.Creating,
           tags: [],
-          createdBy: team.createdBy,
+          createdBy: userid,
           lockedAt: TASK_LOCK_INIT_TIME,
           regionId: new ObjectId(dto.regionId),
           runtimeId: new ObjectId(dto.runtimeId),
@@ -116,7 +113,7 @@ export class ApplicationService {
       .collection('Application')
       .aggregate<ApplicationWithRelations>()
       .match({
-        createdBy: new ObjectId(userid),
+        createdBy: userid,
         phase: { $ne: ApplicationPhase.Deleted },
       })
       .lookup({
@@ -133,6 +130,30 @@ export class ApplicationService {
         as: 'runtime',
       })
       .unwind('$runtime')
+      // .lookup({
+      //   from: 'TeamApplication',
+      //   localField: 'appid',
+      //   foreignField: 'appid',
+      //   as: '_teams',
+      // })
+      // .unwind({ path: '$_teams', preserveNullAndEmptyArrays: true })
+      // .lookup({
+      //   from: 'Team',
+      //   localField: '_teams.teamId',
+      //   foreignField: '_id',
+      //   as: 'teams',
+      // })
+      // .unwind({ path: '$teams', preserveNullAndEmptyArrays: true })
+      // .lookup({
+      //   from: 'TeamMember',
+      //   localField: 'teams._id',
+      //   foreignField: 'teamId',
+      //   as: 'teams.members',
+      // })
+      // .unwind({ path: '$teams.members', preserveNullAndEmptyArrays: true })
+      // .match({
+      //   'teams.members.uid': new ObjectId(userid),
+      // })
       .project<ApplicationWithRelations>({
         'bundle.resource.requestCPU': 0,
         'bundle.resource.requestMemory': 0,

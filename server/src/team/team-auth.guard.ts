@@ -5,7 +5,6 @@ import { User } from 'src/user/entities/user'
 import { ObjectId } from 'mongodb'
 import { Reflector } from '@nestjs/core'
 import { getRoleLevel } from './entities/team-member'
-import { Application } from 'src/application/entities/application'
 import { TeamMemberService } from './team-member/team-member.service'
 
 @Injectable()
@@ -19,20 +18,21 @@ export class TeamAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest() as IRequest
     const user = request.user as User
-    const app = request.application as Application
-    const teamId =
-      request.params.teamId || (request.query.teamId as string) || app.teamId
+    const teamId = request.params.teamId
 
     if (!teamId) {
       return false
     }
 
-    const team = await this.teamService.findOne(new ObjectId(teamId))
+    const team = await this.teamService.findOneWithRole(
+      new ObjectId(teamId),
+      user._id,
+    )
     if (!team) {
       return false
     }
 
-    const members = await this.teamMemberService.find(team._id)
+    const members = await this.teamMemberService.find(new ObjectId(teamId))
     const member = members.find((m) => m.uid.equals(user._id))
     if (!member) {
       return false
@@ -40,7 +40,6 @@ export class TeamAuthGuard implements CanActivate {
 
     // inject team to request
     request.team = team
-    request.teamRole = member.role
 
     const roles = this.reflector.get<string[]>(
       'team-roles',

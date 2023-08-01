@@ -29,7 +29,6 @@ import {
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
 import { ObjectId } from 'mongodb'
 import { Setting, SettingKey } from 'src/setting/entities/setting'
-import { TeamService } from 'src/team/team.service'
 
 @Injectable()
 export class PhoneService {
@@ -41,7 +40,6 @@ export class PhoneService {
     private readonly authService: AuthenticationService,
     private readonly userService: UserService,
     private readonly accountService: AccountService,
-    private readonly teamService: TeamService,
   ) {}
 
   /**
@@ -201,9 +199,6 @@ export class PhoneService {
           { session },
         )
       }
-
-      // create default team
-      await this.teamService.create('My Team', user.insertedId, true)
 
       await session.commitTransaction()
       return await this.userService.findOneById(user.insertedId)
