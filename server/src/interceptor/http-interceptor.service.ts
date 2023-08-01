@@ -6,16 +6,15 @@ import { Response } from 'express'
 import { Request } from 'express'
 
 @Injectable()
-export class InterceptorService {
+export class HttpInterceptorService {
   constructor(private httpService: HttpService) {}
 
-  private readonly logger = new Logger(InterceptorService.name)
+  private readonly logger = new Logger(HttpInterceptorService.name)
   private readonly HTTP_INTERCEPTOR_URL = ServerConfig.HTTP_INTERCEPTOR_URL
   private readonly HTTP_INTERCEPTOR_TIMEOUT = HTTP_INTERCEPTOR_TIMEOUT
 
   async processPreInterceptor(context: ExecutionContext, requestId: string) {
-    const request: Request = context.switchToHttp().getRequest()
-    const requestData = this.buildRequestData(request, requestId)
+    const requestData = this.buildRequestData(context, requestId)
     return this.sendRequestToInterceptor(requestData)
   }
 
@@ -29,7 +28,8 @@ export class InterceptorService {
     return this.sendRequestToInterceptor(responseData)
   }
 
-  buildRequestData(request: Request, requestId: string) {
+  buildRequestData(context: ExecutionContext, requestId: string) {
+    const request: Request = context.switchToHttp().getRequest()
     return {
       url: request.url,
       method: request.method,
@@ -39,6 +39,8 @@ export class InterceptorService {
       query: request.query,
       body: request.body,
       id: requestId,
+      controller: context.getClass().name,
+      handler: context.getHandler().name,
       state: 'pre',
     }
   }

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common'
-import { InterceptorService } from './interceptor.service'
+import { HttpInterceptorService } from './http-interceptor.service'
 import { HttpModule } from '@nestjs/axios'
 
 @Module({
   imports: [HttpModule],
-  providers: [InterceptorService],
-  exports: [InterceptorService],
+  providers: [HttpInterceptorService],
+  exports: [HttpInterceptorService],
 })
 export class InterceptorModule {}

@@ -6,7 +6,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common'
 import { Observable, from, mergeMap, of } from 'rxjs'
-import { InterceptorService } from './interceptor/interceptor.service'
+import { HttpInterceptorService } from './interceptor/http-interceptor.service'
 import {
   HttpInterceptorAction,
   HttpInterceptorResponseDto,
@@ -16,13 +16,14 @@ import { v4 as uuidv4 } from 'uuid'
 
 @Injectable()
 export class AppInterceptor implements NestInterceptor {
-  constructor(private interceptorService: InterceptorService) {}
+  constructor(private httpInterceptorService: HttpInterceptorService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const response: Response = context.switchToHttp().getResponse()
     const requestId = uuidv4()
+
     return from(
-      this.interceptorService.processPreInterceptor(context, requestId),
+      this.httpInterceptorService.processPreInterceptor(context, requestId),
     ).pipe(
       mergeMap((preInterceptorData: HttpInterceptorResponseDto) => {
         if (preInterceptorData.action === HttpInterceptorAction.DENY) {
@@ -34,7 +35,7 @@ export class AppInterceptor implements NestInterceptor {
           return next.handle().pipe(
             mergeMap((data) =>
               from(
-                this.interceptorService.processPostInterceptor(
+                this.httpInterceptorService.processPostInterceptor(
                   context,
                   requestId,
                   data,
