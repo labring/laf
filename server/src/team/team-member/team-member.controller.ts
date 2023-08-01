@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common'
 import { User } from 'src/user/entities/user'
-import { InjectTeamRole, InjectUser } from 'src/utils/decorator'
+import { InjectTeam, InjectUser } from 'src/utils/decorator'
 import { ObjectId } from 'mongodb'
 import {
   ApiResponseArray,
@@ -25,6 +25,7 @@ import { TeamRoles } from '../team-role.decorator'
 import { TeamMemberService } from './team-member.service'
 import { TeamInviteService } from '../team-invite/team-invite.service'
 import { TeamService } from '../team.service'
+import { TeamWithRole } from '../entities/team'
 
 @ApiTags('Team')
 @ApiBearerAuth('Authorization')
@@ -80,7 +81,7 @@ export class TeamMemberController {
     @Param('teamId') teamId: string,
     @Param('userId') userId: string,
     @InjectUser() user: User,
-    @InjectTeamRole() role: TeamRole,
+    @InjectTeam() team: TeamWithRole,
   ) {
     if (user._id.equals(userId)) {
       return ResponseUtil.error('cannot remove yourself')
@@ -90,7 +91,7 @@ export class TeamMemberController {
       new ObjectId(teamId),
       user._id,
     )
-    if (getRoleLevel(member.role) < getRoleLevel(role)) {
+    if (getRoleLevel(member.role) < getRoleLevel(team.role)) {
       return ResponseUtil.error('you must have higher permission')
     }
 
@@ -133,14 +134,16 @@ export class TeamMemberController {
   @ApiResponseObject(TeamMember)
   @UseGuards(JwtAuthGuard, TeamAuthGuard)
   @Post(':teamId/member/leave')
-  async leaveTeam(@Param('teamId') teamId: string, @InjectUser() user: User) {
-    const [ok, res] = await this.memberService.leaveTeam(
-      new ObjectId(teamId),
-      user._id,
-    )
-    if (!ok) {
-      return ResponseUtil.error(res as string)
+  async leaveTeam(
+    @Param('teamId') teamId: string,
+    @InjectUser() user: User,
+    @InjectTeam() team: TeamWithRole,
+  ) {
+    if (team.role === TeamRole.Owner) {
+      return ResponseUtil.error('Owner cannot leave team')
     }
-    return ResponseUtil.ok(res)
+    await this.memberService.leaveTeam(new ObjectId(teamId), user._id)
+
+    return ResponseUtil.ok(team)
   }
 }

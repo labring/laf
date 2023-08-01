@@ -92,25 +92,14 @@ export class TeamMemberService {
       },
       { session },
     )
-    const ok = res.acknowledged && res.deletedCount > 0
-    return [ok, res]
+    return res
   }
 
   async leaveTeam(teamId: ObjectId, uid: ObjectId) {
-    const member = await this.findOne(teamId, uid)
-    if (member.role === TeamRole.Owner) {
-      return [false, 'Owner cannot leave team']
-    }
-
     const res = await this.db
       .collection<TeamMember>('TeamMember')
       .deleteOne({ teamId, uid })
 
-    const ok = res.acknowledged && res.deletedCount > 0
-    if (!ok) {
-      return [false, 'leave team failed']
-    }
-
-    return [ok, member]
+    return res
   }
 }

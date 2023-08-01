@@ -44,6 +44,10 @@ export class TeamInviteController {
     @Body() dto: UpdateTeamInviteCodeDto,
     @Param('teamId') teamId: string,
   ) {
+    const code = await this.inviteService.getInviteCode(new ObjectId(teamId))
+    if (!code) {
+      return ResponseUtil.error('invite code not found')
+    }
     const res = await this.inviteService.updateInviteCode(
       new ObjectId(teamId),
       {
