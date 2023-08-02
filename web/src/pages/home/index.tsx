@@ -14,12 +14,6 @@ export const APP_LIST_QUERY_KEY = ["appListQuery"];
 function HomePage() {
   const [shouldRefetch, setShouldRefetch] = useState(true);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setShouldRefetch(true);
-    }, 1500);
-  }, []);
-
   const { data: appListQuery, isLoading } = useQuery(
     APP_LIST_QUERY_KEY,
     () => {
@@ -40,6 +34,12 @@ function HomePage() {
       },
     },
   );
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShouldRefetch(true);
+    }, 500);
+  }, [appListQuery]);
 
   return isLoading ? (
     <Center style={{ minHeight: 500 }}>

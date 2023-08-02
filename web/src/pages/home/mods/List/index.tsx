@@ -175,7 +175,23 @@ function List(props: { appList: TApplicationItem[] }) {
                                   : APP_STATUS.Restarting,
                             });
                             if (!res.error) {
-                              queryClient.invalidateQueries(APP_LIST_QUERY_KEY);
+                              queryClient.setQueryData(APP_LIST_QUERY_KEY, (old: any) => {
+                                return {
+                                  ...old,
+                                  data: old.data.map((app: any) => {
+                                    if (app.appid === item.appid) {
+                                      return {
+                                        ...app,
+                                        phase:
+                                          item.phase === APP_STATUS.Stopped
+                                            ? APP_PHASE_STATUS.Starting
+                                            : APP_STATUS.Restarting,
+                                      };
+                                    }
+                                    return app;
+                                  }),
+                                };
+                              });
                             }
                           }}
                         >
@@ -197,7 +213,20 @@ function List(props: { appList: TApplicationItem[] }) {
                                 state: APP_STATUS.Stopped,
                               });
                               if (!res.error) {
-                                queryClient.invalidateQueries(APP_LIST_QUERY_KEY);
+                                queryClient.setQueryData(APP_LIST_QUERY_KEY, (old: any) => {
+                                  return {
+                                    ...old,
+                                    data: old.data.map((app: any) => {
+                                      if (app.appid === item.appid) {
+                                        return {
+                                          ...app,
+                                          phase: APP_PHASE_STATUS.Stopping,
+                                        };
+                                      }
+                                      return app;
+                                    }),
+                                  };
+                                });
                               }
                             }}
                           >

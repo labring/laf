@@ -15,11 +15,11 @@ export const Pages = {
 };
 
 export enum APP_STATUS {
-  // [ "Running", "Stopped", "Restarting", "Deleted" ]
   Running = "Running",
   Stopped = "Stopped",
   Restarting = "Restarting",
   Deleted = "Deleted",
+  Releasing = "Releasing",
 }
 
 export const DEFAULT_REGION = "default";
@@ -41,7 +41,6 @@ export enum APP_PHASE_STATUS {
   Stopped = "Stopped",
   Deleting = "Deleting",
   Deleted = "Deleted",
-  Releasing = "Releasing",
 }
 
 export enum BUCKET_POLICY_TYPE {

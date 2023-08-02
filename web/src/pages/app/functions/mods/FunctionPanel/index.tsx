@@ -81,7 +81,9 @@ export default function FunctionList() {
           currentNode.children.push(item);
           return;
         }
-        let existingNode = currentNode.children.find((node) => node.name === part);
+        let existingNode = currentNode.children.find(
+          (node) => node.name === part && (node as TreeNode).level === index,
+        );
         if (!existingNode) {
           const newNode = {
             _id: item._id,
@@ -184,7 +186,7 @@ export default function FunctionList() {
       return (
         <React.Fragment key={index}>
           <SectionList.Item
-            isActive={item?.name === currentFunction?.name}
+            isActive={item?.name === currentFunction?.name && !item.children?.length}
             key={index as any}
             className="group"
             onClick={() => {
