@@ -22,7 +22,7 @@ export class WebsiteTaskService {
     private readonly regionService: RegionService,
     private readonly apisixService: ApisixService,
     private readonly certService: ApisixCustomCertService,
-  ) { }
+  ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
