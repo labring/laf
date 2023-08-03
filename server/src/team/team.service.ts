@@ -21,6 +21,11 @@ export class TeamService {
     private readonly teamApplicationService: TeamApplicationService,
   ) {}
 
+  async findTeamByAppid(appid: string) {
+    const res = await this.db.collection<Team>('Team').findOne({ appid })
+    return res
+  }
+
   async findAll(uid: ObjectId) {
     const res = await this.db
       .collection<TeamMember>('TeamMember')
@@ -28,11 +33,21 @@ export class TeamService {
       .match({ uid })
       .lookup({
         from: 'Team',
-        localField: 'teamId',
-        foreignField: '_id',
+        let: { teamId: '$teamId', appid: '$appid' },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ['$teamId', '$$teamId'] },
+                  { $exists: ['$$appid', false] },
+                ],
+              },
+            },
+          },
+        ],
         as: 'team',
       })
-      .unwind('$team')
       .lookup({
         from: 'TeamMember',
         localField: 'teamId',
@@ -59,7 +74,7 @@ export class TeamService {
   async countTeams(uid: ObjectId) {
     const count = await this.db
       .collection<Team>('Team')
-      .countDocuments({ createdBy: uid })
+      .countDocuments({ createdBy: uid, appid: { $exists: false } })
 
     return count
   }
@@ -71,11 +86,21 @@ export class TeamService {
       .match({ appid })
       .lookup({
         from: 'Team',
-        localField: 'teamId',
-        foreignField: '_id',
+        let: { teamId: '$teamId', appid: '$appid' },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ['$teamId', '$$teamId'] },
+                  { $exists: ['$$appid', false] },
+                ],
+              },
+            },
+          },
+        ],
         as: 'team',
       })
-      .unwind('$team')
       .lookup({
         from: 'TeamMember',
         localField: 'teamId',
@@ -127,7 +152,6 @@ export class TeamService {
         foreignField: '_id',
         as: 'team',
       })
-      .unwind('$team')
       .project({
         _id: '$team._id',
         name: '$team.name',
@@ -139,14 +163,15 @@ export class TeamService {
     return res
   }
 
-  async create(name: string, createdBy: ObjectId) {
+  async create(name: string, createdBy: ObjectId, appid?: string) {
     const session = SystemDatabase.client.startSession()
     try {
       let team: Team
       await session.withTransaction(async () => {
         const res = await this.db.collection<Team>('Team').insertOne(
           {
-            name: name,
+            name,
+            appid,
             createdBy: createdBy,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -162,6 +187,9 @@ export class TeamService {
           session,
           TeamRole.Owner,
         )
+
+        await this.teamApplicationService.append(res.insertedId, appid, session)
+
         team = await this.findOne(res.insertedId, session)
       })
 

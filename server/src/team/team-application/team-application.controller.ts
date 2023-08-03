@@ -13,9 +13,10 @@ import {
 } from 'src/utils/response'
 import { TeamApplication } from '../entities/team-application'
 import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
-import { InjectApplication, InjectUser } from 'src/utils/decorator'
+import { InjectApplication, InjectTeam, InjectUser } from 'src/utils/decorator'
 import { ApplicationWithRelations } from 'src/application/entities/application'
 import { User } from 'src/user/entities/user'
+import { TeamWithRole } from '../entities/team'
 
 @ApiTags('Team')
 @ApiBearerAuth('Authorization')
@@ -67,7 +68,14 @@ export class TeamApplicationController {
   @TeamRoles(TeamRole.Owner)
   @UseGuards(JwtAuthGuard, TeamAuthGuard)
   @Delete(':teamId/application/:appid')
-  async remove(@Param('teamId') teamId: string, @Param('appid') appid: string) {
+  async remove(
+    @Param('teamId') teamId: string,
+    @Param('appid') appid: string,
+    @InjectTeam() team: TeamWithRole,
+  ) {
+    if (team.appid === appid) {
+      return ResponseUtil.error('cannot remove the default application')
+    }
     const app = this.teamApplicationService.findOne(new ObjectId(teamId), appid)
     if (!app) {
       return ResponseUtil.error('application not found')

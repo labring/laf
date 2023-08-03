@@ -21,10 +21,14 @@ import {
   ApplicationBundle,
   ApplicationBundleResource,
 } from './entities/application-bundle'
+import { TeamService } from 'src/team/team.service'
+import { TeamMember } from 'src/team/entities/team-member'
 
 @Injectable()
 export class ApplicationService {
   private readonly logger = new Logger(ApplicationService.name)
+
+  constructor(private readonly teamService: TeamService) {}
 
   /**
    * Create application
@@ -96,6 +100,7 @@ export class ApplicationService {
         { session },
       )
 
+      await this.teamService.create(appid, userid, appid)
       // commit transaction
       await session.commitTransaction()
     } catch (error) {
@@ -110,10 +115,31 @@ export class ApplicationService {
     const db = SystemDatabase.db
 
     const doc = await db
-      .collection('Application')
-      .aggregate<ApplicationWithRelations>()
+      .collection<TeamMember>('TeamMember')
+      .aggregate()
       .match({
-        createdBy: userid,
+        uid: userid,
+      })
+      .lookup({
+        from: 'Team',
+        localField: 'teamId',
+        foreignField: '_id',
+        as: 'team',
+      })
+      .lookup({
+        from: 'TeamApplication',
+        localField: 'teamId',
+        foreignField: 'teamId',
+        as: 'applications',
+      })
+      .unwind('$applications')
+      .lookup({
+        from: 'Application',
+        localField: 'applications.appid',
+        foreignField: 'appid',
+        as: 'application',
+      })
+      .match({
         phase: { $ne: ApplicationPhase.Deleted },
       })
       .lookup({
@@ -130,30 +156,6 @@ export class ApplicationService {
         as: 'runtime',
       })
       .unwind('$runtime')
-      // .lookup({
-      //   from: 'TeamApplication',
-      //   localField: 'appid',
-      //   foreignField: 'appid',
-      //   as: '_teams',
-      // })
-      // .unwind({ path: '$_teams', preserveNullAndEmptyArrays: true })
-      // .lookup({
-      //   from: 'Team',
-      //   localField: '_teams.teamId',
-      //   foreignField: '_id',
-      //   as: 'teams',
-      // })
-      // .unwind({ path: '$teams', preserveNullAndEmptyArrays: true })
-      // .lookup({
-      //   from: 'TeamMember',
-      //   localField: 'teams._id',
-      //   foreignField: 'teamId',
-      //   as: 'teams.members',
-      // })
-      // .unwind({ path: '$teams.members', preserveNullAndEmptyArrays: true })
-      // .match({
-      //   'teams.members.uid': new ObjectId(userid),
-      // })
       .project<ApplicationWithRelations>({
         'bundle.resource.requestCPU': 0,
         'bundle.resource.requestMemory': 0,

@@ -42,20 +42,26 @@ export class TeamApplicationService {
     return res
   }
 
-  async append(teamId: ObjectId, appid: string) {
+  async append(teamId: ObjectId, appid: string, session?: ClientSession) {
     const res = await this.db
       .collection<TeamApplication>('TeamApplication')
-      .insertOne({
-        appid,
-        teamId,
-        createdAt: new Date(),
-      })
+      .insertOne(
+        {
+          appid,
+          teamId,
+          createdAt: new Date(),
+        },
+        { session },
+      )
 
     const app = await this.db
       .collection<TeamApplication>('TeamApplication')
-      .findOne({
-        _id: res.insertedId,
-      })
+      .findOne(
+        {
+          _id: res.insertedId,
+        },
+        { session },
+      )
 
     return app
   }

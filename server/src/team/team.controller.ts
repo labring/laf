@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common'
 import { TeamService } from './team.service'
 import { User } from 'src/user/entities/user'
-import { InjectUser } from 'src/utils/decorator'
+import { InjectTeam, InjectUser } from 'src/utils/decorator'
 import { CreateTeamDto } from './dto/create-team.dto'
 import { ObjectId } from 'mongodb'
 import {
@@ -21,7 +21,7 @@ import {
 import { UpdateTeamDto } from './dto/update-team.dto'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
-import { Team } from './entities/team'
+import { Team, TeamWithRole } from './entities/team'
 import { TeamRole } from './entities/team-member'
 import { ApplicationService } from 'src/application/application.service'
 import { TeamAuthGuard } from './team-auth.guard'
@@ -66,7 +66,7 @@ export class TeamController {
   @Post()
   async create(@Body() dto: CreateTeamDto, @InjectUser() user: User) {
     const count = await this.teamService.countTeams(user._id)
-    if (count > 40) {
+    if (count > 20) {
       return ResponseUtil.error('team count limit exceeded')
     }
     const res = await this.teamService.create(dto.name, user._id)
@@ -78,12 +78,19 @@ export class TeamController {
   @TeamRoles(TeamRole.Owner)
   @UseGuards(JwtAuthGuard, TeamAuthGuard)
   @Delete(':teamId')
-  async delete(@Param('teamId') teamId: string) {
-    const team = await this.teamService.delete(new ObjectId(teamId))
-    if (!team) {
+  async delete(
+    @Param('teamId') teamId: string,
+    @InjectTeam() team: TeamWithRole,
+  ) {
+    if (team.appid) {
+      return ResponseUtil.error('cannot delete the internal team')
+    }
+
+    const res = await this.teamService.delete(new ObjectId(teamId))
+    if (!res) {
       return ResponseUtil.error('failed to delete team')
     }
-    return ResponseUtil.ok(team)
+    return ResponseUtil.ok(res)
   }
 
   @ApiOperation({ summary: 'Get detail of a team' })

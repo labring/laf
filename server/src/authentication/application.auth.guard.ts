@@ -30,34 +30,42 @@ export class ApplicationAuthGuard implements CanActivate {
       return false
     }
 
-    const isOwner = app.createdBy.equals(user._id)
+    const ok = await this.checkTeamAuth(appid, user, context)
+    if (!ok) {
+      return false
+    }
+
+    // inject app to request
+    request.application = app
+
+    return true
+  }
+
+  async checkTeamAuth(appid: string, user: User, context: ExecutionContext) {
+    const request = context.switchToHttp().getRequest() as IRequest
 
     // check team
     const teams = await this.teamService.findTeamsByAppidAndUid(appid, user._id)
     if (teams.length === 0) {
-      // inject app to request
-      request.application = app
-      return isOwner
+      return false
     }
+
+    teams.sort((a, b) => getRoleLevel(b.role) - getRoleLevel(a.role))
     const team = teams[0]
 
-    // check role
+    // check team role
     const roles = this.reflector.get<string[]>(
       'team-roles',
       context.getHandler(),
     )
     if (roles?.length > 0) {
       const roleLevels = roles.map(getRoleLevel).sort((a, b) => a - b)
-      teams.sort((a, b) => getRoleLevel(b.role) - getRoleLevel(a.role))
 
       if (roleLevels[0] > getRoleLevel(team.role)) {
         return false
       }
     }
 
-    // inject app to request
-    request.application = app
-    // inject team to request
     request.team = team
 
     return true
