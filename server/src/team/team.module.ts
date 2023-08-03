@@ -24,6 +24,11 @@ import { TeamApplicationController } from './team-application/team-application.c
     TeamApplicationService,
     ApplicationService,
   ],
-  exports: [TeamService, TeamMemberService, TeamApplicationService],
+  exports: [
+    TeamService,
+    TeamMemberService,
+    TeamInviteService,
+    TeamApplicationService,
+  ],
 })
 export class TeamModule {}

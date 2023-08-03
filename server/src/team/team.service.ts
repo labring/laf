@@ -184,8 +184,8 @@ export class TeamService {
         await this.memberService.addOne(
           res.insertedId,
           createdBy,
-          session,
           TeamRole.Owner,
+          session,
         )
 
         await this.teamApplicationService.append(res.insertedId, appid, session)
@@ -219,7 +219,7 @@ export class TeamService {
 
       // delete team members
       await this.memberService.removeAll(teamId, session)
-      await this.inviteService.deleteInviteCode(teamId, session)
+      await this.inviteService.deleteManyInviteCode(teamId, session)
       await this.teamApplicationService.removeAll(teamId, session)
 
       await session.commitTransaction()

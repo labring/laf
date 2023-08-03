@@ -3,7 +3,6 @@ import { Inject, Injectable, Logger, forwardRef } from '@nestjs/common'
 import { SystemDatabase } from 'src/system-database'
 import { ClientSession, ObjectId } from 'mongodb'
 import { TeamMember, TeamRole } from '../entities/team-member'
-import { ApplicationService } from 'src/application/application.service'
 import { TeamService } from '../team.service'
 
 @Injectable()
@@ -12,7 +11,6 @@ export class TeamMemberService {
   private readonly db = SystemDatabase.db
 
   constructor(
-    private readonly applicationService: ApplicationService,
     @Inject(forwardRef(() => TeamService))
     private readonly teamService: TeamService,
   ) {}
@@ -58,8 +56,8 @@ export class TeamMemberService {
   async addOne(
     teamId: ObjectId,
     uid: ObjectId,
+    role: TeamRole,
     session?: ClientSession,
-    role: TeamRole = TeamRole.Developer,
   ) {
     await this.db.collection<TeamMember>('TeamMember').insertOne(
       {

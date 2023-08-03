@@ -55,8 +55,8 @@ export class TeamMemberController {
     if (!inviteCode) {
       return ResponseUtil.error('invite code not found')
     }
-    if (!inviteCode.enable) {
-      return ResponseUtil.error('invite code disabled')
+    if (inviteCode.usedBy) {
+      return ResponseUtil.error('invite code has been used')
     }
     const member = await this.memberService.findOne(inviteCode.teamId, user._id)
     if (member) {
@@ -68,7 +68,11 @@ export class TeamMemberController {
       return ResponseUtil.error('team not found')
     }
 
-    const res = await this.memberService.addOne(inviteCode.teamId, user._id)
+    const res = await this.memberService.addOne(
+      inviteCode.teamId,
+      user._id,
+      inviteCode.role,
+    )
     return ResponseUtil.ok(res)
   }
 
@@ -119,8 +123,8 @@ export class TeamMemberController {
     if (user._id.equals(userId)) {
       return ResponseUtil.error('cannot update your own role')
     }
-    if (dto.role === TeamRole.Owner) {
-      return ResponseUtil.error('cannot update role to owner')
+    if (![TeamRole.Developer].includes(dto.role)) {
+      return ResponseUtil.error('can only update role to developer')
     }
     const res = await this.memberService.updateRole(
       new ObjectId(teamId),

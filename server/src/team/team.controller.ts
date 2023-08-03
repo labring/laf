@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common'
 import { TeamService } from './team.service'
 import { User } from 'src/user/entities/user'
-import { InjectTeam, InjectUser } from 'src/utils/decorator'
+import { InjectApplication, InjectTeam, InjectUser } from 'src/utils/decorator'
 import { CreateTeamDto } from './dto/create-team.dto'
 import { ObjectId } from 'mongodb'
 import {
@@ -23,10 +23,11 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { Team, TeamWithRole } from './entities/team'
 import { TeamRole } from './entities/team-member'
-import { ApplicationService } from 'src/application/application.service'
 import { TeamAuthGuard } from './team-auth.guard'
 import { TeamRoles } from './team-role.decorator'
 import { TeamInviteService } from './team-invite/team-invite.service'
+import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
+import { ApplicationWithRelations } from 'src/application/entities/application'
 
 @ApiTags('Team')
 @ApiBearerAuth('Authorization')
@@ -35,8 +36,23 @@ export class TeamController {
   constructor(
     private readonly teamService: TeamService,
     private readonly inviteService: TeamInviteService,
-    private readonly applicationService: ApplicationService,
   ) {}
+
+  @ApiOperation({ summary: 'Find internal team of the application' })
+  @ApiResponseObject(Team)
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Get('application/:appid/team')
+  async findTeamByAppId(
+    @Param('appid') appid: string,
+    @InjectApplication() app: ApplicationWithRelations,
+  ) {
+    const team = await this.teamService.findTeamByAppid(appid)
+    if (!team) {
+      const team = await this.teamService.create(appid, app.createdBy, appid)
+      return ResponseUtil.ok(team)
+    }
+    return ResponseUtil.ok(team)
+  }
 
   @ApiOperation({ summary: 'Get team by invite code' })
   @ApiResponseObject(Team)

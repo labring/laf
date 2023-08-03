@@ -5,14 +5,14 @@ import { Team } from '../entities/team'
 import { ClientSession, ObjectId } from 'mongodb'
 import { TeamMember, TeamRole } from '../entities/team-member'
 import { TeamInviteCode } from '../entities/team-invite-code'
-import { ApplicationService } from 'src/application/application.service'
+import { FindTeamInviteCodeDto } from '../dto/find-team-invite-code.dto'
+import { GenerateTeamInviteCodeDto } from '../dto/update-team-invite-code.dto'
+import { uniqueId } from 'lodash'
 
 @Injectable()
 export class TeamInviteService {
   private readonly logger = new Logger(TeamInviteService.name)
   private readonly db = SystemDatabase.db
-
-  constructor(private readonly applicationService: ApplicationService) {}
 
   async updateMemberRole(teamId: ObjectId, uid: ObjectId, role: TeamRole) {
     const res = await this.db
@@ -92,27 +92,46 @@ export class TeamInviteService {
   }
 
   async getInviteCode(teamId: ObjectId) {
-    let res = await this.db
-      .collection<TeamInviteCode>('TeamInviteCode')
-      .findOne({ teamId: teamId })
-    if (!res) {
-      const code = new ObjectId().toString()
+    const res = await this.db
+      .collection<FindTeamInviteCodeDto>('TeamInviteCode')
+      .aggregate()
+      .match({ teamId })
+      .lookup({
+        from: 'User',
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$_id', '$$userId'],
+              },
+            },
+          },
+          {
+            $project: { username: 1, _id: 0 },
+          },
+        ],
+        as: 'usedBy',
+      })
+      .project({
+        usedBy: { $arrayElemAt: ['$usedBy', 0] },
+      })
+      .toArray()
 
-      const data = await this.db
-        .collection<TeamInviteCode>('TeamInviteCode')
-        .insertOne({
-          teamId,
-          code,
-          enable: true,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        })
-
-      res = await this.db
-        .collection<TeamInviteCode>('TeamInviteCode')
-        .findOne({ _id: data.insertedId })
-    }
     return res
+  }
+
+  async generateInviteCode(teamId: ObjectId, dto: GenerateTeamInviteCodeDto) {
+    const code = uniqueId()
+
+    await this.db.collection<TeamInviteCode>('TeamInviteCode').insertOne({
+      teamId,
+      code,
+      role: dto.role,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+
+    return await this.findOneByCode(code)
   }
 
   async findOneByCode(code: string) {
@@ -148,7 +167,14 @@ export class TeamInviteService {
     return await this.getInviteCode(teamId)
   }
 
-  async deleteInviteCode(teamId: ObjectId, session?: ClientSession) {
+  async deleteInviteCode(inviteCode: TeamInviteCode, session?: ClientSession) {
+    const res = await this.db
+      .collection<TeamInviteCode>('TeamInviteCode')
+      .deleteOne({ _id: inviteCode._id }, { session })
+    return res
+  }
+
+  async deleteManyInviteCode(teamId: ObjectId, session?: ClientSession) {
     const res = await this.db
       .collection<TeamInviteCode>('TeamInviteCode')
       .deleteMany({ teamId }, { session })

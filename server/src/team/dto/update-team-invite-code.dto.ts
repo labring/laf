@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsBoolean, IsNotEmpty } from 'class-validator'
+import { IsEnum, IsNotEmpty } from 'class-validator'
+import { TeamRole } from '../entities/team-member'
 
-export class UpdateTeamInviteCodeDto {
-  @ApiProperty()
-  @IsBoolean()
+export class GenerateTeamInviteCodeDto {
+  @ApiProperty({ enum: TeamRole })
+  @IsEnum(TeamRole)
   @IsNotEmpty()
-  enable: boolean
+  role: TeamRole
 }
