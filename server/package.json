@@ -79,6 +79,7 @@
     "@types/mongodb-uri": "^0.9.1",
     "@types/multer": "^1.4.7",
     "@types/node": "^16.0.0",
+    "@types/nodemailer": "^6.4.9",
     "@types/npm-package-arg": "^6.1.1",
     "@types/passport-jwt": "^3.0.7",
     "@types/passport-local": "^1.0.34",
