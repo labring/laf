@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  @variants responsive {
+    .light-scrollbar::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .light-scrollbar {
+        -ms-overflow-style: {
+          height: 4px;
+        }; 
+        scrollbar-width: thin; 
+        transform:rotateX(180deg);
+        -ms-transform:rotateX(180deg); /* IE 9 */
+        -webkit-transform:rotateX(180deg); /* Safari and Chrome */
+    }
+
+    .flip {
+      transform:rotateX(180deg);
+      -ms-transform:rotateX(180deg); /* IE 9 */
+      -webkit-transform:rotateX(180deg); /* Safari and Chrome */
+    }
+  }
+}
+
 :root {
   --bg-color: #fafafa;
 }

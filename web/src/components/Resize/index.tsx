@@ -40,7 +40,9 @@ export default function Resize(props: {
       {display === "none" ? null : (
         <div
           className={
-            type === "x" ? "group h-full w-1 cursor-col-resize" : "h-1 w-full cursor-row-resize"
+            type === "x"
+              ? "group h-full w-[2px] cursor-col-resize"
+              : "h-[2px] w-full cursor-row-resize"
           }
           {...separatorProps}
         >

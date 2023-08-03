@@ -27,7 +27,6 @@ import { DEFAULT_CODE, SUPPORTED_METHODS } from "@/constants";
 import { changeURL } from "@/utils/format";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
-import useFunctionStore from "../../../store";
 
 import { TFunctionTemplate, TMethod } from "@/apis/typing";
 import FunctionTemplate from "@/pages/functionTemplate";
@@ -42,7 +41,6 @@ const CreateModal = (props: {
   aiCode?: string;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const store = useFunctionStore();
   const { showSuccess, currentApp } = useGlobalStore();
 
   const { functionItem, children = null, tagList, aiCode } = props;
@@ -114,7 +112,6 @@ const CreateModal = (props: {
     if (!res.error) {
       showSuccess(isEdit ? t("update success") : t("create success"));
       onClose();
-      store.setCurrentFunction(res.data);
       reset(defaultValues);
       navigate(`/app/${currentApp.appid}/function/${res.data.name}`);
     }

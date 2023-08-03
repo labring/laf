@@ -44,8 +44,14 @@ type TreeNode = {
 };
 
 export default function FunctionList() {
-  const { setCurrentFunction, currentFunction, setAllFunctionList, allFunctionList } =
-    useFunctionStore((store) => store);
+  const {
+    setCurrentFunction,
+    currentFunction,
+    setAllFunctionList,
+    allFunctionList,
+    recentFunctionList,
+    setRecentFunctionList,
+  } = useFunctionStore((store) => store);
 
   const functionCache = useFunctionCache();
   const [root, setRoot] = useState<TreeNode>({ _id: "", name: "", children: [] });
@@ -123,6 +129,9 @@ export default function FunctionList() {
         const currentFunction =
           data.data.find((item: TFunction) => item.name === functionName) || data.data[0];
         setCurrentFunction(currentFunction);
+        if (!recentFunctionList.map((item) => item._id).includes(currentFunction._id)) {
+          setRecentFunctionList([currentFunction, ...recentFunctionList]);
+        }
         navigate(`/app/${currentApp?.appid}/${Pages.function}/${currentFunction?.name}`, {
           replace: true,
         });
@@ -192,6 +201,9 @@ export default function FunctionList() {
             onClick={() => {
               if (!item?.children?.length) {
                 setCurrentFunction(item);
+                if (!recentFunctionList.map((item) => item._id).includes(item._id)) {
+                  setRecentFunctionList([item as unknown as TFunction, ...recentFunctionList]);
+                }
                 navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`);
               } else {
                 item.isExpanded = !item.isExpanded;
@@ -214,7 +226,7 @@ export default function FunctionList() {
               <HStack spacing={1}>
                 {functionCache.getCache(item?._id, (item as any)?.source?.code) !==
                   (item as any)?.source?.code && (
-                  <span className="mt-[1px] inline-block h-1 w-1 flex-none rounded-full bg-warn-700"></span>
+                  <span className="mt-[1px] inline-block h-1 w-1 flex-none rounded-full bg-rose-500"></span>
                 )}
                 <MoreButton isHidden={item.name !== currentFunction?.name} label={t("Operation")}>
                   <>

@@ -14,7 +14,7 @@ function AppDetail() {
   return (
     <>
       <SideBar />
-      <div className="m-2" style={{ marginLeft: SideBarWidth, height: "calc(100vh - 1rem)" }}>
+      <div className="m-1" style={{ marginLeft: SideBarWidth, height: "calc(100vh - 0.5rem)" }}>
         {[
           {
             pageId: Pages.function,

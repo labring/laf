@@ -23,7 +23,7 @@ function StatusBar() {
   const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
 
   return (
-    <Panel className="!flex-row justify-between">
+    <Panel className="!mt-[2px] !flex-row justify-between">
       <HStack spacing={2}>
         <LanguageSwitch className="!text-[12px]" />
         <ColorModeSwitch boxSize={3} className="pr-2" />

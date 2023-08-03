@@ -15,6 +15,7 @@ import DebugPanel from "./mods/DebugPanel";
 import DependencePanel from "./mods/DependencePanel";
 import EditorPanel from "./mods/EditorPanel";
 import FunctionPanel from "./mods/FunctionPanel";
+import HeadPanel from "./mods/HeadPanel";
 
 import useCustomSettingStore from "@/pages/customSetting";
 function FunctionPage() {
@@ -50,35 +51,40 @@ function FunctionPage() {
         </Col>
         <Resize type="x" pageId="functionPage" panelId="SideBar" containerRef={containerRef} />
         <Col>
+          <HeadPanel />
           <Row>
-            <EditorPanel />
+            <Col>
+              <Row>
+                <EditorPanel />
+              </Row>
+              <Resize
+                type="y"
+                pageId="functionPage"
+                panelId="ConsolePanel"
+                reverse
+                containerRef={containerRef}
+              />
+              <Row {...functionPageConfig.ConsolePanel}>
+                <ConsolePanel />
+              </Row>
+            </Col>
+            <div
+              onMouseDownCapture={() => {
+                setShowOverlay(true);
+              }}
+            >
+              <Resize
+                type="x"
+                pageId="functionPage"
+                panelId="RightPanel"
+                reverse
+                containerRef={containerRef}
+              />
+            </div>
+            <Col {...functionPageConfig.RightPanel}>
+              <DebugPanel containerRef={containerRef} showOverlay={showOverlay} />
+            </Col>
           </Row>
-          <Resize
-            type="y"
-            pageId="functionPage"
-            panelId="ConsolePanel"
-            reverse
-            containerRef={containerRef}
-          />
-          <Row {...functionPageConfig.ConsolePanel}>
-            <ConsolePanel />
-          </Row>
-        </Col>
-        <div
-          onMouseDownCapture={() => {
-            setShowOverlay(true);
-          }}
-        >
-          <Resize
-            type="x"
-            pageId="functionPage"
-            panelId="RightPanel"
-            reverse
-            containerRef={containerRef}
-          />
-        </div>
-        <Col {...functionPageConfig.RightPanel}>
-          <DebugPanel containerRef={containerRef} showOverlay={showOverlay} />
         </Col>
       </Row>
       <StatusBar />
