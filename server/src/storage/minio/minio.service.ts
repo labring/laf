@@ -67,6 +67,7 @@ export class MinioService {
     const sub_cmd = `admin user info ${target} ${username}`
     const res = await this.executeMinioClientCmd(region, sub_cmd)
     if (res.status !== 'success') return null
+    res.memberOf = res.memberOf || []
     return res as unknown as MinioUser
   }
 

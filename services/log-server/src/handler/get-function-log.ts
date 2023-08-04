@@ -7,10 +7,10 @@ const getFunctionLog: RequestHandler = async (req, res) => {
   let { page, pageSize, requestId, functionName, appid } = req.query as Record<
     string,
     any
-    >
+  >
   const token = req.headers['x-token'] as string
 
-  if (!token || Config.JWT_SECRET !== token) { 
+  if (!token || Config.JWT_SECRET !== token) {
     return res.status(403).send('forbidden')
   }
 

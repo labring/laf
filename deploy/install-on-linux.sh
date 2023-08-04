@@ -74,4 +74,4 @@ sealos run labring/openebs:v1.9.0
 sealos run labring/cert-manager:v1.8.0
 
 
-sealos run --env DOMAIN=$DOMAIN --env DB_PV_SIZE=5Gi --env OSS_PV_SIZE=5Gi lafyun/laf:latest
+sealos run --env DOMAIN=$DOMAIN --env DB_PV_SIZE=5Gi --env OSS_PV_SIZE=5Gi --env EXTERNAL_HTTP_SCHEMA=http lafyun/laf:latest
