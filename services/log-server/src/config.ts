@@ -48,4 +48,8 @@ export default class Config {
     }
     return process.env.JWT_SECRET
   }
+
+  static get REQUEST_PAYLOAD_LIMIT(): string {
+    return process.env.REQUEST_PAYLOAD_LIMIT || '16mb'
+  }
 }
