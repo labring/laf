@@ -20,10 +20,10 @@ export default function FunctionDetailPopOver(props: { functionItem: TFunction }
 
   return (
     <Popover trigger="hover" placement="bottom-start" isLazy>
-      <IconWrap>
+      <IconWrap className="mr-2">
         <PopoverTrigger>
           <span>
-            <BiMessageSquareDetail color="#828289" className="mr-2" />
+            <BiMessageSquareDetail color="#828289" />
           </span>
         </PopoverTrigger>
       </IconWrap>

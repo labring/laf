@@ -91,3 +91,10 @@ export enum TEMPLATE_CATEGORY {
   stared = "stared",
   recentUsed = "recentUsed",
 }
+
+export enum APP_SETTING_KEY {
+  INFO = "info",
+  ENV = "env",
+  MONITOR = "monitor",
+  DOMAIN = "domain",
+}

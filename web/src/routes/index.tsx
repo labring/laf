@@ -75,6 +75,15 @@ const routes = [
         ],
       },
       {
+        path: "/app",
+        children: [
+          {
+            path: "/app/collaboration/:code",
+            element: () => import("@/pages/app/Collaboration/Invited/index"),
+          },
+        ],
+      },
+      {
         path: "/market/templates/:pages",
         element: <TemplateLayout />,
         auth: true,

@@ -9,19 +9,16 @@
     }
 
     .light-scrollbar {
-        -ms-overflow-style: {
-          height: 4px;
-        }; 
         scrollbar-width: thin; 
         transform:rotateX(180deg);
-        -ms-transform:rotateX(180deg); /* IE 9 */
-        -webkit-transform:rotateX(180deg); /* Safari and Chrome */
+        -ms-transform:rotateX(180deg); 
+        -webkit-transform:rotateX(180deg); 
     }
 
     .flip {
       transform:rotateX(180deg);
-      -ms-transform:rotateX(180deg); /* IE 9 */
-      -webkit-transform:rotateX(180deg); /* Safari and Chrome */
+      -ms-transform:rotateX(180deg); 
+      -webkit-transform:rotateX(180deg); 
     }
   }
 }

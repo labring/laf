@@ -80,23 +80,25 @@ function FunctionItem({
               setSelectedFunctionList([...selectedFunctionList, item._id]);
             }
           }}
-          className="text-grayIron-600"
+          className="overflow-hidden text-grayIron-600"
           colorScheme="primary"
           isChecked={selectedFunctionList.includes(item._id)}
         >
           {item.name}
         </Checkbox>
       ) : (
-        <span className="flex items-center text-[14px] text-grayIron-600">{item.name}</span>
+        <span className="mr-2 flex items-center overflow-hidden text-[14px] text-grayIron-600">
+          <p className="truncate">{item.name}</p>
+        </span>
       )}
       {showCheckBox ? (
-        <span className="text-grayIron-600">{formatDate(item.createdAt)}</span>
+        <span className="whitespace-nowrap text-grayIron-600">{formatDate(item.createdAt)}</span>
       ) : !showDelete ? (
-        <span className="text-grayIron-600">{formatDate(item.createdAt)}</span>
+        <span className="whitespace-nowrap text-grayIron-600">{formatDate(item.createdAt)}</span>
       ) : (
         <div className="flex">
           <div
-            className="flex items-center text-grayModern-600 hover:text-grayModern-900"
+            className="flex items-center whitespace-nowrap text-grayModern-600 hover:text-grayModern-900"
             onClick={async () => {
               const res = await deleteRecycleBinItemsMutation.mutateAsync({ ids: [item._id] });
               if (!res.error) {
@@ -110,7 +112,7 @@ function FunctionItem({
             {t("Delete")}
           </div>
           <div
-            className="ml-3 flex items-center text-grayModern-600 hover:text-grayModern-900"
+            className="ml-3 flex items-center whitespace-nowrap text-grayModern-600 hover:text-grayModern-900"
             onClick={async () => {
               const res = await restoreRecycleBinItemsMutation.mutateAsync({ ids: [item._id] });
               if (!res.error) {

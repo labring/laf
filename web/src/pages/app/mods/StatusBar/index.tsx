@@ -30,7 +30,7 @@ function StatusBar() {
         <div>
           {t("StatusBar.CurrentApplication")}: {currentApp?.name}
         </div>
-        <SysSetting>
+        <SysSetting currentTab="info">
           <div className="cursor-pointer">
             <Icons type="info" />
           </div>

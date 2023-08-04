@@ -115,7 +115,8 @@
     "CreateFromTemplate": "更多模板",
     "getCodeOnline": "获取线上最新发布的代码",
     "versionHistory": "历史版本",
-    "Restore": "恢复"
+    "Restore": "恢复",
+    "Invite": "邀请"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
@@ -586,5 +587,19 @@
   "Apply": "使用",
   "Developing": "开发中",
   "Unverified": "未认证",
-  "i18n tip": "En"
+  "i18n tip": "En",
+  "Collaborate": {
+    "InviteMembers": "邀请成员",
+    "GenerateInvitationLink": "生成邀请链接",
+    "Members": "成员",
+    "NoMembers": "暂无成员",
+    "Invitation": "受邀提醒",
+    "InvitationContent": "{{userName}} 邀请您成为 {{teamName}} 的 {{position}}。",
+    "Accept": "接受",
+    "Accepted": "链接已被使用",
+    "Remove": "移除",
+    "CopyLink": "复制邀请链接",
+    "Revoke": "撤销",
+    "Invite": "邀请 ({{number}})"
+  }
 }

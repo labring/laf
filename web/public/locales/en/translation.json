@@ -115,7 +115,8 @@
     "CreateFromTemplate": "More Templates",
     "getCodeOnline": "Retrieve the latest released online code",
     "versionHistory": "Version History",
-    "Restore": "Restore"
+    "Restore": "Restore",
+    "Invite": "Invite"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
@@ -586,5 +587,19 @@
   "Apply": "apply",
   "Developing": "Developing",
   "Unverified": "Unverified",
-  "i18n tip": "中"
+  "i18n tip": "中",
+  "Collaborate": {
+    "InviteMembers": "Invite Members",
+    "GenerateInvitationLink": "Generate Invitation Link",
+    "Members": "Members",
+    "NoMembers": "No Members",
+    "Invitation": "Invitation",
+    "InvitationContent": "{{userName}} invite you to be the {{position}} of {{teamName}}.",
+    "Accept": "Accept",
+    "Accepted": "Link is used",
+    "Remove": "Remove",
+    "CopyLink": "Copy Invitation Link",
+    "Revoke": "Revoke",
+    "Invite": "Invite ({{number}})"
+  }
 }

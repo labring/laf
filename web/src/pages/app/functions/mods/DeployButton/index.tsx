@@ -77,7 +77,7 @@ export default function DeployButton() {
   return (
     <>
       <Tooltip
-        label={`快捷键: ${displayName.toUpperCase()}，调试可直接点击右侧「运行」按扭`}
+        label={`快捷键: ${displayName.toUpperCase()}，调试可直接点击下方「运行」按扭`}
         placement="bottom-end"
       >
         <Button
@@ -89,6 +89,7 @@ export default function DeployButton() {
           onClick={() => {
             onOpen();
           }}
+          px={3}
           leftIcon={<RocketIcon />}
         >
           {t("FunctionPanel.Deploy")}

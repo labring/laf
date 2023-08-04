@@ -124,6 +124,7 @@ const CreateModal = (props: {
           onClick: () => {
             onOpen();
             reset(defaultValues);
+            setSearchKey("");
             setTimeout(() => {
               setFocus("name");
             }, 0);
@@ -132,7 +133,7 @@ const CreateModal = (props: {
 
       <Modal isOpen={isOpen} onClose={onClose} size="3xl">
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent m="auto">
           <ModalHeader>
             {isEdit ? t("FunctionPanel.EditFunction") : t("FunctionPanel.AddFunction")}
           </ModalHeader>
