@@ -15,6 +15,15 @@ export class HttpInterceptorService {
 
   async processPreInterceptor(context: ExecutionContext, requestId: string) {
     const requestData = this.buildRequestData(context, requestId)
+    // console.log('pre')
+    // console.log(requestData.url)
+    // console.log(context.getClass().name)
+    // console.log(context.getHandler().name)
+    // if (requestData.user) {
+    //   console.log(requestData.user['_id'])
+    // } else {
+    //   console.log('null')
+    // }
     return this.sendRequestToInterceptor(requestData)
   }
 
@@ -63,6 +72,11 @@ export class HttpInterceptorService {
         data,
         { timeout: this.HTTP_INTERCEPTOR_TIMEOUT },
       )
+      if (!response.data) {
+        return {
+          action: HttpInterceptorAction.ALLOW,
+        }
+      }
       return response.data
     } catch (error) {
       if (error.code === 'ECONNABORTED') {

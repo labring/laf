@@ -5,7 +5,7 @@ import {
   CallHandler,
   ForbiddenException,
 } from '@nestjs/common'
-import { Observable, from, mergeMap, of } from 'rxjs'
+import { Observable, catchError, from, mergeMap, of, throwError } from 'rxjs'
 import { HttpInterceptorService } from './interceptor/http-interceptor.service'
 import {
   HttpInterceptorAction,
@@ -70,6 +70,8 @@ export class AppInterceptor implements NestInterceptor {
       response.redirect(interceptorData.redirect.data)
       return of(null)
     }
-    throw new ForbiddenException("You don't have permission to access")
+    throw new ForbiddenException(
+      interceptorData.denyMessage || "You don't have permission to access",
+    )
   }
 }
