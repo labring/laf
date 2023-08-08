@@ -1,7 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
-import { api } from '../api'
+import { ClearTestUser, api } from '../api'
 import * as crypto from 'crypto'
-import { getDbClient } from '../system-db'
 import { Config } from '../config'
 
 describe('signin user with password', () => {
@@ -92,16 +91,6 @@ describe('signin user with password', () => {
   })
 
   afterAll(async () => {
-    const client = await getDbClient()
-    const db = client.db()
-    try {
-      const user = await db.collection('User').findOne({ username: randomUsername })
-      await db.collection('UserPassword').deleteMany({ uid: user._id })
-      await db.collection('UserProfile').deleteOne({ uid: user._id })
-      await db.collection('Account').deleteOne({ createdBy: user._id })
-      await db.collection('User').deleteOne({ _id: user._id })
-    } finally {
-      await client.close()
-    }
+    await ClearTestUser(randomUsername)
   })
 })

@@ -87,4 +87,4 @@ echo "REGION_ID is ${REGION_ID}"
 
 ############## Run tests ##############
 echo "================= Run tests ================="
-npm run test
+npm test -- --runInBand
