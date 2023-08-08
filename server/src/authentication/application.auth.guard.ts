@@ -7,8 +7,8 @@ import {
 import { ApplicationService } from '../application/application.service'
 import { IRequest } from '../utils/interface'
 import { User } from 'src/user/entities/user'
-import { TeamService } from 'src/team/team.service'
-import { getRoleLevel } from 'src/team/entities/team-member'
+import { GroupService } from 'src/group/group.service'
+import { getRoleLevel } from 'src/group/entities/group-member'
 import { Reflector } from '@nestjs/core'
 
 @Injectable()
@@ -16,7 +16,7 @@ export class ApplicationAuthGuard implements CanActivate {
   logger = new Logger(ApplicationAuthGuard.name)
   constructor(
     private readonly appService: ApplicationService,
-    private readonly teamService: TeamService,
+    private readonly groupService: GroupService,
     private readonly reflector: Reflector,
   ) {}
   async canActivate(context: ExecutionContext) {
@@ -30,7 +30,7 @@ export class ApplicationAuthGuard implements CanActivate {
       return false
     }
 
-    const ok = await this.checkTeamAuth(appid, user, context)
+    const ok = await this.checkGroupAuth(appid, user, context)
     if (!ok) {
       return false
     }
@@ -41,32 +41,35 @@ export class ApplicationAuthGuard implements CanActivate {
     return true
   }
 
-  async checkTeamAuth(appid: string, user: User, context: ExecutionContext) {
+  async checkGroupAuth(appid: string, user: User, context: ExecutionContext) {
     const request = context.switchToHttp().getRequest() as IRequest
 
-    // check team
-    const teams = await this.teamService.findTeamsByAppidAndUid(appid, user._id)
-    if (teams.length === 0) {
+    // check group
+    const groups = await this.groupService.findGroupsByAppidAndUid(
+      appid,
+      user._id,
+    )
+    if (groups.length === 0) {
       return false
     }
 
-    teams.sort((a, b) => getRoleLevel(b.role) - getRoleLevel(a.role))
-    const team = teams[0]
+    groups.sort((a, b) => getRoleLevel(b.role) - getRoleLevel(a.role))
+    const group = groups[0]
 
-    // check team role
+    // check group role
     const roles = this.reflector.get<string[]>(
-      'team-roles',
+      'group-roles',
       context.getHandler(),
     )
     if (roles?.length > 0) {
       const roleLevels = roles.map(getRoleLevel).sort((a, b) => a - b)
 
-      if (roleLevels[0] > getRoleLevel(team.role)) {
+      if (roleLevels[0] > getRoleLevel(group.role)) {
         return false
       }
     }
 
-    request.team = team
+    request.group = group
 
     return true
   }

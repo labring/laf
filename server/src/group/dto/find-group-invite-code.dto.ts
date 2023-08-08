@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { User } from 'src/user/entities/user'
-import { TeamInviteCode } from '../entities/team-invite-code'
+import { GroupInviteCode } from '../entities/group-invite-code'
 import { OmitType } from '@nestjs/mapped-types'
 
-export class FindTeamInviteCodeDto extends OmitType(TeamInviteCode, [
+export class FindGroupInviteCodeDto extends OmitType(GroupInviteCode, [
   'usedBy',
 ]) {
   @ApiProperty({ type: User })

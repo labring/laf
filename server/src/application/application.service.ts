@@ -21,14 +21,14 @@ import {
   ApplicationBundle,
   ApplicationBundleResource,
 } from './entities/application-bundle'
-import { TeamService } from 'src/team/team.service'
-import { TeamMember } from 'src/team/entities/team-member'
+import { GroupService } from 'src/group/group.service'
+import { GroupMember } from 'src/group/entities/group-member'
 
 @Injectable()
 export class ApplicationService {
   private readonly logger = new Logger(ApplicationService.name)
 
-  constructor(private readonly teamService: TeamService) {}
+  constructor(private readonly groupService: GroupService) {}
 
   /**
    * Create application
@@ -100,7 +100,7 @@ export class ApplicationService {
         { session },
       )
 
-      await this.teamService.create(appid, userid, appid)
+      await this.groupService.create(appid, userid, appid)
       // commit transaction
       await session.commitTransaction()
     } catch (error) {
@@ -115,32 +115,30 @@ export class ApplicationService {
     const db = SystemDatabase.db
 
     const doc = await db
-      .collection<TeamMember>('TeamMember')
+      .collection<GroupMember>('GroupMember')
       .aggregate()
       .match({
         uid: userid,
       })
       .lookup({
-        from: 'Team',
-        localField: 'teamId',
-        foreignField: '_id',
-        as: 'team',
-      })
-      .lookup({
-        from: 'TeamApplication',
-        localField: 'teamId',
-        foreignField: 'teamId',
+        from: 'GroupApplication',
+        localField: 'groupId',
+        foreignField: 'groupId',
         as: 'applications',
       })
       .unwind('$applications')
-      .lookup({
-        from: 'Application',
-        localField: 'applications.appid',
-        foreignField: 'appid',
-        as: 'application',
+      .project({
+        _id: 0,
+        appid: '$applications.appid',
       })
+      .toArray()
+
+    const res = db
+      .collection<Application>('Application')
+      .aggregate()
       .match({
         phase: { $ne: ApplicationPhase.Deleted },
+        appid: { $in: doc.map((v) => v.appid) },
       })
       .lookup({
         from: 'ApplicationBundle',
@@ -162,40 +160,7 @@ export class ApplicationService {
       })
       .toArray()
 
-    return doc
-  }
-
-  async findAllByTeam(teamId: ObjectId) {
-    const db = SystemDatabase.db
-
-    const doc = await db
-      .collection('Application')
-      .aggregate<ApplicationWithRelations>()
-      .match({
-        teamId,
-        phase: { $ne: ApplicationPhase.Deleted },
-      })
-      .lookup({
-        from: 'ApplicationBundle',
-        localField: 'appid',
-        foreignField: 'appid',
-        as: 'bundle',
-      })
-      .unwind('$bundle')
-      .lookup({
-        from: 'Runtime',
-        localField: 'runtimeId',
-        foreignField: '_id',
-        as: 'runtime',
-      })
-      .unwind('$runtime')
-      .project<ApplicationWithRelations>({
-        'bundle.resource.requestCPU': 0,
-        'bundle.resource.requestMemory': 0,
-      })
-      .toArray()
-
-    return doc
+    return res
   }
 
   async findOne(appid: string) {

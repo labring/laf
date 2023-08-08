@@ -1,48 +1,48 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common'
-import { TeamService } from './team.service'
+import { GroupService } from './group.service'
 import { IRequest } from 'src/utils/interface'
 import { User } from 'src/user/entities/user'
 import { ObjectId } from 'mongodb'
 import { Reflector } from '@nestjs/core'
-import { getRoleLevel } from './entities/team-member'
-import { TeamMemberService } from './team-member/team-member.service'
+import { getRoleLevel } from './entities/group-member'
+import { GroupMemberService } from './group-member/group-member.service'
 
 @Injectable()
-export class TeamAuthGuard implements CanActivate {
+export class GroupAuthGuard implements CanActivate {
   constructor(
-    private readonly teamService: TeamService,
-    private readonly teamMemberService: TeamMemberService,
+    private readonly groupService: GroupService,
+    private readonly groupMemberService: GroupMemberService,
     private readonly reflector: Reflector,
   ) {}
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest() as IRequest
     const user = request.user as User
-    const teamId = request.params.teamId
+    const groupId = request.params.groupId
 
-    if (!teamId) {
+    if (!groupId) {
       return false
     }
 
-    const team = await this.teamService.findOneWithRole(
-      new ObjectId(teamId),
+    const group = await this.groupService.findOneWithRole(
+      new ObjectId(groupId),
       user._id,
     )
-    if (!team) {
+    if (!group) {
       return false
     }
 
-    const members = await this.teamMemberService.find(new ObjectId(teamId))
+    const members = await this.groupMemberService.find(new ObjectId(groupId))
     const member = members.find((m) => m.uid.equals(user._id))
     if (!member) {
       return false
     }
 
-    // inject team to request
-    request.team = team
+    // inject group to request
+    request.group = group
 
     const roles = this.reflector.get<string[]>(
-      'team-roles',
+      'group-roles',
       context.getHandler(),
     )
     if (!roles || roles.length === 0) {

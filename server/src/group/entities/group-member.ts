@@ -1,34 +1,34 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
 
-export enum TeamRole {
+export enum GroupRole {
   Owner = 'owner',
   Admin = 'admin',
   Developer = 'developer',
 }
 
 const roleLevel = {
-  [TeamRole.Owner]: 0b100,
-  [TeamRole.Admin]: 0b010,
-  [TeamRole.Developer]: 0b001,
+  [GroupRole.Owner]: 0b100,
+  [GroupRole.Admin]: 0b010,
+  [GroupRole.Developer]: 0b001,
 } as const
 
-export const getRoleLevel = (role: TeamRole) => {
+export const getRoleLevel = (role: GroupRole) => {
   return roleLevel[role]
 }
 
-export class TeamMember {
+export class GroupMember {
   @ApiProperty({ type: 'string' })
-  id?: ObjectId
+  _id?: ObjectId
 
   @ApiProperty({ type: 'string' })
   uid: ObjectId
 
   @ApiProperty({ type: 'string' })
-  teamId: ObjectId
+  groupId: ObjectId
 
-  @ApiProperty({ enum: TeamRole })
-  role: TeamRole
+  @ApiProperty({ enum: GroupRole })
+  role: GroupRole
 
   @ApiProperty()
   createdAt: Date

@@ -7,10 +7,10 @@ export const InjectUser = createParamDecorator(
   },
 )
 
-export const InjectTeam = createParamDecorator(
+export const InjectGroup = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest()
-    return request.team
+    return request.group
   },
 )
 

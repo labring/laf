@@ -8,6 +8,7 @@ import {
   Logger,
   Post,
   Delete,
+  ForbiddenException,
 } from '@nestjs/common'
 import {
   ApiBearerAuth,
@@ -47,11 +48,11 @@ import { ResourceService } from 'src/billing/resource.service'
 import { RuntimeDomainService } from 'src/gateway/runtime-domain.service'
 import { BindCustomDomainDto } from 'src/website/dto/update-website.dto'
 import { RuntimeDomain } from 'src/gateway/entities/runtime-domain'
-import { TeamRole, getRoleLevel } from 'src/team/entities/team-member'
-import { TeamRoles } from 'src/team/team-role.decorator'
-import { InjectApplication, InjectTeam, InjectUser } from 'src/utils/decorator'
+import { GroupRole, getRoleLevel } from 'src/group/entities/group-member'
+import { GroupRoles } from 'src/group/group-role.decorator'
+import { InjectApplication, InjectGroup, InjectUser } from 'src/utils/decorator'
 import { User } from 'src/user/entities/user'
-import { TeamWithRole } from 'src/team/entities/team'
+import { GroupWithRole } from 'src/group/entities/group'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -207,7 +208,7 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Update application name' })
   @ApiResponseObject(Application)
-  @TeamRoles(TeamRole.Admin)
+  @GroupRoles(GroupRole.Admin)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid/name')
   async updateName(
@@ -229,8 +230,11 @@ export class ApplicationController {
     @Param('appid') appid: string,
     @Body() dto: UpdateApplicationStateDto,
     @InjectApplication() app: Application,
-    @InjectTeam() team: TeamWithRole,
+    @InjectGroup() group: GroupWithRole,
   ) {
+    if (dto.state === ApplicationState.Deleted) {
+      throw new ForbiddenException('cannot update state to deleted')
+    }
     const userid = app.createdBy
 
     // check account balance
@@ -277,7 +281,7 @@ export class ApplicationController {
       [ApplicationState.Stopped, ApplicationState.Running].includes(
         dto.state,
       ) &&
-      getRoleLevel(team.role) < getRoleLevel(TeamRole.Admin)
+      getRoleLevel(group.role) < getRoleLevel(GroupRole.Admin)
     ) {
       return ResponseUtil.error('no permission')
     }
@@ -291,7 +295,7 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Update application bundle' })
   @ApiResponseObject(ApplicationBundle)
-  @TeamRoles(TeamRole.Admin)
+  @GroupRoles(GroupRole.Admin)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid/bundle')
   async updateBundle(
@@ -344,7 +348,7 @@ export class ApplicationController {
    */
   @ApiResponseObject(RuntimeDomain)
   @ApiOperation({ summary: 'Bind custom domain to application' })
-  @TeamRoles(TeamRole.Admin)
+  @GroupRoles(GroupRole.Admin)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid/domain')
   async bindDomain(
@@ -379,7 +383,7 @@ export class ApplicationController {
    */
   @ApiResponse({ type: ResponseUtil<boolean> })
   @ApiOperation({ summary: 'Check if domain is resolved' })
-  @TeamRoles(TeamRole.Admin)
+  @GroupRoles(GroupRole.Admin)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post(':appid/domain/resolved')
   async checkResolved(
@@ -399,7 +403,7 @@ export class ApplicationController {
    */
   @ApiResponseObject(RuntimeDomain)
   @ApiOperation({ summary: 'Remove custom domain of application' })
-  @TeamRoles(TeamRole.Admin)
+  @GroupRoles(GroupRole.Admin)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':appid/domain')
   async remove(@Param('appid') appid: string) {
@@ -421,7 +425,7 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Delete an application' })
   @ApiResponseObject(Application)
-  @TeamRoles(TeamRole.Owner)
+  @GroupRoles(GroupRole.Owner)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':appid')
   async delete(

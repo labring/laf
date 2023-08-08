@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb'
-import { TeamRole } from './team-member'
+import { GroupRole } from './group-member'
 import { ApiProperty } from '@nestjs/swagger'
 
-export class Team {
+export class Group {
   @ApiProperty({ type: String })
   _id?: ObjectId
 
@@ -22,7 +22,7 @@ export class Team {
   updatedAt: Date
 }
 
-export class TeamWithRole extends Team {
-  @ApiProperty({ enum: TeamRole })
-  role: TeamRole
+export class GroupWithRole extends Group {
+  @ApiProperty({ enum: GroupRole })
+  role: GroupRole
 }

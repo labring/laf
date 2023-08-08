@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
-import { TeamRole } from './team-member'
+import { GroupRole } from './group-member'
 
-export class TeamInviteCode {
+export class GroupInviteCode {
   @ApiProperty({ type: 'string' })
   _id?: ObjectId
 
@@ -13,10 +13,13 @@ export class TeamInviteCode {
   code: string
 
   @ApiProperty()
-  role: TeamRole
+  role: GroupRole
 
   @ApiProperty({ type: 'string' })
-  teamId: ObjectId
+  groupId: ObjectId
+
+  @ApiProperty({ type: 'string' })
+  createdBy: ObjectId
 
   @ApiProperty()
   createdAt: Date
