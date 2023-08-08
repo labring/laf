@@ -27,7 +27,7 @@ export async function EnsureTestToken() {
     password: Config.TEST_PASSWORD,
   })
 
-  const token2: string = res2.data?.data
+  const token2: string = res2.data?.data?.token
   return token2
 }
 
