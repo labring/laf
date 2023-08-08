@@ -28,6 +28,12 @@ export class UserProfile {
   idVerified?: IdVerified
 
   @ApiProperty()
+  realName?: string
+
+  @ApiProperty()
+  idCard?: string
+
+  @ApiProperty()
   createdAt: Date
 
   @ApiProperty()

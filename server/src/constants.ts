@@ -176,9 +176,9 @@ export class ServerConfig {
   static get HTTP_INTERCEPTOR_URL() {
     // return 'https://vyd7rt.laf.run/interceptor'
     // return 'https://vyd7rt.laf.run/id-verify-interceptor'
-    return 'https://mjt97c.laf.run/interceptor-test'
+    // return 'https://mjt97c.laf.run/interceptor-test'
     // return 'http://gwwwlb.100.127.251.45.nip.io/interceptor-test'
-    // return 'http://gwwwlb.100.127.251.45.nip.io/auth-interceptor'
+    return 'http://gwwwlb.100.127.251.45.nip.io/auth-interceptor'
     // return process.env.HTTP_INTERCEPTOR_URL
   }
 }
