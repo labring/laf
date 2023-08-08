@@ -594,12 +594,19 @@
     "Members": "成员",
     "NoMembers": "暂无成员",
     "Invitation": "受邀提醒",
-    "InvitationContent": "{{userName}} 邀请您成为 {{teamName}} 的 {{position}}。",
+    "InvitationContent": "{{userName}} 邀请您成为应用 <strong>{{appName}}</strong> ({{appid}}) 的 {{role}}。",
     "Accept": "接受",
     "Accepted": "链接已被使用",
     "Remove": "移除",
     "CopyLink": "复制邀请链接",
     "Revoke": "撤销",
-    "Invite": "邀请 ({{number}})"
-  }
+    "Invite": "协作 ({{number}})",
+    "GenerateInvitationLinkSuccess": "生成链接成功",
+    "DeleteLinkSuccess": "删除链接成功",
+    "JoinSuccess": "加入成功",
+    "RemoveSuccess": "成员移除成功",
+    "Leave": "离开",
+    "LeaveSuccess": "已成功离开"
+  },
+  "Collaborative": "协作"
 }

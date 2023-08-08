@@ -43,7 +43,7 @@
   "Copied": "copied",
   "Copy": "copy",
   "Create": "New application",
-  "Change": "Change",
+  "Change": "Change Specification",
   "CreateNow": "Create Now",
   "Custom": "customize",
   "Days": "days",
@@ -594,12 +594,19 @@
     "Members": "Members",
     "NoMembers": "No Members",
     "Invitation": "Invitation",
-    "InvitationContent": "{{userName}} invite you to be the {{position}} of {{teamName}}.",
+    "InvitationContent": "{{userName}} invite you to be the {{role}} of app <strong>{{appName}}</strong> {{appid}}.",
     "Accept": "Accept",
     "Accepted": "Link is used",
     "Remove": "Remove",
     "CopyLink": "Copy Invitation Link",
     "Revoke": "Revoke",
-    "Invite": "Invite ({{number}})"
-  }
+    "Invite": "Collaborate ({{number}})",
+    "GenerateInvitationLinkSuccess": "Generate Invitation Link Success",
+    "DeleteLinkSuccess": "Delete Link Success",
+    "JoinSuccess": "Join Success",
+    "RemoveSuccess": "Remove Member Success",
+    "Leave": "Leave",
+    "LeaveSuccess": "Leave Success"
+  },
+  "Collaborative": "Collaborative"
 }

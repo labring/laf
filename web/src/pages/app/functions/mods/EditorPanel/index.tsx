@@ -59,9 +59,11 @@ function EditorPanel() {
           }}
         />
       ) : (
-        <EmptyBox>
-          <></>
-        </EmptyBox>
+        functionListQuery.data?.data?.length !== 0 && (
+          <EmptyBox>
+            <></>
+          </EmptyBox>
+        )
       )}
     </Panel>
   );

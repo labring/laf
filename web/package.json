@@ -51,6 +51,7 @@
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "sass": "^1.62.1",
+    "simplebar-react": "^3.2.4",
     "uuid": "^9.0.0",
     "zustand": "^4.3.8"
   },

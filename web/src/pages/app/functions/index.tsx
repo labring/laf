@@ -2,7 +2,7 @@
  * cloud functions index page
  ***************************/
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 import Content from "@/components/Content";
 import { Col, Row } from "@/components/Grid";
@@ -21,17 +21,6 @@ import useCustomSettingStore from "@/pages/customSetting";
 function FunctionPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const functionPageConfig = useCustomSettingStore((store) => store.layoutInfo.functionPage);
-  const [showOverlay, setShowOverlay] = useState(false);
-
-  useEffect(() => {
-    function handleMouseUp() {
-      setShowOverlay(false);
-    }
-    document.addEventListener("mouseup", handleMouseUp);
-    return () => {
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, []);
 
   return (
     <Content>
@@ -68,21 +57,15 @@ function FunctionPage() {
                 <ConsolePanel />
               </Row>
             </Col>
-            <div
-              onMouseDownCapture={() => {
-                setShowOverlay(true);
-              }}
-            >
-              <Resize
-                type="x"
-                pageId="functionPage"
-                panelId="RightPanel"
-                reverse
-                containerRef={containerRef}
-              />
-            </div>
+            <Resize
+              type="x"
+              pageId="functionPage"
+              panelId="RightPanel"
+              reverse
+              containerRef={containerRef}
+            />
             <Col {...functionPageConfig.RightPanel}>
-              <DebugPanel containerRef={containerRef} showOverlay={showOverlay} />
+              <DebugPanel containerRef={containerRef} />
             </Col>
           </Row>
         </Col>

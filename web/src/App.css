@@ -2,27 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  @variants responsive {
-    .light-scrollbar::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    .light-scrollbar {
-        scrollbar-width: thin; 
-        transform:rotateX(180deg);
-        -ms-transform:rotateX(180deg); 
-        -webkit-transform:rotateX(180deg); 
-    }
-
-    .flip {
-      transform:rotateX(180deg);
-      -ms-transform:rotateX(180deg); 
-      -webkit-transform:rotateX(180deg); 
-    }
-  }
-}
-
 :root {
   --bg-color: #fafafa;
 }
@@ -96,4 +75,9 @@ a {
 .rdp-day_selected {
   background-color: #00A9A6 !important;
   color: white !important;
+}
+
+.simplebar-scrollbar::before {
+  background: #DEE0E2;
+  height: 6px;
 }

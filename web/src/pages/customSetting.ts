@@ -57,7 +57,7 @@ const useCustomSettingStore = create<State>()(
             SideBar: {
               id: "SideBar",
               style: {
-                width: 300,
+                width: 272,
                 minWidth: 0,
               },
             },

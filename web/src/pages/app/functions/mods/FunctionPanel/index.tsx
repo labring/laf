@@ -110,6 +110,7 @@ export default function FunctionList() {
   useFunctionListQuery({
     onSuccess: (data) => {
       setAllFunctionList(data.data);
+      setRecentFunctionList([]);
       setRoot(generateRoot(data.data));
       const tags = data.data.reduce((pre: any, item: any) => {
         return pre.concat(item.tags);
@@ -129,9 +130,7 @@ export default function FunctionList() {
         const currentFunction =
           data.data.find((item: TFunction) => item.name === functionName) || data.data[0];
         setCurrentFunction(currentFunction);
-        if (!recentFunctionList.map((item) => item._id).includes(currentFunction._id)) {
-          setRecentFunctionList([currentFunction, ...recentFunctionList]);
-        }
+        setRecentFunctionList([currentFunction]);
         navigate(`/app/${currentApp?.appid}/${Pages.function}/${currentFunction?.name}`, {
           replace: true,
         });

@@ -14,6 +14,7 @@ import { t } from "i18next";
 import { Routes } from "@/constants";
 
 import useInviteCode from "@/hooks/useInviteCode";
+import { useGroupMemberAddMutation } from "@/pages/app/collaboration/service";
 import { useSendSmsCodeMutation, useSigninBySmsCodeMutation } from "@/pages/auth/service";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -35,6 +36,7 @@ export default function LoginByPhonePanel({
   const { showSuccess, showError } = useGlobalStore();
   const [isSendSmsCode, setIsSendSmsCode] = useState(false);
   const [countdown, setCountdown] = useState(60);
+  const joinGroupMutation = useGroupMemberAddMutation();
 
   const {
     register,
@@ -58,7 +60,18 @@ export default function LoginByPhonePanel({
     });
 
     if (res?.data) {
-      navigate(Routes.dashboard, { replace: true });
+      const sessionData = sessionStorage.getItem("collaborationCode");
+      const collaborationCode = JSON.parse(sessionData || "{}");
+      sessionStorage.removeItem("collaborationCode");
+      if (sessionData) {
+        const res = await joinGroupMutation.mutateAsync({ code: collaborationCode.code });
+        if (!res.error) {
+          showSuccess(t("Collaborate.JoinSuccess"));
+        }
+        navigate(`/app/${collaborationCode.appid}/function`);
+      } else {
+        navigate(Routes.dashboard, { replace: true });
+      }
     }
   };
 

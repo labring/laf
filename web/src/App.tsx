@@ -14,6 +14,7 @@ import darkTheme from "./chakraThemeDark";
 import { CHAKRA_UI_COLOR_MODE_KEY } from "./constants";
 import routes from "./routes";
 
+import "simplebar-react/dist/simplebar.min.css";
 import "./App.css";
 const GlobalStyles = css`
   .js-focus-visible :focus:not([data-focus-visible-added]) {

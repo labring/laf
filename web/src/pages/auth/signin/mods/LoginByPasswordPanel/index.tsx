@@ -14,7 +14,9 @@ import { t } from "i18next";
 
 import { Routes } from "@/constants";
 
+import { useGroupMemberAddMutation } from "@/pages/app/collaboration/service";
 import { useSigninByPasswordMutation } from "@/pages/auth/service";
+import useGlobalStore from "@/pages/globalStore";
 
 type FormData = {
   account: string;
@@ -33,6 +35,8 @@ export default function LoginByPasswordPanel({
   const signinByPasswordMutation = useSigninByPasswordMutation();
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const joinGroupMutation = useGroupMemberAddMutation();
+  const { showSuccess } = useGlobalStore();
 
   const {
     register,
@@ -47,7 +51,18 @@ export default function LoginByPasswordPanel({
     });
 
     if (res?.data) {
-      navigate(Routes.dashboard, { replace: true });
+      const sessionData = sessionStorage.getItem("collaborationCode");
+      const collaborationCode = JSON.parse(sessionData || "{}");
+      sessionStorage.removeItem("collaborationCode");
+      if (sessionData) {
+        const res = await joinGroupMutation.mutateAsync({ code: collaborationCode.code });
+        if (!res.error) {
+          showSuccess(t("Collaborate.JoinSuccess"));
+        }
+        navigate(`/app/${collaborationCode.appid}/function`);
+      } else {
+        navigate(Routes.dashboard, { replace: true });
+      }
     }
   };
 

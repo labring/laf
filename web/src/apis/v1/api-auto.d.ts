@@ -21,6 +21,16 @@ declare namespace Definitions {
     params?: {};
   };
 
+  export type SendEmailCodeDto = {
+    email?: string;
+    type?: string /* verify code type */;
+  };
+
+  export type BindEmailDto = {
+    email?: string;
+    code?: string /* verify code */;
+  };
+
   export type CompileFunctionDto = {
     code?: string /* The source code of the function */;
   };
@@ -286,11 +296,6 @@ declare namespace Definitions {
     pat?: string /* PAT */;
   };
 
-  export type SendEmailCodeDto = {
-    email?: string;
-    type?: string /* verify code type */;
-  };
-
   export type CreatePATDto = {
     name?: string;
     expiresIn?: number;
@@ -311,11 +316,6 @@ declare namespace Definitions {
     newPhoneNumber?: string /* new phone number */;
     oldSmsCode?: string /* sms verify code for old phone number */;
     newSmsCode?: string /* sms verify code for new phone number */;
-  };
-
-  export type BindEmailDto = {
-    email?: string;
-    code?: string /* verify code */;
   };
 
   export type BindUsernameDto = {
@@ -375,6 +375,52 @@ declare namespace Definitions {
   export type RestoreRecycleBinItemsDto = {
     ids?: string[] /* The list of item ids */;
   };
+
+  export type Group = {
+    _id?: string;
+    name?: string;
+    appid?: string;
+    createdBy?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type CreateGroupDto = {
+    name?: string;
+  };
+
+  export type UpdateGroupDto = {
+    name?: string;
+  };
+
+  export type GenerateGroupInviteCodeDto = {
+    role?: string;
+  };
+
+  export type GroupInviteCode = {
+    _id?: string;
+    usedBy?: string;
+    code?: string;
+    role?: string;
+    groupId?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type GroupMember = {
+    id?: string;
+    uid?: string;
+    groupId?: string;
+    role?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
+
+  export type UpdateGroupMemberRoleDto = {
+    role?: string;
+  };
+
+  export type GroupApplication = {};
 
   export type CreateAutoscalingDto = {
     enable?: boolean;
@@ -1057,14 +1103,6 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace UserControllerBindEmail {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.BindEmailDto;
-
-    export type Responses = any;
-  }
-
   namespace UserControllerBindUsername {
     export type QueryParameters = any;
 
@@ -1341,6 +1379,150 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.RestoreRecycleBinItemsDto;
+
+    export type Responses = any;
+  }
+
+  namespace GroupControllerFindGroupByAppId {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupControllerFindGroupByInviteCode {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupControllerCreate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateGroupDto;
+
+    export type Responses = any;
+  }
+
+  namespace GroupControllerDelete {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupControllerFindOne {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupControllerUpdateGroup {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdateGroupDto;
+
+    export type Responses = any;
+  }
+
+  namespace GroupInviteControllerGetInviteCode {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupInviteControllerGenerateInviteCode {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.GenerateGroupInviteCodeDto;
+
+    export type Responses = any;
+  }
+
+  namespace GroupInviteControllerDeleteInviteCode {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupMemberControllerFindMembers {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupMemberControllerAddMember {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupMemberControllerRemoveMember {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupMemberControllerUpdateMemberRole {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.UpdateGroupMemberRoleDto;
+
+    export type Responses = any;
+  }
+
+  namespace GroupMemberControllerLeaveGroup {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupApplicationControllerAppend {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupApplicationControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GroupApplicationControllerFind {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
 
     export type Responses = any;
   }

@@ -75,11 +75,11 @@ const routes = [
         ],
       },
       {
-        path: "/app",
+        path: "/collaboration",
         children: [
           {
-            path: "/app/collaboration/:code",
-            element: () => import("@/pages/app/Collaboration/Invited/index"),
+            path: "/collaboration/join",
+            element: () => import("@/pages/app/collaboration/Invited/index"),
           },
         ],
       },

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { BiMessageSquareDetail } from "react-icons/bi";
 import {
   Popover,
@@ -17,6 +18,7 @@ import { TFunction } from "@/apis/typing";
 
 export default function FunctionDetailPopOver(props: { functionItem: TFunction }) {
   const { functionItem } = props;
+  const { t } = useTranslation();
 
   return (
     <Popover trigger="hover" placement="bottom-start" isLazy>
@@ -34,12 +36,12 @@ export default function FunctionDetailPopOver(props: { functionItem: TFunction }
               <span className="align-middle">{functionItem.name}</span> <FileTypeIcon type="ts" />
             </h2>
             <div className="text-grayIron-600">
-              <span>更新于 {formatDate(functionItem.updatedAt)}</span>
+              <span>{t("Template.updatedAt") + " " + formatDate(functionItem.updatedAt)}</span>
               <p className="mt-2">{functionItem.desc}</p>
             </div>
             <div className="mt-2 flex w-full flex-wrap items-center justify-start">
               {functionItem.tags.map((item: string) => (
-                <Tag className="mb-2 mr-2 cursor-pointer" key={item} variant="inputTag">
+                <Tag className="mb-2 mr-2 cursor-pointer" key={item}>
                   <TagLabel>{item}</TagLabel>
                 </Tag>
               ))}

@@ -10,7 +10,6 @@ import StoragePage from "./storages";
 
 function AppDetail() {
   const { visitedViews, currentPageId } = useGlobalStore();
-
   return (
     <>
       <SideBar />
