@@ -582,7 +582,7 @@
   "ClearRecycleBin": "清空回收站",
   "RestoreSuccess": "还原成功",
   "EmptySuccess": "清空成功",
-  "RecycleBinEmpty": "回收站已清空",
+  "RecycleBinEmpty": "回收站为空",
   "SelectOne": "请至少选择一个",
   "Apply": "使用",
   "Developing": "开发中",

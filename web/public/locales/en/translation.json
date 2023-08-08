@@ -582,7 +582,7 @@
   "ClearRecycleBin": "Clear Recycle Bin",
   "RestoreSuccess": "successfully restored",
   "EmptySuccess": "successfully empty",
-  "RecycleBinEmpty": "Recycle Bin Empty",
+  "RecycleBinEmpty": "Recycle Bin is Empty",
   "SelectOne": "At least select one",
   "Apply": "apply",
   "Developing": "Developing",

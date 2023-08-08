@@ -126,7 +126,7 @@ export default function FunctionList() {
       });
       setTagsList(newTags);
 
-      if (!currentFunction?._id && data.data.length > 0) {
+      if (!recentFunctionList.length && data.data.length > 0) {
         const currentFunction =
           data.data.find((item: TFunction) => item.name === functionName) || data.data[0];
         setCurrentFunction(currentFunction);
@@ -139,7 +139,7 @@ export default function FunctionList() {
   });
 
   useEffect(() => {
-    setAllFunctionList([]);
+    setRecentFunctionList([]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -136,7 +136,7 @@ export default function RecycleBinModal(props: { children: React.ReactElement })
   const { children } = props;
   const { t } = useTranslation();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { showSuccess, showError } = useGlobalStore();
+  const { showSuccess, showError, showInfo } = useGlobalStore();
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
 
@@ -169,7 +169,7 @@ export default function RecycleBinModal(props: { children: React.ReactElement })
         setEnable(false);
         if (data.data.total === 0) {
           onClose();
-          showSuccess(t("RecycleBinEmpty"));
+          showInfo(t("RecycleBinEmpty"));
         }
       },
     },
