@@ -144,7 +144,7 @@ export default function CollaborateButton() {
                       darkMode ? "" : "bg-[#F4F6F8]",
                     )}
                   >
-                    {memberType}
+                    {memberType.charAt(0).toUpperCase() + memberType.slice(1)}
                     {/* <ChevronDownIcon className="ml-1" /> */}
                   </div>
                   <Button
@@ -174,19 +174,32 @@ export default function CollaborateButton() {
               {[...memberList, ...(codeList || [])].map((member) => (
                 <div key={member.uid} className="mt-4 flex items-center justify-between text-lg">
                   <span className="flex items-center">
-                    <Avatar
-                      boxSize="36px"
-                      border={"2px solid #DEE0E2"}
-                      mr="2"
-                      name={member.username}
-                      src={getAvatarUrl(member.uid)}
-                    />
+                    {!!member.uid ? (
+                      <Avatar
+                        boxSize="32px"
+                        border={"2px solid #DEE0E2"}
+                        mr="2"
+                        name={member.username}
+                        src={getAvatarUrl(member.uid)}
+                      />
+                    ) : (
+                      <div className="mr-2 h-8 w-8 rounded-full border-2 border-dashed border-grayModern-300" />
+                    )}
                     <p>{!member.username ? member.code : member.username}</p>
                   </span>
                   <span className="flex items-center">
                     {member.username ? (
                       <>
-                        <p className="pr-6">{member.role}</p>
+                        <p
+                          className={clsx(
+                            "mr-4 rounded-lg px-2 py-1",
+                            member.role === "owner" && "bg-adora-100 text-adora-600",
+                            member.role === "admin" && "bg-blue-100 text-[#219BF4]",
+                            member.role === "developer" && "bg-primary-100 text-primary-600",
+                          )}
+                        >
+                          {member.role}
+                        </p>
                         {/* <ChevronDownIcon className="mr-5 cursor-pointer" /> */}
                       </>
                     ) : (

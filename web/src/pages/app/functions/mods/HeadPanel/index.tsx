@@ -43,9 +43,13 @@ function HeadPanel() {
                   <div
                     key={index}
                     className={clsx(
-                      "group !ml-0 flex h-full w-28 cursor-pointer items-center justify-between border-b-[2px] px-3 font-medium",
+                      "group !ml-0 flex h-full w-28 cursor-pointer items-center justify-between border-y-[2px] px-3 font-medium",
                       darkMode ? "border-[#1A202C]" : "border-[#EEF0F2]",
-                      selected ? "border-b-transparent" : "text-grayModern-600",
+                      selected
+                        ? "border-b-transparent border-t-primary-600 text-primary-600"
+                        : darkMode
+                        ? "border-t-lafDark-200 text-grayModern-400"
+                        : "border-t-lafWhite-200 text-grayModern-600",
                       selected
                         ? index === 0
                           ? "border-r-[2px]"
@@ -57,7 +61,10 @@ function HeadPanel() {
                     onClick={() => setCurrentFunction(item)}
                   >
                     <div className="max-w-20 flex truncate">
-                      <FunctionDetailPopOver functionItem={item} />
+                      <FunctionDetailPopOver
+                        functionItem={item}
+                        color={selected ? "#00A9A6" : ""}
+                      />
                       <p className="truncate">{item.name}</p>
                     </div>
                     {functionCache.getCache(item?._id, (item as any)?.source?.code) !==

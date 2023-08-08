@@ -28,6 +28,7 @@ import CreateModal from "./CreateModal";
 
 import { TFunction } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
+import RecycleBinModal from "@/pages/app/mods/StatusBar/RecycleBinModal";
 import useGlobalStore from "@/pages/globalStore";
 
 type TagItem = {
@@ -110,7 +111,6 @@ export default function FunctionList() {
   useFunctionListQuery({
     onSuccess: (data) => {
       setAllFunctionList(data.data);
-      setRecentFunctionList([]);
       setRoot(generateRoot(data.data));
       const tags = data.data.reduce((pre: any, item: any) => {
         return pre.concat(item.tags);
@@ -137,6 +137,11 @@ export default function FunctionList() {
       }
     },
   });
+
+  useEffect(() => {
+    setAllFunctionList([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -275,6 +280,11 @@ export default function FunctionList() {
           </div>
         }
         actions={[
+          <RecycleBinModal>
+            <IconWrap size={20} tooltip={t("RecycleBin").toString()}>
+              <DeleteIcon fontSize={11} />
+            </IconWrap>
+          </RecycleBinModal>,
           <TriggerModal key="trigger_modal">
             <IconWrap size={20} tooltip={t("TriggerPanel.Trigger").toString()}>
               <TriggerIcon fontSize={13} />

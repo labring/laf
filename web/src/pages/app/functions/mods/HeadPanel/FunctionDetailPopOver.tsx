@@ -16,16 +16,16 @@ import { formatDate } from "@/utils/format";
 
 import { TFunction } from "@/apis/typing";
 
-export default function FunctionDetailPopOver(props: { functionItem: TFunction }) {
-  const { functionItem } = props;
+export default function FunctionDetailPopOver(props: { functionItem: TFunction; color?: string }) {
+  const { functionItem, color } = props;
   const { t } = useTranslation();
 
   return (
     <Popover trigger="hover" placement="bottom-start" isLazy>
-      <IconWrap className="mr-2">
+      <IconWrap className="mr-1">
         <PopoverTrigger>
           <span>
-            <BiMessageSquareDetail color="#828289" />
+            <BiMessageSquareDetail color={color || "#828289"} />
           </span>
         </PopoverTrigger>
       </IconWrap>
