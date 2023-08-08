@@ -66,6 +66,10 @@ export class FunctionEngine {
    */
   wrap(code: string): string {
     const wrapped = `
+      const require = (module) => {
+        fromModules.push(__function_name)
+        return requireFunc(module, fromModules)
+      }
       ${code}; 
       const __main__ = exports.main || exports.default
       if(!__main__) { throw new Error('FunctionExecError: main function not found') }
