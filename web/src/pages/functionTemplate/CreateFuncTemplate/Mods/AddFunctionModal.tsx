@@ -12,7 +12,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -41,8 +40,6 @@ const AddFunctionModal = (props: {
   } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { showError } = useGlobalStore();
-  const { colorMode } = useColorMode();
-  const darkMode = colorMode === "dark";
   const defaultValues = isEdit
     ? {
         name: currentFunction?.name,
@@ -132,13 +129,7 @@ export default async function (ctx: FunctionContext) {
           <ModalCloseButton />
 
           <ModalBody>
-            <div
-              className={clsx(
-                "mb-3 flex h-12 w-full items-center border-b-2",
-                isEdit && !darkMode && "rounded-md bg-gray-100",
-                isEdit && darkMode && "rounded-md bg-gray-800",
-              )}
-            >
+            <div className="mb-3 flex h-12 w-full items-center border-b-2">
               <input
                 {...register("name", {
                   required: true,
@@ -151,7 +142,6 @@ export default async function (ctx: FunctionContext) {
                 placeholder={String(t("FunctionPanel.FunctionNameTip"))}
                 className="h-8 w-10/12 border-l-2 border-primary-600 bg-transparent pl-4 text-2xl font-medium"
                 style={{ outline: "none", boxShadow: "none" }}
-                disabled={isEdit}
               />
             </div>
             {errors.name && (

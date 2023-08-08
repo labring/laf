@@ -26,6 +26,9 @@ import { FunctionTemplateModule } from './function-template/function-template.mo
 import { MulterModule } from '@nestjs/platform-express'
 import { RecycleBinModule } from './recycle-bin/recycle-bin.module'
 import { GroupModule } from './group/group.module'
+import { APP_INTERCEPTOR } from '@nestjs/core'
+import { AppInterceptor } from './app.interceptor'
+import { InterceptorModule } from './interceptor/interceptor.module'
 
 @Module({
   imports: [
@@ -70,8 +73,12 @@ import { GroupModule } from './group/group.module'
     MulterModule.register(),
     RecycleBinModule,
     GroupModule,
+    InterceptorModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    { provide: APP_INTERCEPTOR, useClass: AppInterceptor },
+    AppService,
+  ],
 })
 export class AppModule {}

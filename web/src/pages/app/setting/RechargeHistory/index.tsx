@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { DateRange, DayPicker, SelectRangeEventHandler } from "react-day-picker";
 import { useTranslation } from "react-i18next";
-import { CalendarIcon } from "@chakra-ui/icons";
 import {
   Center,
   Popover,
@@ -23,7 +22,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 
-import { ChargeIcon, FilterIcon } from "@/components/CommonIcon";
+import { CalendarIcon, ChargeIcon, FilterIcon } from "@/components/CommonIcon";
 import EmptyBox from "@/components/EmptyBox";
 import Pagination from "@/components/Pagination";
 import { formatDate, formatPrice } from "@/utils/format";
@@ -82,65 +81,68 @@ export default function RechargeHistory() {
                   <span className="mr-1 font-normal !text-grayModern-700">{t("OrderNumber")}</span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
-                    {t("Duration")}
-                  </span>
-                  <Popover>
-                    <PopoverTrigger>
-                      <span className="cursor-pointer text-grayModern-400">
-                        <CalendarIcon />
-                      </span>
-                    </PopoverTrigger>
-                    <PopoverContent zIndex={99}>
-                      <PopoverBody>
-                        <DayPicker
-                          mode="range"
-                          selected={selectedRange}
-                          onSelect={handleRangeSelect}
-                          styles={{
-                            day: {
-                              transition: "all 0.2s ease-in-out",
-                              borderRadius: "unset",
-                            },
-                          }}
+                  <span className="flex items-center">
+                    <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
+                      {t("Duration")}
+                    </span>
+                    <Popover>
+                      <PopoverTrigger>
+                        <CalendarIcon
+                          className="cursor-pointer !text-grayModern-400"
+                          boxSize="14px"
                         />
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Popover>
+                      </PopoverTrigger>
+                      <PopoverContent zIndex={99}>
+                        <PopoverBody>
+                          <DayPicker
+                            mode="range"
+                            selected={selectedRange}
+                            onSelect={handleRangeSelect}
+                            styles={{
+                              day: {
+                                transition: "all 0.2s ease-in-out",
+                                borderRadius: "unset",
+                              },
+                            }}
+                          />
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
+                  </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
-                    {t("State")}
+                  <span className="flex items-center">
+                    <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
+                      {t("State")}
+                    </span>
+                    <Popover>
+                      <PopoverTrigger>
+                        <FilterIcon className="cursor-pointer !text-grayModern-400" />
+                      </PopoverTrigger>
+                      <PopoverContent w={28}>
+                        <PopoverBody>
+                          <RadioGroup className="flex flex-col lowercase">
+                            {STATE_LIST.map((item) => (
+                              <Radio
+                                key={item}
+                                name="state"
+                                value={item}
+                                checked={queryData.state === item}
+                                onChange={(e) => {
+                                  setQueryData({
+                                    ...queryData,
+                                    state: e.target.value,
+                                  });
+                                }}
+                              >
+                                {item}
+                              </Radio>
+                            ))}
+                          </RadioGroup>
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
                   </span>
-                  <Popover>
-                    <PopoverTrigger>
-                      <span className="cursor-pointer text-grayModern-400">
-                        <FilterIcon />
-                      </span>
-                    </PopoverTrigger>
-                    <PopoverContent w={28}>
-                      <PopoverBody>
-                        <RadioGroup className="flex flex-col lowercase">
-                          {STATE_LIST.map((item) => (
-                            <Radio
-                              key={item}
-                              name="state"
-                              value={item}
-                              checked={queryData.state === item}
-                              onChange={(e) => {
-                                setQueryData({
-                                  ...queryData,
-                                  state: e.target.value,
-                                });
-                              }}
-                            >
-                              {item}
-                            </Radio>
-                          ))}
-                        </RadioGroup>
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Popover>
                 </Th>
                 <Th className="!px-0 !pl-2">
                   <span className="border-l pl-2 font-normal !text-grayModern-700">

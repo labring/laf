@@ -15,11 +15,11 @@ export const Pages = {
 };
 
 export enum APP_STATUS {
-  // [ "Running", "Stopped", "Restarting", "Deleted" ]
   Running = "Running",
   Stopped = "Stopped",
   Restarting = "Restarting",
   Deleted = "Deleted",
+  Releasing = "Releasing",
 }
 
 export const DEFAULT_REGION = "default";
@@ -75,3 +75,19 @@ export const COLOR_MODE = {
 };
 
 export const LAF_AI_URL = "https://htr4n1.laf.run/laf-gpt";
+
+export const DEFAULT_CODE = `import cloud from '@lafjs/cloud'
+
+export default async function (ctx: FunctionContext) {
+  console.log('Hello World')
+  return { data: 'hi, laf' }
+}
+`;
+
+export enum TEMPLATE_CATEGORY {
+  recommended = "recommended",
+  all = "all",
+  default = "default",
+  stared = "stared",
+  recentUsed = "recentUsed",
+}

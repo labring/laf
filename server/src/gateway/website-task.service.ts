@@ -22,7 +22,7 @@ export class WebsiteTaskService {
     private readonly regionService: RegionService,
     private readonly apisixService: ApisixService,
     private readonly certService: ApisixCustomCertService,
-  ) { }
+  ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
@@ -315,6 +315,14 @@ export class WebsiteTaskService {
    * Relock application by appid, lockedTime is in milliseconds
    */
   async relock(id: ObjectId, lockedTime = 0) {
+    if (lockedTime <= 2 * 60 * 1000) {
+      lockedTime = Math.ceil(lockedTime / 10)
+    }
+
+    if (lockedTime > 2 * 60 * 1000) {
+      lockedTime = this.lockTimeout * 1000
+    }
+
     const db = SystemDatabase.db
     const lockedAt = new Date(Date.now() - 1000 * this.lockTimeout + lockedTime)
     await db

@@ -12,6 +12,7 @@ import EmailEditor from "./Mods/EmailEditor";
 import PasswordEditor from "./Mods/PasswordEditor";
 import PhoneEditor from "./Mods/PhoneEditor";
 import UsernameEditor from "./Mods/UsernameEditor";
+import AuthDetail from "./AuthDetail";
 
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -20,7 +21,7 @@ import useGlobalStore from "@/pages/globalStore";
 export default function UserInfo() {
   const [showItem, setShowItem] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const { userInfo } = useGlobalStore((state) => state);
+  const { userInfo, avatarUpdatedAt } = useGlobalStore((state) => state);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { colorMode } = useColorMode();
@@ -56,7 +57,7 @@ export default function UserInfo() {
             <Avatar
               size={"xl"}
               name={userInfo?.username}
-              src={getAvatarUrl(userInfo?._id || "")}
+              src={getAvatarUrl(userInfo?._id, avatarUpdatedAt)}
               bgColor="primary.500"
               color="white"
               boxShadow="base"
@@ -130,24 +131,31 @@ export default function UserInfo() {
                 </span>
               </span>
             </div>
-            {/* <div className="flex flex-col pb-4">
-              <span className="pb-3 text-xl text-grayModern-900">
-                {t("SettingPanel.Email")}:
-              </span>
-              <span>{userInfo?.email ? userInfo?.email : t("NoInfo")}</span>
-            </div>
             <div className="flex flex-col pb-4">
-              <span className=" pb-3 text-xl text-grayModern-900">
-                {t("SettingPanel.Registered")}:
+              <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
+                {t("SettingPanel.Email")}
               </span>
-              <span>{formatDate(userInfo?.createdAt)}</span>
-            </div> */}
+              <span className="flex justify-between text-base">
+                <span className={!darkMode ? "text-grayModern-700" : ""}>
+                  {userInfo?.email ? userInfo?.email : t("NoInfo")}
+                </span>
+                <span
+                  className="flex cursor-pointer items-center text-[#0884DD]"
+                  onClick={() => {
+                    setShowItem("email");
+                  }}
+                >
+                  {t("UserInfo.Change")} <ChevronRightIcon boxSize={5} />
+                </span>
+              </span>
+            </div>
           </Box>
         </>
       )}
+      {showItem === "avatar" && <AvatarEditor img={selectedImage} handleBack={handleBack} />}
       {showItem === "username" && <UsernameEditor handleBack={handleBack} />}
       {showItem === "password" && <PasswordEditor handleBack={handleBack} />}
-      {showItem === "avatar" && <AvatarEditor img={selectedImage} handleBack={handleBack} />}
+      {showItem === "auth" && <AuthDetail handleBack={handleBack} />}
       {showItem === "phone" && <PhoneEditor handleBack={handleBack} />}
       {showItem === "email" && <EmailEditor handleBack={handleBack} />}
     </Box>

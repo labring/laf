@@ -16,10 +16,10 @@ spec:
         control-plane: metering-manager
     spec:
       containers:
-        - image: docker.io/bxy4543/laf-resources-metering:v0.0.1
+        - image: ghcr.io/labring/sealos-resources-metering-controller:9a013cea
           name: resource-metering
           command:
-            - /metering
+            - /manager
             - "start"
             - "--debug"
             - "--show-path"
@@ -326,7 +326,7 @@ spec:
           env:
             - name: MONGO_URI
               value: {{ .Values.meteringDatabaseUrl | quote }}
-          image: docker.io/bxy4543/laf-resources-controller:v0.0.2
+          image: ghcr.io/labring/sealos-resources-controller:9a013cea
           imagePullPolicy: Always
           livenessProbe:
             httpGet:

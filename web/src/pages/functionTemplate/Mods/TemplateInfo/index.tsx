@@ -10,7 +10,7 @@ import UseTemplate from "./UseTemplate";
 
 import { TFunctionTemplate } from "@/apis/typing";
 
-const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[] }) => {
+const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any }) => {
   const { functionTemplate, usedBy } = props;
   const { items: functionList, environments, dependencies: packageList } = functionTemplate;
 
@@ -94,7 +94,7 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
             })}
           </Box>
         </Box>
-        <Box className={clsx("border-b-[1px]", usedBy.length === 0 && "pb-2")}>
+        <Box className={clsx("border-b-[1px]", usedBy?.list?.length === 0 && "pb-2")}>
           <div className="flex items-center pt-5">
             <span className="text-xl font-bold">{t("Template.UsedBy")}</span>
             <span
@@ -103,11 +103,11 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any[
                 darkMode ? "bg-gray-700" : "bg-gray-100",
               )}
             >
-              {usedBy.length}
+              {usedBy?.total}
             </span>
           </div>
           <AvatarGroup size={"sm"} max={10}>
-            {usedBy.map((item) => {
+            {usedBy?.list.map((item: { uid: string }) => {
               return (
                 <Box className="my-5 mr-2" key={item.uid}>
                   <Avatar size="sm" name={item.uid} src={getAvatarUrl(item.uid)} />

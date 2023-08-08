@@ -21,6 +21,7 @@ import { debounce } from "lodash";
 
 import EmptyBox from "@/components/EmptyBox";
 import Pagination from "@/components/Pagination";
+import { TEMPLATE_CATEGORY } from "@/constants";
 import { changeURL } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
 
@@ -32,7 +33,7 @@ import {
   useGetRecommendFunctionTemplatesQuery,
 } from "./service";
 
-import styles from "./Mods/SideBar/index.module.scss";
+import styles from "./index.module.scss";
 
 import { TemplateList } from "@/apis/typing";
 type queryData = {
@@ -49,22 +50,20 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
   const { t } = useTranslation();
   const sortList = [t("Template.MostStars"), t("Template.Latest")];
   const sideBar_data = [
-    { text: t("Template.Recommended"), value: "recommended" },
-    { text: t("Template.CommunityTemplate"), value: "all" },
-    { text: t("Template.My"), value: "my" },
-    { text: t("Template.StaredTemplate"), value: "stared" },
-    { text: t("Template.Recent"), value: "recent" },
+    { text: t("Template.Recommended"), value: TEMPLATE_CATEGORY.recommended },
+    { text: t("Template.CommunityTemplate"), value: TEMPLATE_CATEGORY.all },
+    { text: t("Template.My"), value: TEMPLATE_CATEGORY.default },
+    { text: t("Template.StaredTemplate"), value: TEMPLATE_CATEGORY.stared },
+    { text: t("Template.Recent"), value: TEMPLATE_CATEGORY.recentUsed },
   ];
-
   const defaultQueryData: queryData = {
     page: 1,
     pageSize: 12,
     keyword: "",
-    type: "default",
+    type: "",
     asc: 1,
     sort: "hot",
   };
-
   const [queryData, setQueryData] = useState(defaultQueryData);
   const setQueryDataDebounced = useMemo(
     () =>
@@ -73,7 +72,6 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
       }, 500),
     [queryData],
   );
-  const [sorting, setSorting] = useState(sortList[0]);
   const [templateList, setTemplateList] = useState<TemplateList>();
   const [searchKey, setSearchKey] = useState("");
 
@@ -92,12 +90,10 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
     return { text: "", value: "" };
   };
 
-  const [selectedItem, setSelectedItem] = useState(getInitialSelectedItem);
-
   useEffect(() => {
     const newSelectedItem = getInitialSelectedItem();
-    if (newSelectedItem.value !== selectedItem.value) {
-      setSelectedItem(newSelectedItem);
+    if (newSelectedItem.value !== queryData.type) {
+      setQueryData({ ...queryData, type: newSelectedItem.value });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [window.location.href]);
@@ -107,7 +103,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
       ...queryData,
     },
     {
-      enabled: selectedItem.value === "all",
+      enabled: queryData.type === TEMPLATE_CATEGORY.all,
       onSuccess: (data: any) => {
         setTemplateList(data.data);
       },
@@ -119,7 +115,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
       ...queryData,
     },
     {
-      enabled: selectedItem.value === "recommended",
+      enabled: queryData.type === TEMPLATE_CATEGORY.recommended,
       onSuccess: (data: any) => {
         setTemplateList(data.data);
       },
@@ -132,7 +128,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
       pageSize: 8,
     },
     {
-      enabled: ["my", "stared", "recent"].includes(selectedItem.value),
+      enabled: ["default", "stared", "recentUsed"].includes(queryData.type),
       onSuccess: (data: any) => {
         setTemplateList(data.data);
       },
@@ -147,33 +143,26 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
   const queryMapping = {
     all: functionTemplatesQuery,
     recommended: recommendFunctionTemplatesQuery,
-    my: myFunctionTemplatesQuery,
+    default: myFunctionTemplatesQuery,
     stared: myFunctionTemplatesQuery,
-    recent: myFunctionTemplatesQuery,
+    recentUsed: myFunctionTemplatesQuery,
   };
 
-  let isLoading = getLoadingStatus(selectedItem.value, queryMapping);
+  let isLoading = getLoadingStatus(queryData.type, queryMapping);
 
   const handleSideBarClick = (item: any) => {
-    setSelectedItem(item);
-    setSorting(sortList[0]);
     setSearchKey("");
-    if (item.value === "stared") {
-      setQueryData({ ...defaultQueryData, type: "stared" });
-    } else if (item.value === "recent") {
-      setQueryData({ ...defaultQueryData, type: "recentUsed" });
+    if (item.value === TEMPLATE_CATEGORY.stared) {
+      setQueryData({ ...defaultQueryData, type: TEMPLATE_CATEGORY.stared });
+    } else if (item.value === TEMPLATE_CATEGORY.recentUsed) {
+      setQueryData({ ...defaultQueryData, type: TEMPLATE_CATEGORY.recentUsed });
     } else {
       setQueryData(defaultQueryData);
     }
-    window.history.replaceState(
-      null,
-      "",
-      window.location.href.replace(/\/([^/]+)\/?$/, `/${item.value}`),
-    );
+    navigate(changeURL(`/${item.value}`));
   };
 
   const handleSortListClick = (e: any) => {
-    setSorting(e.currentTarget.value);
     if (e.currentTarget.value === sortList[1]) {
       setQueryData({ ...queryData, asc: 1, sort: null });
     } else if (e.currentTarget.value === sortList[0]) {
@@ -183,8 +172,8 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
 
   return (
     <div className="pt-4">
-      {selectedItem.value ? (
-        <div>
+      {queryData.type ? (
+        <>
           <div
             className={clsx(
               "w-45 absolute bottom-0 flex flex-col",
@@ -200,7 +189,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                   key={item.value}
                   className={clsx(
                     styles.explore_item,
-                    item.value === selectedItem.value
+                    item.value === queryData.type
                       ? "bg-primary-100 text-primary-600"
                       : !darkMode && "text-[#5A646E]",
                   )}
@@ -214,7 +203,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
           <div
             className={clsx("flex items-center justify-between py-5", isModal ? "pl-52" : "pl-72")}
           >
-            {selectedItem.value === "my" ? (
+            {queryData.type === TEMPLATE_CATEGORY.default ? (
               <Button
                 onClick={() => {
                   navigate("/market/templates/create");
@@ -227,7 +216,8 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
               </Button>
             ) : null}
             <div className="flex w-full">
-              {selectedItem.value === "all" || selectedItem.value === "recommended" ? (
+              {queryData.type === TEMPLATE_CATEGORY.all ||
+              queryData.type === TEMPLATE_CATEGORY.recommended ? (
                 <InputGroup className="flex">
                   <InputLeftElement children={<Search2Icon />} height={"2.5rem"} />
                   <Input
@@ -279,7 +269,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                 <Menu>
                   <MenuButton className="flex cursor-pointer">
                     <span className="whitespace-nowrap pl-2 text-lg">
-                      {sorting}
+                      {queryData.sort === "hot" ? sortList[0] : sortList[1]}
                       <ChevronDownIcon boxSize={6} color="gray.400" />
                     </span>
                   </MenuButton>
@@ -298,8 +288,10 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
           </div>
           <div className={isModal ? "pl-52" : "pl-72 pr-8"}>
             {isLoading ? (
-              <Center className="w-full pt-36">
-                <Spinner />
+              <Center className="min-h-[400px] flex-grow">
+                <span>
+                  <Spinner />
+                </span>
               </Center>
             ) : templateList && templateList.list.length > 0 ? (
               <>
@@ -308,7 +300,8 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                     <section
                       className={clsx(
                         "mb-3 min-w-[18rem]",
-                        selectedItem.value === "all" || selectedItem.value === "recommended"
+                        queryData.type === TEMPLATE_CATEGORY.all ||
+                          queryData.type === TEMPLATE_CATEGORY.recommended
                           ? "w-1/3"
                           : "w-1/2",
                       )}
@@ -317,10 +310,10 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
                       <TemplateCard
                         onClick={() => {
                           navigate(changeURL(`/${item._id}`));
-                          setSelectedItem({ text: "", value: "" });
+                          setQueryData({ ...queryData, type: "" });
                         }}
                         template={item}
-                        templateCategory={selectedItem.value}
+                        templateCategory={queryData.type}
                       />
                     </section>
                   ))}
@@ -343,7 +336,7 @@ export default function FunctionTemplate(props: { isModal?: boolean }) {
               </div>
             )}
           </div>
-        </div>
+        </>
       ) : (
         <FuncTemplateItem isModal={isModal!} />
       )}

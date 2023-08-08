@@ -11,6 +11,7 @@ import { MeteringDatabase } from './metering-database'
 import { CalculatePriceDto } from './dto/calculate-price.dto'
 import { BillingService } from './billing.service'
 import { ApplicationBundle } from 'src/application/entities/application-bundle'
+import { BundleService } from 'src/application/bundle.service'
 
 @Injectable()
 export class BillingCreationTaskService {
@@ -18,7 +19,10 @@ export class BillingCreationTaskService {
   private readonly lockTimeout = 60 * 60 // in second
   private lastTick = TASK_LOCK_INIT_TIME
 
-  constructor(private readonly billing: BillingService) {}
+  constructor(
+    private readonly billing: BillingService,
+    private readonly bundleService: BundleService,
+  ) {}
 
   /**
    * Cron job method that runs every 10 minute
@@ -128,9 +132,7 @@ export class BillingCreationTaskService {
     }
 
     // get application bundle
-    const bundle = await db
-      .collection<ApplicationBundle>('ApplicationBundle')
-      .findOne({ appid: app.appid })
+    const bundle = await this.bundleService.findOne(appid)
 
     if (!bundle) {
       this.logger.warn(`No bundle found for application: ${appid}`)

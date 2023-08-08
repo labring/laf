@@ -36,7 +36,7 @@ import { TApplicationItem } from "@/apis/typing";
 import { ApplicationControllerUpdateState } from "@/apis/v1/applications";
 import useGlobalStore from "@/pages/globalStore";
 
-function List(props: { appListQuery: any }) {
+function List(props: { appList: TApplicationItem[] }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -45,7 +45,7 @@ function List(props: { appListQuery: any }) {
   const [searchKey, setSearchKey] = useState("");
 
   const queryClient = useQueryClient();
-  const { appListQuery } = props;
+  const { appList } = props;
   const bg = useColorModeValue("lafWhite.200", "lafDark.200");
 
   const updateAppStateMutation = useMutation((params: any) =>
@@ -96,7 +96,7 @@ function List(props: { appListQuery: any }) {
           <div className="w-1/12 min-w-[100px] pl-2 text-second">{t("Operation")}</div>
         </Box>
         <div className="flex-grow overflow-auto">
-          {(appListQuery.data?.data || [])
+          {(appList || [])
             .filter((item: TApplicationItem) => item?.name.indexOf(searchKey) >= 0)
             .map((item: TApplicationItem) => {
               return (
@@ -175,7 +175,23 @@ function List(props: { appListQuery: any }) {
                                   : APP_STATUS.Restarting,
                             });
                             if (!res.error) {
-                              queryClient.invalidateQueries(APP_LIST_QUERY_KEY);
+                              queryClient.setQueryData(APP_LIST_QUERY_KEY, (old: any) => {
+                                return {
+                                  ...old,
+                                  data: old.data.map((app: any) => {
+                                    if (app.appid === item.appid) {
+                                      return {
+                                        ...app,
+                                        phase:
+                                          item.phase === APP_STATUS.Stopped
+                                            ? APP_PHASE_STATUS.Starting
+                                            : APP_STATUS.Restarting,
+                                      };
+                                    }
+                                    return app;
+                                  }),
+                                };
+                              });
                             }
                           }}
                         >
@@ -197,7 +213,20 @@ function List(props: { appListQuery: any }) {
                                 state: APP_STATUS.Stopped,
                               });
                               if (!res.error) {
-                                queryClient.invalidateQueries(APP_LIST_QUERY_KEY);
+                                queryClient.setQueryData(APP_LIST_QUERY_KEY, (old: any) => {
+                                  return {
+                                    ...old,
+                                    data: old.data.map((app: any) => {
+                                      if (app.appid === item.appid) {
+                                        return {
+                                          ...app,
+                                          phase: APP_PHASE_STATUS.Stopping,
+                                        };
+                                      }
+                                      return app;
+                                    }),
+                                  };
+                                });
                               }
                             }}
                           >

@@ -18,23 +18,20 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import clsx from "clsx";
 import { t } from "i18next";
 import { debounce } from "lodash";
 
 import { TextIcon } from "@/components/CommonIcon";
 import InputTag from "@/components/InputTag";
-import { SUPPORTED_METHODS } from "@/constants";
+import { DEFAULT_CODE, SUPPORTED_METHODS } from "@/constants";
 import { changeURL } from "@/utils/format";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
-import FuncTemplate from "../FunctionTemplate";
-
-import functionTemplates from "./functionTemplates";
 
 import { TFunctionTemplate, TMethod } from "@/apis/typing";
-import TemplatePopOver from "@/pages/functionTemplate/Mods/TemplatePopover/TemplatePopover";
+import FunctionTemplate from "@/pages/functionTemplate";
+import TemplateCard from "@/pages/functionTemplate/Mods/TemplateCard/TemplateCard";
 import { useGetRecommendFunctionTemplatesQuery } from "@/pages/functionTemplate/service";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -52,13 +49,14 @@ const CreateModal = (props: {
   const isEdit = !!functionItem;
   const navigate = useNavigate();
   const [searchKey, setSearchKey] = useState("");
+  const [templateOpen, setTemplateOpen] = useState(false);
 
   const defaultValues = {
     name: functionItem?.name || "",
     description: functionItem?.desc || "",
     websocket: !!functionItem?.websocket,
     methods: functionItem?.methods || ["GET", "POST"],
-    code: functionItem?.source.code || aiCode || functionTemplates[0].value.trim() || "",
+    code: functionItem?.source.code || aiCode || DEFAULT_CODE || "",
     tags: functionItem?.tags || [],
   };
 
@@ -222,54 +220,15 @@ const CreateModal = (props: {
                   <div className="flex flex-wrap">
                     {TemplateList.data?.data.list.map((item: TFunctionTemplate) => (
                       <div className="mb-3 w-1/3 pr-3" key={item._id}>
-                        <TemplatePopOver template={item}>
-                          <div
-                            onClick={() => {
-                              const currentURL = window.location.pathname;
-                              const lastIndex = currentURL.lastIndexOf("/");
-                              const newURL = currentURL.substring(0, lastIndex) + `/${item._id}`;
-                              navigate(newURL);
-                            }}
-                          >
-                            <FuncTemplate>
-                              <div
-                                className="cursor-pointer rounded-lg border-[1px] px-5"
-                                style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
-                                onMouseEnter={(e) => {
-                                  e.currentTarget.style.outlineWidth = "2px";
-                                  e.currentTarget.style.boxShadow =
-                                    "0px 2px 4px rgba(0, 0, 0, 0.1), 0px 0px 0px 2px #66CBCA";
-                                }}
-                                onMouseLeave={(e) => {
-                                  e.currentTarget.style.outlineWidth = "1px";
-                                  e.currentTarget.style.boxShadow =
-                                    "0px 2px 4px rgba(0, 0, 0, 0.1)";
-                                }}
-                              >
-                                <div className={clsx("mb-3 flex justify-between pt-4")}>
-                                  <div className="flex items-center text-xl font-semibold">
-                                    <span className="line-clamp-1">{item.name}</span>
-                                  </div>
-                                </div>
-                                <div className="mb-3 flex h-4 items-center truncate">
-                                  {item.description}
-                                </div>
-                                <div className="flex w-full overflow-hidden pb-4">
-                                  {item.items.map((item: any) => {
-                                    return (
-                                      <div
-                                        key={item.name}
-                                        className="mr-2 whitespace-nowrap rounded-md bg-blue-100 px-2 py-1 text-center font-medium text-blue-700"
-                                      >
-                                        {item.name}
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            </FuncTemplate>
-                          </div>
-                        </TemplatePopOver>
+                        <TemplateCard
+                          template={item}
+                          onClick={() => {
+                            navigate(changeURL(`/${item._id}`));
+                            setTemplateOpen(true);
+                          }}
+                          templateCategory="recommended"
+                          isModal={true}
+                        />
                       </div>
                     ))}
                   </div>
@@ -278,22 +237,15 @@ const CreateModal = (props: {
                       navigate(changeURL(`/recommended`));
                     }}
                   >
-                    <FuncTemplate>
-                      <button className="w-full cursor-pointer bg-primary-100 py-2 text-primary-600">
-                        {t("FunctionPanel.CreateFromTemplate")}
-                      </button>
-                    </FuncTemplate>
+                    <button
+                      className="w-full cursor-pointer bg-primary-100 py-2 text-primary-600"
+                      onClick={() => setTemplateOpen(true)}
+                    >
+                      {t("FunctionPanel.CreateFromTemplate")}
+                    </button>
                   </div>
                 </div>
               )}
-
-              {/* <FormControl isInvalid={!!errors?.websocket} hidden>
-                <FormLabel htmlFor="websocket">{t("FunctionPanel.isSupport")} websocket</FormLabel>
-                <Switch {...register("websocket")} id="websocket" variant="filled" />
-                <FormErrorMessage>
-                  {errors.websocket && errors.websocket.message}
-                </FormErrorMessage>{" "}
-              </FormControl> */}
             </VStack>
           </ModalBody>
 
@@ -313,6 +265,24 @@ const CreateModal = (props: {
               {t`Confirm`}
             </Button>
           </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal
+        isOpen={templateOpen}
+        onClose={() => {
+          setTemplateOpen(!templateOpen);
+          navigate(changeURL("/"));
+        }}
+      >
+        <ModalOverlay />
+        <ModalContent height={"95%"} maxW={"80%"} m={"auto"} overflowY={"auto"}>
+          <ModalHeader pb={-0.5}>{t("HomePage.NavBar.funcTemplate")}</ModalHeader>
+          <ModalBody>
+            <ModalCloseButton />
+            <FunctionTemplate isModal={true} />
+          </ModalBody>
+          <ModalFooter></ModalFooter>
         </ModalContent>
       </Modal>
     </>

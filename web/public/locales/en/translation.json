@@ -94,7 +94,7 @@
     "Function": "Function",
     "FunctionList": "Functions",
     "FunctionName": "Function Name",
-    "FunctionNameTip": "The unique identifier of the function, such as get-user",
+    "FunctionNameTip": "The unique identifier of the function, such as get-user, can be used to create folders in the form of 'user/get-user'.",
     "InterfaceDebug": "Debug",
     "Methods": "Method",
     "Name": "KEY",
@@ -201,7 +201,8 @@
     "MyAccount": "My Account",
     "CostTrend": "Cost Trend",
     "Balance": "Balance",
-    "Pause": "Pause"
+    "Pause": "Pause",
+    "AppMonitor": "App Monitoring"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -353,7 +354,8 @@
     "ResetPassword": "Reset Password",
     "ResetPasswordSuccess": "Reset password successfully",
     "NewPassword": "New Password",
-    "SignUpSuccess": "Sign up successfully"
+    "SignUpSuccess": "Sign up successfully",
+    "EmailTip": "Please input a valid Email"
   },
   "Time": "Time",
   "CreateTime": "Created",
@@ -550,7 +552,11 @@
     "Bonus": "Bonus",
     "Channel": "Username",
     "Time": "Time",
-    "InviteTips": "Copy the referral link and send it to others. When they click on this link to register, they will become your invited users, and you will immediately receive bonus."
+    "InviteTips": "Copy the referral link and send it to others. When they click on this link to register, they will become your invited users, and you will immediately receive bonus.",
+    "Email": "Email",
+    "ChangeEmail": "Change Email",
+    "SmsNumber": "Verification Code",
+    "ChangeEmailSuccess": "Change Email Success"
   },
   "Reset": "Reset",
   "SettingModal": {
@@ -578,5 +584,7 @@
   "RecycleBinEmpty": "Recycle Bin Empty",
   "SelectOne": "At least select one",
   "Apply": "apply",
-  "Developing": "Developing"
+  "Developing": "Developing",
+  "Unverified": "Unverified",
+  "i18n tip": "中"
 }

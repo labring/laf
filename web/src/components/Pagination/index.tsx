@@ -23,12 +23,12 @@ export default function Pagination(props: {
 
   if (maxPage > 0 && page && page > maxPage) {
     onChange({
-      ...values,
+      pageSize: values.pageSize,
       page: maxPage,
     });
   } else if (page && page < 1) {
     onChange({
-      ...values,
+      pageSize: values.pageSize,
       page: 1,
     });
   }
@@ -50,7 +50,7 @@ export default function Pagination(props: {
             variant="link"
             onClick={() => {
               onChange({
-                ...values,
+                pageSize: values.pageSize,
                 page: 1,
               });
             }}
@@ -64,7 +64,7 @@ export default function Pagination(props: {
             variant="link"
             onClick={() =>
               onChange({
-                ...values,
+                pageSize: values.pageSize,
                 page: page! - 1,
               })
             }
@@ -86,7 +86,7 @@ export default function Pagination(props: {
             isDisabled={maxPage === page || maxPage === -1}
             onClick={() => {
               onChange({
-                ...values,
+                pageSize: values.pageSize,
                 page: page! + 1,
               });
             }}
@@ -99,7 +99,7 @@ export default function Pagination(props: {
             variant="link"
             onClick={() => {
               onChange({
-                ...values,
+                pageSize: values.pageSize,
                 page: maxPage,
               });
             }}
@@ -116,7 +116,6 @@ export default function Pagination(props: {
           value={pageSize}
           onChange={(e: any) => {
             onChange({
-              ...values,
               pageSize: parseInt(e.target.value),
               page: 1,
             });

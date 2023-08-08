@@ -7,6 +7,8 @@ import { BucketService } from './bucket.service'
 import { GatewayModule } from 'src/gateway/gateway.module'
 import { BucketTaskService } from './bucket-task.service'
 import { BundleService } from 'src/application/bundle.service'
+import { StorageUsageCaptureTaskService } from './storage-usage-capture-task.service'
+import { StorageUsageLimitTaskService } from './storage-usage-limit-task.service'
 
 @Module({
   imports: [GatewayModule],
@@ -18,6 +20,8 @@ import { BundleService } from 'src/application/bundle.service'
     BucketService,
     BucketTaskService,
     BundleService,
+    StorageUsageCaptureTaskService,
+    StorageUsageLimitTaskService,
   ],
   exports: [StorageService, MinioService, BucketService],
 })
