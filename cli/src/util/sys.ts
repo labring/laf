@@ -6,5 +6,5 @@ export function getAppPath(): string {
 
 export function getBaseDir(): string {
   const projectSchema = ProjectSchema.read()
-  return projectSchema.spec.baseDir || './'
+  return projectSchema?.spec?.baseDir || './'
 }
