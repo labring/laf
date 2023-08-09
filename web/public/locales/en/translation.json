@@ -606,7 +606,9 @@
     "JoinSuccess": "Join Success",
     "RemoveSuccess": "Remove Member Success",
     "Leave": "Leave",
-    "LeaveSuccess": "Leave Success"
+    "LeaveSuccess": "Leave Success",
+    "QuitSuccess": "Quit",
+    "Quit": "Quit"
   },
   "Collaborative": "Collaborative"
 }

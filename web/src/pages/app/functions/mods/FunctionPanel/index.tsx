@@ -280,7 +280,7 @@ export default function FunctionList() {
           </div>
         }
         actions={[
-          <RecycleBinModal>
+          <RecycleBinModal key="recycle_modal">
             <IconWrap size={20} tooltip={t("RecycleBin").toString()}>
               <DeleteIcon fontSize={11} />
             </IconWrap>

@@ -172,7 +172,10 @@ export default function CollaborateButton() {
             )}
             <div className="max-h-[300px] min-h-[150px] overflow-auto">
               {[...memberList, ...(codeList || [])].map((member) => (
-                <div key={member.uid} className="mt-4 flex items-center justify-between text-lg">
+                <div
+                  key={member.uid || member._id}
+                  className="mt-4 flex items-center justify-between text-lg"
+                >
                   <span className="flex items-center">
                     {!!member.uid ? (
                       <Avatar
@@ -233,7 +236,7 @@ export default function CollaborateButton() {
                             });
 
                             if (!res.error) {
-                              showSuccess(t("Collaborate.LeaveSuccess"));
+                              showSuccess(t("Collaborate.QuitSuccess"));
                               navigate("/dashboard");
                             }
                           } else if (member.code) {
@@ -260,7 +263,7 @@ export default function CollaborateButton() {
                         }}
                       >
                         {!isOwner() && member.uid === userInfo?._id
-                          ? t("Collaborate.Leave")
+                          ? t("Collaborate.Quit")
                           : member.username
                           ? t("Collaborate.Remove")
                           : t("Collaborate.Revoke")}

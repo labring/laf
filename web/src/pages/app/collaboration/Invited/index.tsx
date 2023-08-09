@@ -26,6 +26,10 @@ export default function Invited() {
     {
       enabled: !!code,
       onSuccess(data) {
+        if (data.statusCode === 404) {
+          navigate("/404");
+          return;
+        }
         sessionStorage.setItem(
           "collaborationCode",
           JSON.stringify({ code: code, appid: data?.data?.group?.appid }),

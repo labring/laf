@@ -80,4 +80,5 @@ a {
 .simplebar-scrollbar::before {
   background: #DEE0E2;
   height: 6px;
+  transform: translateY(50%);
 }

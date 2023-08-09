@@ -94,7 +94,6 @@ export const useGroupMembersQuery = (
   return useQuery(
     ["useGroupMembersQuery"],
     () => {
-      console.log(params);
       return GroupMemberControllerFindMembers(params);
     },
     {

@@ -606,7 +606,9 @@
     "JoinSuccess": "加入成功",
     "RemoveSuccess": "成员移除成功",
     "Leave": "离开",
-    "LeaveSuccess": "已成功离开"
+    "LeaveSuccess": "已成功离开",
+    "QuitSuccess": "退出成功",
+    "Quit": "退出"
   },
   "Collaborative": "协作"
 }
