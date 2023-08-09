@@ -26,10 +26,14 @@ export class Config {
   }
 
   static get TEST_USERNAME() {
-    return process.env.TEST_USERNAME || 'testing-user'
+    return process.env.TEST_USERNAME || 'testing-e2e-user'
   }
 
   static get TEST_PASSWORD() {
-    return process.env.TEST_PASSWORD || 'testing-password'
+    return process.env.TEST_PASSWORD || 'testing-e2e-password'
+  }
+
+  static get TEST_APP_NAME() {
+    return process.env.TEST_APP_NAME || 'testing-e2e-application-name'
   }
 }

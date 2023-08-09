@@ -51,6 +51,7 @@ export async function ClearTestApplications() {
   const user = await db.collection('User').findOne({ username: Config.TEST_USERNAME })
 
   try {
+    if(!user) return
     await db.collection('Application')
       .updateMany({ createdBy: user._id }, { $set: { state: 'Deleted' } })
   } finally {
