@@ -62,9 +62,15 @@ request.interceptors.response.use(
       if (data.statusCode === 401) {
         // eslint-disable-next-line no-restricted-globals
         (window as any).location.href = (VITE_SERVER_BASE_URL + "/login") as string;
-        return;
+        return data;
       } else if (data.statusCode === 403) {
-        (window as any).location.href = "/403";
+        toast({
+          title: "403 Forbidden",
+          position: "top",
+          status: "error",
+          duration: 1000,
+        });
+        return data;
       } else if (data.statusCode === 404) {
         toast({
           title: "404 Not Found",
@@ -72,6 +78,7 @@ request.interceptors.response.use(
           status: "error",
           duration: 1000,
         });
+        return data;
       } else if (data.statusCode === 500 || data.statusCode === 502) {
         toast({
           title: "500 Internal Server Error",

@@ -17,7 +17,7 @@ const Panel = (props: {
       style={style}
       bg={bg}
       onClick={onClick}
-      className={clsx("flex w-full flex-col rounded px-3", className)}
+      className={clsx("flex w-full flex-col rounded-sm px-3", className)}
     >
       {props.children}
     </Box>

@@ -16,9 +16,11 @@ import {
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { Routes } from "@/constants";
 import { COLOR_MODE } from "@/constants";
 
 import useInviteCode from "@/hooks/useInviteCode";
+import { useGroupMemberAddMutation } from "@/pages/app/collaboration/service";
 import {
   useGetProvidersQuery,
   useSendSmsCodeMutation,
@@ -64,6 +66,7 @@ export default function SignUp() {
   const [isSendSmsCode, setIsSendSmsCode] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const joinGroupMutation = useGroupMemberAddMutation();
   const inviteCode = useInviteCode();
 
   const {
@@ -106,8 +109,18 @@ export default function SignUp() {
     const res = await signupMutation.mutateAsync(params);
 
     if (res?.data) {
-      showSuccess(t("AuthPanel.SignUpSuccess"));
-      navigate("/dashboard", { replace: true });
+      const sessionData = sessionStorage.getItem("collaborationCode");
+      const collaborationCode = JSON.parse(sessionData || "{}");
+      sessionStorage.removeItem("collaborationCode");
+      if (sessionData) {
+        const res = await joinGroupMutation.mutateAsync({ code: collaborationCode.code });
+        if (!res.error) {
+          showSuccess(t("Collaborate.JoinSuccess"));
+        }
+        navigate(`/app/${collaborationCode.appid}/function`);
+      } else {
+        navigate(Routes.dashboard, { replace: true });
+      }
     }
   };
 

@@ -28,6 +28,7 @@ import CreateModal from "./CreateModal";
 
 import { TFunction } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
+import RecycleBinModal from "@/pages/app/mods/StatusBar/RecycleBinModal";
 import useGlobalStore from "@/pages/globalStore";
 
 type TagItem = {
@@ -44,8 +45,14 @@ type TreeNode = {
 };
 
 export default function FunctionList() {
-  const { setCurrentFunction, currentFunction, setAllFunctionList, allFunctionList } =
-    useFunctionStore((store) => store);
+  const {
+    setCurrentFunction,
+    currentFunction,
+    setAllFunctionList,
+    allFunctionList,
+    recentFunctionList,
+    setRecentFunctionList,
+  } = useFunctionStore((store) => store);
 
   const functionCache = useFunctionCache();
   const [root, setRoot] = useState<TreeNode>({ _id: "", name: "", children: [] });
@@ -119,16 +126,22 @@ export default function FunctionList() {
       });
       setTagsList(newTags);
 
-      if (!currentFunction?._id && data.data.length > 0) {
+      if (!recentFunctionList.length && data.data.length > 0) {
         const currentFunction =
           data.data.find((item: TFunction) => item.name === functionName) || data.data[0];
         setCurrentFunction(currentFunction);
+        setRecentFunctionList([currentFunction]);
         navigate(`/app/${currentApp?.appid}/${Pages.function}/${currentFunction?.name}`, {
           replace: true,
         });
       }
     },
   });
+
+  useEffect(() => {
+    setRecentFunctionList([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -192,6 +205,9 @@ export default function FunctionList() {
             onClick={() => {
               if (!item?.children?.length) {
                 setCurrentFunction(item);
+                if (!recentFunctionList.map((item) => item._id).includes(item._id)) {
+                  setRecentFunctionList([item as unknown as TFunction, ...recentFunctionList]);
+                }
                 navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`);
               } else {
                 item.isExpanded = !item.isExpanded;
@@ -214,7 +230,7 @@ export default function FunctionList() {
               <HStack spacing={1}>
                 {functionCache.getCache(item?._id, (item as any)?.source?.code) !==
                   (item as any)?.source?.code && (
-                  <span className="mt-[1px] inline-block h-1 w-1 flex-none rounded-full bg-warn-700"></span>
+                  <span className="mt-[1px] inline-block h-1 w-1 flex-none rounded-full bg-rose-500"></span>
                 )}
                 <MoreButton isHidden={item.name !== currentFunction?.name} label={t("Operation")}>
                   <>
@@ -264,6 +280,11 @@ export default function FunctionList() {
           </div>
         }
         actions={[
+          <RecycleBinModal key="recycle_modal">
+            <IconWrap size={20} tooltip={t("RecycleBin").toString()}>
+              <DeleteIcon fontSize={11} />
+            </IconWrap>
+          </RecycleBinModal>,
           <TriggerModal key="trigger_modal">
             <IconWrap size={20} tooltip={t("TriggerPanel.Trigger").toString()}>
               <TriggerIcon fontSize={13} />
