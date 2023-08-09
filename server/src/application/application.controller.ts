@@ -5,10 +5,10 @@ import {
   Patch,
   Param,
   UseGuards,
-  Req,
   Logger,
   Post,
   Delete,
+  ForbiddenException,
 } from '@nestjs/common'
 import {
   ApiBearerAuth,
@@ -16,7 +16,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
-import { IRequest } from '../utils/interface'
 import { JwtAuthGuard } from '../authentication/jwt.auth.guard'
 import {
   ApiResponseArray,
@@ -49,6 +48,11 @@ import { ResourceService } from 'src/billing/resource.service'
 import { RuntimeDomainService } from 'src/gateway/runtime-domain.service'
 import { BindCustomDomainDto } from 'src/website/dto/update-website.dto'
 import { RuntimeDomain } from 'src/gateway/entities/runtime-domain'
+import { GroupRole, getRoleLevel } from 'src/group/entities/group-member'
+import { GroupRoles } from 'src/group/group-role.decorator'
+import { InjectApplication, InjectGroup, InjectUser } from 'src/utils/decorator'
+import { User } from 'src/user/entities/user'
+import { GroupWithRole } from 'src/group/entities/group'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -73,13 +77,11 @@ export class ApplicationController {
   @ApiOperation({ summary: 'Create application' })
   @ApiResponseObject(ApplicationWithRelations)
   @Post()
-  async create(@Req() req: IRequest, @Body() dto: CreateApplicationDto) {
+  async create(@Body() dto: CreateApplicationDto, @InjectUser() user: User) {
     const error = dto.autoscaling.validate()
     if (error) {
       return ResponseUtil.error(error)
     }
-
-    const user = req.user
 
     // check regionId exists
     const region = await this.region.findOneDesensitized(
@@ -141,8 +143,7 @@ export class ApplicationController {
   @Get()
   @ApiOperation({ summary: 'Get user application list' })
   @ApiResponseArray(ApplicationWithRelations)
-  async findAll(@Req() req: IRequest) {
-    const user = req.user
+  async findAll(@InjectUser() user: User) {
     const data = await this.application.findAllByUser(user._id)
     return ResponseUtil.ok(data)
   }
@@ -207,6 +208,7 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Update application name' })
   @ApiResponseObject(Application)
+  @GroupRoles(GroupRole.Admin)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid/name')
   async updateName(
@@ -227,13 +229,16 @@ export class ApplicationController {
   async updateState(
     @Param('appid') appid: string,
     @Body() dto: UpdateApplicationStateDto,
-    @Req() req: IRequest,
+    @InjectApplication() app: Application,
+    @InjectGroup() group: GroupWithRole,
   ) {
-    const app = req.application
-    const user = req.user
+    if (dto.state === ApplicationState.Deleted) {
+      throw new ForbiddenException('cannot update state to deleted')
+    }
+    const userid = app.createdBy
 
     // check account balance
-    const account = await this.account.findOne(user._id)
+    const account = await this.account.findOne(userid)
     const balance = account?.balance || 0
     if (balance < 0) {
       return ResponseUtil.error(`account balance is not enough`)
@@ -272,6 +277,15 @@ export class ApplicationController {
       )
     }
 
+    if (
+      [ApplicationState.Stopped, ApplicationState.Running].includes(
+        dto.state,
+      ) &&
+      getRoleLevel(group.role) < getRoleLevel(GroupRole.Admin)
+    ) {
+      return ResponseUtil.error('no permission')
+    }
+
     const doc = await this.application.updateState(appid, dto.state)
     return ResponseUtil.ok(doc)
   }
@@ -281,20 +295,20 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Update application bundle' })
   @ApiResponseObject(ApplicationBundle)
+  @GroupRoles(GroupRole.Admin)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid/bundle')
   async updateBundle(
     @Param('appid') appid: string,
     @Body() dto: UpdateApplicationBundleDto,
-    @Req() req: IRequest,
+    @InjectApplication() app: ApplicationWithRelations,
   ) {
     const error = dto.autoscaling.validate()
     if (error) {
       return ResponseUtil.error(error)
     }
 
-    const app = await this.application.findOne(appid)
-    const user = req.user
+    const userid = app.createdBy
     const regionId = app.regionId
 
     // check if trial tier
@@ -304,7 +318,7 @@ export class ApplicationController {
     })
     if (isTrialTier) {
       const bundle = await this.resource.findTrialBundle(regionId)
-      const trials = await this.application.findTrialApplications(user._id)
+      const trials = await this.application.findTrialApplications(userid)
       const limitOfFreeTier = bundle?.limitCountOfFreeTierPerUser || 0
       if (trials.length >= (limitOfFreeTier || 0)) {
         return ResponseUtil.error(
@@ -334,6 +348,7 @@ export class ApplicationController {
    */
   @ApiResponseObject(RuntimeDomain)
   @ApiOperation({ summary: 'Bind custom domain to application' })
+  @GroupRoles(GroupRole.Admin)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Patch(':appid/domain')
   async bindDomain(
@@ -368,6 +383,7 @@ export class ApplicationController {
    */
   @ApiResponse({ type: ResponseUtil<boolean> })
   @ApiOperation({ summary: 'Check if domain is resolved' })
+  @GroupRoles(GroupRole.Admin)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post(':appid/domain/resolved')
   async checkResolved(
@@ -387,6 +403,7 @@ export class ApplicationController {
    */
   @ApiResponseObject(RuntimeDomain)
   @ApiOperation({ summary: 'Remove custom domain of application' })
+  @GroupRoles(GroupRole.Admin)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':appid/domain')
   async remove(@Param('appid') appid: string) {
@@ -408,11 +425,13 @@ export class ApplicationController {
    */
   @ApiOperation({ summary: 'Delete an application' })
   @ApiResponseObject(Application)
+  @GroupRoles(GroupRole.Owner)
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Delete(':appid')
-  async delete(@Param('appid') appid: string, @Req() req: IRequest) {
-    const app = req.application
-
+  async delete(
+    @Param('appid') appid: string,
+    @InjectApplication() app: ApplicationWithRelations,
+  ) {
     // check: only stopped application can be deleted
     if (
       app.state !== ApplicationState.Stopped &&

@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Query, Req, UseGuards } from '@nestjs/common'
+import { Controller, Get, Logger, Query, UseGuards } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 import {
   ApiResponseArray,
@@ -11,8 +11,9 @@ import { BillingQuery } from './interface/billing-query.interface'
 
 import { ApplicationBilling } from './entities/application-billing'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
-import { IRequest } from 'src/utils/interface'
 import { BillingsByDayDto } from './dto/billings.dto'
+import { InjectUser } from 'src/utils/decorator'
+import { User } from 'src/user/entities/user'
 
 @ApiTags('Billing')
 @ApiBearerAuth('Authorization')
@@ -71,7 +72,7 @@ export class BillingController {
   })
   @Get()
   async findAll(
-    @Req() req: IRequest,
+    @InjectUser() user: User,
     @Query('appid') appid?: string[],
     @Query('state') state?: string,
     @Query('startTime') startTime?: string,
@@ -104,8 +105,6 @@ export class BillingController {
       query.endTime = new Date(endTime)
     }
 
-    const user = req.user
-
     const billings = await this.billing.query(user._id, query)
     return ResponseUtil.ok(billings)
   }
@@ -118,7 +117,7 @@ export class BillingController {
   @UseGuards(JwtAuthGuard)
   @Get('amount')
   async getExpense(
-    @Req() req: IRequest,
+    @InjectUser() user: User,
     @Query('startTime') startTime?: number,
     @Query('endTime') endTime?: number,
     @Query('appid') appid?: string[],
@@ -137,7 +136,6 @@ export class BillingController {
     if (state) {
       query.state = state
     }
-    const user = req.user
 
     const expenseTotal = await this.billing.getExpense(user._id, query)
     return ResponseUtil.ok(expenseTotal)
@@ -148,7 +146,7 @@ export class BillingController {
   @UseGuards(JwtAuthGuard)
   @Get('amounts')
   async getExpenseByDay(
-    @Req() req: IRequest,
+    @InjectUser() user: User,
     @Query('startTime') startTime?: number,
     @Query('endTime') endTime?: number,
     @Query('appid') appid?: string[],
@@ -167,7 +165,6 @@ export class BillingController {
     if (state) {
       query.state = state
     }
-    const user = req.user
 
     const expenseTotal = await this.billing.getExpenseByDay(user._id, query)
     return ResponseUtil.ok(expenseTotal)

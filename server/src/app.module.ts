@@ -25,6 +25,7 @@ import { AuthenticationModule } from './authentication/authentication.module'
 import { FunctionTemplateModule } from './function-template/function-template.module'
 import { MulterModule } from '@nestjs/platform-express'
 import { RecycleBinModule } from './recycle-bin/recycle-bin.module'
+import { GroupModule } from './group/group.module'
 import { APP_INTERCEPTOR } from '@nestjs/core'
 import { AppInterceptor } from './app.interceptor'
 import { InterceptorModule } from './interceptor/interceptor.module'
@@ -71,6 +72,7 @@ import { InterceptorModule } from './interceptor/interceptor.module'
     FunctionTemplateModule,
     MulterModule.register(),
     RecycleBinModule,
+    GroupModule,
     InterceptorModule,
   ],
   controllers: [AppController],
