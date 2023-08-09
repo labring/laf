@@ -1,5 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
+import request from "@/utils/request";
+
 import {
   UserControllerBindEmail,
   UserControllerBindPhone,
@@ -7,6 +9,7 @@ import {
   UserControllerGetProfile,
   UserControllerUpdateAvatar,
 } from "@/apis/v1/user";
+import useSiteSettingStore from "@/pages/siteSetting";
 
 export const useUpdateUserAvatar = (config?: { onSuccess: (result: any) => void }) => {
   return useMutation(
@@ -65,6 +68,23 @@ export const useBindEmailMutation = (config?: { onSuccess: (result: any) => void
   return useMutation(
     (values: any) => {
       return UserControllerBindEmail(values);
+    },
+    {
+      onSuccess: async (result) => {
+        config?.onSuccess(result);
+      },
+    },
+  );
+};
+
+export const useRealNameAuthMutation = (config?: { onSuccess: (result: any) => void }) => {
+  const siteSettings = useSiteSettingStore((state) => state.siteSettings);
+  return useMutation(
+    (values: any) => {
+      return request(siteSettings.id_verify?.value || "", {
+        method: "POST",
+        data: values,
+      });
     },
     {
       onSuccess: async (result) => {

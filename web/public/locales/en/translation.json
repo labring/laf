@@ -557,7 +557,12 @@
     "Email": "Email",
     "ChangeEmail": "Change Email",
     "SmsNumber": "Verification Code",
-    "ChangeEmailSuccess": "Change Email Success"
+    "ChangeEmailSuccess": "Change Email Success",
+    "GotoAuth": "Go to Authenticate",
+    "NoAuth": "Not Real-name Verified",
+    "WarnTips": "You have not yet completed real-name authentication.",
+    "PleaseBindPhone": "Please bind your mobile number first",
+    "VerifiedIdentity": "Verified Identity"
   },
   "Reset": "Reset",
   "SettingModal": {

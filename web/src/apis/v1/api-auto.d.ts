@@ -503,6 +503,7 @@ declare namespace Definitions {
     name?: string;
     createdAt?: string;
     updatedAt?: string;
+    idVerified?: { isVerified?: boolean };
   };
 
   export type CreateDependencyDto = {

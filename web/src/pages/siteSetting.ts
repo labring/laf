@@ -5,7 +5,7 @@ import { immer } from "zustand/middleware/immer";
 import { TSetting } from "@/apis/typing";
 import { SettingControllerGetSettings } from "@/apis/v1/settings";
 
-type SITE_KEY = "site_footer";
+type SITE_KEY = "site_footer" | "id_verify";
 
 type State = {
   siteSettings: {

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { ChevronRightIcon, EditIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
+import { CheckCircleIcon, ChevronRightIcon, EditIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { Avatar, Box, Divider, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
@@ -12,20 +13,21 @@ import EmailEditor from "./Mods/EmailEditor";
 import PasswordEditor from "./Mods/PasswordEditor";
 import PhoneEditor from "./Mods/PhoneEditor";
 import UsernameEditor from "./Mods/UsernameEditor";
-import AuthDetail from "./AuthDetail";
 
 import "react-image-crop/dist/ReactCrop.css";
 
 import useGlobalStore from "@/pages/globalStore";
+import useSiteSettingStore from "@/pages/siteSetting";
 
 export default function UserInfo() {
   const [showItem, setShowItem] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const { userInfo, avatarUpdatedAt } = useGlobalStore((state) => state);
-
+  const { userInfo, avatarUpdatedAt, showError } = useGlobalStore((state) => state);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
+  const navigate = useNavigate();
+  const { siteSettings } = useSiteSettingStore((state) => state);
 
   const handleClick = () => {
     if (fileInputRef.current) {
@@ -112,8 +114,48 @@ export default function UserInfo() {
                 </span>
               </span>
             </div>
-            <Divider className="text-grayModern-200" />
-            <div className="mt-4 flex flex-col pb-4">
+            <Divider className="mb-4 text-grayModern-200" />
+            {siteSettings.id_verify?.value && (
+              <div className="flex flex-col pb-4">
+                <span
+                  className={clsx(
+                    "flex items-center pb-3 text-xl",
+                    !darkMode && "text-grayModern-900",
+                  )}
+                >
+                  {t("SettingPanel.Auth")}
+                  <InfoOutlineIcon className="ml-2 !text-primary-600" />
+                </span>
+                <span className="flex justify-between text-base">
+                  <span className={!darkMode ? "text-grayModern-700" : ""}>
+                    {userInfo?.profile?.idVerified?.isVerified
+                      ? userInfo?.profile?.name
+                      : t("UserInfo.NoAuth")}
+                  </span>
+                  {!userInfo?.profile?.idVerified?.isVerified ? (
+                    <span
+                      className="flex cursor-pointer items-center text-[#0884DD]"
+                      onClick={() => {
+                        if (userInfo?.phone) {
+                          navigate("/auth/real-name");
+                        } else {
+                          showError(t("UserInfo.PleaseBindPhone"));
+                          setShowItem("phone");
+                        }
+                      }}
+                    >
+                      {t("UserInfo.GotoAuth")} <ChevronRightIcon boxSize={5} />
+                    </span>
+                  ) : (
+                    <span className="flex items-center">
+                      <span className="mr-2">{t("UserInfo.VerifiedIdentity")}</span>
+                      <CheckCircleIcon className="!text-primary-600" />
+                    </span>
+                  )}
+                </span>
+              </div>
+            )}
+            <div className="flex flex-col pb-4">
               <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
                 {t("SettingPanel.Tel")}
               </span>
@@ -155,7 +197,6 @@ export default function UserInfo() {
       {showItem === "avatar" && <AvatarEditor img={selectedImage} handleBack={handleBack} />}
       {showItem === "username" && <UsernameEditor handleBack={handleBack} />}
       {showItem === "password" && <PasswordEditor handleBack={handleBack} />}
-      {showItem === "auth" && <AuthDetail handleBack={handleBack} />}
       {showItem === "phone" && <PhoneEditor handleBack={handleBack} />}
       {showItem === "email" && <EmailEditor handleBack={handleBack} />}
     </Box>

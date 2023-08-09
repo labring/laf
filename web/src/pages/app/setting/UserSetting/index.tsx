@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Avatar,
@@ -11,36 +10,24 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import clsx from "clsx";
+import { t } from "i18next";
 
 import {
   BillingIcon,
-  CardIcon,
-  ChargeIcon,
   ContactIcon,
-  CostIcon,
   DiscordIcon,
   ExitIcon,
   GroupIcon,
-  InviteIcon,
-  PATIcon,
-  StandardIcon,
   UserIcon,
   WechatIcon,
 } from "@/components/CommonIcon";
 
+import useTabMatch from "./useTabMatch";
+
 import UserBalance from "@/layouts/Header/UserBalance";
 import SettingModal, { TabKeys } from "@/pages/app/setting";
-import BillingDetails from "@/pages/app/setting/BillingDetails";
-import CardRedemption from "@/pages/app/setting/CardRedemption";
-import PATList from "@/pages/app/setting/PATList";
-import PricingStandards from "@/pages/app/setting/PricingStandards";
-import RechargeHistory from "@/pages/app/setting/RechargeHistory";
-import Usage from "@/pages/app/setting/Usage";
-import UserInfo from "@/pages/app/setting/UserInfo";
-import UserInvite from "@/pages/app/setting/UserInvite";
 
 export default function UserSetting(props: { name: string; avatar?: string; width: string }) {
-  const { t } = useTranslation();
   const darkMode = useColorMode().colorMode === "dark";
 
   return (
@@ -97,26 +84,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
           >
             <div className="w-full">
               <SettingModal
-                tabMatch={[
-                  {
-                    key: TabKeys.UserInfo,
-                    name: String(t("SettingPanel.UserInfo")),
-                    component: <UserInfo />,
-                    icon: <UserIcon boxSize={4} />,
-                  },
-                  {
-                    key: TabKeys.UserInvite,
-                    name: String(t("SettingPanel.UserInvite")),
-                    component: <UserInvite />,
-                    icon: <InviteIcon boxSize={4} />,
-                  },
-                  {
-                    key: TabKeys.PAT,
-                    name: t("Personal Access Token"),
-                    component: <PATList />,
-                    icon: <PATIcon boxSize={4} />,
-                  },
-                ]}
+                tabMatch={useTabMatch("user")}
                 headerTitle={t("SettingPanel.UserCenter")}
                 currentTab={TabKeys.UserInfo}
               >
@@ -136,38 +104,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
             </div>
             <div className="w-full">
               <SettingModal
-                tabMatch={[
-                  {
-                    key: TabKeys.CostOverview,
-                    name: String(t("SettingPanel.CostOverview")),
-                    component: <Usage />,
-                    icon: <CostIcon boxSize={4} />,
-                  },
-                  {
-                    key: TabKeys.CardRedemption,
-                    name: String(t("SettingPanel.CardRedemption")),
-                    component: <CardRedemption />,
-                    icon: <CardIcon boxSize={4} />,
-                  },
-                  {
-                    key: TabKeys.BillingDetails,
-                    name: String(t("SettingPanel.BillingDetails")),
-                    component: <BillingDetails />,
-                    icon: <BillingIcon boxSize={4} />,
-                  },
-                  {
-                    key: TabKeys.RechargeHistory,
-                    name: String(t("SettingPanel.RechargeHistory")),
-                    component: <RechargeHistory />,
-                    icon: <ChargeIcon boxSize={4} />,
-                  },
-                  {
-                    key: TabKeys.PricingStandards,
-                    name: String(t("SettingPanel.PricingStandards")),
-                    component: <PricingStandards />,
-                    icon: <StandardIcon boxSize={4} />,
-                  },
-                ]}
+                tabMatch={useTabMatch("usage")}
                 headerTitle={t("SettingPanel.Usage")}
                 currentTab={TabKeys.CostOverview}
               >

@@ -557,7 +557,12 @@
     "Email": "邮箱",
     "ChangeEmail": "更改邮箱",
     "SmsNumber": "验证码",
-    "ChangeEmailSuccess": "修改邮箱成功"
+    "ChangeEmailSuccess": "修改邮箱成功",
+    "GotoAuth": "去认证",
+    "NoAuth": "未实名",
+    "WarnTips": "您尚未实名认证",
+    "PleaseBindPhone": "请先绑定手机号",
+    "VerifiedIdentity": "已实名"
   },
   "Reset": "重置",
   "SettingModal": {

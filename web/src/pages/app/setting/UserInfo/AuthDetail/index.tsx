@@ -1,106 +1,61 @@
-import { Controller, useForm } from "react-hook-form";
-import { ChevronLeftIcon } from "@chakra-ui/icons";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormErrorMessage,
-  Input,
-  InputGroup,
-  InputRightElement,
-  VStack,
-} from "@chakra-ui/react";
+import { useForm } from "react-hook-form";
+import { Box, Button, FormControl, FormErrorMessage, Input } from "@chakra-ui/react";
 import { t } from "i18next";
 
-import { SendSmsCodeButton } from "@/components/SendSmsCodeButton";
-import SmsCodeInput from "@/components/SmsCodeInput";
+import { hidePhoneNumber } from "@/utils/format";
 
-export default function AuthDetail(props: { handleBack: () => void }) {
+import { useRealNameAuthMutation } from "../service";
+
+import useGlobalStore from "@/pages/globalStore";
+
+export default function AuthDetail() {
+  const realNameAuthMutation = useRealNameAuthMutation();
   type FormData = {
-    tel: string;
-    code: string;
     name: string;
-    id: string;
+    id_card: string;
   };
   const {
     register,
     handleSubmit,
-    getValues,
-    control,
     formState: { errors },
   } = useForm<FormData>();
+  const { userInfo, showSuccess } = useGlobalStore((state) => state);
 
-  const { handleBack } = props;
-  const onSubmit = async (data: any) => {};
+  const onSubmit = async (data: any) => {
+    const res = await realNameAuthMutation.mutateAsync(data);
+    if (!res.data) {
+      showSuccess(res.data);
+      window.location.href = "/dashboard";
+    }
+  };
 
   return (
-    <>
-      <span
-        onClick={() => handleBack()}
-        className="absolute left-[280px] flex cursor-pointer items-center"
-      >
-        <ChevronLeftIcon boxSize={6} /> {t("Back")}
-      </span>
-      <VStack>
-        <span className="text-center text-xl">{t("SettingPanel.Auth")}</span>
-        <Box className="flex w-[265px] flex-col pt-4">
-          <FormControl isRequired isInvalid={!!errors?.tel}>
-            <div className="pb-2">{t("SettingPanel.Tel")}</div>
-            <InputGroup>
-              <Input
-                {...register("tel", {
-                  required: `${t("SettingPanel.Tel")}${t("IsRequired")}`,
-                  pattern: {
-                    value: /^1\d{10}$/,
-                    message: t("SettingPanel.TelTip"),
-                  },
-                })}
-                variant="userInfo"
-              />
-              <InputRightElement width="6rem" height={8}>
-                <SendSmsCodeButton
-                  getPhone={getValues}
-                  phoneNumber={"tel"}
-                  className="!h-6 !text-[12px]"
-                  type="Unbind"
-                />
-              </InputRightElement>
-            </InputGroup>
-            {/* <FormErrorMessage className="absolute -bottom-4 left-[130px]  w-[250px]">
-              {errors?.tel && errors?.tel?.message}
-            </FormErrorMessage> */}
-          </FormControl>
-          <FormControl isRequired isInvalid={!!errors?.code}>
-            <div className="pb-2 pt-4">{t("SettingPanel.Code")}:</div>
-            <Controller
-              name="code"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <div>
-                  <SmsCodeInput value={value} onChange={onChange} />
-                </div>
-              )}
-            />
-            {/* <FormErrorMessage className="absolute -bottom-4 left-[130px]  w-[250px]">
-              {errors?.code && errors?.code?.message}
-            </FormErrorMessage> */}
-          </FormControl>
+    <div className="flex flex-col items-center">
+      <div className="mt-24 flex h-[64px] w-[590px] items-center justify-center rounded-t-2xl bg-primary-600 text-[20px] font-semibold text-white">
+        {t("SettingPanel.Auth")}
+      </div>
+      <div className="flex h-[374px] w-[590px] justify-center rounded-b-2xl bg-white">
+        <Box className="flex w-[265px] flex-col pt-10">
+          <div className="pb-2">{t("SettingPanel.Tel")}</div>
+          <Input
+            variant="none"
+            className="border-b-[1px] !px-0"
+            value={hidePhoneNumber(userInfo?.phone || "")}
+            isDisabled
+          />
           <FormControl isRequired isInvalid={!!errors?.name}>
-            <div className="pb-2 pt-4">{t("SettingPanel.Name")}:</div>
+            <div className="pb-2 pt-4">{t("SettingPanel.Name")}</div>
             <Input
               {...register("name", {
                 required: `${t("SettingPanel.Name")}${t("IsRequired")}`,
               })}
               variant="userInfo"
             />
-            {/* <FormErrorMessage className="absolute -bottom-4 left-[130px]  w-[250px]">
-              {errors?.name && errors?.name?.message}
-            </FormErrorMessage> */}
           </FormControl>
-          <FormControl isRequired isInvalid={!!errors?.id} className="pb-8">
-            <div className="pb-2 pt-4">{t("SettingPanel.ID")}:</div>
+          <FormControl isRequired isInvalid={!!errors?.id_card}>
+            <div className="pb-2 pt-4">{t("SettingPanel.ID")}</div>
             <Input
-              {...register("id", {
+              {...register("id_card", {
                 required: `${t("SettingPanel.ID")}${t("IsRequired")}`,
                 pattern: {
                   value:
@@ -111,14 +66,14 @@ export default function AuthDetail(props: { handleBack: () => void }) {
               variant="userInfo"
             />
             <FormErrorMessage className="absolute -bottom-4 left-[130px] w-[250px]">
-              {errors?.id && errors?.id?.message}
+              {errors?.id_card && errors?.id_card?.message}
             </FormErrorMessage>
           </FormControl>
+          <Button onClick={handleSubmit(onSubmit)} className="mt-10 !h-9">
+            {t("SettingPanel.ToAuth")}
+          </Button>
         </Box>
-        <Button width={"100%"} type="submit" onClick={handleSubmit(onSubmit)}>
-          {t("SettingPanel.ToAuth")}
-        </Button>
-      </VStack>
-    </>
+      </div>
+    </div>
   );
 }
