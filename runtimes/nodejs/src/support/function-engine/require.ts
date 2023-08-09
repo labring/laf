@@ -40,7 +40,7 @@ export class FunctionRequire {
   warp(code: string): string {
     return `
     const require = (module) => {
-      fromModules.push(name)
+      fromModules.push(__filename)
       return requireFunc(module, fromModules)
     }
     const exports = {};

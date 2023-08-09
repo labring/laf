@@ -66,7 +66,7 @@ export class FunctionVm {
       URL: URL,
       fetch: globalThis.fetch,
       global: null,
-      fromModules: fromModules,
+      fromModules: [...fromModules],
     }
 
     sandbox.global = sandbox

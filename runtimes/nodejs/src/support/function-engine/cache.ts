@@ -92,12 +92,15 @@ export class FunctionCache {
       return require('@lafjs/cloud')
     }
     if (module.startsWith('@/')) {
-      fromModules.forEach((m) => {
-        if (m === module) {
-          throw new Error(`Circular dependency detected: ${module} -> ${m}`)
-        }
-      })
-      return FunctionCache.requireCloudFunction(module.replace('@/', ''), fromModules)
+      const cloudModule = module.replace('@/', '')
+
+      // check circular dependency
+      const index = fromModules?.indexOf(cloudModule)
+      if (index !== -1) {
+        throw new Error(`Circular dependency detected: ${fromModules.slice(index).join(' -> ')} -> ${cloudModule}`)
+      }
+
+      return FunctionCache.requireCloudFunction(cloudModule, fromModules)
     }
     return require(module) as any
   }
