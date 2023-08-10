@@ -40,7 +40,7 @@ import useGlobalStore from "@/pages/globalStore";
 
 const HAS_BODY_PARAMS_METHODS: (TMethod | undefined)[] = ["POST", "PUT", "PATCH", "DELETE"];
 
-export default function DebugPanel(props: { containerRef: any; showOverlay: boolean }) {
+export default function DebugPanel(props: { containerRef: any }) {
   const { t } = useTranslation();
   const { getFunctionUrl, currentFunction, setCurrentFunction, setCurrentRequestId } =
     useFunctionStore((state: any) => state);

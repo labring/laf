@@ -7,6 +7,7 @@ import useGlobalStore from "@/pages/globalStore";
 
 type State = {
   allFunctionList: TFunction[];
+  recentFunctionList: TFunction[];
   currentFunction: TFunction | { [key: string]: any };
   currentRequestId: string | undefined;
   functionCodes: { [key: string]: string };
@@ -14,6 +15,7 @@ type State = {
   getFunctionUrl: () => string;
   setCurrentRequestId: (requestId: string | undefined) => void;
   setAllFunctionList: (functionList: TFunction[]) => void;
+  setRecentFunctionList: (functionList: TFunction[]) => void;
   setCurrentFunction: (currentFunction: TFunction | { [key: string]: any }) => void;
   updateFunctionCode: (current: TFunction | { [key: string]: any }, codes: string) => void;
   setIsFetchButtonClicked: () => void;
@@ -23,6 +25,7 @@ const useFunctionStore = create<State>()(
   devtools(
     immer((set, get) => ({
       allFunctionList: [],
+      recentFunctionList: [],
       currentFunction: {},
       functionCodes: {},
       currentRequestId: undefined,
@@ -48,6 +51,12 @@ const useFunctionStore = create<State>()(
       setAllFunctionList: (allFunctionList) => {
         set((state) => {
           state.allFunctionList = allFunctionList;
+        });
+      },
+
+      setRecentFunctionList: (recentFunctionList) => {
+        set((state) => {
+          state.recentFunctionList = recentFunctionList;
         });
       },
 

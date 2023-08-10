@@ -1,0 +1,21 @@
+{
+  "name": "laf-testing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@jest/globals": "^29.6.2",
+    "@types/jest": "^29.5.3",
+    "ts-jest": "^29.1.1"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "mongodb": "^5.7.0"
+  }
+}

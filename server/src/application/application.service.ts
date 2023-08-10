@@ -21,10 +21,14 @@ import {
   ApplicationBundle,
   ApplicationBundleResource,
 } from './entities/application-bundle'
+import { GroupService } from 'src/group/group.service'
+import { GroupMember } from 'src/group/entities/group-member'
 
 @Injectable()
 export class ApplicationService {
   private readonly logger = new Logger(ApplicationService.name)
+
+  constructor(private readonly groupService: GroupService) {}
 
   /**
    * Create application
@@ -85,7 +89,7 @@ export class ApplicationService {
           state: dto.state || ApplicationState.Running,
           phase: ApplicationPhase.Creating,
           tags: [],
-          createdBy: new ObjectId(userid),
+          createdBy: userid,
           lockedAt: TASK_LOCK_INIT_TIME,
           regionId: new ObjectId(dto.regionId),
           runtimeId: new ObjectId(dto.runtimeId),
@@ -96,6 +100,7 @@ export class ApplicationService {
         { session },
       )
 
+      await this.groupService.create(appid, userid, appid)
       // commit transaction
       await session.commitTransaction()
     } catch (error) {
@@ -110,11 +115,30 @@ export class ApplicationService {
     const db = SystemDatabase.db
 
     const doc = await db
-      .collection('Application')
-      .aggregate<ApplicationWithRelations>()
+      .collection<GroupMember>('GroupMember')
+      .aggregate()
       .match({
-        createdBy: new ObjectId(userid),
+        uid: userid,
+      })
+      .lookup({
+        from: 'GroupApplication',
+        localField: 'groupId',
+        foreignField: 'groupId',
+        as: 'applications',
+      })
+      .unwind('$applications')
+      .project({
+        _id: 0,
+        appid: '$applications.appid',
+      })
+      .toArray()
+
+    const res = db
+      .collection<Application>('Application')
+      .aggregate()
+      .match({
         phase: { $ne: ApplicationPhase.Deleted },
+        appid: { $in: doc.map((v) => v.appid) },
       })
       .lookup({
         from: 'ApplicationBundle',
@@ -136,7 +160,7 @@ export class ApplicationService {
       })
       .toArray()
 
-    return doc
+    return res
   }
 
   async findOne(appid: string) {

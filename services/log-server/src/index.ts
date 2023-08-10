@@ -15,10 +15,10 @@ process.on('uncaughtException', (err) => {
   logger.error('Caught uncaughtException:', err)
 })
 
-app.use(express.json({ limit: '3mb' }))
+app.use(express.json({ limit: Config.REQUEST_PAYLOAD_LIMIT }))
 app.use(
   express.urlencoded({
-    limit: '3mb',
+    limit: Config.REQUEST_PAYLOAD_LIMIT,
     extended: true,
   }),
 )

@@ -50,9 +50,11 @@ Laf 静态网站托管支持绑定自己的域名，并自动生成 `SSL` 证书
 
 ![website-hosting](../../doc-images/website-hosting.png)
 
-## 自动编译前端并发布
+## 自动化构建前端并发布
 
-利用 `Github Actions` 即可实现自动编译前端并推送到 Laf 云存储中
+> 利用 `Github Actions` 即可实现自动化构建前端并推送到 Laf 云存储中
+
+### 方式一：结合 Laf cli
 
 <!-- /guide/cli/#登录 -->
 
@@ -71,15 +73,15 @@ name: Build
 on:
   push:
     branches:
-      - "*"
+      - '*'
 
 env:
   BUCKET_NAME: ${{ secrets.DOC_BUCKET_NAME }}
   LAF_APPID: ${{ secrets.LAF_APPID }}
   LAF_PAT: ${{ secrets.LAF_PAT }}
-  API_URL: "https://api.laf.dev"
+  API_URL: 'https://api.laf.dev'
   WEB_PATH: .
-  DIST_PATH: "dist"
+  DIST_PATH: 'dist'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -88,7 +90,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
+          node-version: '16.x'
       # 安装项目依赖
       - name: Install Dependencies
         working-directory: ${{ env.WEB_PATH }}
@@ -136,3 +138,60 @@ jobs:
 第二步：点击 `Secrets and variables` 下的 `Actions`
 
 第三步：依次添加 `DOC_BUCKET_NAME` `LAF_APPID` `LAF_PAT`
+
+### 方式二：使用 Github Action 模板
+
+1、获取 Access Key 和 Secret 等配置参数
+查看详细文档：[生成云存储临时令牌 (STS)](/guide/oss/get-sts.md)
+![secret](/doc-images/oss-get-sts.png)
+
+2、编写 Github Action
+
+```yaml
+name: Build
+on:
+  push:
+    branches:
+      - '*'
+
+env:
+  BUCKET_NAME: ${{ secrets.DOC_BUCKET_NAME }}
+  OSS_ID: ${{ secrets.OSS_ID }}
+  OSS_SECRET: ${{ secrets.OSS_SECRET }}
+  OSS_ENDPOINT: 'https://oss.laf.dev'
+  OSS_REGION: 'sg'
+  STS_TOKEN: ${{ secrets.STS_TOKEN }}
+  DIST_PATH: 'dist'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      # 安装项目依赖
+      - name: Install Dependencies
+        working-directory: ${{ env.WEB_PATH }}
+        run: npm install
+      # 编译项目
+      - name: Build
+        working-directory: ${{ env.WEB_PATH }}
+        run: npm run build
+      # 上传部署
+      - name: Laf OSS Upload
+        uses: 0fatal/laf-oss-upload@main
+        with:
+          endpoint: ${{ env.OSS_ENDPOINT }}
+          region: ${{ env.OSS_REGION }}}
+          access-key-id: ${{ env.OSS_ID }}
+          access-key-secret: ${{ env.OSS_SECRET }}
+          sts-token: ${{ env.STS_TOKEN }}
+          bucket: ${{ env.BUCKET_NAME }}
+          target-dir: ${{ env.DIST_PATH }}
+```
+
+3、配置环境变量
+
+4、提交代码到仓库触发自动化构建和部署

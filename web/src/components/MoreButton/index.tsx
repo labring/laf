@@ -16,8 +16,9 @@ export default function MoreButton(props: {
   isHidden: boolean;
   label: string;
   maxWidth?: string;
+  className?: string;
 }) {
-  const { children, isHidden, maxWidth, label = t("openPopover") } = props;
+  const { children, isHidden, maxWidth, label = t("openPopover"), className } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <div className={clsx("flex group-hover:visible ", isHidden ? "invisible" : "visible")}>
@@ -32,12 +33,12 @@ export default function MoreButton(props: {
           <Box display="inline-block">
             <PopoverTrigger>
               <div className="px-1">
-                <MoreIcon className="align-middle" fontSize={12} />
+                <MoreIcon className="cursor-pointer align-middle" fontSize={12} />
               </div>
             </PopoverTrigger>
           </Box>
         </Tooltip>
-        <PopoverContent p="2" maxWidth={maxWidth ? maxWidth : "100px"}>
+        <PopoverContent p="2" maxWidth={maxWidth ? maxWidth : "100px"} className={className}>
           <div className="flex justify-around">{children}</div>
         </PopoverContent>
       </Popover>

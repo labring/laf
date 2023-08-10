@@ -14,7 +14,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
 
-import { SynchronizeUpIcon } from "@/components/CommonIcon";
+import { RocketIcon } from "@/components/CommonIcon";
 import CommonDiffEditor from "@/components/Editor/CommonDiffEditor";
 import { Pages } from "@/constants";
 
@@ -77,18 +77,20 @@ export default function DeployButton() {
   return (
     <>
       <Tooltip
-        label={`快捷键: ${displayName.toUpperCase()}，调试可直接点击右侧「运行」按扭`}
+        label={`快捷键: ${displayName.toUpperCase()}，调试可直接点击下方「运行」按扭`}
         placement="bottom-end"
       >
         <Button
-          variant={"text"}
+          variant={"secondary"}
+          rounded={"full"}
           size={"xs"}
           isLoading={functionDetailQuery.isFetching}
           disabled={store.getFunctionUrl() === ""}
           onClick={() => {
             onOpen();
           }}
-          leftIcon={<SynchronizeUpIcon />}
+          px={3}
+          leftIcon={<RocketIcon />}
         >
           {t("FunctionPanel.Deploy")}
         </Button>

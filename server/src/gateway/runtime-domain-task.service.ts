@@ -153,7 +153,11 @@ export class RuntimeDomainTaskService {
     await db.collection<RuntimeDomain>('RuntimeDomain').updateOne(
       { _id: doc._id, phase: DomainPhase.Creating },
       {
-        $set: { phase: DomainPhase.Created, lockedAt: TASK_LOCK_INIT_TIME },
+        $set: {
+          phase: DomainPhase.Created,
+          lockedAt: TASK_LOCK_INIT_TIME,
+          updatedAt: new Date(),
+        },
       },
     )
 
@@ -259,7 +263,11 @@ export class RuntimeDomainTaskService {
         lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
-        $set: { phase: DomainPhase.Creating, lockedAt: TASK_LOCK_INIT_TIME },
+        $set: {
+          phase: DomainPhase.Creating,
+          lockedAt: TASK_LOCK_INIT_TIME,
+          updatedAt: new Date(),
+        },
       },
     )
   }
@@ -278,7 +286,11 @@ export class RuntimeDomainTaskService {
         lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
-        $set: { phase: DomainPhase.Deleting, lockedAt: TASK_LOCK_INIT_TIME },
+        $set: {
+          phase: DomainPhase.Deleting,
+          lockedAt: TASK_LOCK_INIT_TIME,
+          updatedAt: new Date(),
+        },
       },
     )
   }
@@ -298,7 +310,11 @@ export class RuntimeDomainTaskService {
         lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {
-        $set: { phase: DomainPhase.Deleting, lockedAt: TASK_LOCK_INIT_TIME },
+        $set: {
+          phase: DomainPhase.Deleting,
+          lockedAt: TASK_LOCK_INIT_TIME,
+          updatedAt: new Date(),
+        },
       },
     )
 
@@ -312,6 +328,14 @@ export class RuntimeDomainTaskService {
    * Relock application by appid, lockedTime is in milliseconds
    */
   async relock(appid: string, lockedTime = 0) {
+    if (lockedTime <= 2 * 60 * 1000) {
+      lockedTime = Math.ceil(lockedTime / 10)
+    }
+
+    if (lockedTime > 2 * 60 * 1000) {
+      lockedTime = this.lockTimeout * 1000
+    }
+
     const db = SystemDatabase.db
     const lockedAt = new Date(Date.now() - 1000 * this.lockTimeout + lockedTime)
     await db

@@ -40,7 +40,7 @@ function List(props: { appList: TApplicationItem[] }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const { setCurrentApp, regions } = useGlobalStore();
+  const { setCurrentApp, regions, userInfo } = useGlobalStore();
 
   const [searchKey, setSearchKey] = useState("");
 
@@ -106,7 +106,14 @@ function List(props: { appList: TApplicationItem[] }) {
                   className="group mb-3 flex items-center rounded-xl px-3 py-5 lg:px-6"
                 >
                   <div className="w-3/12 ">
-                    <div className="text-lg font-bold">{item?.name}</div>
+                    <div className="flex">
+                      <span className="mr-2 text-lg font-semibold">{item?.name}</span>
+                      {item?.createdBy !== userInfo?._id && (
+                        <span className="flex items-center rounded-[4px] border border-grayModern-200 px-1.5 text-sm text-grayModern-600">
+                          {t("Collaborative")}
+                        </span>
+                      )}
+                    </div>
                     <BundleInfo bundle={item.bundle} />
                   </div>
                   <div className="w-2/12 font-mono">

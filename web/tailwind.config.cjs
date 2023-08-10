@@ -17,6 +17,7 @@ module.exports = {
       DEFAULT: "0px 4px 10px rgba(191, 202, 213, 0.25)",
     },
     fontSize: {
+      sm: "10px",
       base: "12px",
       lg: "14px",
       xl: "16px",
@@ -117,6 +118,7 @@ module.exports = {
           700: "#7167AA",
         },
         adora: {
+          100: "#F2F1FB",
           200: "#E6E3F7",
           600: "#8172D8",
         },

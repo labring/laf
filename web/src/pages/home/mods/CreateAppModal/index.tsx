@@ -507,10 +507,19 @@ const CreateAppModal = (props: {
                         defaultChecked={defaultAutoscaling.enable}
                         colorScheme="primary"
                         onChange={() => {
-                          setAutoscaling({
-                            ...autoscaling,
-                            enable: !autoscaling.enable,
-                          });
+                          if (autoscaling.enable) {
+                            setAutoscaling({
+                              ...autoscaling,
+                              enable: !autoscaling.enable,
+                            });
+                          } else {
+                            setAutoscaling({
+                              ...autoscaling,
+                              enable: !autoscaling.enable,
+                              targetCPUUtilizationPercentage: 50,
+                              targetMemoryUtilizationPercentage: null,
+                            });
+                          }
                         }}
                       />
                     </div>

@@ -76,3 +76,9 @@ a {
   background-color: #00A9A6 !important;
   color: white !important;
 }
+
+.simplebar-scrollbar::before {
+  background: #DEE0E2;
+  height: 6px;
+  transform: translateY(50%);
+}
