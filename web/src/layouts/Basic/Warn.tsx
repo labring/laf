@@ -22,7 +22,6 @@ export default function Warn() {
       <p
         className="cursor-pointer font-semibold text-[#219BF4]"
         onClick={() => {
-          console.log(userInfo);
           if (userInfo?.phone) {
             navigate("/auth/real-name");
           } else {

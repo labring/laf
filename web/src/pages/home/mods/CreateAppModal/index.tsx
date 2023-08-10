@@ -81,7 +81,7 @@ const CreateAppModal = (props: {
 
   const { application, type } = props;
 
-  const title = type === "edit" ? t("Edit") : type === "change" ? t("Change") : t("Create");
+  const title = type === "edit" ? t("Edit") : type === "change" ? t("Change") : t("CreateApp");
 
   const { runtimes = [], regions = [] } = useGlobalStore();
 

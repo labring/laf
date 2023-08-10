@@ -138,7 +138,9 @@
     "DeleteApp": "delete apps",
     "DeleteTip": "The current operation will permanently delete applications, including functions, data, cloud storage, etc. related data related to the application. After deleting, <strong> will not be able to cancel </strong>,please enter <strong>{{appId}}</strong> confirm",
     "Duration": "Duration",
-    "Spec": "Spec"
+    "Spec": "Spec",
+    "WelcomeTo": "Welcome to",
+    "LAF": "the LAF cloud development platform!"
   },
   "SpecItem": {
     "cpu": "CPU",
@@ -203,7 +205,9 @@
     "CostTrend": "Cost Trend",
     "Balance": "Balance",
     "Pause": "Pause",
-    "AppMonitor": "App Monitoring"
+    "AppMonitor": "App Monitoring",
+    "PauseTips": "Are you sure you want to pause this application?",
+    "RestartTips": "Are you sure you want to restart this application?"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -615,5 +619,6 @@
     "QuitSuccess": "Quit",
     "Quit": "Quit"
   },
-  "Collaborative": "Collaborative"
+  "Collaborative": "Collaborative",
+  "CreateApp": "New Application"
 }

@@ -31,12 +31,12 @@ function Empty() {
   return (
     <div style={{ height: "75vh", minHeight: "500px" }}>
       <div className="flex h-full flex-col items-center justify-center">
-        <h2 className="text-3xl font-bold">
-          {t("HomePanel.Hello")} 👋 ，{" "}
-          {hidePhoneNumber(userInfo?.profile?.name || userInfo?.username || "")} ，
-          {t("HomePanel.Welcome")}
+        <h2 className="flex text-3xl font-bold">
+          {t("HomePanel.Hello")} 👋 ， {hidePhoneNumber(userInfo?.username || "")} ，
+          {t("HomePanel.WelcomeTo")}
+          <span className="ml-2 text-primary-600">{t("HomePanel.LAF")}</span>
         </h2>
-        <p className="mx-auto mb-8 mt-10 w-[460px] text-xl">{t("HomePanel.Introduction")}</p>
+        <p className="my-8 w-[460px] text-center text-xl">{t("HomePanel.Introduction")}</p>
         <div className="grid w-[722px] grid-cols-3">
           {messageList.map((item, index) => {
             return (
@@ -44,6 +44,7 @@ function Empty() {
                 key={index}
                 className={clsx("flex items-center pl-9 text-xl font-medium", styles.emptyItem, {
                   "bg-lafDark-300": darkMode,
+                  "bg-lafWhite-100": !darkMode,
                 })}
               >
                 {item}
@@ -51,7 +52,7 @@ function Empty() {
             );
           })}
         </div>
-        <p className="mb-9">{t("HomePanel.Use")}</p>
+        <p className="mb-9 text-lg">{t("HomePanel.Use")}</p>
         <CreateAppModal type={"create"}>
           <Button
             size={"lg"}
@@ -59,7 +60,7 @@ function Empty() {
             style={{ padding: "0 80px" }}
             leftIcon={<AddIcon />}
           >
-            {t("Create")}
+            {t("CreateApp")}
           </Button>
         </CreateAppModal>
       </div>

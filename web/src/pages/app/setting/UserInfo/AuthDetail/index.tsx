@@ -23,7 +23,7 @@ export default function AuthDetail() {
 
   const onSubmit = async (data: any) => {
     const res = await realNameAuthMutation.mutateAsync(data);
-    if (!res.data) {
+    if (res.data) {
       showSuccess(res.data);
       window.location.href = "/dashboard";
     }

@@ -124,7 +124,9 @@ export default function UserInfo() {
                   )}
                 >
                   {t("SettingPanel.Auth")}
-                  <InfoOutlineIcon className="ml-2 !text-primary-600" />
+                  {!userInfo?.profile?.idVerified?.isVerified && (
+                    <InfoOutlineIcon className="ml-2 !text-primary-600" />
+                  )}
                 </span>
                 <span className="flex justify-between text-base">
                   <span className={!darkMode ? "text-grayModern-700" : ""}>
@@ -148,7 +150,7 @@ export default function UserInfo() {
                     </span>
                   ) : (
                     <span className="flex items-center">
-                      <span className="mr-2">{t("UserInfo.VerifiedIdentity")}</span>
+                      <span className="mr-2 text-[#485058]">{t("UserInfo.VerifiedIdentity")}</span>
                       <CheckCircleIcon className="!text-primary-600" />
                     </span>
                   )}
