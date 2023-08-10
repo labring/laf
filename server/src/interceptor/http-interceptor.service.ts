@@ -65,7 +65,12 @@ export class HttpInterceptorService {
       )
       if (!response.data) {
         return {
-          action: HttpInterceptorAction.ALLOW,
+          action: HttpInterceptorAction.DENY,
+        }
+      }
+      if (!response.data.action) {
+        return {
+          action: HttpInterceptorAction.DENY,
         }
       }
       return response.data

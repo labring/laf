@@ -5,7 +5,7 @@ import {
   CallHandler,
   ForbiddenException,
 } from '@nestjs/common'
-import { Observable, catchError, from, mergeMap, of, throwError } from 'rxjs'
+import { Observable, from, mergeMap, of } from 'rxjs'
 import { HttpInterceptorService } from './interceptor/http-interceptor.service'
 import {
   HttpInterceptorAction,
