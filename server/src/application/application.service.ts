@@ -137,8 +137,15 @@ export class ApplicationService {
       .collection<Application>('Application')
       .aggregate()
       .match({
-        phase: { $ne: ApplicationPhase.Deleted },
-        appid: { $in: doc.map((v) => v.appid) },
+        $and: [
+          {
+            $or: [
+              { appid: { $in: doc.map((v) => v.appid) } },
+              { createdBy: userid },
+            ],
+          },
+          { phase: { $ne: ApplicationPhase.Deleted } },
+        ],
       })
       .lookup({
         from: 'ApplicationBundle',
