@@ -286,6 +286,7 @@ export class InstanceService {
         spec: {
           terminationGracePeriodSeconds: 10,
           automountServiceAccountToken: false,
+          enableServiceLinks: false,
           containers: [
             {
               image: app.runtime.image.main,
