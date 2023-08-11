@@ -188,20 +188,22 @@ const CreateAppModal = (props: {
           autoscaling,
         });
 
-        const newResource = {
-          ...currentApp.bundle.resource,
-          limitCPU: bundle.cpu,
-          limitMemory: bundle.memory,
-          databaseCapacity: bundle.databaseCapacity,
-          storageCapacity: bundle.storageCapacity,
-        };
+        if (isCurrentApp) {
+          const newResource = {
+            ...currentApp.bundle.resource,
+            limitCPU: bundle.cpu,
+            limitMemory: bundle.memory,
+            databaseCapacity: bundle.databaseCapacity,
+            storageCapacity: bundle.storageCapacity,
+          };
 
-        const newBundle = {
-          ...currentApp.bundle,
-          resource: newResource,
-          autoscaling: autoscaling,
-        };
-        isCurrentApp && setCurrentApp({ ...currentApp, bundle: newBundle });
+          const newBundle = {
+            ...currentApp.bundle,
+            resource: newResource,
+            autoscaling: autoscaling,
+          };
+          setCurrentApp({ ...currentApp, bundle: newBundle });
+        }
         break;
 
       case "create":
@@ -306,7 +308,7 @@ const CreateAppModal = (props: {
               )}
               <div className="mr-2 flex items-center">
                 <span className="ml-4 mr-2">
-                  {t("Balance")}:
+                  {t("Balance") + ":"}
                   <span className="ml-2 text-xl">{formatPrice(accountRes?.data?.balance)}</span>
                 </span>
                 {totalPrice > accountRes?.data?.balance! ? (
