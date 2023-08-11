@@ -38,7 +38,7 @@ function StatusBar() {
           {t("Spec.RAM")}: {`${currentApp?.bundle?.resource.limitMemory} ${t("Unit.MB")}`}
         </div>
         <div className={clsx("mt-1")}>
-          <CreateAppModal application={currentApp as any} type="change">
+          <CreateAppModal application={currentApp as any} isCurrentApp type="change">
             <a className="ml-2 text-primary-500" href="/edit">
               {t("Change")}
             </a>
