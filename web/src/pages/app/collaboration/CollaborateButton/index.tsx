@@ -207,7 +207,7 @@ export default function CollaborateButton() {
                       </>
                     ) : (
                       <CopyText
-                        text={window.location.host + "/collaboration/join?code=" + member.code}
+                        text={window.location.origin + "/collaboration/join?code=" + member.code}
                         className="mr-4 cursor-pointer text-[#219BF4]"
                       >
                         <span>

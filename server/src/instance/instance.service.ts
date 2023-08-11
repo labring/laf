@@ -517,7 +517,7 @@ export class InstanceService {
     return spec
   }
 
-  private async reapplyHorizontalPodAutoscaler(
+  public async reapplyHorizontalPodAutoscaler(
     app: ApplicationWithRelations,
     oldHpa: V2HorizontalPodAutoscaler,
   ) {
