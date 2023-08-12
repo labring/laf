@@ -2,11 +2,11 @@ name: links when pr
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - '**.md'
-      - 'docs/**'
-      - '.lycheeignore'
+      - "**.md"
+      - "docs/**"
+      - ".lycheeignore"
 
 jobs:
   linkChecker:
@@ -14,20 +14,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set Node.js 18.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-      - name: Run Install
-        working-directory: docs         
-        run: npm install
-      - name: Run Build
-        working-directory: docs         
-        run: npm run build
+      - name: Build Docs
+        uses: ./.github/actions/build-docs
+
       - name: Link Checker
-        uses: lycheeverse/lychee-action@v1.5.0
+        uses: lycheeverse/lychee-action@v1.8.0
         with:
-          fail: true
+          fail:
+            true
             # For parameter description, see https://github.com/lycheeverse/lychee#commandline-parameters
             # -E, --exclude-all-private    Exclude all private IPs from checking.
             # -i, --insecure               Proceed for server connections considered insecure (invalid TLS)
@@ -38,6 +32,6 @@ jobs:
 
             # docs/.vitepress/dist the site directory to check
             # ./*.md all markdown files in the root directory
-          args: -E -i -n -t 45 --max-concurrency 64 -a 429,401 -- 'docs/.vitepress/dist' '*.md'
+          args: -E -i -n -t 45 --max-concurrency 64 -a 401,403 -- 'docs/.vitepress/dist' '*.md'
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

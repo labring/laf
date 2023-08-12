@@ -3,40 +3,29 @@ name: deploy docs
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - 'docs/**'
-      - '.github/workflows/deploy-doc.yml'
+      - "docs/**"
+      - ".github/workflows/deploy-doc.yml"
 env:
   LAF_CI_DOCS_PAT: ${{ secrets.LAF_CI_DOCS_PAT }}
   LAF_CI_DOCS_APPID: ${{ secrets.LAF_CI_DOCS_APPID }}
   LAF_CI_DOCS_BUCKET_NAME: ${{ secrets.LAF_CI_DOCS_BUCKET_NAME }}
   LAF_API_URL: ${{ secrets.LAF_API_URL }}
-  
+
 jobs:
-  linkCheckerAndDeploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set Node.js 16.x
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-      - name: Run Install
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: install # will run `yarn install` command in `docs` directory
-          dir: docs
-      - name: Run build
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: build # will run `yarn build` command in `docs` directory
-          dir: docs
+      - name: Build Docs
+        uses: ./.github/actions/build-docs
+
       - name: Setup laf-cli
         run: npm i laf-cli -g
       - name: Login laf-cli
-        run: | 
+        run: |
           laf user add doc -r ${{ env.LAF_API_URL }}
           laf user switch doc
           laf login ${{ env.LAF_CI_DOCS_PAT }}
