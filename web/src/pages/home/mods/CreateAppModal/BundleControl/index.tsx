@@ -94,6 +94,7 @@ export default function BundleControl(props: {
             specs: { value: number; price: number }[];
             price: number;
           }) => {
+            const value = item.specs.findIndex((spec) => spec.value === bundle[item.type]);
             return item.specs.length > 0 ? (
               <div className="ml-8 mt-8 flex" key={item.type}>
                 <span className={clsx("w-2/12", darkMode ? "" : "text-grayModern-600")}>
@@ -102,7 +103,7 @@ export default function BundleControl(props: {
                 <Slider
                   id="slider"
                   className="mr-12"
-                  value={item.specs.findIndex((spec) => spec.value === bundle[item.type])}
+                  value={value}
                   min={0}
                   max={item.specs.length - 1}
                   colorScheme="primary"
@@ -131,7 +132,19 @@ export default function BundleControl(props: {
                   <SliderTrack>
                     <SliderFilledTrack bg={"primary.200"} />
                   </SliderTrack>
-                  <SliderThumb bg={"primary.500"} />
+                  {value >= 0 ? (
+                    <SliderThumb bg={"primary.500"} />
+                  ) : (
+                    <SliderThumb
+                      onClick={() => {
+                        setBundle({
+                          ...bundle,
+                          [item.type]: item.specs[0].value,
+                        });
+                      }}
+                      style={{ opacity: 0 }}
+                    />
+                  )}
                 </Slider>
               </div>
             ) : null;
