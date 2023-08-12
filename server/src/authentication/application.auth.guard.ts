@@ -34,6 +34,10 @@ export class ApplicationAuthGuard implements CanActivate {
     if (!ok && !app.createdBy.equals(user._id)) {
       return false
     }
+    if (!ok) {
+      await this.groupService.create(appid, user._id, appid)
+      await this.checkGroupAuth(appid, user, context)
+    }
 
     // inject app to request
     request.application = app
