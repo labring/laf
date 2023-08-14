@@ -1,6 +1,8 @@
-import { useColorMode } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
+import { Center, Spinner, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import EmptyBox from "@/components/EmptyBox";
 import { formatDate } from "@/utils/format";
 
 import { useFunctionHistoryQuery } from "../../service";
@@ -12,6 +14,7 @@ export default function VersionHistoryPanel() {
   const { currentFunction } = useFunctionStore((state) => state);
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
+  const { t } = useTranslation();
 
   const history = useFunctionHistoryQuery(encodeURIComponent(currentFunction.name), {
     enabled: currentFunction.name !== undefined,
@@ -19,7 +22,11 @@ export default function VersionHistoryPanel() {
 
   return (
     <div className="h-full overflow-auto pt-2">
-      {!history.isFetching &&
+      {history.isFetching ? (
+        <Center className="h-full">
+          <Spinner />
+        </Center>
+      ) : history.data?.data.length !== 0 ? (
         history.data?.data.map((item: any, index: number) => {
           return (
             <FetchButton key={index} functionCode={item.source.code}>
@@ -60,7 +67,12 @@ export default function VersionHistoryPanel() {
               </div>
             </FetchButton>
           );
-        })}
+        })
+      ) : (
+        <EmptyBox hideIcon>
+          <span>{t("FunctionPanel.HistoryTips")}</span>
+        </EmptyBox>
+      )}
     </div>
   );
 }

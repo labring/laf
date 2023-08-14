@@ -116,7 +116,8 @@
     "getCodeOnline": "获取线上最新发布的代码",
     "versionHistory": "历史版本",
     "Restore": "恢复",
-    "Invite": "邀请"
+    "Invite": "邀请",
+    "HistoryTips": "暂无历史版本"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",

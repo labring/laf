@@ -2,7 +2,7 @@
  * cloud functions SideBar menu
  ***************************/
 
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { Center } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
@@ -26,7 +26,6 @@ type TIcon = {
 };
 export default function SideBar() {
   const { pageId } = useParams();
-  const navigate = useNavigate();
   const { currentApp, setCurrentPage, userInfo, avatarUpdatedAt, regions = [] } = useGlobalStore();
   const currentRegion =
     regions.find((item: any) => item._id === currentApp?.regionId) || regions[0];
@@ -96,20 +95,9 @@ export default function SideBar() {
             {icons.map((item) => {
               if (item.pageId === "nav") {
                 return (
-                  <Center
-                    key={item.pageId}
-                    style={{
-                      height: 40,
-                      marginTop: 12,
-                      marginBottom: 24,
-                    }}
-                    className="cursor-pointer"
-                    onClick={() => {
-                      navigate(Routes.dashboard);
-                    }}
-                  >
+                  <a key={item.pageId} href={Routes.dashboard}>
                     {item.icon}
-                  </Center>
+                  </a>
                 );
               }
               if (item.icon) {

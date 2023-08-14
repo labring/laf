@@ -27,6 +27,7 @@ import { DEFAULT_CODE, SUPPORTED_METHODS } from "@/constants";
 import { changeURL } from "@/utils/format";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
+import useFunctionStore from "../../../store";
 
 import { TFunctionTemplate, TMethod } from "@/apis/typing";
 import FunctionTemplate from "@/pages/functionTemplate";
@@ -48,13 +49,14 @@ const CreateModal = (props: {
   const navigate = useNavigate();
   const [searchKey, setSearchKey] = useState("");
   const [templateOpen, setTemplateOpen] = useState(false);
+  const { recentFunctionList, setRecentFunctionList } = useFunctionStore();
 
   const defaultValues = {
     name: functionItem?.name || "",
     description: functionItem?.desc || "",
     websocket: !!functionItem?.websocket,
     methods: functionItem?.methods || ["GET", "POST"],
-    code: functionItem?.source.code || aiCode || DEFAULT_CODE || "",
+    code: functionItem?.source?.code || aiCode || DEFAULT_CODE || "",
     tags: functionItem?.tags || [],
   };
 
@@ -103,6 +105,14 @@ const CreateModal = (props: {
         name: functionItem.name,
         newName: data.name,
       });
+      setRecentFunctionList(
+        recentFunctionList.map((item: any) => {
+          if (item.name === functionItem.name) {
+            return { ...item, name: data.name };
+          }
+          return item;
+        }),
+      );
     } else if (isEdit && functionItem.name === data.name) {
       res = await updateFunctionMutation.mutateAsync(data);
     } else {
