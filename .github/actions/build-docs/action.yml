@@ -1,0 +1,27 @@
+name: Build Laf Docs
+description: Build Laf Docs, to reuse in other workflows
+
+inputs:
+  docs-path:
+    description: 'Path to docs folder'
+    required: false
+    default: 'docs'
+  
+
+# development docs: https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+
+runs:
+  using: composite
+  steps:
+    - name: Set Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+    - name: Run Install
+      working-directory: ${{ inputs.docs-path }}        
+      run: npm install
+      shell: bash
+    - name: Run Build
+      working-directory: ${{ inputs.docs-path }}
+      run: npm run build
+      shell: bash
