@@ -56,6 +56,7 @@ sealos pull labring/flannel:v0.19.0
 sealos pull labring/helm:v3.8.2
 sealos pull labring/openebs:v1.9.0
 sealos pull labring/cert-manager:v1.8.0
+sealos pull labring/metrics-server:v0.6.2
 sealos pull lafyun/laf:latest
 
 # install k8s cluster
@@ -72,6 +73,6 @@ kubectl label node $NODENAME laf.dev/node.type=runtime
 # install required components
 sealos run labring/openebs:v1.9.0
 sealos run labring/cert-manager:v1.8.0
-
+sealos run labring/metrics-server:v0.6.2
 
 sealos run --env DOMAIN=$DOMAIN --env DB_PV_SIZE=5Gi --env OSS_PV_SIZE=5Gi --env EXTERNAL_HTTP_SCHEMA=http lafyun/laf:latest
