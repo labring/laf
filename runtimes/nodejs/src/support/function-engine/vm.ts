@@ -56,6 +56,7 @@ export class FunctionVm {
       Buffer: Buffer,
       setImmediate: setImmediate,
       clearImmediate: clearImmediate,
+      Float32Array: Float32Array,
       setInterval: setInterval,
       clearInterval: clearInterval,
       setTimeout: setTimeout,
