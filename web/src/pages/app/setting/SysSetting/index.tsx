@@ -1,12 +1,12 @@
 import React from "react";
 import { t } from "i18next";
 
-import { DomainIcon, ENVIcon, TextIcon } from "@/components/CommonIcon";
+import { DomainIcon, ENVIcon, MonitorIcon, TextIcon } from "@/components/CommonIcon";
 import { APP_SETTING_KEY } from "@/constants";
 
 import AppEnvList from "../AppEnvList";
 import AppInfoList from "../AppInfoList";
-// import AppMonitor from "../AppMonitor";
+import AppMonitor from "../AppMonitor";
 import CustomDomain from "../CustomDomain";
 
 import { TApplicationDetail } from "@/apis/typing";
@@ -28,12 +28,12 @@ export default function SysSetting(props: {
           component: <AppInfoList />,
           icon: <TextIcon boxSize={4} />,
         },
-        // {
-        //   key: "monitor",
-        //   name: t("SettingPanel.AppMonitor"),
-        //   component: <AppMonitor />,
-        //   icon: <MonitorIcon boxSize={4} />,
-        // },
+        {
+          key: "monitor",
+          name: t("SettingPanel.AppMonitor"),
+          component: <AppMonitor />,
+          icon: <MonitorIcon boxSize={4} />,
+        },
         {
           key: APP_SETTING_KEY.ENV,
           name: t("SettingPanel.AppEnv"),

@@ -611,5 +611,8 @@
     "QuitSuccess": "Quit",
     "Quit": "Quit"
   },
-  "Collaborative": "Collaborative"
+  "Collaborative": "Collaborative",
+  "Used": "Used",
+  "Remaining": "Remaining",
+  "Pod": "Pod"
 }

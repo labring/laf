@@ -611,5 +611,8 @@
     "QuitSuccess": "退出成功",
     "Quit": "退出"
   },
-  "Collaborative": "协作"
+  "Collaborative": "协作",
+  "Used": "已使用",
+  "Remaining": "剩余",
+  "Pod": "实例"
 }
