@@ -53,10 +53,6 @@ const routes = [
         index: true,
       },
       {
-        path: "/auth/real-name",
-        element: () => import("@/pages/app/setting/UserInfo/AuthDetail"),
-      },
-      {
         path: "/dashboard",
         element: <BasicLayout />,
         auth: true,

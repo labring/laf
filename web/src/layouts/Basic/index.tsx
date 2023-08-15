@@ -17,6 +17,12 @@ export default function BasicLayout() {
     init();
   }, [init]);
 
+  useEffect(() => {
+    if (!window.location.href.includes("token")) return;
+    const token = window.location.href.split("=")[1];
+    localStorage.setItem("token", token);
+  }, []);
+
   return (
     <div>
       <Header width="" />
