@@ -6,7 +6,8 @@
     "./web",
     "./runtimes/nodejs",
     "./cli",
-    "./services/*"
+    "./services/*",
+    "./e2e"
   ],
   "version": "1.0.0-beta.10",
   "command": {
