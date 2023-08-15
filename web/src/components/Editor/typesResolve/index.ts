@@ -13,6 +13,9 @@ async function loadPackageTypings(packageName: string) {
   const res = await axios({
     url: `${url}/_/typing/package?packageName=${packageName}`,
     method: "GET",
+    headers: {
+      "x-laf-develop-token": `${currentApp?.develop_token}`,
+    },
   });
 
   return res.data;

@@ -10,7 +10,7 @@
   [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/labring/laf)
   [![](https://img.shields.io/docker/pulls/lafyun/system-server)](https://hub.docker.com/r/lafyun/system-server)
   ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white)
-  [![Website](https://img.shields.io/website?url=https%3A%2F%2Fdocs.lafyun.com&logo=Postwoman)](https://docs.lafyun.com/)
+  [![Website](https://img.shields.io/website?url=https%3A%2F%2Flaf.run&logo=Postwoman)](https://laf.run/)
   <img src="https://img.shields.io/badge/%E5%BE%AE%E4%BF%A1%E7%BE%A4-2000%2B-brightgreen"></a>
 
   </p>

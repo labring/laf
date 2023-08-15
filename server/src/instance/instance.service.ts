@@ -286,6 +286,7 @@ export class InstanceService {
         spec: {
           terminationGracePeriodSeconds: 10,
           automountServiceAccountToken: false,
+          enableServiceLinks: false,
           containers: [
             {
               image: app.runtime.image.main,
@@ -517,7 +518,7 @@ export class InstanceService {
     return spec
   }
 
-  private async reapplyHorizontalPodAutoscaler(
+  public async reapplyHorizontalPodAutoscaler(
     app: ApplicationWithRelations,
     oldHpa: V2HorizontalPodAutoscaler,
   ) {

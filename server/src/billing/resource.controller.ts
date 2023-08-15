@@ -53,6 +53,7 @@ export class ResourceController {
 
   /**
    * Get resource option list
+   * TODO: deprecated, prepare to remove
    */
   @ApiOperation({ summary: 'Get resource option list' })
   @ApiResponseArray(ResourceOption)

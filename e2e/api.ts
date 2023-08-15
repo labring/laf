@@ -38,7 +38,7 @@ export async function GetTestApplication() {
   try {
     const user = await db.collection('User').findOne({ username: Config.TEST_USERNAME })
     const app = await db.collection('Application')
-      .findOne({ createdBy: user._id, state: 'Running', phase: 'Started' })
+      .findOne({ createdBy: user._id, state: 'Running', phase: 'Started', name: Config.TEST_APP_NAME })
     return app
   } finally {
     await client.close()
