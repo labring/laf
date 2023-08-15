@@ -10,6 +10,10 @@ export class ServerConfig {
     return process.env.DATABASE_URL
   }
 
+  static get PROMETHEUS_URL() {
+    return process.env.PROMETHEUS_URL
+  }
+
   static get METERING_DATABASE_URL() {
     if (!process.env.METERING_DATABASE_URL) {
       throw new Error('METERING_DATABASE_URL is not defined')
