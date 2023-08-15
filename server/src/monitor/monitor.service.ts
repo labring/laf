@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
 import { ServerConfig } from 'src/constants'
+import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
 
 const requestConfig = {
   queryEndpoint: ServerConfig.PROMETHEUS_URL,
@@ -97,7 +98,7 @@ export class MonitorService {
     const opts = {
       appid,
       selector: 'pod',
-      namespace: appid,
+      namespace: GetApplicationNamespaceByAppId(appid),
       pods: appid + '.+',
     }
     const data = {}
