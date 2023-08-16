@@ -71,6 +71,10 @@ export class InitializerService {
         secret: ServerConfig.DEFAULT_REGION_LOG_SERVER_SECRET,
         databaseUrl: ServerConfig.DEFAULT_REGION_LOG_SERVER_DATABASE_URL,
       },
+      prometheusConf: {
+        apiUrl: ServerConfig.DEFAULT_REGION_PROMETHEUS_URL,
+        accessToken: ServerConfig.DEFAULT_REGION_PROMETHEUS_ACCESS_TOKEN,
+      },
       updatedAt: new Date(),
       createdAt: new Date(),
       state: 'Active',

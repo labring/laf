@@ -38,6 +38,11 @@ export type LogServerConf = {
   databaseUrl: string
 }
 
+export type PrometheusConf = {
+  apiUrl: string
+  accessToken: string
+}
+
 export class Region {
   @ApiProperty({ type: String })
   _id?: ObjectId
@@ -53,6 +58,7 @@ export class Region {
   gatewayConf: RegionGatewayConf
   storageConf: RegionStorageConf
   logServerConf: LogServerConf
+  prometheusConf: PrometheusConf
 
   @ApiProperty()
   tls: boolean

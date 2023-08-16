@@ -1,10 +1,11 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
-import { ServerConfig } from 'src/constants'
+import { ApplicationService } from 'src/application/application.service'
+import { PrometheusConf } from 'src/region/entities/region'
+import { RegionService } from 'src/region/region.service'
 import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
 
 const requestConfig = {
-  queryEndpoint: ServerConfig.PROMETHEUS_URL,
   retryAttempts: 5,
   retryDelayBase: 300,
   rateAccuracy: '1m',
@@ -82,15 +83,26 @@ export enum MonitorMetric {
 
 @Injectable()
 export class MonitorService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly applicationService: ApplicationService,
+    private readonly regionService: RegionService,
+  ) {}
   private readonly logger = new Logger(MonitorService.name)
+
+  private async getPrometheusConf(appid: string) {
+    const app = await this.applicationService.findOne(appid)
+    const region = await this.regionService.findOne(app.regionId)
+    return region?.prometheusConf
+  }
 
   async getData(
     appid: string,
     metrics: MonitorMetric[],
     queryParams: Record<string, number | string>,
   ) {
-    if (!requestConfig.queryEndpoint) {
+    const conf = await this.getPrometheusConf(appid)
+    if (!conf?.apiUrl) {
       this.logger.warn('Metrics not available for no endpoint')
       return []
     }
@@ -108,21 +120,22 @@ export class MonitorService {
       })(opts, metric)
 
       data[metric] = instant
-        ? await this.query(query)
-        : await this.queryRange(query, queryParams)
+        ? await this.query(conf, query)
+        : await this.queryRange(conf, query, queryParams)
     })
 
     await Promise.all(res)
     return data
   }
 
-  private async query(query: string) {
-    const endpoint = `${requestConfig.queryEndpoint}/api/v1/query`
+  private async query(conf: PrometheusConf, query: string) {
+    const endpoint = `${conf.apiUrl}/api/v1/query`
 
-    return await this.queryInternal(endpoint, { query })
+    return await this.queryInternal(endpoint, conf.accessToken, { query })
   }
 
   private async queryRange(
+    conf: PrometheusConf,
     query: string,
     queryParams: Record<string, number | string>,
   ) {
@@ -139,13 +152,18 @@ export class MonitorService {
       ...queryParams,
     }
 
-    const endpoint = `${requestConfig.queryEndpoint}/api/v1/query_range`
+    const endpoint = `${conf.apiUrl}/api/v1/query_range`
 
-    return await this.queryInternal(endpoint, { query, ...queryParams })
+    return await this.queryInternal(endpoint, conf.accessToken, {
+      query,
+      ...queryParams,
+      token: conf.accessToken,
+    })
   }
 
   private async queryInternal(
     endpoint: string,
+    accessToken: string,
     query: Record<string, string | number>,
   ) {
     for (let attempt = 1; attempt <= requestConfig.retryAttempts; attempt++) {
