@@ -89,6 +89,10 @@ spec:
               value: {{ .Values.default_region.log_server_secret }}
             - name: DEFAULT_REGION_LOG_SERVER_DATABASE_URL
               value: {{ .Values.default_region.log_server_database_url }}
+            - name: DEFAULT_REGION_PROMETHEUS_URL
+              value: {{ .Values.default_region.prometheus_url }}
+            - name: DEFAULT_REGION_PROMETHEUS_ACCESS_TOKEN
+              value: {{ .Values.default_region.prometheus_access_token }}
             - name: SITE_NAME
               value: {{ .Values.siteName | quote}}
       {{- with .Values.nodeSelector }}

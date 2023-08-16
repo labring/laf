@@ -18,6 +18,8 @@ ENABLE_APISIX_HOST_NETWORK=${ENABLE_APISIX_HOST_NETWORK:-true}
 NAMESPACE=${NAMESPACE:-laf-system}
 PASSWD_OR_SECRET=$(tr -cd 'a-z0-9' </dev/urandom |head -c32)
 
+ENABLE_MONITOR=${ENABLE_MONITOR:-true}
+
 # *************** Deployments **************** #
 
 ## 0. create namespace
@@ -70,10 +72,31 @@ helm install minio -n ${NAMESPACE} \
     --set persistence.size=${OSS_PV_SIZE:-3Gi} \
     --set domain=${MINIO_DOMAIN} \
     --set consoleHost=minio.${DOMAIN} \
+    --set serviceMonitor.enabled=$ENABLE_MONITOR
     ./charts/minio
 
+## 4. install prometheus
+PROMETHEUS_URL=http://prometheus-prometheus.${NAMESPACE}.svc.cluster.local:9099 \
+PROMETHEUS_ACCESS_TOKEN=$PASSWD_OR_SECRET
+if [ $ENABLE_MONITOR ]; then
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm repo update
 
-## 4. install laf-server
+    sed "s/\$PROMETHEUS_ACCESS_TOKEN/$PROMETHEUS_ACCESS_TOKEN/g" prometheus-helm.yaml > prometheus-helm-with-token.yaml
+
+    helm install prometheus -n ${NAMESPACE} \
+        -f ./prometheus-values-with-token.yaml \
+        prometheus-community/kube-prometheus-stack
+
+    helm install prometheus-mongodb-exporter -n ${NAMESPACE} \
+        --set mongodb.uri=${DATABASE_URL} \
+        --set serviceMonitor.enabled=true \
+        --set serviceMonitor.additionalLabels.release=prometheus \
+        --set serviceMonitor.additionalLabels.namespace=${NAMESPACE} \
+        prometheus-community/prometheus-mongodb-exporter
+fi
+
+## 5. install laf-server
 SERVER_JWT_SECRET=$PASSWD_OR_SECRET
 LOG_SERVER_URL="http://log-server.${NAMESPACE}.svc.cluster.local:5060"
 LOG_SERVER_DATABASE_URL="mongodb://${DB_USERNAME:-admin}:${PASSWD_OR_SECRET}@mongodb-0.mongo.${NAMESPACE}.svc.cluster.local:27017/function-logs?authSource=admin&replicaSet=rs0&w=majority"
@@ -100,6 +123,8 @@ helm install server -n ${NAMESPACE} \
     --set default_region.log_server_url=${LOG_SERVER_URL} \
     --set default_region.log_server_secret=${LOG_SERVER_SECRET} \
     --set default_region.log_server_database_url=${LOG_SERVER_DATABASE_URL} \
+    $( [[ $ENABLE_MONITOR ]] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}" ) \
+    $( [[ $ENABLE_MONITOR ]] && echo "--set default_region.prometheus_access_token=${PROMETHEUS_ACCESS_TOKEN}" ) \
     ./charts/laf-server
 
 ## 6. install laf-web
