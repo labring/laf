@@ -34,6 +34,12 @@ spec:
               - font/ttf
               - font/otf
               - font/eot
+        {{- if .Values.httpsRedirect }}
+        - name: redirect
+          enable: true
+          config:
+            http_to_https: true
+        {{- end }}
     - name: laf-web-api
       match:
         hosts:
@@ -64,3 +70,9 @@ spec:
               - font/ttf
               - font/otf
               - font/eot
+        {{- if .Values.httpsRedirect }}
+        - name: redirect
+          enable: true
+          config:
+            http_to_https: true
+        {{- end }}
