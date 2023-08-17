@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 
+import { uniformCapacity, uniformCPU, uniformMemory, uniformStorage } from "@/utils/format";
+
 import AreaCard from "./AreaCard";
 import PieCard from "./PieCard";
 
@@ -47,9 +49,9 @@ export default function AppMonitor() {
     {
       refetchInterval: 60000,
       onSuccess: (data) => {
-        const databaseValue = data.data.databaseUsage[0]?.value[1] / 1024 / 1024 || 0;
+        const databaseValue = uniformCapacity(data.data.databaseUsage[0]?.value[1]) || 0;
         const databaseRemain = currentApp.bundle.resource.databaseCapacity - databaseValue;
-        const storageValue = data.data.storageUsage[0]?.value[1] / 1024 / 1024 || 0;
+        const storageValue = uniformStorage(data.data.storageUsage[0]?.value[1]) || 0;
         const storageRemain = currentApp.bundle.resource.storageCapacity - storageValue;
         setCpuDataArray(data.data.cpuUsage);
         setMemoryDataArray(data.data.memoryUsage);
@@ -69,13 +71,13 @@ export default function AppMonitor() {
     setCpuData(
       cpuDataArray[dataNumber]?.values.map((item: any) => ({
         xData: item[0] * 1000,
-        value: item[1],
+        value: uniformCPU(item[1]),
       })),
     );
     setMemoryData(
       memoryDataArray[dataNumber]?.values.map((item: any) => ({
         xData: item[0] * 1000,
-        value: item[1] / 1024 / 1024,
+        value: uniformMemory(item[1]),
       })),
     );
   }, [cpuDataArray, memoryDataArray, dataNumber]);

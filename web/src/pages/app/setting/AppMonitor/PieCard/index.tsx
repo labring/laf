@@ -8,7 +8,7 @@ export default function PieCard(props: { data: any[]; title: string; colors: str
   const renderLegend = (props: any) => {
     const { payload } = props;
     return (
-      <ul>
+      <ul className="w-24">
         {payload.map((entry: any, index: number) => (
           <div className="font-medium">
             <span className="mt-3 flex items-center">
@@ -45,7 +45,7 @@ export default function PieCard(props: { data: any[]; title: string; colors: str
             ))}
           </Pie>
           <text
-            x="40%"
+            x="36%"
             y="50%"
             textAnchor="middle"
             dominantBaseline="middle"

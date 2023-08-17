@@ -4,6 +4,7 @@ import { Tooltip } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
 import { MonitorIcon } from "@/components/CommonIcon";
+import { uniformCapacity, uniformCPU, uniformMemory, uniformStorage } from "@/utils/format";
 
 import { MonitorControllerGetData } from "@/apis/v1/monitor";
 import SysSetting from "@/pages/app/setting/SysSetting";
@@ -31,26 +32,33 @@ export default function MonitorBar() {
       refetchInterval: 60000,
       onSuccess: (data) => {
         setCpuUsagePercent(
-          (data.data.cpuUsage[0]?.values[data.data.cpuUsage[0].values.length - 1][1] /
+          (uniformCPU(data.data.cpuUsage[0]?.values[data.data.cpuUsage[0].values.length - 1][1]) /
             (limitCPU / 1000)) *
             100,
         );
         setMemoryUsagePercent(
-          ((data.data.memoryUsage[0]?.values[data.data.memoryUsage[0].values.length - 1][1] /
-            1024 /
-            1024) *
-            100) /
-            limitMemory,
+          (uniformMemory(
+            data.data.memoryUsage[0]?.values[data.data.memoryUsage[0].values.length - 1][1],
+          ) /
+            limitMemory) *
+            100,
         );
         setDatabaseUsagePercent(
-          ((data.data.databaseUsage[0]?.value[1] || 0) / 1024 / 1024 / databaseCapacity) * 100,
+          (uniformCapacity(data.data.databaseUsage[0]?.value[1] || 0) / databaseCapacity) * 100,
         );
         setStorageUsagePercent(
-          ((data.data.storageUsage[0]?.value[1] || 0) / 1024 / 1024 / storageCapacity) * 100,
+          (uniformStorage(data.data.storageUsage[0]?.value[1] || 0) / storageCapacity) * 100,
         );
       },
     },
   );
+
+  const resources = [
+    { label: `CPU`, percent: cpuUsagePercent, color: "[#47C8BF]" },
+    { label: t("Spec.RAM"), percent: memoryUsagePercent, color: "adora-600" },
+    { label: t("Spec.Database"), percent: databaseUsagePercent, color: "rose-500" },
+    { label: t("Spec.Storage"), percent: storageUsagePercent, color: "blue-600" },
+  ];
 
   const limitPercentage = (value: number) => {
     if (value > 100) {
@@ -67,38 +75,16 @@ export default function MonitorBar() {
           {t("SettingPanel.AppMonitor") + " :"}
         </span>
       </SysSetting>
-      <Tooltip label={`CPU: ${cpuUsagePercent.toFixed(2)}%`}>
-        <div className="h-1 w-12 rounded-full bg-grayModern-100">
-          <div
-            style={{ width: `${limitPercentage(cpuUsagePercent).toFixed(2)}%` }}
-            className="h-full rounded-full bg-[#47C8BF]"
-          ></div>
-        </div>
-      </Tooltip>
-      <Tooltip label={`${t("Spec.RAM")}: ${memoryUsagePercent.toFixed(2)}%`}>
-        <div className="h-1 w-12 rounded-full bg-grayModern-100">
-          <div
-            style={{ width: `${limitPercentage(memoryUsagePercent).toFixed(2)}%` }}
-            className="h-full rounded-full bg-adora-600"
-          ></div>
-        </div>
-      </Tooltip>
-      <Tooltip label={`${t("Spec.Database")}: ${databaseUsagePercent.toFixed(2)}%`}>
-        <div className="h-1 w-12 rounded-full bg-grayModern-100">
-          <div
-            style={{ width: `${limitPercentage(databaseUsagePercent).toFixed(2)}%` }}
-            className="h-full rounded-full bg-rose-500"
-          ></div>
-        </div>
-      </Tooltip>
-      <Tooltip label={`${t("Spec.Storage")}: ${storageUsagePercent.toFixed(2)}%`}>
-        <div className="h-1 w-12 rounded-full bg-grayModern-100">
-          <div
-            style={{ width: `${limitPercentage(storageUsagePercent).toFixed(2)}%` }}
-            className="h-full rounded-full bg-blue-600"
-          ></div>
-        </div>
-      </Tooltip>
+      {resources.map((resource, index) => (
+        <Tooltip key={index} label={`${resource.label}: ${resource.percent.toFixed(2)}%`}>
+          <div className="h-1 w-12 rounded-full bg-grayModern-100">
+            <div
+              style={{ width: `${limitPercentage(resource.percent).toFixed(2)}%` }}
+              className={`h-full rounded-full bg-${resource.color}`}
+            ></div>
+          </div>
+        </Tooltip>
+      ))}
     </div>
   );
 }
