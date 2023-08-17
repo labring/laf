@@ -115,7 +115,7 @@ export default function UserInfo() {
               </span>
             </div>
             <Divider className="mb-4 text-grayModern-200" />
-            {siteSettings.id_verify?.value && (
+            {siteSettings.id_verify?.value === "on" && (
               <div className="flex flex-col pb-4">
                 <span
                   className={clsx(

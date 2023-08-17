@@ -33,9 +33,8 @@ export default function BasicLayout() {
           </Center>
         ) : (
           <>
-            {siteSettings.id_verify?.value && !userInfo?.profile?.idVerified?.isVerified && (
-              <Warn />
-            )}
+            {siteSettings.id_verify?.value === "on" &&
+              !userInfo?.profile?.idVerified?.isVerified && <Warn />}
             <Outlet />
           </>
         )}
