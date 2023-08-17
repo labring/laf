@@ -442,6 +442,7 @@ export class FunctionTemplateController {
     @Query('pageSize') pageSize: number,
     @Query('keyword') keyword: string,
     @Query('sort') sort: string,
+    @Req() req: IRequest,
   ) {
     asc = asc === 0 ? Number(asc) : 1
     page = page ? Number(page) : 1
@@ -460,6 +461,7 @@ export class FunctionTemplateController {
 
     const res =
       await this.functionTemplateService.findRecommendFunctionTemplates(
+        req.user._id,
         condition,
       )
 
@@ -508,6 +510,7 @@ export class FunctionTemplateController {
     @Query('pageSize') pageSize: number,
     @Query('keyword') keyword: string,
     @Query('sort') sort: string,
+    @Req() req: IRequest,
   ) {
     asc = asc === 0 ? Number(asc) : 1
     page = page ? Number(page) : 1
@@ -522,18 +525,8 @@ export class FunctionTemplateController {
           page,
           pageSize,
           keyword,
+          req.user._id,
         )
-      return ResponseUtil.ok(res)
-    }
-
-    if (sort === 'hot') {
-      const hot = true
-      const res = await this.functionTemplateService.findFunctionTemplates(
-        asc,
-        page,
-        pageSize,
-        hot,
-      )
       return ResponseUtil.ok(res)
     }
 
@@ -541,6 +534,8 @@ export class FunctionTemplateController {
       asc,
       page,
       pageSize,
+      req.user._id,
+      sort,
     )
 
     return ResponseUtil.ok(res)
