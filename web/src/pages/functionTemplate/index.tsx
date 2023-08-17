@@ -18,12 +18,19 @@ export default function FunctionTemplate(props: { isModal: boolean }) {
   const [currentTab, setCurrentTab] = useState("all");
   const { showTemplateItem, setShowTemplateItem } = useTemplateStore();
 
-  useEffect(() => {
-    const url = window.location.href;
-    if (url.split("/").pop()!.length > 20 && !isModal) {
+  const handleUrlChange = () => {
+    const param = window.location.href.split("/").pop();
+    if (param!.length > 20 && !isModal) {
       setShowTemplateItem(true);
-    } else {
+    } else if (param!.length < 20 && !isModal) {
+      setShowTemplateItem(false);
     }
+  };
+
+  window.addEventListener("popstate", handleUrlChange);
+
+  useEffect(() => {
+    handleUrlChange();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
