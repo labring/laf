@@ -22,8 +22,4 @@ kubeStateMetrics:
 prometheus:
   networkPolicy:
     enabled: true
-    ingress:
-    - from:
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/metadata.name: $NAMESPACE
+    ingress: []

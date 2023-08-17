@@ -72,7 +72,9 @@ helm install minio -n ${NAMESPACE} \
     --set persistence.size=${OSS_PV_SIZE:-3Gi} \
     --set domain=${MINIO_DOMAIN} \
     --set consoleHost=minio.${DOMAIN} \
-    --set serviceMonitor.enabled=${ENABLE_MONITOR} \
+    --set metrics.serviceMonitor.enabled=${ENABLE_MONITOR} \
+    --set metrics.serviceMonitor.additionalLabels.release=prometheus \
+    --set metrics.serviceMonitor.additionalLabels.namespace=${NAMESPACE} \
     ./charts/minio
 
 ## 4. install prometheus
