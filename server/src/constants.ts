@@ -180,10 +180,6 @@ export class ServerConfig {
     return process.env.DEFAULT_REGION_PROMETHEUS_URL
   }
 
-  static get DEFAULT_REGION_PROMETHEUS_ACCESS_TOKEN() {
-    return process.env.DEFAULT_REGION_PROMETHEUS_ACCESS_TOKEN
-  }
-
   // HTTP interceptor
   static get HTTP_INTERCEPTOR_URL() {
     return process.env.HTTP_INTERCEPTOR_URL

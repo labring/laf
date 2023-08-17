@@ -131,7 +131,7 @@ export class MonitorService {
   private async query(conf: PrometheusConf, query: string) {
     const endpoint = `${conf.apiUrl}/api/v1/query`
 
-    return await this.queryInternal(endpoint, conf.accessToken, { query })
+    return await this.queryInternal(endpoint, { query })
   }
 
   private async queryRange(
@@ -154,16 +154,14 @@ export class MonitorService {
 
     const endpoint = `${conf.apiUrl}/api/v1/query_range`
 
-    return await this.queryInternal(endpoint, conf.accessToken, {
+    return await this.queryInternal(endpoint, {
       query,
       ...queryParams,
-      token: conf.accessToken,
     })
   }
 
   private async queryInternal(
     endpoint: string,
-    accessToken: string,
     query: Record<string, string | number>,
   ) {
     for (let attempt = 1; attempt <= requestConfig.retryAttempts; attempt++) {

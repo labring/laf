@@ -72,20 +72,19 @@ helm install minio -n ${NAMESPACE} \
     --set persistence.size=${OSS_PV_SIZE:-3Gi} \
     --set domain=${MINIO_DOMAIN} \
     --set consoleHost=minio.${DOMAIN} \
-    --set serviceMonitor.enabled=$ENABLE_MONITOR
+    --set serviceMonitor.enabled=${ENABLE_MONITOR} \
     ./charts/minio
 
 ## 4. install prometheus
-PROMETHEUS_URL=http://prometheus-prometheus.${NAMESPACE}.svc.cluster.local:9099 \
-PROMETHEUS_ACCESS_TOKEN=$PASSWD_OR_SECRET
+PROMETHEUS_URL=http://prometheus-prometheus.${NAMESPACE}.svc.cluster.local:9090
 if [ $ENABLE_MONITOR ]; then
     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
     helm repo update
 
-    sed "s/\$PROMETHEUS_ACCESS_TOKEN/$PROMETHEUS_ACCESS_TOKEN/g" prometheus-helm.yaml > prometheus-helm-with-token.yaml
+    sed "s/\$NAMESPACE/$NAMESPACE/g" prometheus-helm.yaml > prometheus-helm-with-values.yaml
 
     helm install prometheus -n ${NAMESPACE} \
-        -f ./prometheus-values-with-token.yaml \
+        -f ./prometheus-helm-with-values.yaml \
         prometheus-community/kube-prometheus-stack
 
     helm install prometheus-mongodb-exporter -n ${NAMESPACE} \
@@ -124,7 +123,6 @@ helm install server -n ${NAMESPACE} \
     --set default_region.log_server_secret=${LOG_SERVER_SECRET} \
     --set default_region.log_server_database_url=${LOG_SERVER_DATABASE_URL} \
     $( [[ $ENABLE_MONITOR ]] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}" ) \
-    $( [[ $ENABLE_MONITOR ]] && echo "--set default_region.prometheus_access_token=${PROMETHEUS_ACCESS_TOKEN}" ) \
     ./charts/laf-server
 
 ## 6. install laf-web

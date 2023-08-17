@@ -40,7 +40,6 @@ export type LogServerConf = {
 
 export type PrometheusConf = {
   apiUrl: string
-  accessToken: string
 }
 
 export class Region {

@@ -15,49 +15,15 @@ kubeControllerManager:
   enabled: false
 kubeEtcd:
   enabled: false
-kubelet:
-  enabled: false
 kubeProxy:
   enabled: false
 kubeStateMetrics:
   enabled: false
 prometheus:
-  service:
-    targetPort: 9099
-  prometheusSpec:
-    listenLocal: false
-    externalUrl: ''
-    containers:
-      - name: prom-label-proxy
-        image: quay.io/prometheuscommunity/prom-label-proxy
-        tag: ""
-        args:
-          - '--label=token'
-          - '--label-value=$PROMETHEUS_ACCESS_TOKEN'
-          - '--upstream=http://127.0.0.1:9090'
-          - '--insecure-listen-address=0.0.0.0:9099'
-        ports:
-          - name: web
-            containerPort: 9099
-            protocol: TCP
-        resources:
-          limits:
-            cpu: 200m
-            memory: 128Mi
-          requests:
-            cpu: 100m
-            memory: 64Mi
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 9099
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 9099
-        imagePullPolicy: IfNotPresent
-        securityContext:
-          runAsUser: 65534
-          runAsGroup: 65534
-          runAsNonRoot: true
-          readOnlyRootFilesystem: true
+  networkPolicy:
+    enabled: true
+    ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: $NAMESPACE

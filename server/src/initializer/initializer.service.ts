@@ -73,7 +73,6 @@ export class InitializerService {
       },
       prometheusConf: {
         apiUrl: ServerConfig.DEFAULT_REGION_PROMETHEUS_URL,
-        accessToken: ServerConfig.DEFAULT_REGION_PROMETHEUS_ACCESS_TOKEN,
       },
       updatedAt: new Date(),
       createdAt: new Date(),
