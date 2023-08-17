@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { AddIcon, Search2Icon } from "@chakra-ui/icons";
@@ -21,17 +21,19 @@ import getPageInfo from "@/utils/getPageInfo";
 
 import TemplateCard from "../Mods/TemplateCard";
 import { useGetMyFunctionTemplatesQuery } from "../service";
+import useTemplateStore from "../store";
 
 import { TFunctionTemplate } from "@/apis/typing";
 
 export default function MyTemplateList() {
   const { t } = useTranslation();
   const [searchKey, setSearchKey] = useState("");
+  const { myTemplateType, setMyTemplateType } = useTemplateStore();
   const [queryData, setQueryData] = useState({
     page: 1,
     pageSize: 8,
     keyword: "",
-    type: "stared",
+    type: myTemplateType,
     asc: 1,
     sort: "hot",
   });
@@ -55,14 +57,20 @@ export default function MyTemplateList() {
     },
   );
 
+  useEffect(() => {
+    setQueryData({ ...queryData, type: myTemplateType });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [myTemplateType]);
+
   return (
     <div className="flex flex-grow flex-col">
       <div className="flex justify-between pr-4">
         <Tabs
           variant="unstyled"
           onChange={(e) => {
-            setQueryData({ ...queryData, type: TABS[e].value });
+            setMyTemplateType(TABS[e].value);
           }}
+          index={TABS.findIndex((item) => item.value === myTemplateType)}
         >
           <TabList>
             {TABS.map((item) => (

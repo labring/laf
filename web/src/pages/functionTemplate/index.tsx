@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 
@@ -15,8 +15,7 @@ export default function FunctionTemplate(props: { isModal: boolean }) {
     { text: t("Template.CommunityTemplate"), value: "all" },
     { text: t("Template.My"), value: "my" },
   ];
-  const [currentTab, setCurrentTab] = useState("all");
-  const { showTemplateItem, setShowTemplateItem } = useTemplateStore();
+  const { showTemplateItem, setShowTemplateItem, currentTab, setCurrentTab } = useTemplateStore();
 
   const handleUrlChange = () => {
     const param = window.location.href.split("/").pop();
