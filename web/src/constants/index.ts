@@ -98,3 +98,7 @@ export enum APP_SETTING_KEY {
   MONITOR = "monitor",
   DOMAIN = "domain",
 }
+
+export const points = "⟐";
+
+export const currency = "¥";

@@ -19,8 +19,9 @@ import { t } from "i18next";
 import isNumber from "lodash/isNumber";
 import { QRCodeSVG } from "qrcode.react";
 
-import { CHARGE_CHANNEL, CURRENCY } from "@/constants";
-import { convertMoney, formatPrice } from "@/utils/format";
+import { CHARGE_CHANNEL, CURRENCY, currency } from "@/constants";
+import { points } from "@/constants";
+import { convertMoney, formatOriginalPrice, formatPrice } from "@/utils/format";
 
 import {
   AccountControllerCharge,
@@ -101,13 +102,18 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                   {formatPrice(accountRes?.data?.balance)}
                 </span>
               </div>
-              {bonus && <p className="mb-4 text-second">{t("Recharge amount")}</p>}
+              {bonus && (
+                <div className="flex">
+                  <p className="mb-4 mr-2 text-second">{t("Recharge amount")}</p>
+                  <p>{`(${currency}1 = ${points}1)`}</p>
+                </div>
+              )}
               <div className="mb-5 grid grid-cols-3 gap-4">
                 {(bonus || []).map((item) => (
                   <div className="relative" key={item.amount}>
                     {item.reward && (
                       <span className="absolute left-20 top-1 z-50 whitespace-nowrap rounded-full rounded-bl-none bg-purple-200 px-4 py-[1.5px] text-[12px] text-purple-600">
-                        {t("application.bonus")} ¥{item.reward / 100}
+                        {t("application.bonus")} {formatOriginalPrice(item.reward / 100)}
                       </span>
                     )}
                     <Button
@@ -123,14 +129,14 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                         setAmount(item.amount / 100);
                       }}
                     >
-                      ¥{item.amount / 100}
+                      {currency + item.amount / 100}
                     </Button>
                   </div>
                 ))}
               </div>
               <InputGroup className="flex items-center pb-5">
                 <div className="w-20 text-lg text-second">{t("application.Recharge")}</div>
-                <InputLeftAddon className="!px-0 !pl-3" children="¥" />
+                <InputLeftAddon className="!px-0 !pl-3" children={currency} />
                 <Input
                   ref={inputRef}
                   className={clsx("!w-5/12 !border-none !px-2", darkMode ? "" : "!bg-gray-100")}
@@ -149,7 +155,9 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                     <span className="ml-3 whitespace-nowrap rounded-full rounded-bl-none bg-purple-200 px-2 py-[1.5px] text-[12px] text-purple-600">
                       {t("application.bonus")}
                     </span>
-                    <span className="pl-1 font-semibold">¥{matchBonus(amount * 100) || 0}</span>
+                    <span className="pl-1 font-semibold">
+                      {formatOriginalPrice(matchBonus(amount * 100) || 0)}
+                    </span>
                   </div>
                 )}
               </InputGroup>

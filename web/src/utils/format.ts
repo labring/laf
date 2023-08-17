@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import { t } from "i18next";
 
+import { points } from "@/constants";
+
 export function formatDate(
   date?: string | number | Date | dayjs.Dayjs | null | undefined,
   format = "YYYY-MM-DD HH:mm",
@@ -82,11 +84,15 @@ export function formatPort(port: number | undefined) {
 }
 
 export function formatPrice(price?: number) {
-  return price ? "¥" + (price / 100).toFixed(2) : "¥0.00";
+  return price ? `${points} ${(price / 100).toFixed(2)}` : `${points} 0.00`;
 }
 
 export function formatOriginalPrice(price?: number, fixedNumber?: number) {
-  return price ? "¥" + price.toFixed(fixedNumber || 2) : "¥0.00";
+  return price
+    ? fixedNumber
+      ? `${points} ${price.toFixed(fixedNumber)}`
+      : `${points} ${price}`
+    : `${points} 0.00`;
 }
 
 export function convertMoney(money: number) {

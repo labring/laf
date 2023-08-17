@@ -25,6 +25,7 @@ import clsx from "clsx";
 import { CalendarIcon, ChargeIcon, FilterIcon } from "@/components/CommonIcon";
 import EmptyBox from "@/components/EmptyBox";
 import Pagination from "@/components/Pagination";
+import { currency } from "@/constants";
 import { formatDate, formatPrice } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
 
@@ -177,7 +178,9 @@ export default function RechargeHistory() {
                     </Td>
                     <Td className="font-medium text-grayModern-900">{formatPrice(item.reward)}</Td>
                     <Td className="font-medium text-grayModern-900">
-                      {item.channel === "GiftCode" ? "-" : formatPrice(item.amount)}
+                      {item.channel === "GiftCode"
+                        ? "-"
+                        : currency + (item.amount / 100).toFixed(2)}
                     </Td>
                   </Tr>
                 ))}

@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import { formatOriginalPrice } from "@/utils/format";
+
 interface PricingCardProps {
   color: string;
   title: string;
@@ -33,7 +35,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ color, title, value }) => {
           {title}
         </div>
         <div className={clsx("pt-3 text-center text-[24px]", !darkMode && "text-grayModern-900")}>
-          ￥ {value}
+          {formatOriginalPrice(value)}
         </div>
         <div className={clsx("pb-5 text-center", !darkMode && "text-grayModern-900")}>
           {title === "CPU" ? t("Core") : "G"}/{t("Hour")}
@@ -46,7 +48,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ color, title, value }) => {
             )}
             key={label}
           >
-            <span>￥ {(value * multiplier).toFixed(2)}</span>
+            <span>{formatOriginalPrice(value * multiplier, 2)}</span>
             <span>
               {title === "CPU" ? t("Core") : "G"}/{label}
             </span>

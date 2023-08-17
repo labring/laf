@@ -147,7 +147,7 @@ export default function Usage() {
                 {billLoading ? (
                   <Spinner size={"sm"} />
                 ) : (
-                  formatOriginalPrice(billingAmountRes?.data as number)
+                  formatOriginalPrice(billingAmountRes?.data as number, 2)
                 )}
               </div>
             </div>
