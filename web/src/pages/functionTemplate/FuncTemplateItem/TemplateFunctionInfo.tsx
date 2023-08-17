@@ -26,8 +26,8 @@ const TemplateFunctionInfo = ({
         <div>
           <div className="mb-2 flex justify-between">
             <div className="w-full">
-              <div className="truncate pb-2 text-[24px] font-semibold">{template.name}</div>
-              <div className="truncate text-second">{template.description}</div>
+              <p className="text-ellipsis pb-2 text-[24px] font-semibold">{template.name}</p>
+              <p className="text-ellipsis text-second">{template.description}</p>
             </div>
           </div>
           <Divider marginY={4} variant="dashed" />

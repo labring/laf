@@ -503,7 +503,9 @@
     "Recommended": "推荐模板",
     "Confirm": "如果存在依赖包未安装，将会自动重启应用，确定使用该模板吗？",
     "ConfirmDeleteTemplate": "确定删除模板吗?",
-    "DeveloperInfo": "开发者信息"
+    "DeveloperInfo": "开发者信息",
+    "NoRecommended": "暂无推荐模板",
+    "Created": "我创建的"
   },
   "Fee": "费用",
   "PleaseCloseApplicationFirst": "请先关闭应用",
@@ -611,5 +613,6 @@
     "QuitSuccess": "退出成功",
     "Quit": "退出"
   },
-  "Collaborative": "协作"
+  "Collaborative": "协作",
+  "CreateFunction": "创建函数"
 }

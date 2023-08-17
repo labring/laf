@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   CheckboxGroup,
+  Divider,
   FormControl,
   FormErrorMessage,
   HStack,
@@ -21,18 +22,19 @@ import {
 import { t } from "i18next";
 import { debounce } from "lodash";
 
-import { TextIcon } from "@/components/CommonIcon";
+import { MoreTemplateIcon, TextIcon } from "@/components/CommonIcon";
+import EmptyBox from "@/components/EmptyBox";
 import InputTag from "@/components/InputTag";
 import { DEFAULT_CODE, SUPPORTED_METHODS } from "@/constants";
-import { changeURL } from "@/utils/format";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
 
 import { TFunctionTemplate, TMethod } from "@/apis/typing";
 import FunctionTemplate from "@/pages/functionTemplate";
-import TemplateCard from "@/pages/functionTemplate/Mods/TemplateCard/TemplateCard";
+import TemplateCard from "@/pages/functionTemplate/Mods/TemplateCard";
 import { useGetRecommendFunctionTemplatesQuery } from "@/pages/functionTemplate/service";
+import useTemplateStore from "@/pages/functionTemplate/store";
 import useGlobalStore from "@/pages/globalStore";
 
 const CreateModal = (props: {
@@ -50,6 +52,7 @@ const CreateModal = (props: {
   const [searchKey, setSearchKey] = useState("");
   const [templateOpen, setTemplateOpen] = useState(false);
   const { recentFunctionList, setRecentFunctionList } = useFunctionStore();
+  const { setShowTemplateItem } = useTemplateStore();
 
   const defaultValues = {
     name: functionItem?.name || "",
@@ -75,6 +78,7 @@ const CreateModal = (props: {
     control,
     setFocus,
     reset,
+    getValues,
     formState: { errors },
   } = useForm<FormData>({
     defaultValues,
@@ -86,7 +90,7 @@ const CreateModal = (props: {
   const TemplateList = useGetRecommendFunctionTemplatesQuery(
     {
       page: 1,
-      pageSize: 6,
+      pageSize: 3,
       keyword: searchKey,
       type: "default",
       asc: 1,
@@ -149,7 +153,7 @@ const CreateModal = (props: {
           </ModalHeader>
           <ModalCloseButton />
 
-          <ModalBody>
+          <ModalBody className="mb-4">
             <VStack align="flex-start">
               <FormControl isInvalid={!!errors?.name}>
                 <div className="mb-3 flex h-12 w-full items-center border-b-2">
@@ -166,12 +170,16 @@ const CreateModal = (props: {
                     style={{ outline: "none", boxShadow: "none" }}
                     onChange={debounce((e) => {
                       setSearchKey(e.target.value);
-                    }, 500)}
+                    }, 200)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        onSubmit({ ...getValues(), name: searchKey });
+                      }
+                    }}
                   />
                 </div>
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
               </FormControl>
-
               <FormControl isInvalid={!!errors?.methods}>
                 <HStack spacing={6}>
                   <Controller
@@ -192,7 +200,6 @@ const CreateModal = (props: {
                 </HStack>
                 <FormErrorMessage>{errors.methods?.message}</FormErrorMessage>
               </FormControl>
-
               <FormControl>
                 <HStack className="mt-1 w-full">
                   <Controller
@@ -204,7 +211,6 @@ const CreateModal = (props: {
                   />
                 </HStack>
               </FormControl>
-
               <FormControl>
                 <div className="flex w-full items-center border-b-2 border-transparent focus-within:border-grayModern-200">
                   <TextIcon fontSize={16} color={"gray.300"} />
@@ -218,61 +224,59 @@ const CreateModal = (props: {
                 </div>
               </FormControl>
 
-              {!isEdit && !aiCode && (
+              <Button
+                type="submit"
+                onClick={handleSubmit(onSubmit)}
+                isLoading={updateFunctionMutation.isLoading || createFunctionMutation.isLoading}
+                className="!h-9 w-full !rounded !bg-primary-600 !font-semibold"
+              >
+                {t("CreateFunction")}
+              </Button>
+            </VStack>
+          </ModalBody>
+          {!isEdit && !aiCode && (
+            <>
+              <Divider />
+              <ModalFooter>
                 <div className="w-full">
-                  {TemplateList.data?.data.list.length > 0 && (
-                    <div className="pb-3 text-lg font-medium text-grayModern-700">
-                      {t("Template.Recommended")}
-                    </div>
-                  )}
-                  <div className="flex flex-wrap">
-                    {TemplateList.data?.data.list.map((item: TFunctionTemplate) => (
-                      <div className="mb-3 w-1/3 pr-3" key={item._id}>
-                        <TemplateCard
-                          template={item}
+                  <div className="pb-3 text-lg font-medium text-grayModern-700">
+                    {t("Template.Recommended")}
+                  </div>
+                  <div className="mb-7 flex space-x-3">
+                    {TemplateList.data?.data.list.length > 0 ? (
+                      TemplateList.data?.data.list.map((item: TFunctionTemplate) => (
+                        <div
+                          className="h-28 w-1/3 py-1"
+                          key={item._id}
                           onClick={() => {
-                            navigate(changeURL(`/${item._id}`));
                             setTemplateOpen(true);
                           }}
-                          templateCategory="recommended"
-                          isModal={true}
-                        />
-                      </div>
-                    ))}
+                        >
+                          <TemplateCard template={item} isModal={true} />
+                        </div>
+                      ))
+                    ) : (
+                      <EmptyBox hideIcon className="h-28">
+                        <p>{t("Template.NoRecommended")}</p>
+                      </EmptyBox>
+                    )}
                   </div>
-                  <div
-                    onClick={() => {
-                      navigate(changeURL(`/recommended`));
-                    }}
-                  >
+                  <div>
                     <button
-                      className="w-full cursor-pointer bg-primary-100 py-2 text-primary-600"
-                      onClick={() => setTemplateOpen(true)}
+                      className="flex w-full cursor-pointer items-center justify-center bg-primary-100 py-2 text-primary-600"
+                      onClick={() => {
+                        setTemplateOpen(true);
+                        setShowTemplateItem(false);
+                      }}
                     >
+                      <MoreTemplateIcon className="mr-2 text-lg" />
                       {t("FunctionPanel.CreateFromTemplate")}
                     </button>
                   </div>
                 </div>
-              )}
-            </VStack>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button
-              variant="ghost"
-              mr={3}
-              onClick={() => {
-                onClose();
-              }}
-            >{t`Cancel`}</Button>
-            <Button
-              type="submit"
-              onClick={handleSubmit(onSubmit)}
-              isLoading={updateFunctionMutation.isLoading || createFunctionMutation.isLoading}
-            >
-              {t`Confirm`}
-            </Button>
-          </ModalFooter>
+              </ModalFooter>
+            </>
+          )}
         </ModalContent>
       </Modal>
 
@@ -280,7 +284,7 @@ const CreateModal = (props: {
         isOpen={templateOpen}
         onClose={() => {
           setTemplateOpen(!templateOpen);
-          navigate(changeURL("/"));
+          navigate(`/app/${currentApp.appid}/function`);
         }}
       >
         <ModalOverlay />

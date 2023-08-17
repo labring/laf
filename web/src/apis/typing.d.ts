@@ -305,6 +305,9 @@ export type TFunctionTemplate = {
   environments: { name: string; value: string }[];
   uid: string;
   user: { username: string };
+  author: string;
+  stared: boolean;
+  isRecommended: boolean;
 };
 
 export type TemplateList = {

@@ -84,14 +84,6 @@ export default async function (ctx: FunctionContext) {
 }
 `;
 
-export enum TEMPLATE_CATEGORY {
-  recommended = "recommended",
-  all = "all",
-  default = "default",
-  stared = "stared",
-  recentUsed = "recentUsed",
-}
-
 export enum APP_SETTING_KEY {
   INFO = "info",
   ENV = "env",
