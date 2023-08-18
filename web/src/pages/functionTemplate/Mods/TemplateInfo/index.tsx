@@ -87,9 +87,7 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any 
             return (
               <Box key={item.name} className="my-5 flex justify-between">
                 <div className="flex w-5/12 truncate font-medium">{item.name}</div>
-                <Tooltip label={item.value} aria-label="A tooltip">
-                  <div className="truncate pl-4">{item.value}</div>
-                </Tooltip>
+                <div className="truncate pl-4">{item.value}</div>
               </Box>
             );
           })}

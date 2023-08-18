@@ -3,6 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
+  Center,
   Checkbox,
   CheckboxGroup,
   Divider,
@@ -16,6 +17,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
@@ -23,7 +25,6 @@ import { t } from "i18next";
 import { debounce } from "lodash";
 
 import { MoreTemplateIcon, TextIcon } from "@/components/CommonIcon";
-import EmptyBox from "@/components/EmptyBox";
 import InputTag from "@/components/InputTag";
 import { DEFAULT_CODE, SUPPORTED_METHODS } from "@/constants";
 
@@ -87,7 +88,7 @@ const CreateModal = (props: {
   const createFunctionMutation = useCreateFunctionMutation();
   const updateFunctionMutation = useUpdateFunctionMutation();
 
-  const TemplateList = useGetRecommendFunctionTemplatesQuery(
+  const { isLoading, data: TemplateList } = useGetRecommendFunctionTemplatesQuery(
     {
       page: 1,
       pageSize: 3,
@@ -98,6 +99,20 @@ const CreateModal = (props: {
     },
     {
       enabled: isOpen && !isEdit,
+    },
+  );
+
+  const InitialTemplateList = useGetRecommendFunctionTemplatesQuery(
+    {
+      page: 1,
+      pageSize: 3,
+      keyword: "",
+      type: "default",
+      asc: 1,
+      sort: null,
+    },
+    {
+      enabled: !isOpen && !isEdit,
     },
   );
 
@@ -243,8 +258,11 @@ const CreateModal = (props: {
                     {t("Template.Recommended")}
                   </div>
                   <div className="mb-7 flex space-x-3">
-                    {TemplateList.data?.data.list.length > 0 ? (
-                      TemplateList.data?.data.list.map((item: TFunctionTemplate) => (
+                    {!isLoading ? (
+                      (TemplateList?.data.list.length > 0
+                        ? TemplateList?.data.list
+                        : InitialTemplateList.data?.data.list
+                      ).map((item: TFunctionTemplate) => (
                         <div
                           className="h-28 w-1/3 py-1"
                           key={item._id}
@@ -256,9 +274,11 @@ const CreateModal = (props: {
                         </div>
                       ))
                     ) : (
-                      <EmptyBox hideIcon className="h-28">
-                        <p>{t("Template.NoRecommended")}</p>
-                      </EmptyBox>
+                      <Center className="h-28 w-full">
+                        <span>
+                          <Spinner />
+                        </span>
+                      </Center>
                     )}
                   </div>
                   <div>
@@ -288,9 +308,14 @@ const CreateModal = (props: {
         }}
       >
         <ModalOverlay />
-        <ModalContent height={"95%"} maxW={"80%"} m={"auto"} overflowY={"auto"}>
+        <ModalContent height={"95%"} maxW={"80%"} m={"auto"}>
           <ModalHeader pb={-0.5}>{t("HomePage.NavBar.funcTemplate")}</ModalHeader>
-          <ModalBody>
+          <ModalBody
+            overflowY={"auto"}
+            onWheel={(e) => {
+              e.stopPropagation();
+            }}
+          >
             <ModalCloseButton />
             <FunctionTemplate isModal={true} />
           </ModalBody>
