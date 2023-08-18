@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
@@ -11,7 +11,7 @@ import SysSetting from "@/pages/app/setting/SysSetting";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function MonitorBar() {
-  const { currentApp } = useGlobalStore();
+  const { currentApp, monitorData, setMonitorData } = useGlobalStore();
   const { t } = useTranslation();
   const { limitCPU, limitMemory, databaseCapacity, storageCapacity } = currentApp.bundle.resource;
 
@@ -19,6 +19,26 @@ export default function MonitorBar() {
   const [memoryUsagePercent, setMemoryUsagePercent] = useState(0);
   const [databaseUsagePercent, setDatabaseUsagePercent] = useState(0);
   const [storageUsagePercent, setStorageUsagePercent] = useState(0);
+
+  useEffect(() => {
+    if (!monitorData) return;
+    const { cpuUsage, memoryUsage, databaseUsage, storageUsage } = monitorData;
+    if (!cpuUsage?.length) return;
+    setCpuUsagePercent(
+      uniformCPU(Number(cpuUsage[0]?.values[cpuUsage[0].values.length - 1][1])) / limitCPU,
+    );
+    setMemoryUsagePercent(
+      uniformMemory(Number(memoryUsage[0]?.values[memoryUsage[0].values.length - 1][1])) /
+        limitMemory,
+    );
+    setDatabaseUsagePercent(
+      uniformCapacity(Number(databaseUsage[0]?.value[1] || 0)) / databaseCapacity,
+    );
+    setStorageUsagePercent(
+      uniformStorage(Number(storageUsage[0]?.value[1] || 0)) / storageCapacity,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [monitorData]);
 
   useQuery(
     ["useGetMonitorDataQuery"],
@@ -31,33 +51,16 @@ export default function MonitorBar() {
     {
       refetchInterval: 60000,
       onSuccess: (data) => {
-        setCpuUsagePercent(
-          (uniformCPU(data.data.cpuUsage[0]?.values[data.data.cpuUsage[0].values.length - 1][1]) /
-            (limitCPU / 1000)) *
-            100,
-        );
-        setMemoryUsagePercent(
-          (uniformMemory(
-            data.data.memoryUsage[0]?.values[data.data.memoryUsage[0].values.length - 1][1],
-          ) /
-            limitMemory) *
-            100,
-        );
-        setDatabaseUsagePercent(
-          (uniformCapacity(data.data.databaseUsage[0]?.value[1] || 0) / databaseCapacity) * 100,
-        );
-        setStorageUsagePercent(
-          (uniformStorage(data.data.storageUsage[0]?.value[1] || 0) / storageCapacity) * 100,
-        );
+        setMonitorData(data.data);
       },
     },
   );
 
   const resources = [
-    { label: `CPU`, percent: cpuUsagePercent, color: "[#47C8BF]" },
-    { label: t("Spec.RAM"), percent: memoryUsagePercent, color: "adora-600" },
-    { label: t("Spec.Database"), percent: databaseUsagePercent, color: "rose-500" },
-    { label: t("Spec.Storage"), percent: storageUsagePercent, color: "blue-600" },
+    { label: `CPU`, percent: cpuUsagePercent * 100, color: "[#47C8BF]" },
+    { label: t("Spec.RAM"), percent: memoryUsagePercent * 100, color: "adora-600" },
+    { label: t("Spec.Database"), percent: databaseUsagePercent * 100, color: "rose-500" },
+    { label: t("Spec.Storage"), percent: storageUsagePercent * 100, color: "blue-600" },
   ];
 
   const limitPercentage = (value: number) => {

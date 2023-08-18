@@ -1,123 +1,63 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
-
-import { uniformCapacity, uniformCPU, uniformMemory, uniformStorage } from "@/utils/format";
 
 import AreaCard from "./AreaCard";
 import PieCard from "./PieCard";
 
-import { MonitorControllerGetData } from "@/apis/v1/monitor";
 import useGlobalStore from "@/pages/globalStore";
 
-type TData = {
-  xData: number;
-  value: number;
-};
-
-type TPieData = {
-  name: string;
-  value: number;
-};
-
-type TDataArray = {
-  metric: {
-    pod: string;
-  };
-  values: any[];
-}[];
-
 export default function AppMonitor() {
-  const [cpuData, setCpuData] = useState<TData[]>([]);
-  const [memoryData, setMemoryData] = useState<TData[]>([]);
-  const [cpuDataArray, setCpuDataArray] = useState<TDataArray>([]);
-  const [memoryDataArray, setMemoryDataArray] = useState<TDataArray>([]);
-  const [dataNumber, setDataNumber] = useState(0);
-  const [databaseData, setDatabaseData] = useState<TPieData[]>([]);
-  const [storageData, setStorageData] = useState<TPieData[]>([]);
-  const { currentApp } = useGlobalStore();
   const { t } = useTranslation();
-
-  const { isLoading } = useQuery(
-    ["useGetMonitorDataQuery"],
-    () => {
-      return MonitorControllerGetData({
-        q: ["cpuUsage", "memoryUsage", "databaseUsage", "storageUsage"],
-        step: 60,
-      });
-    },
-    {
-      refetchInterval: 60000,
-      onSuccess: (data) => {
-        const databaseValue = uniformCapacity(data.data.databaseUsage[0]?.value[1]) || 0;
-        const databaseRemain = currentApp.bundle.resource.databaseCapacity - databaseValue;
-        const storageValue = uniformStorage(data.data.storageUsage[0]?.value[1]) || 0;
-        const storageRemain = currentApp.bundle.resource.storageCapacity - storageValue;
-        setCpuDataArray(data.data.cpuUsage);
-        setMemoryDataArray(data.data.memoryUsage);
-        setDatabaseData([
-          { name: `${t("Used")}`, value: databaseValue },
-          { name: `${t("Remaining")}`, value: databaseRemain },
-        ]);
-        setStorageData([
-          { name: `${t("Used")}`, value: storageValue },
-          { name: `${t("Remaining")}`, value: storageRemain },
-        ]);
-      },
-    },
-  );
+  const { currentApp, monitorData } = useGlobalStore();
+  const { limitCPU, limitMemory, databaseCapacity, storageCapacity } = currentApp.bundle.resource;
+  const { cpuUsage, memoryUsage, databaseUsage, storageUsage } = monitorData;
+  const [dataNumber, setDataNumber] = useState(0);
+  const [podsArray, setPodsArray] = useState<string[]>([]);
 
   useEffect(() => {
-    setCpuData(
-      cpuDataArray[dataNumber]?.values.map((item: any) => ({
-        xData: item[0] * 1000,
-        value: uniformCPU(item[1]),
-      })),
-    );
-    setMemoryData(
-      memoryDataArray[dataNumber]?.values.map((item: any) => ({
-        xData: item[0] * 1000,
-        value: uniformMemory(item[1]),
-      })),
-    );
-  }, [cpuDataArray, memoryDataArray, dataNumber]);
+    setPodsArray(cpuUsage.map((item) => item.metric.pod));
+  }, [cpuUsage]);
 
   return (
     <div className="flex w-full">
-      {isLoading ? null : (
-        <>
-          <div className="mr-2 mt-10 w-full rounded-xl border bg-[#F8FAFB] pb-4">
-            <AreaCard
-              data={cpuData}
-              strokeColor="#47C8BF"
-              fillColor="#E6F6F6"
-              title="CPU"
-              unit=" Core"
-              maxValue={currentApp.bundle.resource.limitCPU / 1000}
-              cpuDataArray={cpuDataArray}
-              setDataNumber={setDataNumber}
-              dataNumber={dataNumber}
-            />
-            <AreaCard
-              data={memoryData}
-              strokeColor="#9A8EE0"
-              fillColor="#F2F1FB"
-              title={t("Spec.RAM")}
-              unit=" MB"
-              maxValue={currentApp.bundle.resource.limitMemory}
-              dataNumber={dataNumber}
-            />
-          </div>
-          <div className="mr-2 mt-10 w-full space-y-2">
-            <PieCard
-              data={databaseData}
-              title={t("Spec.Database")}
-              colors={["#47C8BF", "#D5D6E1"]}
-            />
-            <PieCard data={storageData} title={t("Spec.Storage")} colors={["#9A8EE0", "#D5D6E1"]} />
-          </div>
-        </>
-      )}
+      <div className="mr-2 mt-10 h-[404px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
+        <AreaCard
+          data={cpuUsage}
+          strokeColor="#47C8BF"
+          fillColor="#E6F6F6"
+          setDataNumber={setDataNumber}
+          dataNumber={dataNumber}
+          podsArray={podsArray}
+          title="CPU"
+          unit="Core"
+          maxValue={limitCPU / 1000}
+          className="h-1/2 p-4"
+        />
+        <AreaCard
+          data={memoryUsage}
+          strokeColor="#9A8EE0"
+          fillColor="#F2F1FB"
+          title={t("Spec.RAM")}
+          unit=" MB"
+          maxValue={limitMemory}
+          dataNumber={dataNumber}
+          className="h-1/2 p-4"
+        />
+      </div>
+      <div className="mr-2 mt-10 h-[396px] w-full space-y-2">
+        <PieCard
+          data={databaseUsage}
+          maxValue={databaseCapacity}
+          title={t("Spec.Database")}
+          colors={["#47C8BF", "#D5D6E1"]}
+        />
+        <PieCard
+          data={storageUsage}
+          maxValue={storageCapacity}
+          title={t("Spec.Storage")}
+          colors={["#9A8EE0", "#D5D6E1"]}
+        />
+      </div>
     </div>
   );
 }

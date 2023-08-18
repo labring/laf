@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Menu, MenuButton, MenuItemOption, MenuList } from "@chakra-ui/react";
@@ -15,49 +15,71 @@ import {
 
 import { formatDate } from "@/utils/format";
 
+import { TCpuUsageData } from "@/apis/typing";
+
 export default function AreaCard(props: {
-  data: any[];
+  data: TCpuUsageData;
   strokeColor: string;
   fillColor: string;
+  setDataNumber?: (value: number) => void;
+  dataNumber: number;
+  podsArray?: string[];
   title: string;
   maxValue: number;
-  setDataNumber?: (value: number) => void;
-  cpuDataArray?: any[];
-  dataNumber: number;
   unit: string;
+  className?: string;
 }) {
   const {
     data,
     strokeColor,
     fillColor,
+    setDataNumber,
+    dataNumber,
+    podsArray,
     title,
     maxValue,
-    setDataNumber,
-    cpuDataArray,
-    dataNumber,
     unit,
+    className,
   } = props;
   const { t } = useTranslation();
+  const [chartData, setChartData] = useState<any[]>([]);
+  useEffect(() => {
+    setChartData(
+      data[dataNumber].values.map((item) => {
+        if (title === "CPU") {
+          return {
+            xData: item[0] * 1000,
+            value: Number(item[1]),
+          };
+        } else {
+          return {
+            xData: item[0] * 1000,
+            value: Number(item[1]) / 1024 / 1024,
+          };
+        }
+      }),
+    );
+  }, [data, dataNumber, title]);
 
   return (
-    <div className="h-[180px] border-grayModern-200 p-4">
+    <div className={className}>
       <div className="mb-3 flex justify-between font-medium text-grayModern-900">
         <span className="whitespace-nowrap">{title}</span>
-        {setDataNumber && cpuDataArray && (
+        {setDataNumber && podsArray && (
           <Menu>
             <MenuButton className="text-grayModern-600">
-              {cpuDataArray[dataNumber]?.metric.pod}
+              {podsArray[0]}
               <ChevronDownIcon />
             </MenuButton>
             <MenuList>
-              {cpuDataArray.map((item, index) => (
+              {podsArray.map((pod, index) => (
                 <MenuItemOption
                   key={index}
                   value={String(index)}
                   onClick={() => setDataNumber(index)}
                   className="!px-0 !text-grayModern-600"
                 >
-                  {t("Pod") + ": " + item.metric.pod}
+                  {t("Pod") + ": " + pod}
                 </MenuItemOption>
               ))}
             </MenuList>
@@ -65,7 +87,7 @@ export default function AreaCard(props: {
         )}
       </div>
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ left: -30, top: 6 }} syncId="sync">
+        <AreaChart data={chartData} margin={{ left: -30, top: 6 }} syncId="sync">
           <CartesianGrid stroke="#f5f5f5" vertical={false} />
           <XAxis
             dataKey="xData"
@@ -82,12 +104,13 @@ export default function AreaCard(props: {
             y={maxValue}
             strokeDasharray="3 3"
             className="text-[10px]"
-            label={maxValue + unit}
+            label={maxValue + " " + unit}
             ifOverflow="extendDomain"
           />
           <Tooltip
-            formatter={(value) => [Number(value).toFixed(3) + unit]}
+            formatter={(value) => [Number(value).toFixed(3) + " " + unit]}
             labelFormatter={(value) => formatDate(new Date(value)).split(" ")[1]}
+            labelStyle={{ color: "#24282C" }}
           />
           <Area
             type="monotone"
