@@ -26,10 +26,12 @@ export default function FunctionTemplate(props: { isModal: boolean }) {
     }
   };
 
-  window.addEventListener("popstate", handleUrlChange);
-
   useEffect(() => {
     handleUrlChange();
+    window.addEventListener("popstate", handleUrlChange);
+    return () => {
+      window.removeEventListener("popstate", handleUrlChange);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

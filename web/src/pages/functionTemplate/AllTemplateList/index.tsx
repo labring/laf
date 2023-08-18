@@ -20,11 +20,18 @@ import { useGetFunctionTemplatesQuery } from "../service";
 
 import { TFunctionTemplate } from "@/apis/typing";
 
+type TemplateList = {
+  list: TFunctionTemplate[];
+  page: number;
+  pageSize: number;
+  total: number;
+};
+
 export default function AllTemplateList() {
   const { t } = useTranslation();
   const [searchKey, setSearchKey] = useState("");
-  const [templateList, setTemplateList] = useState<any>([]);
-  const [queryData, setQueryData] = useState<any>({
+  const [templateList, setTemplateList] = useState<TemplateList>();
+  const [queryData, setQueryData] = useState({
     page: 1,
     pageSize: 12,
     keyword: "",
