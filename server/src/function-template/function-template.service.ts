@@ -2099,8 +2099,6 @@ export class FunctionTemplateService {
         .aggregate(pipe)
         .toArray()
 
-      console.log(myStarTemplates)
-
       const res = {
         list: myStarTemplates,
         total: total,
@@ -2541,7 +2539,6 @@ export class FunctionTemplateService {
         .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
         .countDocuments({ uid: userid, state: RelationState.Enabled })
 
-      console.log(recentUseFunctionTemplates)
       const res = {
         list: recentUseFunctionTemplates,
         total: total,
