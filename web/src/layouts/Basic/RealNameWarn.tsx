@@ -23,7 +23,8 @@ export default function Warn() {
         className="cursor-pointer font-semibold text-[#219BF4]"
         onClick={() => {
           if (userInfo?.phone) {
-            window.location.href = `${
+            const w = window.open("about:blank");
+            w!.location.href = `${
               siteSettings.id_verify?.metadata.authenticateSite
             }?token=${localStorage.getItem("token")}`;
           } else {

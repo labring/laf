@@ -3,7 +3,7 @@ import { AiFillHeart } from "react-icons/ai";
 import { Outlet } from "react-router-dom";
 import { Center, Spinner } from "@chakra-ui/react";
 
-import Warn from "./Warn";
+import Warn from "./RealNameWarn";
 
 import Header from "@/layouts/Header";
 import useGlobalStore from "@/pages/globalStore";
@@ -16,13 +16,6 @@ export default function BasicLayout() {
   useEffect(() => {
     init();
   }, [init]);
-
-  useEffect(() => {
-    if (!window.location.href.includes("token")) return;
-    const token = window.location.href.split("=")[1];
-    localStorage.setItem("token", token);
-  }, []);
-
   return (
     <div>
       <Header width="" />
