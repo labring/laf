@@ -68,7 +68,7 @@ export default function AreaCard(props: {
         {setDataNumber && podsArray && (
           <Menu>
             <MenuButton className="text-grayModern-600">
-              {podsArray[0]}
+              {podsArray[dataNumber]}
               <ChevronDownIcon />
             </MenuButton>
             <MenuList>

@@ -1,3 +1,4 @@
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 
@@ -13,10 +14,14 @@ export default function PieCard(props: {
   const { data, maxValue, title, colors } = props;
   const usedData = uniformCapacity(data[0]?.value[1]) || 0;
   const percentage = (usedData / maxValue) * 100;
-  const pieData = [
-    { name: `${t("Used")}`, value: usedData },
-    { name: `${t("Remaining")}`, value: maxValue - usedData },
-  ].filter((item) => item.value >= 0);
+  const pieData = useMemo(
+    () =>
+      [
+        { name: `${t("Used")}`, value: usedData },
+        { name: `${t("Remaining")}`, value: maxValue - usedData },
+      ].filter((item) => item.value >= 0),
+    [maxValue, t, usedData],
+  );
 
   const renderLegend = (props: any) => {
     const { payload } = props;

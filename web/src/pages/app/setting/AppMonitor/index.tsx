@@ -38,7 +38,7 @@ export default function AppMonitor() {
           strokeColor="#9A8EE0"
           fillColor="#F2F1FB"
           title={t("Spec.RAM")}
-          unit=" MB"
+          unit="MB"
           maxValue={limitMemory}
           dataNumber={dataNumber}
           className="h-1/2 p-4"
