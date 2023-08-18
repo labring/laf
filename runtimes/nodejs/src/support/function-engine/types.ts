@@ -4,7 +4,7 @@ import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import WebSocket = require('ws')
 
-export type RequireFuncType = (module: string) => any
+export type RequireFuncType = (module: string, fromModules?: string[]) => any
 
 /**
  * vm run context (global)
@@ -14,7 +14,7 @@ export interface RuntimeContext {
   module: { exports: Object }
   exports: Object
   console: FunctionConsole
-  require: RequireFuncType
+  requireFunc: RequireFuncType
   Buffer: typeof Buffer
   setTimeout: typeof setTimeout
   clearTimeout: typeof clearTimeout
@@ -26,7 +26,8 @@ export interface RuntimeContext {
   process: {
     env: { [key: string]: string }
   }
-  global: RuntimeContext
+  global: RuntimeContext,
+  fromModules: string[]
 }
 
 /**

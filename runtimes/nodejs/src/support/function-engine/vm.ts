@@ -34,22 +34,29 @@ export class FunctionVm {
   static buildSandbox(
     functionContext: FunctionContext,
     requireFunc: any,
+    fromModules?: string[],
   ): RuntimeContext {
     const fconsole = new FunctionConsole(functionContext)
 
     const _module = {
       exports: {},
     }
+
+    if (!fromModules) {
+      fromModules = []
+    }
+
     const sandbox = {
       __context__: functionContext,
       __filename: functionContext.__function_name,
       module: _module,
       exports: _module.exports,
       console: fconsole,
-      require: requireFunc,
+      requireFunc: requireFunc,
       Buffer: Buffer,
       setImmediate: setImmediate,
       clearImmediate: clearImmediate,
+      Float32Array: Float32Array,
       setInterval: setInterval,
       clearInterval: clearInterval,
       setTimeout: setTimeout,
@@ -60,6 +67,7 @@ export class FunctionVm {
       URL: URL,
       fetch: globalThis.fetch,
       global: null,
+      fromModules: [...fromModules],
     }
 
     sandbox.global = sandbox

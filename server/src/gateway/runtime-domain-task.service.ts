@@ -306,7 +306,7 @@ export class RuntimeDomainTaskService {
     await db.collection<RuntimeDomain>('RuntimeDomain').updateMany(
       {
         state: DomainState.Deleted,
-        phase: DomainPhase.Created,
+        phase: { $in: [DomainPhase.Created, DomainPhase.Creating] },
         lockedAt: { $lt: new Date(Date.now() - 1000 * this.lockTimeout) },
       },
       {

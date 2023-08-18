@@ -33,14 +33,14 @@ export class FunctionCache {
    * @param module
    * @returns
    */
-  static requireCloudFunction(moduleName: string): any {
+  static requireCloudFunction(moduleName: string, fromModules?: string[]): any {
     const func = FunctionCache.cache.get(moduleName)
     assert(
       func,
       `require cloud function failed: function ${moduleName} not found`,
     )
-    const funcRequire = new FunctionRequire(this.requireFunc)
-    const module = funcRequire.load(func.name, func.source.compiled)
+    const funcRequire = new FunctionRequire(this.requireFunc, fromModules)
+    const module = funcRequire.load(func.name, func.source.compiled, fromModules)
     return module
   }
 
@@ -87,12 +87,20 @@ export class FunctionCache {
    * @param module the module id. ex. `path`, `lodash`
    * @returns
    */
-  static requireFunc: RequireFuncType = (module: string): any => {
+  static requireFunc: RequireFuncType = (module: string, fromModules?: string[]): any => {
     if (module === '@/cloud-sdk') {
       return require('@lafjs/cloud')
     }
     if (module.startsWith('@/')) {
-      return FunctionCache.requireCloudFunction(module.replace('@/', ''))
+      const cloudModule = module.replace('@/', '')
+
+      // check circular dependency
+      const index = fromModules?.indexOf(cloudModule)
+      if (index !== -1) {
+        throw new Error(`Circular dependency detected: ${fromModules.slice(index).join(' -> ')} -> ${cloudModule}`)
+      }
+
+      return FunctionCache.requireCloudFunction(cloudModule, fromModules)
     }
     return require(module) as any
   }

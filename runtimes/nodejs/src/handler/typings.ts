@@ -11,6 +11,7 @@ import path = require('path')
 import { logger } from '../support/logger'
 import { IRequest } from '../support/types'
 import { FunctionCache } from '../support/function-engine/cache'
+import { parseToken } from '../support/token'
 
 const nodeModulesRoot = path.resolve(__dirname, '../../node_modules')
 
@@ -19,6 +20,16 @@ const nodeModulesRoot = path.resolve(__dirname, '../../node_modules')
  */
 export async function handlePackageTypings(req: IRequest, res: Response) {
   const requestId = req['requestId']
+
+   // verify the debug token
+   const token = req.get('x-laf-develop-token')
+   if (!token) {
+     return res.status(400).send('x-laf-develop-token is required')
+   }
+   const auth = parseToken(token) || null
+   if (auth?.type !== 'develop') {
+     return res.status(403).send('permission denied: invalid develop token')
+   }
 
   const packageName = req.query.packageName as string
   if (!packageName) {

@@ -81,7 +81,7 @@ apisix:
     pullPolicy: IfNotPresent
     # -- Apache APISIX image tag
     # Overrides the image tag whose default is the chart appVersion.
-    tag: v0.0.3
+    tag: v0.0.4
 
   # -- Use a `DaemonSet` or `Deployment`
   kind: Deployment

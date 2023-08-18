@@ -7,9 +7,11 @@ const defaultRequireFunction: RequireFuncType = (module): any => {
 
 export class FunctionRequire {
   requireFunc: RequireFuncType
+  fromModules: string[]
 
-  constructor(requireFunc?: RequireFuncType) {
+  constructor(requireFunc?: RequireFuncType, fromModules?: string[]) {
     this.requireFunc = requireFunc ?? defaultRequireFunction
+    this.fromModules = fromModules ?? []
   }
 
   /**
@@ -18,13 +20,13 @@ export class FunctionRequire {
    * @param code
    * @returns
    */
-  load(name: string, code: string): any {
+  load(name: string, code: string, fromModules: string[]): any {
     const context = {
       __function_name: name,
       requestId: '',
     }
 
-    const sandbox = FunctionVm.buildSandbox(context, this.requireFunc)
+    const sandbox = FunctionVm.buildSandbox(context, this.requireFunc, fromModules)
     const wrapped = this.warp(code)
     const script = FunctionVm.createVM(wrapped, {})
     return script.runInNewContext(sandbox, {})
@@ -37,6 +39,10 @@ export class FunctionRequire {
    */
   warp(code: string): string {
     return `
+    const require = (module) => {
+      fromModules.push(__filename)
+      return requireFunc(module, fromModules)
+    }
     const exports = {};
     ${code}
     exports;

@@ -6,9 +6,9 @@
     "start": "npm run dev",
     "dev": "vitepress dev",
     "preinstall": "node ./scripts/check-version.js",
-    "build": "vitepress build && npm run after-build",
+    "build": "vitepress build",
     "serve": "vitepress serve",
-    "after-build": "sed -i -e \"s@</body>@<div style='font-size: 14px; padding-bottom: 30px; color: darkblue;text-align: center;'><a href='https://beian.miit.gov.cn/' target='_blank'>浙ICP备2022023216号</a></div></body>@g\" ./.vitepress/dist/index.html",
+    "after-build": "sed -i -e \"s@</body>@<div style='font-size: 14px; padding-bottom: 30px; color: darkblue;text-align: center;'><a href='https://beian.miit.gov.cn/' target='_blank'>粤ICP备2023048773号</a></div></body>@g\" ./.vitepress/dist/index.html",
     "docs:deploy": "npm run build && sh ./deploy.sh",
     "docker-build": "docker build --platform linux/amd64 -t lafyun/docs:latest ."
   },

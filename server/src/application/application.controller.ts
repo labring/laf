@@ -53,6 +53,8 @@ import { GroupRoles } from 'src/group/group-role.decorator'
 import { InjectApplication, InjectGroup, InjectUser } from 'src/utils/decorator'
 import { User } from 'src/user/entities/user'
 import { GroupWithRole } from 'src/group/entities/group'
+import { isEqual } from 'lodash'
+import { InstanceService } from 'src/instance/instance.service'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -62,6 +64,7 @@ export class ApplicationController {
 
   constructor(
     private readonly application: ApplicationService,
+    private readonly instance: InstanceService,
     private readonly fn: FunctionService,
     private readonly region: RegionService,
     private readonly storage: StorageService,
@@ -99,10 +102,11 @@ export class ApplicationController {
       return ResponseUtil.error(`runtime ${dto.runtimeId} not found`)
     }
 
+    const regionId = new ObjectId(dto.regionId)
+
     // check if trial tier
     const isTrialTier = await this.resource.isTrialBundle(dto)
     if (isTrialTier) {
-      const regionId = new ObjectId(dto.regionId)
       const bundle = await this.resource.findTrialBundle(regionId)
       const trials = await this.application.findTrialApplications(user._id)
       const limitOfFreeTier = bundle?.limitCountOfFreeTierPerUser || 0
@@ -124,6 +128,11 @@ export class ApplicationController {
     const balance = account?.balance || 0
     if (!isTrialTier && balance < 0) {
       return ResponseUtil.error(`account balance is not enough`)
+    }
+
+    const checkSpec = await this.checkResourceSpecification(dto, regionId)
+    if (!checkSpec) {
+      return ResponseUtil.error('invalid resource specification')
     }
 
     // create application
@@ -327,6 +336,11 @@ export class ApplicationController {
       }
     }
 
+    const checkSpec = await this.checkResourceSpecification(dto, regionId)
+    if (!checkSpec) {
+      return ResponseUtil.error('invalid resource specification')
+    }
+
     const doc = await this.application.updateBundle(appid, dto, isTrialTier)
 
     // restart running application if cpu or memory changed
@@ -335,6 +349,11 @@ export class ApplicationController {
     const isCpuChanged = origin.resource.limitCPU !== doc.resource.limitCPU
     const isMemoryChanged =
       origin.resource.limitMemory !== doc.resource.limitMemory
+
+    if (!isEqual(doc.autoscaling, origin.autoscaling)) {
+      const { hpa, app } = await this.instance.get(appid)
+      await this.instance.reapplyHorizontalPodAutoscaler(app, hpa)
+    }
 
     if (isRunning && (isCpuChanged || isMemoryChanged)) {
       await this.application.updateState(appid, ApplicationState.Restarting)
@@ -442,5 +461,29 @@ export class ApplicationController {
 
     const doc = await this.application.remove(appid)
     return ResponseUtil.ok(doc)
+  }
+
+  private async checkResourceSpecification(
+    dto: UpdateApplicationBundleDto,
+    regionId: ObjectId,
+  ) {
+    const resourceOptions = await this.resource.findAllByRegionId(regionId)
+    const checkSpec = resourceOptions.every((option) => {
+      switch (option.type) {
+        case 'cpu':
+          return option.specs.some((spec) => spec.value === dto.cpu)
+        case 'memory':
+          return option.specs.some((spec) => spec.value === dto.memory)
+        case 'databaseCapacity':
+          return option.specs.some(
+            (spec) => spec.value === dto.databaseCapacity,
+          )
+        case 'storageCapacity':
+          return option.specs.some((spec) => spec.value === dto.storageCapacity)
+        default:
+          return true
+      }
+    })
+    return checkSpec
   }
 }

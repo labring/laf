@@ -36,7 +36,7 @@ type TagItem = {
   selected: boolean;
 };
 
-type TreeNode = {
+export type TreeNode = {
   _id: string;
   name: string;
   level?: number;
@@ -55,7 +55,13 @@ export default function FunctionList() {
   } = useFunctionStore((store) => store);
 
   const functionCache = useFunctionCache();
-  const [root, setRoot] = useState<TreeNode>({ _id: "", name: "", children: [] });
+  const [functionRoot, setFunctionRoot] = useState<TreeNode>({
+    _id: "",
+    name: "",
+    level: 0,
+    isExpanded: true,
+    children: [],
+  });
 
   const [keywords, setKeywords] = useState("");
 
@@ -79,12 +85,14 @@ export default function FunctionList() {
   });
 
   function generateRoot(data: TFunction[]) {
-    const root = { _id: "", name: "", level: 0, isExpanded: true, children: [] };
+    const root = functionRoot;
     data.forEach((item) => {
       const nameParts = item.name.split("/");
       let currentNode: TreeNode = root;
       nameParts.forEach((part, index) => {
-        if (index === nameParts.length - 1) {
+        if (currentNode.children.find((node) => node.name === item.name)) {
+          return;
+        } else if (index === nameParts.length - 1) {
           currentNode.children.push(item);
           return;
         }
@@ -105,13 +113,26 @@ export default function FunctionList() {
         currentNode = existingNode as TreeNode;
       });
     });
+    pruneTree(root, data);
     return root;
+  }
+
+  function pruneTree(node: TreeNode, data: TFunction[]): void {
+    node.children = node.children.filter((child) => pruneChildTree(child, data));
+  }
+
+  function pruneChildTree(node: any, data: TFunction[]): boolean {
+    if (!node.children || node.children.length === 0) {
+      return data.some((item) => item.name === node.name);
+    }
+    node.children = node.children.filter((child: TreeNode) => pruneChildTree(child, data));
+    return node.children.length > 0 || data.some((item) => item.name === node.name);
   }
 
   useFunctionListQuery({
     onSuccess: (data) => {
       setAllFunctionList(data.data);
-      setRoot(generateRoot(data.data));
+      setFunctionRoot(generateRoot(data.data));
       const tags = data.data.reduce((pre: any, item: any) => {
         return pre.concat(item.tags);
       }, []);
@@ -178,7 +199,7 @@ export default function FunctionList() {
   };
 
   function renderSectionItems(items: TreeNode[], isFuncList = false) {
-    items.sort((a: TreeNode, b: TreeNode) => {
+    const sortedItems = [...items].sort((a: TreeNode, b: TreeNode) => {
       const isFolderA = a.children && a.children.length > 0;
       const isFolderB = b.children && b.children.length > 0;
       if (isFolderA && !isFolderB) {
@@ -189,7 +210,7 @@ export default function FunctionList() {
       return 0;
     });
 
-    return items.map((item, index) => {
+    return sortedItems.map((item, index) => {
       let fileType = FileType.ts;
       if (item.children?.length) {
         fileType = FileType.folder;
@@ -211,7 +232,7 @@ export default function FunctionList() {
                 navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`);
               } else {
                 item.isExpanded = !item.isExpanded;
-                setRoot({ ...root });
+                setFunctionRoot({ ...functionRoot });
               }
             }}
           >
@@ -322,8 +343,8 @@ export default function FunctionList() {
           <SectionList>
             {renderSectionItems(filterFunctions as unknown as TreeNode[], true)}
           </SectionList>
-        ) : root.children?.length ? (
-          <SectionList>{renderSectionItems(root.children as TreeNode[])}</SectionList>
+        ) : functionRoot.children?.length ? (
+          <SectionList>{renderSectionItems(functionRoot.children as TreeNode[])}</SectionList>
         ) : (
           <EmptyBox hideIcon>
             <p>{t("FunctionPanel.EmptyFunctionTip")}</p>
