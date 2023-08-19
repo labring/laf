@@ -72,13 +72,13 @@ export class FunctionCache {
       }
     })
 
-    stream.on('close', () => {
-      logger.error('Cloud function change stream closed')
-      setTimeout(() => {
-        logger.info('Reconnecting cloud function change stream...')
-        this.streamChange()
-       }, 3000)
-    })
+    // stream.on('close', () => {
+    //   logger.error('Cloud function change stream closed')
+    //   setTimeout(() => {
+    //     logger.info('Reconnecting cloud function change stream...')
+    //     FunctionCache.streamChange()
+    //    }, 3000)
+    // })
   }
 
   /**
