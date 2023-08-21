@@ -5,6 +5,9 @@ import { FunctionRequire } from './require'
 import { logger } from '../logger'
 import assert from 'assert'
 import { InitHook } from '../init-hook'
+import Config from '../../config'
+
+let lastReconnectTimestamp: number = 0
 
 export class FunctionCache {
   private static cache: Map<string, ICloudFunctionData> = new Map()
@@ -72,13 +75,18 @@ export class FunctionCache {
       }
     })
 
-    // stream.on('close', () => {
-    //   logger.error('Cloud function change stream closed')
-    //   setTimeout(() => {
-    //     logger.info('Reconnecting cloud function change stream...')
-    //     FunctionCache.streamChange()
-    //    }, 3000)
-    // })
+    stream.on('close', () => {
+      logger.error('Cloud function change stream closed...')
+      setTimeout(() => {
+        // Prevent multiple changeStreams from being created due to close event multiple times
+        if (Date.now() - lastReconnectTimestamp < Config.CHANGE_STREAM_RECONNECT_INTERVAL) {
+          return
+        }
+        lastReconnectTimestamp = Date.now()
+        logger.info('Reconnecting cloud function change stream......')
+        FunctionCache.streamChange()
+       }, Config.CHANGE_STREAM_RECONNECT_INTERVAL)
+    })
   }
 
   /**

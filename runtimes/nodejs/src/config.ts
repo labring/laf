@@ -84,4 +84,8 @@ export default class Config {
   static get LOG_SERVER_TOKEN(): string { 
     return process.env.LOG_SERVER_TOKEN || ''
   }
+
+  static get CHANGE_STREAM_RECONNECT_INTERVAL(): number { 
+    return (process.env.CHANGE_STREAM_RECONNECT_INTERVAL || 3000) as number
+  }
 }
