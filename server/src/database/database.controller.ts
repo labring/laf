@@ -1,10 +1,37 @@
-import { Controller, Logger, Param, Post, Req, UseGuards } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  Controller,
+  Get,
+  Logger,
+  Param,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+  Put,
+  StreamableFile,
+  UploadedFile,
+  UseInterceptors,
+  Body,
+} from '@nestjs/common'
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger'
 import { Policy, Proxy } from 'database-proxy/dist'
 import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
-import { IRequest } from 'src/utils/interface'
+import { IRequest, IResponse } from 'src/utils/interface'
 import { DatabaseService } from './database.service'
+import * as path from 'path'
+import { createReadStream, existsSync, mkdirSync } from 'fs'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { unlink, writeFile } from 'node:fs/promises'
+import * as os from 'os'
+import { ResponseUtil } from 'src/utils/response'
+import { ImportDatabaseDto } from './dto/import-database.dto'
 
 @ApiTags('Database')
 @ApiBearerAuth('Authorization')
@@ -55,6 +82,84 @@ export class DatabaseController {
         code: error.code || 1,
         error: error,
       }
+    }
+  }
+
+  @ApiOperation({ summary: 'Export database of an application' })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Get('export')
+  async exportDatabase(
+    @Param('appid') appid: string,
+    @Res({ passthrough: true }) res: IResponse,
+  ) {
+    const tempFilePath = path.join(
+      os.tmpdir(),
+      'mongodb-data',
+      'export',
+      `${appid}-db.gz`,
+    )
+
+    // check if dir exists
+    if (!existsSync(path.dirname(tempFilePath))) {
+      mkdirSync(path.dirname(tempFilePath), { recursive: true })
+    }
+
+    await this.dbService.exportDatabase(appid, tempFilePath)
+    const filename = path.basename(tempFilePath)
+
+    res.set({
+      'Content-Disposition': `attachment; filename="${filename}"`,
+    })
+    const file = createReadStream(tempFilePath)
+    return new StreamableFile(file)
+  }
+
+  @ApiOperation({ summary: 'Import database of an application' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: ImportDatabaseDto,
+  })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Put('import')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: {
+        fileSize: 256 * 1024 * 1024 * 1024, // 256 GB
+      },
+    }),
+  )
+  async importDatabase(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('sourceAppid') sourceAppid: string,
+    @Param('appid') appid: string,
+  ) {
+    // check if db is valid
+    if (!/^[a-z0-9]{6}$/.test(sourceAppid)) {
+      return ResponseUtil.error('Invalid source appid')
+    }
+    // check if file is .gz
+    if (file.mimetype !== 'application/gzip') {
+      return ResponseUtil.error('Invalid db file')
+    }
+
+    const tempFilePath = path.join(
+      os.tmpdir(),
+      'mongodb-data',
+      'import',
+      `${appid}-${sourceAppid}.gz`,
+    )
+
+    // check if dir exists
+    if (!existsSync(path.dirname(tempFilePath))) {
+      mkdirSync(path.dirname(tempFilePath), { recursive: true })
+    }
+
+    try {
+      await writeFile(tempFilePath, file.buffer)
+      await this.dbService.importDatabase(appid, sourceAppid, tempFilePath)
+      return ResponseUtil.ok({})
+    } finally {
+      if (existsSync(tempFilePath)) await unlink(tempFilePath)
     }
   }
 }

@@ -8,6 +8,12 @@ ARG TARGETARCH
 ENV MINIO_CLIENT_PATH /usr/local/bin/mc
 RUN wget https://dl.min.io/client/mc/release/linux-$TARGETARCH/mc -O $MINIO_CLIENT_PATH && chmod +x $MINIO_CLIENT_PATH
 
+ENV MONGO_TOOLS mongodb-database-tools-ubuntu1804-$TARGETARCH-100.8.0.tgz
+RUN wget https://fastdl.mongodb.org/tools/db/${MONGO_TOOLS}.tgz
+RUN tar -zxvf ${MONGO_TOOLS}.tgz
+RUN mv $MONGO_TOOLS/bin/* /usr/local/bin/
+RUN rm -rf ${MONGO_TOOLS}.tgz $MONGO_TOOLS
+
 WORKDIR /app
 
 EXPOSE 3000

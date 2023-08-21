@@ -122,7 +122,8 @@
     "withs",
     "xmlparser",
     "zcube",
-    "zustand"
+    "zustand",
+    "Streamable",
   ],
   "i18n-ally.localesPaths": "web/public/locales",
   "i18n-ally.enabledParsers": ["json"],
