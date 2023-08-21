@@ -89,7 +89,7 @@ const routes = [
         auth: true,
         children: [
           {
-            path: "/market/templates/:templateId",
+            path: "/market/templates/:templateId?",
             element: () => import("@/pages/functionTemplate"),
           },
         ],

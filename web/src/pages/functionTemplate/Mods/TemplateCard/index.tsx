@@ -97,7 +97,7 @@ const TemplateCard = (props: {
                         <MenuItem
                           onClick={(e) => {
                             e.stopPropagation();
-                            navigate(`${template._id}/edit`);
+                            navigate(`/market/templates/${template._id}/edit`);
                           }}
                         >
                           {t("Template.EditTemplate")}
