@@ -304,35 +304,42 @@ export class FunctionTemplateController {
     }
 
     if (type === 'default' && keyword) {
-      const res =
-        await this.functionTemplateService.findMyFunctionTemplatesByName(
-          asc,
-          page,
-          pageSize,
-          req.user._id,
-          keyword,
-        )
+      const condition = {
+        asc,
+        page,
+        pageSize,
+        name: keyword,
+      }
+      const res = await this.functionTemplateService.findMyFunctionTemplates(
+        req.user._id,
+        condition,
+      )
       return ResponseUtil.ok(res)
     }
 
     if (type === 'default' && sort === 'hot') {
-      const hot = true
-      const res = await this.functionTemplateService.findMyFunctionTemplates(
-        asc,
+      const condition = {
         page,
         pageSize,
+        asc,
+        hot: true,
+      }
+      const res = await this.functionTemplateService.findMyFunctionTemplates(
         req.user._id,
-        hot,
+        condition,
       )
       return ResponseUtil.ok(res)
     }
 
     if (type === 'default') {
-      const res = await this.functionTemplateService.findMyFunctionTemplates(
+      const condition = {
         asc,
         page,
         pageSize,
+      }
+      const res = await this.functionTemplateService.findMyFunctionTemplates(
         req.user._id,
+        condition,
       )
       return ResponseUtil.ok(res)
     }

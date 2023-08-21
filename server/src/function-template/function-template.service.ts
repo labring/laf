@@ -659,41 +659,7 @@ export class FunctionTemplateService {
         },
       },
       { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          author: {
-            $cond: [
-              {
-                $and: [
-                  { $eq: ['$user.username', '$user.phone'] },
-                  { $ne: ['$user.username', null] },
-                  { $ne: ['$user.phone', null] },
-                ],
-              },
-              {
-                $concat: [
-                  { $substrCP: ['$user.username', 0, 3] },
-                  {
-                    $substrCP: [
-                      this.maskedString,
-                      0,
-                      { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                    ],
-                  },
-                  {
-                    $substrCP: [
-                      '$user.username',
-                      { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                      3,
-                    ],
-                  },
-                ],
-              },
-              '$user.username',
-            ],
-          },
-        },
-      },
+      this.fieldsForAuthorInfo(),
       {
         $lookup: {
           from: 'FunctionTemplateItem',
@@ -702,25 +668,7 @@ export class FunctionTemplateService {
           as: 'items',
         },
       },
-      {
-        $lookup: {
-          from: 'FunctionTemplateStarRelation',
-          let: { templateId: '$_id', userId: userid },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$templateId', '$$templateId'] },
-                    { $eq: ['$uid', '$$userId'] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'starRelation',
-        },
-      },
+      this.fieldForUserStarRelation('$_id', userid),
       {
         $addFields: {
           stared: {
@@ -834,41 +782,7 @@ export class FunctionTemplateService {
         },
       },
       { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          author: {
-            $cond: [
-              {
-                $and: [
-                  { $eq: ['$user.username', '$user.phone'] },
-                  { $ne: ['$user.username', null] },
-                  { $ne: ['$user.phone', null] },
-                ],
-              },
-              {
-                $concat: [
-                  { $substrCP: ['$user.username', 0, 3] },
-                  {
-                    $substrCP: [
-                      this.maskedString,
-                      0,
-                      { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                    ],
-                  },
-                  {
-                    $substrCP: [
-                      '$user.username',
-                      { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                      3,
-                    ],
-                  },
-                ],
-              },
-              '$user.username',
-            ],
-          },
-        },
-      },
+      this.fieldsForAuthorInfo(),
       {
         $lookup: {
           from: 'FunctionTemplateItem',
@@ -890,25 +804,7 @@ export class FunctionTemplateService {
           },
         },
       },
-      {
-        $lookup: {
-          from: 'FunctionTemplateStarRelation',
-          let: { templateId: '$_id', userId: userid },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$templateId', '$$templateId'] },
-                    { $eq: ['$uid', '$$userId'] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'starRelation',
-        },
-      },
+      this.fieldForUserStarRelation('$_id', userid),
       {
         $addFields: {
           stared: {
@@ -932,7 +828,7 @@ export class FunctionTemplateService {
       { $limit: pageSize },
     ]
 
-    const pipe2 = [
+    const pipeForTotal = [
       {
         $lookup: {
           from: 'FunctionTemplateItem',
@@ -969,7 +865,7 @@ export class FunctionTemplateService {
 
     const total = await this.db
       .collection<FunctionTemplate>('FunctionTemplate')
-      .aggregate(pipe2)
+      .aggregate(pipeForTotal)
       .maxTimeMS(5000)
       .toArray()
 
@@ -995,65 +891,28 @@ export class FunctionTemplateService {
     condition: FindFunctionTemplatesParams,
   ) {
     const { asc, page, pageSize, name, hot } = condition
+    let pipe: any[] = [
+      { $match: { private: false, isRecommended: true } },
+      this.generateLookup('User', 'uid', '_id', 'user'),
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      this.fieldsForAuthorInfo(),
+      this.generateLookup('FunctionTemplateItem', '_id', 'templateId', 'items'),
+      this.fieldForUserStarRelation('$_id', userid),
+      {
+        $addFields: {
+          stared: {
+            $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
+          },
+        },
+      },
+    ]
 
     if (name) {
       const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       const reg = new RegExp(safeName, 'i')
 
-      const pipe = [
-        { $match: { private: false, isRecommended: true } },
-        {
-          $lookup: {
-            from: 'User',
-            localField: 'uid',
-            foreignField: '_id',
-            as: 'user',
-          },
-        },
-        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-        {
-          $addFields: {
-            author: {
-              $cond: [
-                {
-                  $and: [
-                    { $eq: ['$user.username', '$user.phone'] },
-                    { $ne: ['$user.username', null] },
-                    { $ne: ['$user.phone', null] },
-                  ],
-                },
-                {
-                  $concat: [
-                    { $substrCP: ['$user.username', 0, 3] },
-                    {
-                      $substrCP: [
-                        this.maskedString,
-                        0,
-                        { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                      ],
-                    },
-                    {
-                      $substrCP: [
-                        '$user.username',
-                        { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                        3,
-                      ],
-                    },
-                  ],
-                },
-                '$user.username',
-              ],
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: 'FunctionTemplateItem',
-            localField: '_id',
-            foreignField: 'templateId',
-            as: 'items',
-          },
-        },
+      pipe = [
+        ...pipe,
         {
           $addFields: {
             matchCount: {
@@ -1068,32 +927,6 @@ export class FunctionTemplateService {
           },
         },
         {
-          $lookup: {
-            from: 'FunctionTemplateStarRelation',
-            let: { templateId: '$_id', userId: userid },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ['$templateId', '$$templateId'] },
-                      { $eq: ['$uid', '$$userId'] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: 'starRelation',
-          },
-        },
-        {
-          $addFields: {
-            stared: {
-              $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
-            },
-          },
-        },
-        {
           $match: {
             $or: [
               { name: { $regex: reg } },
@@ -1102,13 +935,13 @@ export class FunctionTemplateService {
             ],
           },
         },
-
         { $project: { user: 0, starRelation: 0, matchCount: 0 } },
         { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
         { $skip: (page - 1) * pageSize },
         { $limit: pageSize },
       ]
-      const pipe2 = [
+
+      const pipeForTotal = [
         {
           $lookup: {
             from: 'FunctionTemplateItem',
@@ -1148,7 +981,7 @@ export class FunctionTemplateService {
 
       const total = await this.db
         .collection<FunctionTemplate>('FunctionTemplate')
-        .aggregate(pipe2)
+        .aggregate(pipeForTotal)
         .maxTimeMS(5000)
         .toArray()
 
@@ -1169,86 +1002,8 @@ export class FunctionTemplateService {
     }
 
     if (hot) {
-      const pipe = [
-        { $match: { private: false, isRecommended: true } },
-        {
-          $lookup: {
-            from: 'User',
-            localField: 'uid',
-            foreignField: '_id',
-            as: 'user',
-          },
-        },
-        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-        {
-          $addFields: {
-            author: {
-              $cond: [
-                {
-                  $and: [
-                    { $eq: ['$user.username', '$user.phone'] },
-                    { $ne: ['$user.username', null] },
-                    { $ne: ['$user.phone', null] },
-                  ],
-                },
-                {
-                  $concat: [
-                    { $substrCP: ['$user.username', 0, 3] },
-                    {
-                      $substrCP: [
-                        this.maskedString,
-                        0,
-                        { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                      ],
-                    },
-                    {
-                      $substrCP: [
-                        '$user.username',
-                        { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                        3,
-                      ],
-                    },
-                  ],
-                },
-                '$user.username',
-              ],
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: 'FunctionTemplateItem',
-            localField: '_id',
-            foreignField: 'templateId',
-            as: 'items',
-          },
-        },
-        {
-          $lookup: {
-            from: 'FunctionTemplateStarRelation',
-            let: { templateId: '$_id', userId: userid },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ['$templateId', '$$templateId'] },
-                      { $eq: ['$uid', '$$userId'] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: 'starRelation',
-          },
-        },
-        {
-          $addFields: {
-            stared: {
-              $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
-            },
-          },
-        },
+      pipe = [
+        ...pipe,
         { $project: { user: 0, starRelation: 0 } },
         {
           $sort: {
@@ -1278,86 +1033,8 @@ export class FunctionTemplateService {
       return res
     }
 
-    const pipe = [
-      { $match: { private: false, isRecommended: true } },
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'uid',
-          foreignField: '_id',
-          as: 'user',
-        },
-      },
-      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          author: {
-            $cond: [
-              {
-                $and: [
-                  { $eq: ['$user.username', '$user.phone'] },
-                  { $ne: ['$user.username', null] },
-                  { $ne: ['$user.phone', null] },
-                ],
-              },
-              {
-                $concat: [
-                  { $substrCP: ['$user.username', 0, 3] },
-                  {
-                    $substrCP: [
-                      this.maskedString,
-                      0,
-                      { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                    ],
-                  },
-                  {
-                    $substrCP: [
-                      '$user.username',
-                      { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                      3,
-                    ],
-                  },
-                ],
-              },
-              '$user.username',
-            ],
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: 'FunctionTemplateItem',
-          localField: '_id',
-          foreignField: 'templateId',
-          as: 'items',
-        },
-      },
-      {
-        $lookup: {
-          from: 'FunctionTemplateStarRelation',
-          let: { templateId: '$_id', userId: userid },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$templateId', '$$templateId'] },
-                    { $eq: ['$uid', '$$userId'] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'starRelation',
-        },
-      },
-      {
-        $addFields: {
-          stared: {
-            $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
-          },
-        },
-      },
+    pipe = [
+      ...pipe,
       { $project: { user: 0, starRelation: 0 } },
       { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
@@ -1384,59 +1061,60 @@ export class FunctionTemplateService {
   }
 
   async findMyFunctionTemplates(
-    asc: number,
-    page: number,
-    pageSize: number,
     userid: ObjectId,
-    hot?: boolean,
+    condition: FindFunctionTemplatesParams,
   ) {
-    if (hot) {
-      const pipe = [
-        { $match: { uid: userid } },
-        {
-          $lookup: {
-            from: 'User',
-            localField: 'uid',
-            foreignField: '_id',
-            as: 'user',
+    const { asc, page, pageSize, name, hot } = condition
+    let pipe: any[] = [
+      { $match: { uid: userid } },
+      this.generateLookup('User', 'uid', '_id', 'user'),
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      this.fieldsForAuthorInfo(),
+      this.generateLookup('FunctionTemplateItem', '_id', 'templateId', 'items'),
+      this.fieldForUserStarRelation('$_id', userid),
+      {
+        $addFields: {
+          stared: {
+            $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
           },
         },
-        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      },
+    ]
+
+    if (name) {
+      const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const reg = new RegExp(safeName, 'i')
+      pipe = [
+        ...pipe,
         {
           $addFields: {
-            author: {
-              $cond: [
-                {
-                  $and: [
-                    { $eq: ['$user.username', '$user.phone'] },
-                    { $ne: ['$user.username', null] },
-                    { $ne: ['$user.phone', null] },
-                  ],
+            matchCount: {
+              $size: {
+                $filter: {
+                  input: '$items',
+                  as: 'item',
+                  cond: { $regexMatch: { input: '$$item.name', regex: reg } },
                 },
-                {
-                  $concat: [
-                    { $substrCP: ['$user.username', 0, 3] },
-                    {
-                      $substrCP: [
-                        this.maskedString,
-                        0,
-                        { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                      ],
-                    },
-                    {
-                      $substrCP: [
-                        '$user.username',
-                        { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                        3,
-                      ],
-                    },
-                  ],
-                },
-                '$user.username',
-              ],
+              },
             },
           },
         },
+        {
+          $match: {
+            $or: [
+              { name: { $regex: reg } },
+              { description: { $regex: reg } },
+              { matchCount: { $gt: 0 } },
+            ],
+          },
+        },
+
+        { $project: { user: 0, starRelation: 0, matchCount: 0 } },
+        { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
+        { $skip: (page - 1) * pageSize },
+        { $limit: pageSize },
+      ]
+      const pipeForTotal = [
         {
           $lookup: {
             from: 'FunctionTemplateItem',
@@ -1445,32 +1123,59 @@ export class FunctionTemplateService {
             as: 'items',
           },
         },
-        {
-          $lookup: {
-            from: 'FunctionTemplateStarRelation',
-            let: { templateId: '$_id', userId: userid },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ['$templateId', '$$templateId'] },
-                      { $eq: ['$uid', '$$userId'] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: 'starRelation',
-          },
-        },
+
         {
           $addFields: {
-            stared: {
-              $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
+            matchCount: {
+              $size: {
+                $filter: {
+                  input: '$items',
+                  as: 'item',
+                  cond: { $regexMatch: { input: '$$item.name', regex: reg } },
+                },
+              },
             },
           },
         },
+
+        {
+          $match: {
+            uid: userid,
+            $or: [
+              { name: { $regex: reg } },
+              { description: { $regex: reg } },
+              { matchCount: { $gt: 0 } },
+            ],
+          },
+        },
+        { $group: { _id: null, count: { $sum: 1 } } },
+      ]
+
+      const total = await this.db
+        .collection<FunctionTemplate>('FunctionTemplate')
+        .aggregate(pipeForTotal)
+        .maxTimeMS(5000)
+        .toArray()
+
+      const myTemplate = await this.db
+        .collection<FunctionTemplate>('FunctionTemplate')
+        .aggregate(pipe)
+        .maxTimeMS(5000)
+        .toArray()
+
+      const res = {
+        list: myTemplate,
+        total: total[0] ? total[0].count : 0,
+        page,
+        pageSize,
+      }
+
+      return res
+    }
+
+    if (hot) {
+      pipe = [
+        ...pipe,
         { $project: { user: 0, starRelation: 0 } },
         {
           $sort: {
@@ -1500,86 +1205,8 @@ export class FunctionTemplateService {
       return res
     }
 
-    const pipe = [
-      { $match: { uid: userid } },
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'uid',
-          foreignField: '_id',
-          as: 'user',
-        },
-      },
-      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          author: {
-            $cond: [
-              {
-                $and: [
-                  { $eq: ['$user.username', '$user.phone'] },
-                  { $ne: ['$user.username', null] },
-                  { $ne: ['$user.phone', null] },
-                ],
-              },
-              {
-                $concat: [
-                  { $substrCP: ['$user.username', 0, 3] },
-                  {
-                    $substrCP: [
-                      this.maskedString,
-                      0,
-                      { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                    ],
-                  },
-                  {
-                    $substrCP: [
-                      '$user.username',
-                      { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                      3,
-                    ],
-                  },
-                ],
-              },
-              '$user.username',
-            ],
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: 'FunctionTemplateItem',
-          localField: '_id',
-          foreignField: 'templateId',
-          as: 'items',
-        },
-      },
-      {
-        $lookup: {
-          from: 'FunctionTemplateStarRelation',
-          let: { templateId: '$_id', userId: userid },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$templateId', '$$templateId'] },
-                    { $eq: ['$uid', '$$userId'] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'starRelation',
-        },
-      },
-      {
-        $addFields: {
-          stared: {
-            $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
-          },
-        },
-      },
+    pipe = [
+      ...pipe,
       { $project: { user: 0, starRelation: 0 } },
       { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
@@ -1605,282 +1232,42 @@ export class FunctionTemplateService {
     return res
   }
 
-  async findMyFunctionTemplatesByName(
-    asc: number,
-    page: number,
-    pageSize: number,
-    userid: ObjectId,
-    name: string,
-  ) {
-    const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    const reg = new RegExp(safeName, 'i')
-
-    const pipe = [
-      { $match: { uid: userid } },
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'uid',
-          foreignField: '_id',
-          as: 'user',
-        },
-      },
-      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          author: {
-            $cond: [
-              {
-                $and: [
-                  { $eq: ['$user.username', '$user.phone'] },
-                  { $ne: ['$user.username', null] },
-                  { $ne: ['$user.phone', null] },
-                ],
-              },
-              {
-                $concat: [
-                  { $substrCP: ['$user.username', 0, 3] },
-                  {
-                    $substrCP: [
-                      this.maskedString,
-                      0,
-                      { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                    ],
-                  },
-                  {
-                    $substrCP: [
-                      '$user.username',
-                      { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                      3,
-                    ],
-                  },
-                ],
-              },
-              '$user.username',
-            ],
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: 'FunctionTemplateItem',
-          localField: '_id',
-          foreignField: 'templateId',
-          as: 'items',
-        },
-      },
-      {
-        $addFields: {
-          matchCount: {
-            $size: {
-              $filter: {
-                input: '$items',
-                as: 'item',
-                cond: { $regexMatch: { input: '$$item.name', regex: reg } },
-              },
-            },
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: 'FunctionTemplateStarRelation',
-          let: { templateId: '$_id', userId: userid },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$templateId', '$$templateId'] },
-                    { $eq: ['$uid', '$$userId'] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'starRelation',
-        },
-      },
-      {
-        $addFields: {
-          stared: {
-            $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
-          },
-        },
-      },
-      {
-        $match: {
-          $or: [
-            { name: { $regex: reg } },
-            { description: { $regex: reg } },
-            { matchCount: { $gt: 0 } },
-          ],
-        },
-      },
-
-      { $project: { user: 0, starRelation: 0, matchCount: 0 } },
-      { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
-      { $skip: (page - 1) * pageSize },
-      { $limit: pageSize },
-    ]
-
-    const pipe2 = [
-      {
-        $lookup: {
-          from: 'FunctionTemplateItem',
-          localField: '_id',
-          foreignField: 'templateId',
-          as: 'items',
-        },
-      },
-
-      {
-        $addFields: {
-          matchCount: {
-            $size: {
-              $filter: {
-                input: '$items',
-                as: 'item',
-                cond: { $regexMatch: { input: '$$item.name', regex: reg } },
-              },
-            },
-          },
-        },
-      },
-
-      {
-        $match: {
-          uid: userid,
-          $or: [
-            { name: { $regex: reg } },
-            { description: { $regex: reg } },
-            { matchCount: { $gt: 0 } },
-          ],
-        },
-      },
-      { $group: { _id: null, count: { $sum: 1 } } },
-    ]
-
-    const total = await this.db
-      .collection<FunctionTemplate>('FunctionTemplate')
-      .aggregate(pipe2)
-      .maxTimeMS(5000)
-      .toArray()
-
-    const myTemplate = await this.db
-      .collection<FunctionTemplate>('FunctionTemplate')
-      .aggregate(pipe)
-      .maxTimeMS(5000)
-      .toArray()
-
-    const res = {
-      list: myTemplate,
-      total: total[0] ? total[0].count : 0,
-      page,
-      pageSize,
-    }
-
-    return res
-  }
-
   async findMyStaredFunctionTemplates(
     userid: ObjectId,
     condition: FindFunctionTemplatesParams,
   ) {
     const { asc, page, pageSize, name, hot } = condition
-
+    let pipe: any[] = [
+      this.generateLookup(
+        'FunctionTemplate',
+        'templateId',
+        '_id',
+        'functionTemplate',
+      ),
+      { $unwind: '$functionTemplate' },
+      this.generateLookup(
+        'FunctionTemplateItem',
+        'templateId',
+        'templateId',
+        'items',
+      ),
+      this.generateLookup('User', 'functionTemplate.uid', '_id', 'user'),
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      this.fieldsForAuthorInfo(),
+      this.fieldForUserStarRelation('$functionTemplate._id', userid),
+    ]
     if (name) {
       const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       const reg = new RegExp(safeName, 'i')
 
-      const pipe = [
+      pipe = [
         {
           $match: {
             uid: userid,
             state: RelationState.Enabled,
           },
         },
-        {
-          $lookup: {
-            from: 'FunctionTemplate',
-            localField: 'templateId',
-            foreignField: '_id',
-            as: 'functionTemplate',
-          },
-        },
-        { $unwind: '$functionTemplate' },
-        {
-          $lookup: {
-            from: 'FunctionTemplateItem',
-            localField: 'templateId',
-            foreignField: 'templateId',
-            as: 'items',
-          },
-        },
-        {
-          $lookup: {
-            from: 'User',
-            localField: 'functionTemplate.uid',
-            foreignField: '_id',
-            as: 'user',
-          },
-        },
-        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-        {
-          $addFields: {
-            author: {
-              $cond: [
-                {
-                  $and: [
-                    { $eq: ['$user.username', '$user.phone'] },
-                    { $ne: ['$user.username', null] },
-                    { $ne: ['$user.phone', null] },
-                  ],
-                },
-                {
-                  $concat: [
-                    { $substrCP: ['$user.username', 0, 3] },
-                    {
-                      $substrCP: [
-                        this.maskedString,
-                        0,
-                        { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                      ],
-                    },
-                    {
-                      $substrCP: [
-                        '$user.username',
-                        { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                        3,
-                      ],
-                    },
-                  ],
-                },
-                '$user.username',
-              ],
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: 'FunctionTemplateStarRelation',
-            let: { templateId: '$functionTemplate._id', userId: userid },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ['$templateId', '$$templateId'] },
-                      { $eq: ['$uid', '$$userId'] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: 'starRelation',
-          },
-        },
-
+        ...pipe,
         {
           $match: {
             $or: [
@@ -1890,51 +1277,26 @@ export class FunctionTemplateService {
             ],
           },
         },
-
-        {
-          $project: {
-            _id: '$functionTemplate._id',
-            uid: '$functionTemplate.uid',
-            name: '$functionTemplate.name',
-            dependencies: '$functionTemplate.dependencies',
-            environments: '$functionTemplate.environments',
-            private: '$functionTemplate.private',
-            isRecommended: '$functionTemplate.isRecommended',
-            description: '$functionTemplate.description',
-            star: '$functionTemplate.star',
-            createdAt: '$functionTemplate.createdAt',
-            updatedAt: '$functionTemplate.updatedAt',
-            items: 1,
-            author: '$author',
-            stared: {
-              $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
-            },
-          },
-        },
+        this.projectFields(),
 
         { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
         { $skip: (page - 1) * pageSize },
         { $limit: pageSize },
       ]
 
-      const pipe2 = [
-        {
-          $lookup: {
-            from: 'FunctionTemplate',
-            localField: 'templateId',
-            foreignField: '_id',
-            as: 'functionTemplate',
-          },
-        },
-        {
-          $lookup: {
-            from: 'FunctionTemplateItem',
-            localField: 'templateId',
-            foreignField: 'templateId',
-            as: 'items',
-          },
-        },
-
+      const pipeForTotal = [
+        this.generateLookup(
+          'FunctionTemplate',
+          'templateId',
+          '_id',
+          'functionTemplate',
+        ),
+        this.generateLookup(
+          'FunctionTemplateItem',
+          'templateId',
+          'templateId',
+          'items',
+        ),
         {
           $match: {
             uid: userid,
@@ -1953,7 +1315,7 @@ export class FunctionTemplateService {
         .collection<FunctionTemplateStarRelation>(
           'FunctionTemplateStarRelation',
         )
-        .aggregate(pipe2)
+        .aggregate(pipeForTotal)
         .maxTimeMS(5000)
         .toArray()
 
@@ -1975,108 +1337,10 @@ export class FunctionTemplateService {
     }
 
     if (hot) {
-      const pipe = [
+      pipe = [
         { $match: { uid: userid, state: RelationState.Enabled } },
-        {
-          $lookup: {
-            from: 'FunctionTemplate',
-            localField: 'templateId',
-            foreignField: '_id',
-            as: 'functionTemplate',
-          },
-        },
-        { $unwind: '$functionTemplate' },
-        {
-          $lookup: {
-            from: 'FunctionTemplateItem',
-            localField: 'templateId',
-            foreignField: 'templateId',
-            as: 'items',
-          },
-        },
-        {
-          $lookup: {
-            from: 'User',
-            localField: 'functionTemplate.uid',
-            foreignField: '_id',
-            as: 'user',
-          },
-        },
-        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-        {
-          $addFields: {
-            author: {
-              $cond: [
-                {
-                  $and: [
-                    { $eq: ['$user.username', '$user.phone'] },
-                    { $ne: ['$user.username', null] },
-                    { $ne: ['$user.phone', null] },
-                  ],
-                },
-                {
-                  $concat: [
-                    { $substrCP: ['$user.username', 0, 3] },
-                    {
-                      $substrCP: [
-                        this.maskedString,
-                        0,
-                        { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                      ],
-                    },
-                    {
-                      $substrCP: [
-                        '$user.username',
-                        { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                        3,
-                      ],
-                    },
-                  ],
-                },
-                '$user.username',
-              ],
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: 'FunctionTemplateStarRelation',
-            let: { templateId: '$functionTemplate._id', userId: userid },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ['$templateId', '$$templateId'] },
-                      { $eq: ['$uid', '$$userId'] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: 'starRelation',
-          },
-        },
-        {
-          $project: {
-            _id: '$functionTemplate._id',
-            uid: '$functionTemplate.uid',
-            name: '$functionTemplate.name',
-            dependencies: '$functionTemplate.dependencies',
-            environments: '$functionTemplate.environments',
-            private: '$functionTemplate.private',
-            isRecommended: '$functionTemplate.isRecommended',
-            description: '$functionTemplate.description',
-            star: '$functionTemplate.star',
-            createdAt: '$functionTemplate.createdAt',
-            updatedAt: '$functionTemplate.updatedAt',
-            items: 1,
-            author: '$author',
-            stared: {
-              $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
-            },
-          },
-        },
+        ...pipe,
+        this.projectFields(),
         {
           $sort: {
             star: asc === 0 ? 1 : -1,
@@ -2109,108 +1373,10 @@ export class FunctionTemplateService {
       return res
     }
 
-    const pipe = [
+    pipe = [
       { $match: { uid: userid, state: RelationState.Enabled } },
-      {
-        $lookup: {
-          from: 'FunctionTemplate',
-          localField: 'templateId',
-          foreignField: '_id',
-          as: 'functionTemplate',
-        },
-      },
-      { $unwind: '$functionTemplate' },
-      {
-        $lookup: {
-          from: 'FunctionTemplateItem',
-          localField: 'templateId',
-          foreignField: 'templateId',
-          as: 'items',
-        },
-      },
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'functionTemplate.uid',
-          foreignField: '_id',
-          as: 'user',
-        },
-      },
-      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          author: {
-            $cond: [
-              {
-                $and: [
-                  { $eq: ['$user.username', '$user.phone'] },
-                  { $ne: ['$user.username', null] },
-                  { $ne: ['$user.phone', null] },
-                ],
-              },
-              {
-                $concat: [
-                  { $substrCP: ['$user.username', 0, 3] },
-                  {
-                    $substrCP: [
-                      this.maskedString,
-                      0,
-                      { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                    ],
-                  },
-                  {
-                    $substrCP: [
-                      '$user.username',
-                      { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                      3,
-                    ],
-                  },
-                ],
-              },
-              '$user.username',
-            ],
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: 'FunctionTemplateStarRelation',
-          let: { templateId: '$functionTemplate._id', userId: userid },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$templateId', '$$templateId'] },
-                    { $eq: ['$uid', '$$userId'] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'starRelation',
-        },
-      },
-      {
-        $project: {
-          _id: '$functionTemplate._id',
-          uid: '$functionTemplate.uid',
-          name: '$functionTemplate.name',
-          dependencies: '$functionTemplate.dependencies',
-          environments: '$functionTemplate.environments',
-          private: '$functionTemplate.private',
-          isRecommended: '$functionTemplate.isRecommended',
-          description: '$functionTemplate.description',
-          star: '$functionTemplate.star',
-          createdAt: '$functionTemplate.createdAt',
-          updatedAt: '$functionTemplate.updatedAt',
-          items: 1,
-          author: '$author',
-          stared: {
-            $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
-          },
-        },
-      },
+      ...pipe,
+      this.projectFields(),
       { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
@@ -2240,97 +1406,37 @@ export class FunctionTemplateService {
     condition: FindFunctionTemplatesParams,
   ) {
     const { asc, page, pageSize, name, hot } = condition
+    let pipe: any[] = [
+      this.generateLookup(
+        'FunctionTemplate',
+        'templateId',
+        '_id',
+        'functionTemplate',
+      ),
+      { $unwind: '$functionTemplate' },
+      this.generateLookup(
+        'FunctionTemplateItem',
+        'templateId',
+        'templateId',
+        'items',
+      ),
+      this.generateLookup('User', 'functionTemplate.uid', '_id', 'user'),
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
+      this.fieldsForAuthorInfo(),
+      this.fieldForUserStarRelation('$functionTemplate._id', userid),
+    ]
 
     if (name) {
       const safeName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       const reg = new RegExp(safeName, 'i')
-      const pipe = [
+      pipe = [
         {
           $match: {
             uid: userid,
             state: RelationState.Enabled,
           },
         },
-        {
-          $lookup: {
-            from: 'FunctionTemplate',
-            localField: 'templateId',
-            foreignField: '_id',
-            as: 'functionTemplate',
-          },
-        },
-        { $unwind: '$functionTemplate' },
-        {
-          $lookup: {
-            from: 'FunctionTemplateItem',
-            localField: 'templateId',
-            foreignField: 'templateId',
-            as: 'items',
-          },
-        },
-        {
-          $lookup: {
-            from: 'User',
-            localField: 'functionTemplate.uid',
-            foreignField: '_id',
-            as: 'user',
-          },
-        },
-        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-        {
-          $addFields: {
-            author: {
-              $cond: [
-                {
-                  $and: [
-                    { $eq: ['$user.username', '$user.phone'] },
-                    { $ne: ['$user.username', null] },
-                    { $ne: ['$user.phone', null] },
-                  ],
-                },
-                {
-                  $concat: [
-                    { $substrCP: ['$user.username', 0, 3] },
-                    {
-                      $substrCP: [
-                        this.maskedString,
-                        0,
-                        { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                      ],
-                    },
-                    {
-                      $substrCP: [
-                        '$user.username',
-                        { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                        3,
-                      ],
-                    },
-                  ],
-                },
-                '$user.username',
-              ],
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: 'FunctionTemplateStarRelation',
-            let: { templateId: '$functionTemplate._id', userId: userid },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ['$templateId', '$$templateId'] },
-                      { $eq: ['$uid', '$$userId'] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: 'starRelation',
-          },
-        },
+        ...pipe,
         {
           $match: {
             $or: [
@@ -2340,48 +1446,25 @@ export class FunctionTemplateService {
             ],
           },
         },
-        {
-          $project: {
-            _id: '$functionTemplate._id',
-            uid: '$functionTemplate.uid',
-            name: '$functionTemplate.name',
-            dependencies: '$functionTemplate.dependencies',
-            environments: '$functionTemplate.environments',
-            private: '$functionTemplate.private',
-            isRecommended: '$functionTemplate.isRecommended',
-            description: '$functionTemplate.description',
-            star: '$functionTemplate.star',
-            createdAt: '$functionTemplate.createdAt',
-            updatedAt: '$functionTemplate.updatedAt',
-            items: 1,
-            author: '$author',
-            stared: {
-              $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
-            },
-          },
-        },
+        this.projectFields(),
         { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
         { $skip: (page - 1) * pageSize },
         { $limit: pageSize },
       ]
 
-      const pipe2 = [
-        {
-          $lookup: {
-            from: 'FunctionTemplate',
-            localField: 'templateId',
-            foreignField: '_id',
-            as: 'functionTemplate',
-          },
-        },
-        {
-          $lookup: {
-            from: 'FunctionTemplateItem',
-            localField: 'templateId',
-            foreignField: 'templateId',
-            as: 'items',
-          },
-        },
+      const pipeForTotal = [
+        this.generateLookup(
+          'FunctionTemplate',
+          'templateId',
+          '_id',
+          'functionTemplate',
+        ),
+        this.generateLookup(
+          'FunctionTemplateItem',
+          'templateId',
+          'templateId',
+          'items',
+        ),
         {
           $match: {
             uid: userid,
@@ -2398,7 +1481,7 @@ export class FunctionTemplateService {
 
       const total = await this.db
         .collection<FunctionTemplateUseRelation>('FunctionTemplateUseRelation')
-        .aggregate(pipe2)
+        .aggregate(pipeForTotal)
         .maxTimeMS(5000)
         .toArray()
 
@@ -2419,108 +1502,10 @@ export class FunctionTemplateService {
     }
 
     if (hot) {
-      const pipe = [
+      pipe = [
         { $match: { uid: userid, state: RelationState.Enabled } },
-        {
-          $lookup: {
-            from: 'FunctionTemplate',
-            localField: 'templateId',
-            foreignField: '_id',
-            as: 'functionTemplate',
-          },
-        },
-        { $unwind: '$functionTemplate' },
-        {
-          $lookup: {
-            from: 'FunctionTemplateItem',
-            localField: 'templateId',
-            foreignField: 'templateId',
-            as: 'items',
-          },
-        },
-        {
-          $lookup: {
-            from: 'User',
-            localField: 'functionTemplate.uid',
-            foreignField: '_id',
-            as: 'user',
-          },
-        },
-        { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-        {
-          $addFields: {
-            author: {
-              $cond: [
-                {
-                  $and: [
-                    { $eq: ['$user.username', '$user.phone'] },
-                    { $ne: ['$user.username', null] },
-                    { $ne: ['$user.phone', null] },
-                  ],
-                },
-                {
-                  $concat: [
-                    { $substrCP: ['$user.username', 0, 3] },
-                    {
-                      $substrCP: [
-                        this.maskedString,
-                        0,
-                        { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                      ],
-                    },
-                    {
-                      $substrCP: [
-                        '$user.username',
-                        { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                        3,
-                      ],
-                    },
-                  ],
-                },
-                '$user.username',
-              ],
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: 'FunctionTemplateStarRelation',
-            let: { templateId: '$functionTemplate._id', userId: userid },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ['$templateId', '$$templateId'] },
-                      { $eq: ['$uid', '$$userId'] },
-                    ],
-                  },
-                },
-              },
-            ],
-            as: 'starRelation',
-          },
-        },
-        {
-          $project: {
-            _id: '$functionTemplate._id',
-            uid: '$functionTemplate.uid',
-            name: '$functionTemplate.name',
-            dependencies: '$functionTemplate.dependencies',
-            environments: '$functionTemplate.environments',
-            private: '$functionTemplate.private',
-            isRecommended: '$functionTemplate.isRecommended',
-            description: '$functionTemplate.description',
-            star: '$functionTemplate.star',
-            createdAt: '$functionTemplate.createdAt',
-            updatedAt: '$functionTemplate.updatedAt',
-            items: 1,
-            author: '$author',
-            stared: {
-              $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
-            },
-          },
-        },
+        ...pipe,
+        this.projectFields(),
         {
           $sort: {
             'functionTemplate.star': asc === 0 ? 1 : -1,
@@ -2549,108 +1534,10 @@ export class FunctionTemplateService {
       return res
     }
 
-    const pipe = [
+    pipe = [
       { $match: { uid: userid, state: RelationState.Enabled } },
-      {
-        $lookup: {
-          from: 'FunctionTemplate',
-          localField: 'templateId',
-          foreignField: '_id',
-          as: 'functionTemplate',
-        },
-      },
-      { $unwind: '$functionTemplate' },
-      {
-        $lookup: {
-          from: 'FunctionTemplateItem',
-          localField: 'templateId',
-          foreignField: 'templateId',
-          as: 'items',
-        },
-      },
-      {
-        $lookup: {
-          from: 'User',
-          localField: 'functionTemplate.uid',
-          foreignField: '_id',
-          as: 'user',
-        },
-      },
-      { $unwind: { path: '$user', preserveNullAndEmptyArrays: true } },
-      {
-        $addFields: {
-          author: {
-            $cond: [
-              {
-                $and: [
-                  { $eq: ['$user.username', '$user.phone'] },
-                  { $ne: ['$user.username', null] },
-                  { $ne: ['$user.phone', null] },
-                ],
-              },
-              {
-                $concat: [
-                  { $substrCP: ['$user.username', 0, 3] },
-                  {
-                    $substrCP: [
-                      this.maskedString,
-                      0,
-                      { $subtract: [{ $strLenCP: '$user.username' }, 6] },
-                    ],
-                  },
-                  {
-                    $substrCP: [
-                      '$user.username',
-                      { $subtract: [{ $strLenCP: '$user.username' }, 3] },
-                      3,
-                    ],
-                  },
-                ],
-              },
-              '$user.username',
-            ],
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: 'FunctionTemplateStarRelation',
-          let: { templateId: '$functionTemplate._id', userId: userid },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$templateId', '$$templateId'] },
-                    { $eq: ['$uid', '$$userId'] },
-                  ],
-                },
-              },
-            },
-          ],
-          as: 'starRelation',
-        },
-      },
-      {
-        $project: {
-          _id: '$functionTemplate._id',
-          uid: '$functionTemplate.uid',
-          name: '$functionTemplate.name',
-          dependencies: '$functionTemplate.dependencies',
-          environments: '$functionTemplate.environments',
-          private: '$functionTemplate.private',
-          isRecommended: '$functionTemplate.isRecommended',
-          description: '$functionTemplate.description',
-          star: '$functionTemplate.star',
-          createdAt: '$functionTemplate.createdAt',
-          updatedAt: '$functionTemplate.updatedAt',
-          items: 1,
-          author: '$author',
-          stared: {
-            $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
-          },
-        },
-      },
+      ...pipe,
+      this.projectFields(),
       { $sort: { updatedAt: asc === 0 ? 1 : -1 } },
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
@@ -2722,5 +1609,104 @@ export class FunctionTemplateService {
     }
 
     return true
+  }
+
+  generateLookup(
+    fromCollection: string,
+    localField: string,
+    foreignField: string,
+    alias: string,
+  ) {
+    return {
+      $lookup: {
+        from: fromCollection,
+        localField: localField,
+        foreignField: foreignField,
+        as: alias,
+      },
+    }
+  }
+
+  projectFields() {
+    return {
+      $project: {
+        _id: '$functionTemplate._id',
+        uid: '$functionTemplate.uid',
+        name: '$functionTemplate.name',
+        dependencies: '$functionTemplate.dependencies',
+        environments: '$functionTemplate.environments',
+        private: '$functionTemplate.private',
+        isRecommended: '$functionTemplate.isRecommended',
+        description: '$functionTemplate.description',
+        star: '$functionTemplate.star',
+        createdAt: '$functionTemplate.createdAt',
+        updatedAt: '$functionTemplate.updatedAt',
+        items: 1,
+        author: '$author',
+        stared: {
+          $cond: [{ $gt: [{ $size: '$starRelation' }, 0] }, true, false],
+        },
+      },
+    }
+  }
+
+  fieldsForAuthorInfo() {
+    return {
+      $addFields: {
+        author: {
+          $cond: [
+            {
+              $and: [
+                { $eq: ['$user.username', '$user.phone'] },
+                { $ne: ['$user.username', null] },
+                { $ne: ['$user.phone', null] },
+              ],
+            },
+            {
+              $concat: [
+                { $substrCP: ['$user.username', 0, 3] },
+                {
+                  $substrCP: [
+                    this.maskedString,
+                    0,
+                    { $subtract: [{ $strLenCP: '$user.username' }, 6] },
+                  ],
+                },
+                {
+                  $substrCP: [
+                    '$user.username',
+                    { $subtract: [{ $strLenCP: '$user.username' }, 3] },
+                    3,
+                  ],
+                },
+              ],
+            },
+            '$user.username',
+          ],
+        },
+      },
+    }
+  }
+
+  fieldForUserStarRelation(functionTemplateId, userid) {
+    return {
+      $lookup: {
+        from: 'FunctionTemplateStarRelation',
+        let: { templateId: functionTemplateId, userId: userid },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ['$templateId', '$$templateId'] },
+                  { $eq: ['$uid', '$$userId'] },
+                ],
+              },
+            },
+          },
+        ],
+        as: 'starRelation',
+      },
+    }
   }
 }
