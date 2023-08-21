@@ -82,6 +82,7 @@ export class FunctionCache {
         if (Date.now() - lastReconnectTimestamp < Config.CHANGE_STREAM_RECONNECT_INTERVAL) {
           return
         }
+        
         lastReconnectTimestamp = Date.now()
         logger.info('Reconnecting cloud function change stream......')
         FunctionCache.streamChange()
