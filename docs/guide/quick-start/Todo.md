@@ -99,13 +99,16 @@ export async function main(ctx: FunctionContext) {
 ## 前端
 
 前端这里我们用的是 Vue 项目来演示，React/Angular/小程序，操作都是相同的。
+
+你也可以使用我们提供的[前端模板](https://github.com/labring/laf-examples/tree/main/laf-todo-demo)。
+
 首先需要在前端项目中安装 `laf-client-sdk`。
 
 ```shell
 npm install laf-client-sdk
 ```  
 
-还记得刚创建完项目的页面吗，我们需要回到那里找到我们需要用到的`<APPID>`。
+这里我们需要用到`<APPID>`，可以在控制台找到。
 
 ![AppID](../../doc-images/AppID.png)
 
@@ -162,10 +165,4 @@ async function del(id) {
 }
 ```
 
-到这里我们已经完成了项目的核心功能，你也可以下载代码模板来体验。
-
-:::tip
-需要在 src/App.vue 中修改 `<AppID>`
-:::
-
-模板地址：<https://github.com/labring/laf-examples/tree/main/laf-todo-demo>
+以上就是一个 Todo List 所需要的所有功能啦。
