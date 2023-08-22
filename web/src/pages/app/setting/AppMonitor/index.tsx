@@ -10,7 +10,12 @@ export default function AppMonitor() {
   const { t } = useTranslation();
   const { currentApp, monitorData } = useGlobalStore();
   const { limitCPU, limitMemory, databaseCapacity, storageCapacity } = currentApp.bundle.resource;
-  const { cpuUsage, memoryUsage, databaseUsage, storageUsage } = monitorData;
+  const { cpuUsage, memoryUsage, databaseUsage, storageUsage } = monitorData || {
+    cpuUsage: [],
+    memoryUsage: [],
+    databaseUsage: [],
+    storageUsage: [],
+  };
   const [dataNumber, setDataNumber] = useState(0);
   const [podsArray, setPodsArray] = useState<string[]>([]);
 
