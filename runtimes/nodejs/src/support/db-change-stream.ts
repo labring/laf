@@ -23,14 +23,13 @@ export class DatabaseChangeStream {
       this.updateEnvironments()
     })
 
-    stream.on('close', () => { 
-      logger.info('Conf collection change stream closed.')
-      setTimeout(() => { 
-        logger.info('Reconnecting conf collection change stream...')
-        this.watchConf()
-      }, 3000)
-    })
-
+    // stream.on('close', () => { 
+    //   logger.info('Conf collection change stream closed.')
+    //   setTimeout(() => { 
+    //     logger.info('Reconnecting conf collection change stream...')
+    //     DatabaseChangeStream.watchConf()
+    //   }, 3000)
+    // })
   }
 
   private static async updateEnvironments() {

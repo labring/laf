@@ -621,5 +621,8 @@
     "Quit": "退出"
   },
   "Collaborative": "协作",
-  "CreateApp": "新建应用"
+  "CreateApp": "新建应用",
+  "Used": "已使用",
+  "Remaining": "剩余",
+  "Pod": "实例"
 }

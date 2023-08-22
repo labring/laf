@@ -29,6 +29,7 @@ import { GroupModule } from './group/group.module'
 import { APP_INTERCEPTOR } from '@nestjs/core'
 import { AppInterceptor } from './app.interceptor'
 import { InterceptorModule } from './interceptor/interceptor.module'
+import { MonitorModule } from './monitor/monitor.module'
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { InterceptorModule } from './interceptor/interceptor.module'
     RecycleBinModule,
     GroupModule,
     InterceptorModule,
+    MonitorModule,
   ],
   controllers: [AppController],
   providers: [

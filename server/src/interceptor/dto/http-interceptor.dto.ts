@@ -14,4 +14,5 @@ export class HttpInterceptorResponseDto {
   action: HttpInterceptorAction
   rewrite?: HttpInterceptorRewrite
   redirect?: HttpInterceptorRedirect
+  denyMessage?: string
 }

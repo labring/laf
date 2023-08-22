@@ -621,5 +621,8 @@
     "Quit": "Quit"
   },
   "Collaborative": "Collaborative",
-  "CreateApp": "New Application"
+  "CreateApp": "New Application",
+  "Used": "Used",
+  "Remaining": "Remaining",
+  "Pod": "Pod"
 }

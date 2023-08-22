@@ -10,6 +10,10 @@ export class ServerConfig {
     return process.env.DATABASE_URL
   }
 
+  static get PROMETHEUS_URL() {
+    return process.env.PROMETHEUS_URL
+  }
+
   static get METERING_DATABASE_URL() {
     if (!process.env.METERING_DATABASE_URL) {
       throw new Error('METERING_DATABASE_URL is not defined')
@@ -170,6 +174,10 @@ export class ServerConfig {
 
   static get DEFAULT_REGION_LOG_SERVER_DATABASE_URL() {
     return process.env.DEFAULT_REGION_LOG_SERVER_DATABASE_URL
+  }
+
+  static get DEFAULT_REGION_PROMETHEUS_URL() {
+    return process.env.DEFAULT_REGION_PROMETHEUS_URL
   }
 
   // HTTP interceptor

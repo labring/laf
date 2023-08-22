@@ -1,5 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
+class IdVerified {
+  @ApiProperty({ type: Boolean })
+  isVerified: boolean
+
+  @ApiProperty({ type: Number })
+  idVerifyFailedTimes: number
+}
 
 export class UserProfile {
   @ApiProperty({ type: String })
@@ -16,6 +23,12 @@ export class UserProfile {
 
   @ApiPropertyOptional()
   name?: string
+
+  @ApiProperty({ type: IdVerified })
+  idVerified?: IdVerified
+
+  @ApiProperty()
+  idCard?: string
 
   @ApiProperty()
   createdAt: Date

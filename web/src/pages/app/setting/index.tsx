@@ -92,10 +92,7 @@ const SettingModal = (props: {
                   {tabMatch.map((tab) => {
                     return (
                       <SectionList.Item
-                        className={clsx(
-                          "mt-2 !h-[42px] w-[180px] rounded-md",
-                          !darkMode && "!text-grayModern-600 ",
-                        )}
+                        className={clsx("mt-2 !h-[42px] w-[180px] rounded-md")}
                         isActive={item?.key === tab.key}
                         key={tab.key}
                         onClick={() => {

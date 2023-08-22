@@ -63,6 +63,16 @@ export class HttpInterceptorService {
         data,
         { timeout: this.HTTP_INTERCEPTOR_TIMEOUT },
       )
+      if (!response.data) {
+        return {
+          action: HttpInterceptorAction.DENY,
+        }
+      }
+      if (!response.data.action) {
+        return {
+          action: HttpInterceptorAction.DENY,
+        }
+      }
       return response.data
     } catch (error) {
       if (error.code === 'ECONNABORTED') {

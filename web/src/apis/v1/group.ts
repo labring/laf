@@ -37,7 +37,7 @@ export async function GroupControllerFindGroupByInviteCode(
   params: Paths.GroupControllerFindGroupByInviteCode.BodyParameters,
 ): Promise<{
   error: string;
-  data: Definitions.Group;
+  data: Definitions.GetGroupInviteCodeDetailDto;
 }> {
   // /v1/group/invite/code/{code}/group
   let _params: { [key: string]: any } = {
@@ -187,7 +187,7 @@ export async function GroupInviteControllerGenerateInviteCode(
 }
 
 /**
- * Reset group invite code
+ * Delete group invite code
  */
 export async function GroupInviteControllerDeleteInviteCode(
   params: Paths.GroupInviteControllerDeleteInviteCode.BodyParameters,
@@ -303,65 +303,5 @@ export async function GroupMemberControllerLeaveGroup(
   return request(`/v1/group/${_params.groupId}/member/leave`, {
     method: "POST",
     data: params,
-  });
-}
-
-/**
- * Append an application to a group
- */
-export async function GroupApplicationControllerAppend(
-  params: Paths.GroupApplicationControllerAppend.BodyParameters,
-): Promise<{
-  error: string;
-  data: Definitions.GroupApplication;
-}> {
-  // /v1/group/{groupId}/application/{appid}
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/group/${_params.groupId}/application/${_params.appid}`, {
-    method: "POST",
-    data: params,
-  });
-}
-
-/**
- * Remove an application from a group
- */
-export async function GroupApplicationControllerRemove(
-  params: Paths.GroupApplicationControllerRemove.BodyParameters,
-): Promise<{
-  error: string;
-  data: Paths.GroupApplicationControllerRemove.Responses;
-}> {
-  // /v1/group/{groupId}/application/{appid}
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/group/${_params.groupId}/application/${_params.appid}`, {
-    method: "DELETE",
-    data: params,
-  });
-}
-
-/**
- * Get application list of a group
- */
-export async function GroupApplicationControllerFind(
-  params: Paths.GroupApplicationControllerFind.BodyParameters,
-): Promise<{
-  error: string;
-  data: Paths.GroupApplicationControllerFind.Responses;
-}> {
-  // /v1/group/{groupId}/application
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/group/${_params.groupId}/application`, {
-    method: "GET",
-    params: params,
   });
 }

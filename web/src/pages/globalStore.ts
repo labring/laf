@@ -6,7 +6,7 @@ import { immer } from "zustand/middleware/immer";
 import { APP_PHASE_STATUS, APP_STATUS, CHAKRA_UI_COLOR_MODE_KEY } from "@/constants";
 import { formatPort } from "@/utils/format";
 
-import { TApplicationDetail, TRegion, TRuntime } from "@/apis/typing";
+import { TApplicationDetail, TMonitorData, TRegion, TRuntime } from "@/apis/typing";
 import { ApplicationControllerUpdateState } from "@/apis/v1/applications";
 import { RegionControllerGetRegions } from "@/apis/v1/regions";
 import { AppControllerGetRuntimes } from "@/apis/v1/runtimes";
@@ -29,6 +29,8 @@ type State = {
   avatarUpdatedAt: string;
   updateUserInfo(): void;
   visitedViews: string[];
+  monitorData: TMonitorData;
+  setMonitorData: (data: any) => void;
 
   showSuccess: (text: string | React.ReactNode) => void;
   showInfo: (text: string | React.ReactNode) => void;
@@ -49,6 +51,19 @@ const useGlobalStore = create<State>()(
       visitedViews: [],
 
       avatarUpdatedAt: "",
+
+      monitorData: {
+        cpuUsage: [],
+        memoryUsage: [],
+        databaseUsage: [],
+        storageUsage: [],
+      },
+
+      setMonitorData: (data) => {
+        set((state) => {
+          state.monitorData = data;
+        });
+      },
 
       setCurrentPage: (pageId) => {
         set((state) => {
@@ -112,16 +127,6 @@ const useGlobalStore = create<State>()(
         if (!app) {
           return;
         }
-        // const deleteRes = await SubscriptionControllerRemove({
-        //   appid: app.appid,
-        // });
-        // if (!deleteRes.error) {
-        //   set((state) => {
-        //     if (state.currentApp) {
-        //       state.currentApp.phase = APP_PHASE_STATUS.Deleting;
-        //     }
-        //   });
-        // }
       },
 
       setCurrentApp: (app) => {

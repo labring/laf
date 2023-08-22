@@ -21,16 +21,6 @@ declare namespace Definitions {
     params?: {};
   };
 
-  export type SendEmailCodeDto = {
-    email?: string;
-    type?: string /* verify code type */;
-  };
-
-  export type BindEmailDto = {
-    email?: string;
-    code?: string /* verify code */;
-  };
-
   export type CompileFunctionDto = {
     code?: string /* The source code of the function */;
   };
@@ -296,6 +286,11 @@ declare namespace Definitions {
     pat?: string /* PAT */;
   };
 
+  export type SendEmailCodeDto = {
+    email?: string;
+    type?: string /* verify code type */;
+  };
+
   export type CreatePATDto = {
     name?: string;
     expiresIn?: number;
@@ -316,6 +311,11 @@ declare namespace Definitions {
     newPhoneNumber?: string /* new phone number */;
     oldSmsCode?: string /* sms verify code for old phone number */;
     newSmsCode?: string /* sms verify code for new phone number */;
+  };
+
+  export type BindEmailDto = {
+    email?: string;
+    code?: string /* verify code */;
   };
 
   export type BindUsernameDto = {
@@ -385,6 +385,11 @@ declare namespace Definitions {
     updatedAt?: string;
   };
 
+  export type GetGroupInviteCodeDetailDto = {
+    group?: Definitions.Group;
+    invitedBy?: Definitions.User;
+  };
+
   export type CreateGroupDto = {
     name?: string;
   };
@@ -403,12 +408,13 @@ declare namespace Definitions {
     code?: string;
     role?: string;
     groupId?: string;
+    createdBy?: string;
     createdAt?: string;
     updatedAt?: string;
   };
 
   export type GroupMember = {
-    id?: string;
+    _id?: string;
     uid?: string;
     groupId?: string;
     role?: string;
@@ -419,8 +425,6 @@ declare namespace Definitions {
   export type UpdateGroupMemberRoleDto = {
     role?: string;
   };
-
-  export type GroupApplication = {};
 
   export type CreateAutoscalingDto = {
     enable?: boolean;
@@ -516,6 +520,15 @@ declare namespace Definitions {
     description?: string;
     methods?: string[];
     code?: string /* The source code of the function */;
+  };
+
+  export type User = {
+    _id?: string;
+    username?: string;
+    email?: string;
+    phone?: string;
+    createdAt?: string;
+    updatedAt?: string;
   };
 }
 
@@ -1104,6 +1117,14 @@ declare namespace Paths {
     export type Responses = any;
   }
 
+  namespace UserControllerBindEmail {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.BindEmailDto;
+
+    export type Responses = any;
+  }
+
   namespace UserControllerBindUsername {
     export type QueryParameters = any;
 
@@ -1504,23 +1525,7 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace GroupApplicationControllerAppend {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace GroupApplicationControllerRemove {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace GroupApplicationControllerFind {
+  namespace MonitorControllerGetData {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
