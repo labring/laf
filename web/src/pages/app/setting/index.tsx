@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import {
   Box,
@@ -38,28 +38,40 @@ export const TabKeys = {
 
 const SettingModal = (props: {
   headerTitle: string;
-  children: React.ReactElement;
+  children?: React.ReactElement;
   setApp?: TApplicationDetail;
   tabMatch?: TTabItem[];
   currentTab: string;
+  openModal?: boolean;
+  setOpenModal?: (open: boolean) => void;
 }) => {
-  const { headerTitle, children, setApp, tabMatch = [] } = props;
+  const { headerTitle, children, setApp, tabMatch = [], openModal, setOpenModal } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const currentIndex = tabMatch.findIndex((tab) => tab.key === props.currentTab);
   const [item, setItem] = useState<TTabItem>(tabMatch[currentIndex]);
   const { setCurrentApp } = useGlobalStore((state) => state);
   const borderColor = useColorModeValue("lafWhite.600", "lafDark.600");
   const darkMode = useColorMode().colorMode === "dark";
+
+  useEffect(() => {
+    if (!children && openModal && setOpenModal) {
+      onOpen();
+      setOpenModal(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openModal]);
+
   return (
     <>
-      {React.cloneElement(children, {
-        onClick: () => {
-          if (setApp) {
-            setCurrentApp(setApp);
-          }
-          onOpen();
-        },
-      })}
+      {children &&
+        React.cloneElement(children, {
+          onClick: () => {
+            if (setApp) {
+              setCurrentApp(setApp);
+            }
+            onOpen();
+          },
+        })}
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

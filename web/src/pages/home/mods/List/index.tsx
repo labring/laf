@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import ConfirmButton from "@/components/ConfirmButton";
 import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
@@ -77,7 +78,7 @@ function List(props: { appList: TApplicationItem[] }) {
           </InputGroup>
           <CreateAppModal type="create">
             <Button colorScheme="primary" style={{ padding: "0 40px" }} leftIcon={<AddIcon />}>
-              {t("Create")}
+              {t("CreateApp")}
             </Button>
           </CreateAppModal>
         </div>
@@ -169,51 +170,79 @@ function List(props: { appList: TApplicationItem[] }) {
                           </MenuItem>
                         </CreateAppModal>
 
-                        <MenuItem
-                          minH="40px"
-                          display={"block"}
-                          onClick={async (event) => {
-                            event?.preventDefault();
-                            const res = await updateAppStateMutation.mutateAsync({
-                              appid: item.appid,
-                              state:
-                                item.phase === APP_STATUS.Stopped
-                                  ? APP_STATUS.Running
-                                  : APP_STATUS.Restarting,
-                            });
-                            if (!res.error) {
-                              queryClient.setQueryData(APP_LIST_QUERY_KEY, (old: any) => {
-                                return {
-                                  ...old,
-                                  data: old.data.map((app: any) => {
-                                    if (app.appid === item.appid) {
-                                      return {
-                                        ...app,
-                                        phase:
-                                          item.phase === APP_STATUS.Stopped
-                                            ? APP_PHASE_STATUS.Starting
-                                            : APP_STATUS.Restarting,
-                                      };
-                                    }
-                                    return app;
-                                  }),
-                                };
-                              });
-                            }
-                          }}
-                        >
-                          <span className="text-primary block">
-                            {item.phase === APP_STATUS.Stopped
-                              ? t("SettingPanel.Start")
-                              : t("SettingPanel.Restart")}
-                          </span>
-                        </MenuItem>
-
-                        {item.phase === APP_PHASE_STATUS.Started && (
+                        {item.phase === APP_STATUS.Stopped ? (
                           <MenuItem
                             minH="40px"
                             display={"block"}
-                            onClick={async (event: any) => {
+                            onClick={async (event) => {
+                              event?.preventDefault();
+                              const res = await updateAppStateMutation.mutateAsync({
+                                appid: item.appid,
+                                state: APP_STATUS.Running,
+                              });
+                              if (!res.error) {
+                                queryClient.setQueryData(APP_LIST_QUERY_KEY, (old: any) => {
+                                  return {
+                                    ...old,
+                                    data: old.data.map((app: any) => {
+                                      if (app.appid === item.appid) {
+                                        return {
+                                          ...app,
+                                          phase: APP_PHASE_STATUS.Starting,
+                                        };
+                                      }
+                                      return app;
+                                    }),
+                                  };
+                                });
+                              }
+                            }}
+                          >
+                            <span className="text-primary block">{t("SettingPanel.Start")}</span>
+                          </MenuItem>
+                        ) : (
+                          <ConfirmButton
+                            headerText={t("SettingPanel.Restart")}
+                            bodyText={t("SettingPanel.RestartTips")}
+                            confirmButtonText={String(t("Confirm"))}
+                            onSuccessAction={async (event) => {
+                              event?.preventDefault();
+                              const res = await updateAppStateMutation.mutateAsync({
+                                appid: item.appid,
+                                state: APP_STATUS.Restarting,
+                              });
+                              if (!res.error) {
+                                queryClient.setQueryData(APP_LIST_QUERY_KEY, (old: any) => {
+                                  return {
+                                    ...old,
+                                    data: old.data.map((app: any) => {
+                                      if (app.appid === item.appid) {
+                                        return {
+                                          ...app,
+                                          phase: APP_STATUS.Restarting,
+                                        };
+                                      }
+                                      return app;
+                                    }),
+                                  };
+                                });
+                              }
+                            }}
+                          >
+                            <MenuItem minH="40px" display={"block"}>
+                              <span className="text-primary block">
+                                {t("SettingPanel.Restart")}
+                              </span>
+                            </MenuItem>
+                          </ConfirmButton>
+                        )}
+
+                        {item.phase === APP_PHASE_STATUS.Started && (
+                          <ConfirmButton
+                            headerText={t("SettingPanel.Pause")}
+                            bodyText={t("SettingPanel.PauseTips")}
+                            confirmButtonText={String(t("Confirm"))}
+                            onSuccessAction={async (event: any) => {
                               event?.preventDefault();
                               const res = await updateAppStateMutation.mutateAsync({
                                 appid: item.appid,
@@ -237,10 +266,10 @@ function List(props: { appList: TApplicationItem[] }) {
                               }
                             }}
                           >
-                            <a className="text-primary block" href="/stop">
+                            <MenuItem minH="40px" display={"block"}>
                               {t("SettingPanel.Pause")}
-                            </a>
-                          </MenuItem>
+                            </MenuItem>
+                          </ConfirmButton>
                         )}
 
                         <DeleteAppModal
