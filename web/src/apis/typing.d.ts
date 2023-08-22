@@ -48,6 +48,23 @@ export type TBundle = {
   updatedAt: string;
 };
 
+export type TMonitorData = {
+  cpuUsage: TCpuUsageData;
+  memoryUsage: TCpuUsageData;
+  databaseUsage: TDatabaseUsage;
+  storageUsage: TDatabaseUsage;
+};
+
+export type TCpuUsageData = {
+  metric: { pod: string };
+  values: Array<[number, string]>;
+}[];
+
+export type TDatabaseUsage = {
+  metric: { pod: string };
+  value: [number, string];
+}[];
+
 export type TSpec = {
   cpu: Cpu;
   memory: Memory;

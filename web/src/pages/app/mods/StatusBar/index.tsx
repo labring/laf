@@ -8,6 +8,8 @@ import Panel from "@/components/Panel";
 
 import Icons from "../SideBar/Icons";
 
+import MonitorBar from "./MonitorBar";
+
 import SysSetting from "@/pages/app/setting/SysSetting";
 import useGlobalStore from "@/pages/globalStore";
 import CreateAppModal from "@/pages/home/mods/CreateAppModal";
@@ -33,10 +35,7 @@ function StatusBar() {
         <StatusBadge statusConditions={currentApp?.phase} state={currentApp?.state} />
       </HStack>
       <HStack spacing={4}>
-        <div>CPU: {`${currentApp?.bundle?.resource?.limitCPU! / 1000} ${t("Unit.CPU")}`}</div>
-        <div>
-          {t("Spec.RAM")}: {`${currentApp?.bundle?.resource.limitMemory} ${t("Unit.MB")}`}
-        </div>
+        <MonitorBar />
         <div className={clsx("mt-1")}>
           <CreateAppModal application={currentApp as any} isCurrentApp type="change">
             <a className="ml-2 text-primary-500" href="/edit">
