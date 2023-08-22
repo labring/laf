@@ -70,6 +70,8 @@ export class AppInterceptor implements NestInterceptor {
       response.redirect(interceptorData.redirect.data)
       return of(null)
     }
-    throw new ForbiddenException("You don't have permission to access")
+    throw new ForbiddenException(
+      interceptorData.denyMessage || "You don't have permission to access",
+    )
   }
 }
