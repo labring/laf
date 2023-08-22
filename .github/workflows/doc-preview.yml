@@ -1,0 +1,107 @@
+name: Laf Doc Preview
+
+# todo: When the requirements are mature enough, refactor using TypeScript, create a generic GitHub Action, and make it available to users.
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, closed]
+    paths:
+      - "docs/**"
+      - ".github/workflows/doc-preview.yml"
+
+permissions:
+  pull-requests: write
+
+env:
+  LAF_CI_DOCS_PREVIEW_PAT: ${{ secrets.LAF_CI_DOCS_PREVIEW_PAT }}
+  LAF_CI_DOCS_PREVIEW_APPID: ${{ secrets.LAF_CI_DOCS_PREVIEW_APPID }}
+  LAF_CI_DOCS_PREVIEW_API_URL: ${{ secrets.LAF_CI_DOCS_PREVIEW_API_URL }}
+  BUCKET_SHORT_NAME: pr-${{ github.event.pull_request.number }}-doc-preview
+
+jobs:
+  create-or-update-doc-preview:
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docs
+        uses: ./.github/actions/build-docs
+
+      - name: Setup laf-cli
+        run: npm i laf-cli -g
+
+      - name: Login laf-cli
+        run: |
+          laf user add doc -r ${{ env.LAF_CI_DOCS_PREVIEW_API_URL }}
+          laf user switch doc
+          laf login ${{ env.LAF_CI_DOCS_PREVIEW_PAT }}
+          laf app init ${{ env.LAF_CI_DOCS_PREVIEW_APPID }}
+
+      - name: Check if bucket exists
+        id: check-bucket
+        run: |
+          output=$(laf storage list)
+
+          # Check if the output contains the desired text
+          if echo "$output" | grep -q ${{ env.BUCKET_SHORT_NAME }}; then
+            echo "BUCKET_EXISTS=true" >> $GITHUB_OUTPUT
+          else
+            echo "BUCKET_EXISTS=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create bucket and create website
+        if: steps.check-bucket.outputs.BUCKET_EXISTS == 'false'
+        id: create-bucket-and-website
+        run: |
+          laf storage create ${{ env.BUCKET_SHORT_NAME }} -p readonly
+          output=$(laf website create ${{ env.BUCKET_SHORT_NAME }})
+          last_line=$(echo "$output" | tail -n 1)
+          echo "website_url_message=$last_line" >> $GITHUB_OUTPUT
+
+      - name: Deploy to laf
+        run: |
+          laf storage push -f ${{ env.BUCKET_SHORT_NAME }} docs/.vitepress/dist/
+
+      - uses: mshick/add-pr-comment@v2
+        if: steps.check-bucket.outputs.BUCKET_EXISTS == 'false'
+        with:
+          message: |
+            Laf Doc Preview:
+            ${{ steps.create-bucket-and-website.outputs.website_url_message }}
+
+  delete-doc-preview:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup laf-cli
+        run: npm i laf-cli -g
+
+      - name: Login laf-cli
+        run: |
+          laf user add doc -r ${{ env.LAF_CI_DOCS_PREVIEW_API_URL }}
+          laf user switch doc
+          laf login ${{ env.LAF_CI_DOCS_PREVIEW_PAT }}
+          laf app init ${{ env.LAF_CI_DOCS_PREVIEW_APPID }}
+
+      - name: Check if bucket exists
+        id: check-bucket
+        run: |
+          output=$(laf storage list)
+
+          # Check if the output contains the desired text
+          if echo "$output" | grep -q ${{ env.BUCKET_SHORT_NAME }}; then
+            echo "BUCKET_EXISTS=true" >> $GITHUB_OUTPUT
+          else
+            echo "BUCKET_EXISTS=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Delete bucket
+        if: steps.check-bucket.outputs.BUCKET_EXISTS == 'true'
+        id: delete-bucket
+        run: |
+          laf website del ${{ env.BUCKET_SHORT_NAME }}
+          laf storage del ${{ env.BUCKET_SHORT_NAME }}
