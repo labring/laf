@@ -678,6 +678,10 @@ export class FunctionTemplateService {
       },
       { $project: { user: 0, starRelation: 0 } },
     ]
+    const total = await this.db
+      .collection<FunctionTemplate>('FunctionTemplate')
+      .countDocuments({ private: false })
+
     if (sort === 'hot') {
       pipe.push(
         {
@@ -688,9 +692,6 @@ export class FunctionTemplateService {
         { $skip: (page - 1) * pageSize },
         { $limit: pageSize },
       )
-      const total = await this.db
-        .collection<FunctionTemplate>('FunctionTemplate')
-        .countDocuments({ private: false })
 
       const functionTemplates = await this.db
         .collection<FunctionTemplate>('FunctionTemplate')
@@ -718,9 +719,6 @@ export class FunctionTemplateService {
         { $skip: (page - 1) * pageSize },
         { $limit: pageSize },
       )
-      const total = await this.db
-        .collection<FunctionTemplate>('FunctionTemplate')
-        .countDocuments({ private: false })
 
       const functionTemplates = await this.db
         .collection<FunctionTemplate>('FunctionTemplate')
@@ -742,9 +740,6 @@ export class FunctionTemplateService {
       { $skip: (page - 1) * pageSize },
       { $limit: pageSize },
     )
-    const total = await this.db
-      .collection<FunctionTemplate>('FunctionTemplate')
-      .countDocuments({ private: false })
 
     const functionTemplate = await this.db
       .collection<FunctionTemplate>('FunctionTemplate')
@@ -1688,7 +1683,7 @@ export class FunctionTemplateService {
     }
   }
 
-  fieldForUserStarRelation(functionTemplateId, userid) {
+  fieldForUserStarRelation(functionTemplateId: string, userid: ObjectId) {
     return {
       $lookup: {
         from: 'FunctionTemplateStarRelation',
