@@ -1,0 +1,25 @@
+fullnameOverride: prometheus
+alertmanager:
+  enabled: false
+grafana:
+  enabled: false
+coreDns:
+  enabled: false
+nodeExporter:
+  enabled: false
+kubeApiServer:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeProxy:
+  enabled: false
+kubeStateMetrics:
+  enabled: false
+prometheus:
+  networkPolicy:
+    enabled: true
+    ingress: []

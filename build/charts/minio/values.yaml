@@ -510,7 +510,7 @@ metrics:
   serviceMonitor:
     enabled: false
     # scrape each node/pod individually for additional metrics
-    includeNode: false 
+    includeNode: false
     public: true
     additionalLabels: {}
     # for node metrics
@@ -521,8 +521,8 @@ metrics:
       #   - regex: (server|pod)
       #     action: labeldrop
     # namespace: monitoring
-    # interval: 30s
-    # scrapeTimeout: 10s
+    interval: 30s
+    scrapeTimeout: 10s
 
 ## ETCD settings: https://github.com/minio/minio/blob/master/docs/sts/etcd.md
 ## Define endpoints to enable this section.
