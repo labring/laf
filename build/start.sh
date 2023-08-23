@@ -83,13 +83,15 @@ if [ $ENABLE_MONITOR ]; then
     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
     helm repo update
 
-    sed "s/\$NAMESPACE/$NAMESPACE/g" prometheus-helm.yaml > prometheus-helm-with-values.yaml
+    sed -e "s/\$NAMESPACE/$NAMESPACE/g" \
+        -e "s/\$PROMETHEUS_PV_SIZE/${PROMETHEUS_PV_SIZE:-20Gi}/g" \
+        prometheus-helm.yaml > prometheus-helm-with-values.yaml
 
-    helm install prometheus -n ${NAMESPACE} \
+    helm install prometheus --version 48.3.3 -n ${NAMESPACE} \
         -f ./prometheus-helm-with-values.yaml \
         prometheus-community/kube-prometheus-stack
 
-    helm install prometheus-mongodb-exporter -n ${NAMESPACE} \
+    helm install prometheus-mongodb-exporter --version 3.2.0 -n ${NAMESPACE} \
         --set mongodb.uri=${DATABASE_URL} \
         --set serviceMonitor.enabled=true \
         --set serviceMonitor.additionalLabels.release=prometheus \
