@@ -11,6 +11,7 @@ export enum SettingKey {
   SiteUrl = 'site_url',
   SiteFooter = 'site_footer',
   InvitationProfit = 'invitation_profit',
+  IdVerify = 'id_verify',
 
   AIPilotApiUrl = 'ai_pilot_api_url',
 }

@@ -80,6 +80,12 @@ export class FunctionTemplatesDto {
 
   @ApiPropertyOptional({ type: UserInfo })
   user?: UserInfo
+
+  @ApiProperty({ type: String })
+  author?: string
+
+  @ApiProperty({ type: Boolean })
+  stared?: boolean
 }
 
 export class GetMyStaredFunctionTemplatesDto {

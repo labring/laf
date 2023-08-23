@@ -77,6 +77,22 @@ export function formatLimitTraffic(traffic: number) {
   return traffic / 1024;
 }
 
+export function uniformCPU(cpu: number) {
+  return cpu;
+}
+
+export function uniformMemory(memory: number) {
+  return memory / 1024 / 1024;
+}
+
+export function uniformCapacity(capacity: number) {
+  return capacity / 1024 / 1024;
+}
+
+export function uniformStorage(Storage: number) {
+  return Storage / 1024 / 1024;
+}
+
 export function formatPort(port: number | undefined) {
   return port === 80 || port === 443 ? "" : `:${port}`;
 }
