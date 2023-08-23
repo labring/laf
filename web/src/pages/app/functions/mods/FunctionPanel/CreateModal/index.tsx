@@ -162,7 +162,7 @@ const CreateModal = (props: {
 
       <Modal isOpen={isOpen} onClose={onClose} size="3xl">
         <ModalOverlay />
-        <ModalContent m="auto">
+        <ModalContent m="auto" className="!pb-12">
           <ModalHeader>
             {isEdit ? t("FunctionPanel.EditFunction") : t("FunctionPanel.AddFunction")}
           </ModalHeader>
@@ -245,14 +245,14 @@ const CreateModal = (props: {
                 isLoading={updateFunctionMutation.isLoading || createFunctionMutation.isLoading}
                 className="!h-9 w-full !rounded !bg-primary-600 !font-semibold"
               >
-                {t("CreateFunction")}
+                {!isEdit ? t("CreateFunction") : t("EditFunction")}
               </Button>
             </VStack>
           </ModalBody>
           {!isEdit && !aiCode && (
             <>
               <Divider />
-              <ModalFooter className="!px-16 !pb-12">
+              <ModalFooter className="!px-16">
                 <div className="mt-2 w-full">
                   <div className="pb-3 text-lg font-medium text-grayModern-700">
                     {t("Template.Recommended")}

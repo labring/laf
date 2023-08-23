@@ -627,5 +627,6 @@
   "CreateApp": "New Application",
   "Used": "Used",
   "Remaining": "Remaining",
-  "Pod": "Pod"
+  "Pod": "Pod",
+  "EditFunction": "Edit Function"
 }
