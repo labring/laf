@@ -20,6 +20,14 @@ kubeProxy:
 kubeStateMetrics:
   enabled: false
 prometheus:
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: $PROMETHEUS_PV_SIZE
   networkPolicy:
     enabled: true
     ingress:
