@@ -18,7 +18,7 @@ export const getQuery =
       case MonitorMetric.cpuUsage:
         return {
           instant: false,
-          query: `sum(rate(container_cpu_usage_seconds_total{pod=~"${opts.pods}",namespace="${opts.namespace}"}[${rateAccuracy}])) by (${opts.selector})`,
+          query: `sum(rate(container_cpu_usage_seconds_total{image!="",container!="",pod=~"${opts.pods}",namespace="${opts.namespace}"}[${rateAccuracy}])) by (${opts.selector})`,
         }
       // case MonitorMetric.cpuRequests:
       //   return {
@@ -33,7 +33,7 @@ export const getQuery =
       case MonitorMetric.memoryUsage:
         return {
           instant: false,
-          query: `sum(container_memory_working_set_bytes{pod=~"${opts.pods}",namespace="${opts.namespace}"}) by (${opts.selector})`,
+          query: `sum(container_memory_working_set_bytes{image!="",container!="",pod=~"${opts.pods}",namespace="${opts.namespace}"}) by (${opts.selector})`,
         }
       // case MonitorMetric.memoryRequests:
       //   return {
