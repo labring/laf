@@ -22,4 +22,10 @@ kubeStateMetrics:
 prometheus:
   networkPolicy:
     enabled: true
-    ingress: []
+    ingress:
+      - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: $NAMESPACE
+    egress:
+      - {}
