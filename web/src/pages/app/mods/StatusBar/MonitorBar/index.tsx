@@ -57,37 +57,42 @@ export default function MonitorBar() {
   );
 
   const resources = [
-    { label: `CPU`, percent: cpuUsagePercent * 100, color: "[#47C8BF]" },
-    { label: t("Spec.RAM"), percent: memoryUsagePercent * 100, color: "adora-600" },
-    { label: t("Spec.Database"), percent: databaseUsagePercent * 100, color: "rose-500" },
-    { label: t("Spec.Storage"), percent: storageUsagePercent * 100, color: "blue-600" },
+    { label: `CPU`, percent: cpuUsagePercent * 100, color: "#47C8BF" },
+    { label: t("Spec.RAM"), percent: memoryUsagePercent * 100, color: "#8172D8" },
+    { label: t("Spec.Database"), percent: databaseUsagePercent * 100, color: "#ED598E" },
+    { label: t("Spec.Storage"), percent: storageUsagePercent * 100, color: "#36ADEF" },
   ];
 
   const limitPercentage = (value: number) => {
     if (value > 100) {
       return 100;
+    } else if (value < 3) {
+      return 3;
     }
     return value;
   };
 
   return (
-    <div className="flex items-center space-x-2">
-      <SysSetting currentTab="monitor">
+    <SysSetting currentTab="monitor">
+      <div className="flex items-center space-x-2">
         <span className="mr-2 flex h-full cursor-pointer items-center text-grayModern-500">
           <MonitorIcon className="mr-1" />
           {t("SettingPanel.AppMonitor") + " :"}
         </span>
-      </SysSetting>
-      {resources.map((resource, index) => (
-        <Tooltip key={index} label={`${resource.label}: ${resource.percent.toFixed(2)}%`}>
-          <div className="h-1 w-12 rounded-full bg-grayModern-100">
-            <div
-              style={{ width: `${limitPercentage(resource.percent).toFixed(2)}%` }}
-              className={`h-full rounded-full bg-${resource.color}`}
-            ></div>
-          </div>
-        </Tooltip>
-      ))}
-    </div>
+        {resources.map((resource, index) => (
+          <Tooltip key={index} label={`${resource.label}: ${resource.percent.toFixed(2)}%`}>
+            <div className="h-1 w-12 cursor-pointer rounded-full bg-grayModern-100">
+              <div
+                style={{
+                  width: `${limitPercentage(resource.percent).toFixed(2)}%`,
+                  backgroundColor: resource.color,
+                }}
+                className={`h-full rounded-full`}
+              ></div>
+            </div>
+          </Tooltip>
+        ))}
+      </div>
+    </SysSetting>
   );
 }
