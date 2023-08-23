@@ -84,23 +84,23 @@ const routes = [
         ],
       },
       {
-        path: "/market/templates/:pages",
+        path: "/market/templates",
         element: <TemplateLayout />,
         auth: true,
         children: [
           {
-            path: "/market/templates/:pages",
+            path: "/market/templates/:templateId?",
             element: () => import("@/pages/functionTemplate"),
           },
         ],
       },
       {
-        path: "/market/templates/:pages/:templateId/edit",
+        path: "/market/templates/:templateId/edit",
         element: <TemplateLayout />,
         auth: true,
         children: [
           {
-            path: "/market/templates/:pages/:templateId/edit",
+            path: "/market/templates/:templateId/edit",
             element: () => import("@/pages/functionTemplate/CreateFuncTemplate"),
           },
         ],

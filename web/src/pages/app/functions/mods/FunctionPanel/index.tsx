@@ -9,7 +9,7 @@ import { Badge, HStack, Input, InputGroup, InputLeftElement, useColorMode } from
 import { clsx } from "clsx";
 import { t } from "i18next";
 
-import { TriggerIcon } from "@/components/CommonIcon";
+import { RecycleBinIcon, TriggerIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
@@ -303,7 +303,7 @@ export default function FunctionList() {
         actions={[
           <RecycleBinModal key="recycle_modal">
             <IconWrap size={20} tooltip={t("RecycleBin").toString()}>
-              <DeleteIcon fontSize={11} />
+              <RecycleBinIcon />
             </IconWrap>
           </RecycleBinModal>,
           <TriggerModal key="trigger_modal">

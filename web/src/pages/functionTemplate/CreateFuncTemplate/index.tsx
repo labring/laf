@@ -138,12 +138,12 @@ export default function CreateFuncTemplate() {
         isEdit ? t("Update function template success") : t("Create function template success"),
       );
     }
-    navigate("/market/templates/my");
+    navigate(-1);
   };
 
   return (
-    <div className={clsx("flex flex-col px-20 2xl:px-48", colorMode === "dark" ? "" : "bg-white")}>
-      <div className="pt-8 text-lg">
+    <div className={clsx("flex flex-col px-28 2xl:px-48", colorMode === "dark" ? "" : "bg-white")}>
+      <div className="flex pt-12 text-lg">
         <span
           className="cursor-pointer text-second"
           onClick={() => {
@@ -152,7 +152,7 @@ export default function CreateFuncTemplate() {
         >
           {t("HomePage.NavBar.funcTemplate")}
         </span>
-        <span className="px-3">
+        <span className="flex items-center px-3">
           <ChevronRightIcon />
         </span>
         <span>{isEdit ? t("Template.Edit") : t("Template.Create")}</span>
@@ -281,9 +281,11 @@ export default function CreateFuncTemplate() {
                 headerText={t("Delete")}
                 bodyText={t("Template.ConfirmDeleteTemplate")}
                 onSuccessAction={async () => {
-                  await deleteFunctionMutation.mutateAsync({ id: templateId });
-                  showSuccess(t("DeleteSuccess"));
-                  navigate("/market/templates/my");
+                  const res = await deleteFunctionMutation.mutateAsync({ id: templateId });
+                  if (!res.error) {
+                    showSuccess(t("DeleteSuccess"));
+                    navigate(-1);
+                  }
                 }}
               >
                 <Button className="mr-4 w-36 bg-red-100" variant={"warnText"}>

@@ -528,7 +528,9 @@
     "Recommended": "Recommended Template",
     "Confirm": "If there are missing dependencies, the application will be automatically restarted. Are you sure you want to use this template?",
     "ConfirmDeleteTemplate": "Are you sure you want to delete this function template?",
-    "DeveloperInfo": "Developer Info"
+    "DeveloperInfo": "Developer Info",
+    "NoRecommended": "No Recommended Template",
+    "Created": "My Creates"
   },
   "Create function template success": "Create function template successfully",
   "Publish": "release",
@@ -621,6 +623,7 @@
     "Quit": "Quit"
   },
   "Collaborative": "Collaborative",
+  "CreateFunction": "Create Funtion",
   "CreateApp": "New Application",
   "Used": "Used",
   "Remaining": "Remaining",

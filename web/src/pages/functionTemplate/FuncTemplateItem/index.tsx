@@ -2,26 +2,26 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import TemplateInfo from "../Mods/TemplateInfo";
 import { useGetFunctionTemplateUsedByQuery, useGetOneFunctionTemplateQuery } from "../service";
+import useTemplateStore from "../store";
 
 import TemplateFunctionInfo from "./TemplateFunctionInfo";
 
 import { TFunctionTemplate } from "@/apis/typing";
 
 const FuncTemplateItem = (props: { isModal: boolean }) => {
-  const { isModal } = props;
-  const { colorMode } = useColorMode();
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const [template, setTemplate] = useState<TFunctionTemplate>();
   const [usedBy, setUsedBy] = useState();
   const pathname = window.location.href;
   const id = pathname.split("/").pop();
+  const { setShowTemplateItem } = useTemplateStore();
+  const { isModal } = props;
+  const navigate = useNavigate();
 
   useGetOneFunctionTemplateQuery(
     { id: id },
@@ -44,23 +44,18 @@ const FuncTemplateItem = (props: { isModal: boolean }) => {
   );
 
   return (
-    <div
-      className={clsx(
-        "flex flex-col",
-        colorMode === "dark" ? "" : "bg-white",
-        isModal ? "" : "px-20 pt-8",
-      )}
-    >
-      <div className="text-lg">
+    <div className={clsx("flex flex-grow flex-col px-12 ", isModal ? "" : "pt-4")}>
+      <div className="flex text-lg">
         <span
           className="cursor-pointer text-second"
           onClick={() => {
+            setShowTemplateItem(false);
             navigate(-1);
           }}
         >
           {t("HomePage.NavBar.funcTemplate")}
         </span>
-        <span className="px-3">
+        <span className="flex items-center px-3">
           <ChevronRightIcon />
         </span>
         <span>{t("Template.Details")}</span>
