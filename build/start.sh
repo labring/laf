@@ -132,3 +132,7 @@ helm install server -n ${NAMESPACE} \
 helm install web -n ${NAMESPACE} \
     --set domain=${DOMAIN} \
     ./charts/laf-web
+
+## 7. install metering service
+sealos run docker.io/labring/sealos-cloud-resources-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system
+sealos run docker.io/labring/sealos-cloud-resources-metering-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system

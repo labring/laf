@@ -58,6 +58,8 @@ sealos pull labring/openebs:v1.9.0
 sealos pull labring/cert-manager:v1.8.0
 sealos pull labring/metrics-server:v0.6.2
 sealos pull lafyun/laf:latest
+sealos pull docker.io/labring/sealos-cloud-resources-metering-controller:latest
+sealos pull docker.io/labring/sealos-cloud-resources-controller:latest
 
 # install k8s cluster
 sealos run labring/kubernetes:v1.24.9 labring/flannel:v0.19.0 labring/helm:v3.8.2 --single
