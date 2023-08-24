@@ -14,6 +14,10 @@ import {
   DatabasePhase,
   DatabaseState,
 } from './entities/database'
+import { exec } from 'node:child_process'
+import { promisify } from 'node:util'
+
+const p_exec = promisify(exec)
 
 @Injectable()
 export class DatabaseService {
@@ -203,6 +207,46 @@ export class DatabaseService {
         `Get user permission of ${username} on ${name} error : `,
         error,
       )
+      throw error
+    }
+  }
+
+  async exportDatabase(appid: string, filePath: string) {
+    const region = await this.regionService.findByAppId(appid)
+    const database = await this.findOne(appid)
+    assert(database, 'Database not found')
+
+    const connectionUri = this.getControlConnectionUri(region, database)
+    assert(connectionUri, 'Database connection uri not found')
+
+    try {
+      await p_exec(
+        `mongodump --uri='${connectionUri}' --gzip --archive=${filePath}`,
+      )
+    } catch (error) {
+      this.logger.error(`failed to export db ${appid}`, error)
+      throw error
+    }
+  }
+
+  async importDatabase(
+    appid: string,
+    dbName: string,
+    filePath: string,
+  ): Promise<void> {
+    const region = await this.regionService.findByAppId(appid)
+    const database = await this.findOne(appid)
+    assert(database, 'Database not found')
+
+    const connectionUri = this.getControlConnectionUri(region, database)
+    assert(connectionUri, 'Database connection uri not found')
+
+    try {
+      await p_exec(
+        `mongorestore --uri='${connectionUri}' --gzip --archive='${filePath}' --nsFrom="${dbName}.*" --nsTo="${appid}.*" -v --nsInclude="${dbName}.*"`,
+      )
+    } catch (error) {
+      console.error(`failed to import db to ${appid}:`, error)
       throw error
     }
   }
