@@ -28,6 +28,8 @@ default_region:
   log_server_url: ""
   log_server_secret: ""
   log_server_database_url: ""
+  # prometheus
+  prometheus_url: ""
 jwt:
   secret: laf_server_abc123
   expires_in: 7d
