@@ -55,7 +55,9 @@ export class FunctionCache {
    */
   static async streamChange() {
     logger.info('Listening for changes in cloud function collection...')
-    let stream = DatabaseAgent.db.collection(CLOUD_FUNCTION_COLLECTION).watch()
+    const stream = DatabaseAgent.db
+      .collection(CLOUD_FUNCTION_COLLECTION)
+      .watch()
 
     const changeEvent = async (change) => {
       if (change.operationType === 'insert') {
@@ -80,7 +82,6 @@ export class FunctionCache {
     stream.once('close', () => {
       logger.error('Cloud function change stream closed...')
       stream.off('change', changeEvent)
-      stream = null
 
       setTimeout(() => {
         logger.info('Reconnecting cloud function change stream......')

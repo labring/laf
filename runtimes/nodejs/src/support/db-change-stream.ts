@@ -18,7 +18,7 @@ export class DatabaseChangeStream {
     logger.info('Listening for changes in conf collection...')
     DatabaseChangeStream.updateEnvironments()
 
-    let stream = DatabaseAgent.db.collection(CONFIG_COLLECTION).watch()
+    const stream = DatabaseAgent.db.collection(CONFIG_COLLECTION).watch()
 
     const changeEvent = async (_change) => {
       DatabaseChangeStream.updateEnvironments()
@@ -29,7 +29,6 @@ export class DatabaseChangeStream {
     stream.once('close', () => {
       stream.off('change', changeEvent)
       logger.error('Conf collection change stream closed.')
-      stream = null
 
       setTimeout(() => {
         logger.info('Reconnecting conf collection change stream...')
