@@ -62,7 +62,7 @@ sealos pull docker.io/labring/sealos-cloud-resources-metering-controller:latest
 sealos pull docker.io/labring/sealos-cloud-resources-controller:latest
 
 # install k8s cluster
-sealos run labring/kubernetes:v1.24.9 labring/flannel:v0.19.0 labring/helm:v3.8.2 --single
+sealos run labring/kubernetes:v1.24.9 labring/flannel:v0.19.0 labring/helm:v3.8.2
 
 # taint master node
 NODENAME=$(kubectl get nodes -ojsonpath='{.items[0].metadata.name}')

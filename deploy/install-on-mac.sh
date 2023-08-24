@@ -8,8 +8,8 @@
 #   Windows: https://multipass.run/install
 
 # Usage: ./vm_run.sh <vm_name> <kubeconfig_output>
-# - sh vm_run.sh
-# - sh vm_run.sh laf-dev ~/.kube/configa
+# - sh install-on-mac.sh
+# - sh install-on-mac.sh laf-dev ~/.kube/config
 
 NAME="laf-dev"
 # if set first param in command line
@@ -51,8 +51,8 @@ if multipass list | grep -e "^$NAME "; then
 fi
 
 echo "Creating VM..."
-echo "\tmultipass launch --name $NAME --cpus 2 --mem 4G --disk 40G"
-multipass launch --name "$NAME" --cpus 2 --mem 4G --disk 50G
+echo "\tmultipass launch --name $NAME --cpus 2 --memory 4G --disk 40G"
+multipass launch --name "$NAME" --cpus 2 --memory 4G --disk 50G
 # shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
     echo "vm is created"
