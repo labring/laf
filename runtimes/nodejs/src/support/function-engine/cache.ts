@@ -5,6 +5,7 @@ import { FunctionRequire } from './require'
 import { logger } from '../logger'
 import assert from 'assert'
 import { InitHook } from '../init-hook'
+import Config from '../../config'
 
 export class FunctionCache {
   private static cache: Map<string, ICloudFunctionData> = new Map()
@@ -20,12 +21,11 @@ export class FunctionCache {
       FunctionCache.cache.set(func.name, func)
     }
 
-    this.streamChange()
+    FunctionCache.streamChange()
     logger.info('Function cache initialized.')
 
     // invoke init function
     InitHook.invoke()
-
   }
 
   /**
@@ -40,7 +40,11 @@ export class FunctionCache {
       `require cloud function failed: function ${moduleName} not found`,
     )
     const funcRequire = new FunctionRequire(this.requireFunc, fromModules)
-    const module = funcRequire.load(func.name, func.source.compiled, fromModules)
+    const module = funcRequire.load(
+      func.name,
+      func.source.compiled,
+      fromModules,
+    )
     return module
   }
 
@@ -54,7 +58,8 @@ export class FunctionCache {
     const stream = DatabaseAgent.db
       .collection(CLOUD_FUNCTION_COLLECTION)
       .watch()
-    stream.on('change', async (change) => {
+
+    const changeEvent = async (change) => {
       if (change.operationType === 'insert') {
         const func = await DatabaseAgent.db
           .collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
@@ -70,15 +75,19 @@ export class FunctionCache {
           }
         }
       }
-    })
+    }
 
-    // stream.on('close', () => {
-    //   logger.error('Cloud function change stream closed')
-    //   setTimeout(() => {
-    //     logger.info('Reconnecting cloud function change stream...')
-    //     FunctionCache.streamChange()
-    //    }, 3000)
-    // })
+    stream.on('change', changeEvent)
+
+    stream.once('close', () => {
+      logger.error('Cloud function change stream closed...')
+      stream.off('change', changeEvent)
+
+      setTimeout(() => {
+        logger.info('Reconnecting cloud function change stream......')
+        FunctionCache.streamChange()
+      }, Config.CHANGE_STREAM_RECONNECT_INTERVAL)
+    })
   }
 
   /**
@@ -87,7 +96,10 @@ export class FunctionCache {
    * @param module the module id. ex. `path`, `lodash`
    * @returns
    */
-  static requireFunc: RequireFuncType = (module: string, fromModules?: string[]): any => {
+  static requireFunc: RequireFuncType = (
+    module: string,
+    fromModules?: string[],
+  ): any => {
     if (module === '@/cloud-sdk') {
       return require('@lafjs/cloud')
     }
@@ -97,7 +109,11 @@ export class FunctionCache {
       // check circular dependency
       const index = fromModules?.indexOf(cloudModule)
       if (index !== -1) {
-        throw new Error(`Circular dependency detected: ${fromModules.slice(index).join(' -> ')} -> ${cloudModule}`)
+        throw new Error(
+          `Circular dependency detected: ${fromModules
+            .slice(index)
+            .join(' -> ')} -> ${cloudModule}`,
+        )
       }
 
       return FunctionCache.requireCloudFunction(cloudModule, fromModules)

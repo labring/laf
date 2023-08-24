@@ -1,3 +1,4 @@
+import Config from '../config'
 import { CONFIG_COLLECTION } from '../constants'
 import { DatabaseAgent } from '../db'
 
@@ -5,7 +6,7 @@ import { logger } from './logger'
 
 export class DatabaseChangeStream {
   static async initialize() {
-    this.watchConf()
+    DatabaseChangeStream.watchConf()
   }
 
   /**
@@ -15,21 +16,25 @@ export class DatabaseChangeStream {
    */
   static async watchConf() {
     logger.info('Listening for changes in conf collection...')
-    this.updateEnvironments()
+    DatabaseChangeStream.updateEnvironments()
 
     const stream = DatabaseAgent.db.collection(CONFIG_COLLECTION).watch()
 
-    stream.on('change', async (_change) => {
-      this.updateEnvironments()
-    })
+    const changeEvent = async (_change) => {
+      DatabaseChangeStream.updateEnvironments()
+    }
 
-    // stream.on('close', () => { 
-    //   logger.info('Conf collection change stream closed.')
-    //   setTimeout(() => { 
-    //     logger.info('Reconnecting conf collection change stream...')
-    //     DatabaseChangeStream.watchConf()
-    //   }, 3000)
-    // })
+    stream.on('change', changeEvent)
+
+    stream.once('close', () => {
+      stream.off('change', changeEvent)
+      logger.error('Conf collection change stream closed.')
+
+      setTimeout(() => {
+        logger.info('Reconnecting conf collection change stream...')
+        DatabaseChangeStream.watchConf()
+      }, Config.CHANGE_STREAM_RECONNECT_INTERVAL)
+    })
   }
 
   private static async updateEnvironments() {
