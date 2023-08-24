@@ -4,6 +4,4 @@ docker.io/apache/apisix:2.15.0-alpine
 quay.io/minio/minio:RELEASE.2023-03-22T06-36-24Z
 quay.io/minio/mc:RELEASE.2022-11-07T23-47-39Z
 quay.io/coreos/etcd:v3.5.4
-ghcr.io/labring/sealos-resources-controller:9a013cea
-ghcr.io/labring/sealos-resources-metering-controller:9a013cea
 registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20221220-controller-v1.5.1-58-g787ea74b6

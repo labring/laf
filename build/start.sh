@@ -58,28 +58,9 @@ helm install apisix -n ${NAMESPACE} \
     --set gateway.tls.containerPort=443 \
     ./charts/apisix
 
-
-## 3. install minio
-MINIO_ROOT_ACCESS_KEY=minio-root-user
-MINIO_ROOT_SECRET_KEY=$PASSWD_OR_SECRET
-MINIO_DOMAIN=oss.${DOMAIN}
-MINIO_EXTERNAL_ENDPOINT="${EXTERNAL_HTTP_SCHEMA}://${MINIO_DOMAIN}"
-MINIO_INTERNAL_ENDPOINT="${INTERNAL_HTTP_SCHEMA}://minio.${NAMESPACE}.svc.cluster.local:9000"
-
-helm install minio -n ${NAMESPACE} \
-    --set rootUser=${MINIO_ROOT_ACCESS_KEY} \
-    --set rootPassword=${MINIO_ROOT_SECRET_KEY} \
-    --set persistence.size=${OSS_PV_SIZE:-3Gi} \
-    --set domain=${MINIO_DOMAIN} \
-    --set consoleHost=minio.${DOMAIN} \
-    --set metrics.serviceMonitor.enabled=${ENABLE_MONITOR} \
-    --set metrics.serviceMonitor.additionalLabels.release=prometheus \
-    --set metrics.serviceMonitor.additionalLabels.namespace=${NAMESPACE} \
-    ./charts/minio
-
-## 4. install prometheus
+## 3. install prometheus
 PROMETHEUS_URL=http://prometheus-prometheus.${NAMESPACE}.svc.cluster.local:9090
-if [ $ENABLE_MONITOR ]; then
+if [ "$ENABLE_MONITOR" = "true" ]; then
     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
     helm repo update
 
@@ -98,6 +79,24 @@ if [ $ENABLE_MONITOR ]; then
         --set serviceMonitor.additionalLabels.namespace=${NAMESPACE} \
         prometheus-community/prometheus-mongodb-exporter
 fi
+
+## 4. install minio
+MINIO_ROOT_ACCESS_KEY=minio-root-user
+MINIO_ROOT_SECRET_KEY=$PASSWD_OR_SECRET
+MINIO_DOMAIN=oss.${DOMAIN}
+MINIO_EXTERNAL_ENDPOINT="${EXTERNAL_HTTP_SCHEMA}://${MINIO_DOMAIN}"
+MINIO_INTERNAL_ENDPOINT="${INTERNAL_HTTP_SCHEMA}://minio.${NAMESPACE}.svc.cluster.local:9000"
+
+helm install minio -n ${NAMESPACE} \
+    --set rootUser=${MINIO_ROOT_ACCESS_KEY} \
+    --set rootPassword=${MINIO_ROOT_SECRET_KEY} \
+    --set persistence.size=${OSS_PV_SIZE:-3Gi} \
+    --set domain=${MINIO_DOMAIN} \
+    --set consoleHost=minio.${DOMAIN} \
+    --set metrics.serviceMonitor.enabled=${ENABLE_MONITOR} \
+    --set metrics.serviceMonitor.additionalLabels.release=prometheus \
+    --set metrics.serviceMonitor.additionalLabels.namespace=${NAMESPACE} \
+    ./charts/minio
 
 ## 5. install laf-server
 SERVER_JWT_SECRET=$PASSWD_OR_SECRET
@@ -126,10 +125,14 @@ helm install server -n ${NAMESPACE} \
     --set default_region.log_server_url=${LOG_SERVER_URL} \
     --set default_region.log_server_secret=${LOG_SERVER_SECRET} \
     --set default_region.log_server_database_url=${LOG_SERVER_DATABASE_URL} \
-    $( [[ $ENABLE_MONITOR ]] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}" ) \
+    $( [[ "$ENABLE_MONITOR" = "true" ]] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}" ) \
     ./charts/laf-server
 
 ## 6. install laf-web
 helm install web -n ${NAMESPACE} \
     --set domain=${DOMAIN} \
     ./charts/laf-web
+
+## 7. install metering service
+sealos run docker.io/labring/sealos-cloud-resources-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system
+sealos run docker.io/labring/sealos-cloud-resources-metering-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system
