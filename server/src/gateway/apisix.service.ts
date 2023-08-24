@@ -211,7 +211,7 @@ export class ApisixService {
           conf: [
             {
               name: 'try-path',
-              value: `{"paths":["$uri", "$uri/", "$uriindex.html", "$uri/index.html"], "host": "http://${upstreamNode}/${website.bucketName}"}`,
+              value: `{"paths":["$uri", "$uri/", "$uriindex.html", "$uri/index.html", "index.html"], "host": "http://${upstreamNode}/${website.bucketName}"}`,
             },
           ],
         },

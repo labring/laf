@@ -104,7 +104,7 @@ export class MonitorService {
     const conf = await this.getPrometheusConf(appid)
     if (!conf?.apiUrl) {
       this.logger.warn('Metrics not available for no endpoint')
-      return []
+      return {}
     }
 
     const opts = {
