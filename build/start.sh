@@ -122,7 +122,7 @@ helm install server -n ${NAMESPACE} \
     --set default_region.log_server_url=${LOG_SERVER_URL} \
     --set default_region.log_server_secret=${LOG_SERVER_SECRET} \
     --set default_region.log_server_database_url=${LOG_SERVER_DATABASE_URL} \
-    $( [[ "$ENABLE_MONITOR" = "true" ]] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}" ) \
+    $( [ "$ENABLE_MONITOR" = "true" ] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}" ) \
     ./charts/laf-server
 
 ## 6. install laf-web
