@@ -1,0 +1,18 @@
+apiVersion: v2
+appVersion: 0.31.0
+description: A Prometheus exporter for MongoDB metrics
+home: https://github.com/percona/mongodb_exporter
+keywords:
+- exporter
+- metrics
+- mongodb
+- prometheus
+maintainers:
+- email: ssheehy@firescope.com
+  name: steven-sheehy
+- email: rootsandtrees@posteo.de
+  name: zeritti
+name: prometheus-mongodb-exporter
+sources:
+- https://github.com/percona/mongodb_exporter
+version: 3.2.0

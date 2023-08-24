@@ -1,0 +1,9 @@
+{{- if .Values.customResourceState.enabled}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kube-state-metrics.fullname" . }}-customresourcestate-config
+data:
+  config.yaml: |
+    {{- toYaml .Values.customResourceState.config | nindent 4 }}
+{{- end }}

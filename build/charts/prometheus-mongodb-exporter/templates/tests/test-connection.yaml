@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "prometheus-mongodb-exporter.fullname" . }}-test-connection"
+  labels:
+    {{- include "prometheus-mongodb-exporter.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: wget
+    image: busybox
+    command: ['wget']
+    args:  ['-qO-', '{{ include "prometheus-mongodb-exporter.fullname" . }}:{{ .Values.service.port }}/metrics']
+  restartPolicy: Never
