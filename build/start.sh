@@ -61,23 +61,20 @@ helm install apisix -n ${NAMESPACE} \
 ## 3. install prometheus
 PROMETHEUS_URL=http://prometheus-prometheus.${NAMESPACE}.svc.cluster.local:9090
 if [ "$ENABLE_MONITOR" = "true" ]; then
-    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-    helm repo update
-
     sed -e "s/\$NAMESPACE/$NAMESPACE/g" \
         -e "s/\$PROMETHEUS_PV_SIZE/${PROMETHEUS_PV_SIZE:-20Gi}/g" \
         prometheus-helm.yaml > prometheus-helm-with-values.yaml
 
     helm install prometheus --version 48.3.3 -n ${NAMESPACE} \
         -f ./prometheus-helm-with-values.yaml \
-        prometheus-community/kube-prometheus-stack
+        ./charts/prometheus/kube-prometheus-stack-48.3.5.tgz
 
     helm install prometheus-mongodb-exporter --version 3.2.0 -n ${NAMESPACE} \
         --set mongodb.uri=${DATABASE_URL} \
         --set serviceMonitor.enabled=true \
         --set serviceMonitor.additionalLabels.release=prometheus \
         --set serviceMonitor.additionalLabels.namespace=${NAMESPACE} \
-        prometheus-community/prometheus-mongodb-exporter
+        ./charts/prometheus/prometheus-mongodb-exporter-3.2.0.tgz
 fi
 
 ## 4. install minio
