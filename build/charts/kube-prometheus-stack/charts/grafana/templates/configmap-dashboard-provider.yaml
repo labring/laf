@@ -1,0 +1,29 @@
+{{- if and .Values.sidecar.dashboards.enabled .Values.sidecar.dashboards.SCProvider }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    {{- include "grafana.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ include "grafana.fullname" . }}-config-dashboards
+  namespace: {{ include "grafana.namespace" . }}
+data:
+  provider.yaml: |-
+    apiVersion: 1
+    providers:
+      - name: '{{ .Values.sidecar.dashboards.provider.name }}'
+        orgId: {{ .Values.sidecar.dashboards.provider.orgid }}
+        {{- if not .Values.sidecar.dashboards.provider.foldersFromFilesStructure }}
+        folder: '{{ .Values.sidecar.dashboards.provider.folder }}'
+        {{- end }}
+        type: {{ .Values.sidecar.dashboards.provider.type }}
+        disableDeletion: {{ .Values.sidecar.dashboards.provider.disableDelete }}
+        allowUiUpdates: {{ .Values.sidecar.dashboards.provider.allowUiUpdates }}
+        updateIntervalSeconds: {{ .Values.sidecar.dashboards.provider.updateIntervalSeconds | default 30 }}
+        options:
+          foldersFromFilesStructure: {{ .Values.sidecar.dashboards.provider.foldersFromFilesStructure }}
+          path: {{ .Values.sidecar.dashboards.folder }}{{- with .Values.sidecar.dashboards.defaultFolderName }}/{{ . }}{{- end }}
+{{- end }}

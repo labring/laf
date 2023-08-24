@@ -67,14 +67,14 @@ if [ "$ENABLE_MONITOR" = "true" ]; then
 
     helm install prometheus --version 48.3.3 -n ${NAMESPACE} \
         -f ./prometheus-helm-with-values.yaml \
-        ./charts/prometheus/kube-prometheus-stack-48.3.5.tgz
+        ./charts/kube-prometheus-stack
 
     helm install prometheus-mongodb-exporter --version 3.2.0 -n ${NAMESPACE} \
         --set mongodb.uri=${DATABASE_URL} \
         --set serviceMonitor.enabled=true \
         --set serviceMonitor.additionalLabels.release=prometheus \
         --set serviceMonitor.additionalLabels.namespace=${NAMESPACE} \
-        ./charts/prometheus/prometheus-mongodb-exporter-3.2.0.tgz
+        ./charts/prometheus-mongodb-exporter
 fi
 
 ## 4. install minio
