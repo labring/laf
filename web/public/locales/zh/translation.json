@@ -627,5 +627,6 @@
   "CreateApp": "新建应用",
   "Used": "已使用",
   "Remaining": "剩余",
-  "Pod": "实例"
+  "Pod": "实例",
+  "EditFunction": "编辑函数"
 }

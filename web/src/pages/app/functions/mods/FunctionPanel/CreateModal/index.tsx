@@ -162,16 +162,16 @@ const CreateModal = (props: {
 
       <Modal isOpen={isOpen} onClose={onClose} size="3xl">
         <ModalOverlay />
-        <ModalContent m="auto">
+        <ModalContent m="auto" className="!pb-12">
           <ModalHeader>
             {isEdit ? t("FunctionPanel.EditFunction") : t("FunctionPanel.AddFunction")}
           </ModalHeader>
           <ModalCloseButton />
 
-          <ModalBody className="mb-4">
+          <ModalBody className="mb-4 !px-16">
             <VStack align="flex-start">
               <FormControl isInvalid={!!errors?.name}>
-                <div className="mb-3 flex h-12 w-full items-center border-b-2">
+                <div className="my-3 flex h-12 w-full items-center border-b-2">
                   <input
                     {...register("name", {
                       pattern: {
@@ -245,19 +245,19 @@ const CreateModal = (props: {
                 isLoading={updateFunctionMutation.isLoading || createFunctionMutation.isLoading}
                 className="!h-9 w-full !rounded !bg-primary-600 !font-semibold"
               >
-                {t("CreateFunction")}
+                {!isEdit ? t("CreateFunction") : t("EditFunction")}
               </Button>
             </VStack>
           </ModalBody>
           {!isEdit && !aiCode && (
             <>
               <Divider />
-              <ModalFooter>
-                <div className="w-full">
+              <ModalFooter className="!px-16">
+                <div className="mt-2 w-full">
                   <div className="pb-3 text-lg font-medium text-grayModern-700">
                     {t("Template.Recommended")}
                   </div>
-                  <div className="mb-7 flex space-x-3">
+                  <div className="mb-11 flex space-x-3">
                     {!isLoading ? (
                       (TemplateList?.data.list.length > 0
                         ? TemplateList?.data.list

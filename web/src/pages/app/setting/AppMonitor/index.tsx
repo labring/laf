@@ -20,8 +20,13 @@ export default function AppMonitor() {
   const [podsArray, setPodsArray] = useState<string[]>([]);
 
   useEffect(() => {
-    setPodsArray(cpuUsage.map((item) => item.metric.pod));
-  }, [cpuUsage]);
+    setPodsArray(
+      cpuUsage.map((item) => item.metric.pod).length >
+        memoryUsage.map((item) => item.metric.pod).length
+        ? cpuUsage.map((item) => item.metric.pod)
+        : memoryUsage.map((item) => item.metric.pod),
+    );
+  }, [cpuUsage, memoryUsage]);
 
   return (
     <div className="flex w-full">
