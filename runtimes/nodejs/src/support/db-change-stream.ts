@@ -4,11 +4,9 @@ import { DatabaseAgent } from '../db'
 
 import { logger } from './logger'
 
-let lastReconnectTimestamp = 0
-
 export class DatabaseChangeStream {
   static async initialize() {
-    this.watchConf()
+    DatabaseChangeStream.watchConf()
   }
 
   /**
@@ -18,23 +16,22 @@ export class DatabaseChangeStream {
    */
   static async watchConf() {
     logger.info('Listening for changes in conf collection...')
-    this.updateEnvironments()
+    DatabaseChangeStream.updateEnvironments()
 
-    const stream = DatabaseAgent.db.collection(CONFIG_COLLECTION).watch()
+    let stream = DatabaseAgent.db.collection(CONFIG_COLLECTION).watch()
 
-    stream.on('change', async (_change) => {
-      this.updateEnvironments()
-    })
+    const changeEvent = async (_change) => {
+      DatabaseChangeStream.updateEnvironments()
+    }
 
-    stream.on('close', () => { 
+    stream.on('change', changeEvent)
+
+    stream.once('close', () => {
+      stream.off('change', changeEvent)
       logger.error('Conf collection change stream closed.')
-      setTimeout(() => { 
-        // Prevent multiple changeStreams from being created due to close event multiple times
-        if (Date.now() - lastReconnectTimestamp < Config.CHANGE_STREAM_RECONNECT_INTERVAL) {
-          return
-        }
-        lastReconnectTimestamp = Date.now()
+      stream = null
 
+      setTimeout(() => {
         logger.info('Reconnecting conf collection change stream...')
         DatabaseChangeStream.watchConf()
       }, Config.CHANGE_STREAM_RECONNECT_INTERVAL)
