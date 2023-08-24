@@ -628,5 +628,7 @@
   "Used": "已使用",
   "Remaining": "剩余",
   "Pod": "实例",
-  "EditFunction": "编辑函数"
+  "EditFunction": "编辑函数",
+  "Error": "监控不可用，",
+  "Retry": "点击重试"
 }
