@@ -628,5 +628,7 @@
   "Used": "Used",
   "Remaining": "Remaining",
   "Pod": "Pod",
-  "EditFunction": "Edit Function"
+  "EditFunction": "Edit Function",
+  "Error": "Error, ",
+  "Retry": "Retry"
 }
