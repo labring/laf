@@ -75,4 +75,7 @@ export class QuotaService {
 
     return false
   }
+  async databaseSyncLimit(uid: ObjectId) {
+    return false
+  }
 }
