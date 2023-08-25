@@ -22,7 +22,11 @@ import {
 import { UserService } from './user.service'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { IRequest, IResponse } from 'src/utils/interface'
-import { ApiResponseObject, ResponseUtil } from 'src/utils/response'
+import {
+  ApiResponseObject,
+  ResponseUtil,
+  ApiResponseString,
+} from 'src/utils/response'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { UserWithProfile } from './entities/user'
 import { SmsService } from 'src/authentication/phone/sms.service'
@@ -34,6 +38,7 @@ import { ObjectId } from 'mongodb'
 import { EmailService } from 'src/authentication/email/email.service'
 import { EmailVerifyCodeType } from 'src/authentication/entities/email-verify-code'
 import { BindEmailDto } from './dto/bind-email.dto'
+import { QuotaService } from './quota.service'
 
 @ApiTags('User')
 @ApiBearerAuth('Authorization')
@@ -43,6 +48,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly smsService: SmsService,
     private readonly emailService: EmailService,
+    private readonly quotaServiceTsService: QuotaService,
   ) {}
 
   /**
@@ -221,5 +227,15 @@ export class UserController {
   async getProfile(@Req() request: IRequest) {
     const user = request.user
     return ResponseUtil.ok(user)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('test')
+  @ApiResponseString()
+  @ApiBearerAuth('Authorization')
+  async test(@Req() request: IRequest) {
+    const uid = request.user._id
+    this.quotaServiceTsService.resourceLimit(uid)
+    return ResponseUtil.ok('ww')
   }
 }

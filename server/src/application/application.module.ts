@@ -18,6 +18,8 @@ import { BundleService } from './bundle.service'
 import { ResourceService } from 'src/billing/resource.service'
 import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
 import { HttpModule } from '@nestjs/axios'
+import { QuotaService } from 'src/user/quota.service'
+import { SettingService } from 'src/setting/setting.service'
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { HttpModule } from '@nestjs/axios'
     WebsiteService,
     BundleService,
     ResourceService,
+    QuotaService,
+    SettingService,
   ],
   exports: [
     ApplicationService,
