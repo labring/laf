@@ -33,12 +33,19 @@ function FunctionPage() {
             panelId="DependencePanel"
             reverse
             containerRef={containerRef}
+            lineWidth={4}
           />
           <Row {...functionPageConfig.DependencePanel}>
             <DependencePanel />
           </Row>
         </Col>
-        <Resize type="x" pageId="functionPage" panelId="SideBar" containerRef={containerRef} />
+        <Resize
+          type="x"
+          pageId="functionPage"
+          panelId="SideBar"
+          containerRef={containerRef}
+          lineWidth={4}
+        />
         <Col>
           <HeadPanel />
           <Row>

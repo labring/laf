@@ -13,6 +13,7 @@ import {
 import clsx from "clsx";
 import { format, isAfter, isBefore, isValid, parse } from "date-fns";
 
+import "./index.css";
 import "react-day-picker/dist/style.css";
 
 export default function DateRangePicker(props: {

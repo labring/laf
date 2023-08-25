@@ -59,7 +59,7 @@ export default function VersionHistoryPanel() {
                       )}
                     />
                   </div>
-                  <span className="pl-4 font-semibold">{formatDate(item.createdAt)}</span>
+                  <span className="pl-4 font-medium">{formatDate(item.createdAt)}</span>
                 </div>
                 <span className={clsx("pr-2", darkMode ? "text-blue-500" : "text-blue-700")}>
                   #{history.data?.data.length - index}

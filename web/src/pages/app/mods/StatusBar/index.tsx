@@ -20,10 +20,10 @@ function StatusBar() {
   const { currentApp } = useGlobalStore((state) => state);
 
   return (
-    <Panel className="!mt-[2px] !flex-row justify-between">
+    <Panel className="!mt-1 !flex-row justify-between">
       <HStack spacing={2}>
-        <LanguageSwitch className="!text-[12px]" />
-        <ColorModeSwitch boxSize={3} className="pr-2" />
+        <LanguageSwitch className="!-space-x-1 !text-[12px] !text-grayModern-700" size="14px" />
+        <ColorModeSwitch className="pr-2 !text-grayModern-700" fontSize={13} />
         <div>
           {t("StatusBar.CurrentApplication")}: {currentApp?.name}
         </div>
@@ -38,7 +38,7 @@ function StatusBar() {
         <MonitorBar />
         <div className={clsx("mt-1")}>
           <CreateAppModal application={currentApp as any} isCurrentApp type="change">
-            <a className="ml-2 text-primary-500" href="/edit">
+            <a className="ml-2 text-primary-700" href="/edit">
               {t("Change")}
             </a>
           </CreateAppModal>

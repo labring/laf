@@ -13,12 +13,12 @@ import clsx from "clsx";
 import { t } from "i18next";
 
 import {
-  BillingIcon,
   ContactIcon,
   DiscordIcon,
   ExitIcon,
   GroupIcon,
   UserIcon,
+  WalletIcon,
   WechatIcon,
 } from "@/components/CommonIcon";
 
@@ -48,40 +48,41 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
         <PopoverBody className="cursor-auto">
           <div
             className={clsx(
-              "flex w-full justify-end pb-3 pr-7 pt-2 text-lg",
+              "flex w-full justify-end pb-3 pr-4 pt-2 text-lg",
               darkMode ? "text-white" : "text-grayModern-600",
             )}
           >
             <span
-              className="flex cursor-pointer items-center hover:text-error-500"
+              className="flex cursor-pointer items-center font-medium hover:text-error-500"
               onClick={() => {
                 localStorage.removeItem("token");
                 window.location.href = "/login";
               }}
             >
-              <ExitIcon boxSize={4} className="mr-1" />
+              <ExitIcon boxSize={5} className="mr-2" />
               {t("Logout")}
             </span>
           </div>
-          <VStack className="mx-6">
+          <VStack className="mx-4">
             <Avatar
-              size="xl"
+              boxSize="80px"
               name={props.name}
               src={props.avatar}
               bgColor="primary.500"
               color="white"
               boxShadow="base"
             />
-            <span className={clsx("text-2xl", darkMode ? "text-white" : "text-grayModern-900")}>
+            <span
+              className={clsx(
+                "text-2xl font-semibold",
+                darkMode ? "text-white" : "text-grayModern-900",
+              )}
+            >
               {props.name}
             </span>
             <UserBalance />
           </VStack>
-          <VStack
-            className={clsx("mx-6", darkMode ? "text-white" : "text-grayModern-600")}
-            pt={5}
-            spacing={0}
-          >
+          <VStack className={clsx("mx-4 pb-1")} pt="5" spacing="0">
             <div className="w-full">
               <SettingModal
                 tabMatch={useTabMatch("user")}
@@ -90,8 +91,10 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               >
                 <div
                   className={clsx(
-                    "flex cursor-pointer items-center justify-between rounded-sm px-1 py-3 text-lg",
-                    darkMode ? "hover:bg-grayModern-600" : "hover:bg-[#F4F6F8]",
+                    "flex h-[42px] cursor-pointer items-center justify-between rounded px-[9px] text-lg",
+                    darkMode
+                      ? "!text-white hover:bg-grayModern-600"
+                      : "!text-grayModern-600 hover:bg-[#F4F6F8]",
                   )}
                 >
                   <span className="flex items-center">
@@ -110,13 +113,15 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               >
                 <div
                   className={clsx(
-                    "flex cursor-pointer items-center justify-between rounded-sm px-1 py-3 text-lg",
-                    darkMode ? "hover:bg-grayModern-600" : "hover:bg-[#F4F6F8]",
+                    "flex h-[42px] cursor-pointer items-center justify-between rounded px-[9px] text-lg",
+                    darkMode
+                      ? "!text-white hover:bg-grayModern-600"
+                      : "!text-grayModern-600 hover:bg-[#F4F6F8]",
                   )}
                 >
-                  <span className="flex items-center">
-                    <BillingIcon fontSize={20} mr={3} />
-                    {t("SettingPanel.Usage")}
+                  <span className="flex items-center space-x-3">
+                    <WalletIcon color={darkMode ? "white" : "#5A646E"} />
+                    <p>{t("SettingPanel.Usage")}</p>
                   </span>
                   <ChevronRightIcon />
                 </div>
@@ -125,8 +130,10 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
             <Divider />
             <div
               className={clsx(
-                "flex w-full cursor-pointer items-center justify-between rounded-sm px-1 py-3 text-lg",
-                darkMode ? "hover:bg-grayModern-600" : "hover:bg-[#F4F6F8]",
+                "flex h-[42px] w-full cursor-pointer items-center justify-between rounded px-[9px] text-lg",
+                darkMode
+                  ? "!text-white hover:bg-grayModern-600"
+                  : "!text-grayModern-600 hover:bg-[#F4F6F8]",
               )}
               onClick={() => {
                 window.open("https://www.wenjuan.com/s/I36ZNbl/", "_blank");
@@ -138,8 +145,13 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               </span>
               <ChevronRightIcon />
             </div>
-            <div className="flex w-full items-center justify-between px-1 py-3 text-lg">
-              <span className="flex items-center">
+            <div className="flex h-[42px] w-full items-center justify-between px-[9px] text-lg">
+              <span
+                className={clsx(
+                  "flex items-center",
+                  darkMode ? "!text-white" : "!text-grayModern-600",
+                )}
+              >
                 <GroupIcon fontSize={20} mr={3} />
                 {t("HomePage.NavBar.community")}
               </span>
@@ -148,7 +160,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
                   href="https://w4mci7-images.oss.laf.run/wechat.png"
                   target="_blank"
                   rel="noreferrer"
-                  className="mr-1"
+                  className="mr-2.5"
                 >
                   <WechatIcon className="cursor-pointer !text-grayModern-400" fontSize={20} />
                 </a>
@@ -156,7 +168,6 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
                   href="https://discord.com/channels/1061659231599738901/1098516786170839050"
                   target="_blank"
                   rel="noreferrer"
-                  className="mr-1"
                 >
                   <DiscordIcon className="cursor-pointer !text-grayModern-400" fontSize={20} />
                 </a>

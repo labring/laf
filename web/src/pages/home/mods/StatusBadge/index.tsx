@@ -41,7 +41,7 @@ export default function StatusBadge(props: {
           className={clsx(
             styles.badgeStyle,
             styles[colorScheme[statusConditions]],
-            "px-2 py-1 lg:px-3",
+            "px-2 py-1 font-medium lg:px-3",
           )}
         >
           <span>{getStatus(statusConditions, state || "")}</span>

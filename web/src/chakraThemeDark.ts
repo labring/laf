@@ -131,6 +131,13 @@ const Button = defineStyleConfig({
       },
     },
 
+    text_disabled: {
+      color: "grayModern.500",
+      _hover: {
+        cursor: "not-allowed",
+      },
+    },
+
     warn: {
       bg: "lafDark.300",
       _hover: {
@@ -291,6 +298,19 @@ const Table = {
         borderWidth: 1,
         borderColor: "lafDark.300",
         background: "lafDark.200",
+      },
+    },
+    params: {
+      parts: ["th", "td"],
+      th: {
+        borderWidth: 1,
+        borderColor: "grayModern.700",
+        background: "lafDark.300",
+      },
+      td: {
+        borderWidth: 1,
+        borderColor: "grayModern.700",
+        background: "lafDark.300",
       },
     },
   },

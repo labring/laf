@@ -18,8 +18,7 @@ export default function BundleItem(props: {
       onClick={() => onChange(bundle._id)}
       key={bundle._id}
       className={clsx("cursor-pointer rounded-md pl-4", {
-        "text-blue-600": isActive,
-        // "bg-lafDark-400": isActive && darkMode,
+        "text-[#219BF4]": isActive,
       })}
     >
       <div>

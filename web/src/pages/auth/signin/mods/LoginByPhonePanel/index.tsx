@@ -114,8 +114,8 @@ export default function LoginByPhonePanel({
 
   return (
     <div>
-      <FormControl isInvalid={!!errors?.phone} className="mb-10 flex items-center">
-        <FormLabel className="w-20" htmlFor="phone">
+      <FormControl isInvalid={!!errors?.phone} className="mb-6">
+        <FormLabel className="text-grayModern-700" htmlFor="phone">
           {t("AuthPanel.Phone")}
         </FormLabel>
         <InputGroup>
@@ -130,13 +130,15 @@ export default function LoginByPhonePanel({
             type="tel"
             id="phone"
             placeholder={t("AuthPanel.PhonePlaceholder") || ""}
-            bg={"#F8FAFB"}
-            border={"1px solid #D5D6E1"}
+            bg="#F8FAFB"
+            border="1px solid #D5D6E1"
+            height="48px"
+            rounded="4px"
           />
-          <InputRightElement width="6rem">
+          <InputRightElement width="6rem" height="100%">
             <Button
               className="w-20"
-              variant={isSendSmsCode ? "thirdly_disabled" : "thirdly"}
+              variant={isSendSmsCode ? "text_disabled" : "text"}
               onClick={handleSendSmsCode}
             >
               {isSendSmsCode ? `${countdown}s` : t("AuthPanel.getValidationCode")}
@@ -145,8 +147,8 @@ export default function LoginByPhonePanel({
         </InputGroup>
       </FormControl>
 
-      <FormControl isInvalid={!!errors.validationCode} className="mb-10 flex items-center">
-        <FormLabel className="w-20" htmlFor="phone">
+      <FormControl isInvalid={!!errors.validationCode} className="mb-12">
+        <FormLabel className="w-20 text-grayModern-700" htmlFor="phone">
           {t("AuthPanel.ValidationCode")}
         </FormLabel>
         <Input
@@ -159,22 +161,24 @@ export default function LoginByPhonePanel({
           })}
           id="validationCode"
           placeholder={t("AuthPanel.ValidationCodeTip") || ""}
-          bg={"#F8FAFB"}
-          border={"1px solid #D5D6E1"}
+          bg="#F8FAFB"
+          border="1px solid #D5D6E1"
+          height="48px"
+          rounded="4px"
         />
       </FormControl>
-      <div className="mt-10">
+      <div>
         <Button
           type="submit"
-          className="w-full pb-5 pt-5"
+          className="!h-[42px] w-full !bg-primary-500 hover:!bg-primary-600"
           isLoading={signinBySmsCodeMutation.isLoading}
           onClick={handleSubmit(onSubmit)}
         >
-          {t("AuthPanel.Login")}
+          {t("AuthPanel.LoginOrRegister")}
         </Button>
-        <div className="mt-2 flex justify-end">
+        <div className="mt-5 flex justify-end">
           {showPasswordSigninBtn && (
-            <Button size="xs" variant={"text"} onClick={switchLoginType}>
+            <Button className="!px-2 text-lg" variant={"text"} onClick={switchLoginType}>
               {t("AuthPanel.PasswordLogin")}
             </Button>
           )}

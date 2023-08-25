@@ -4,12 +4,17 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { AddIcon, DeleteIcon, EditIcon, Search2Icon } from "@chakra-ui/icons";
+import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import { Badge, HStack, Input, InputGroup, InputLeftElement, useColorMode } from "@chakra-ui/react";
 import { clsx } from "clsx";
 import { t } from "i18next";
 
-import { RecycleBinIcon, TriggerIcon } from "@/components/CommonIcon";
+import {
+  EditIconLine,
+  RecycleBinIcon,
+  RecycleDeleteIcon,
+  TriggerIcon,
+} from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
@@ -25,6 +30,8 @@ import useFunctionStore from "../../store";
 import TriggerModal from "../TriggerModal";
 
 import CreateModal from "./CreateModal";
+
+import "./index.css";
 
 import { TFunction } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
@@ -222,7 +229,11 @@ export default function FunctionList() {
           <SectionList.Item
             isActive={item?.name === currentFunction?.name && !item.children?.length}
             key={index as any}
-            className="group"
+            className={clsx(
+              "group hover:!text-primary-700",
+              darkMode ? "text-grayIron-200" : " text-grayIron-700",
+              item?.name === currentFunction?.name && !item.children?.length && "!text-primary-700",
+            )}
             onClick={() => {
               if (!item?.children?.length) {
                 setCurrentFunction(item);
@@ -238,17 +249,17 @@ export default function FunctionList() {
           >
             <div
               className={clsx(
-                "overflow-hidden text-ellipsis whitespace-nowrap",
+                "overflow-hidden text-ellipsis whitespace-nowrap font-medium",
                 !isFuncList ? `ml-${2 * level}` : "",
               )}
             >
               <FileTypeIcon type={fileType} width="12px" />
-              <span className="ml-2 text-base">
+              <span className="ml-2">
                 {item.children?.length || isFuncList ? item?.name : item?.name.split("/")[level]}
               </span>
             </div>
             {!item.children?.length && (
-              <HStack spacing={1}>
+              <HStack spacing={1} className="-mr-2">
                 {functionCache.getCache(item?._id, (item as any)?.source?.code) !==
                   (item as any)?.source?.code && (
                   <span className="mt-[1px] inline-block h-1 w-1 flex-none rounded-full bg-rose-500"></span>
@@ -256,7 +267,14 @@ export default function FunctionList() {
                 <MoreButton isHidden={item.name !== currentFunction?.name} label={t("Operation")}>
                   <>
                     <CreateModal functionItem={item} tagList={tagsList}>
-                      <IconText icon={<EditIcon />} text={t("Edit")} />
+                      <IconText
+                        icon={
+                          <div className="flex h-full items-center">
+                            <EditIconLine />
+                          </div>
+                        }
+                        text={t("Edit")}
+                      />
                     </CreateModal>
                     <ConfirmButton
                       onSuccessAction={async () => {
@@ -269,7 +287,7 @@ export default function FunctionList() {
                       bodyText={String(t("FunctionPanel.DeleteConfirm"))}
                     >
                       <IconText
-                        icon={<DeleteIcon />}
+                        icon={<RecycleDeleteIcon fontSize={16} />}
                         text={t("Delete")}
                         className="hover:!text-error-600"
                       />
@@ -303,7 +321,7 @@ export default function FunctionList() {
         actions={[
           <RecycleBinModal key="recycle_modal">
             <IconWrap size={20} tooltip={t("RecycleBin").toString()}>
-              <RecycleBinIcon />
+              <RecycleBinIcon color={darkMode ? "white" : "#24282C"} />
             </IconWrap>
           </RecycleBinModal>,
           <TriggerModal key="trigger_modal">
@@ -319,7 +337,7 @@ export default function FunctionList() {
         ]}
       />
 
-      <InputGroup className="mb-2">
+      <InputGroup className="my-1.5">
         <InputLeftElement
           height={"6"}
           pointerEvents="none"
@@ -338,7 +356,7 @@ export default function FunctionList() {
 
       {renderSelectedTags()}
 
-      <div className="flex-grow" style={{ overflowY: "auto" }}>
+      <div className="funcList flex-grow" style={{ overflowY: "auto" }}>
         {keywords || currentTag ? (
           <SectionList>
             {renderSectionItems(filterFunctions as unknown as TreeNode[], true)}

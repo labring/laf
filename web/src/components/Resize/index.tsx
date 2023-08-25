@@ -12,8 +12,9 @@ export default function Resize(props: {
   pageId: page;
   panelId: panel;
   containerRef: any;
+  lineWidth?: number;
 }) {
-  const { type, pageId, panelId, reverse, containerRef } = props;
+  const { type, pageId, panelId, reverse, containerRef, lineWidth = 2 } = props;
   const store = useCustomSettingStore();
   const { width, height, minWidth, maxWidth, minHeight, maxHeight, display } =
     store.getLayoutInfoStyle(pageId, panelId);
@@ -39,10 +40,11 @@ export default function Resize(props: {
     <>
       {display === "none" ? null : (
         <div
-          className={
+          className={type === "x" ? "group cursor-col-resize" : "cursor-row-resize"}
+          style={
             type === "x"
-              ? "group h-full w-[2px] cursor-col-resize"
-              : "h-[2px] w-full cursor-row-resize"
+              ? { width: lineWidth, height: "100%" }
+              : { width: "100%", height: lineWidth }
           }
           {...separatorProps}
         >

@@ -88,9 +88,9 @@ export default function Usage() {
   return (
     <div>
       <div className="flex items-center pb-6 pt-2 text-2xl">
-        <span className="pr-4">
-          <CostIcon boxSize={5} mr={3} />
-          {t("SettingPanel.CostOverview")}
+        <span className="flex items-center space-x-2 pr-4">
+          <CostIcon size={20} color={"#24282C"} />
+          <p>{t("SettingPanel.CostOverview")}</p>
         </span>
         <DateRangePicker
           startTime={startTime}
@@ -122,7 +122,7 @@ export default function Usage() {
               </span>
               <ChargeButton>
                 <Button bg={"white"} textColor={"black"} _hover={{ bg: "primary.100" }}>
-                  {t("ChargeNow")}
+                  {t("Charge")}
                 </Button>
               </ChargeButton>
             </div>
@@ -162,7 +162,7 @@ export default function Usage() {
                   <RechargeIcon className="!text-white" w={"16px"} h={"16px"} />
                 </div>
               </div>
-              <div className="flex w-full justify-center pt-3">{t("ChargeNow")}</div>
+              <div className="flex w-full justify-center pt-3">{t("Charge")}</div>
               <div className="flex w-full justify-center pt-3 text-xl">
                 {chargeLoading ? (
                   <Spinner size={"sm"} />

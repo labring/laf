@@ -4,6 +4,7 @@ import { Button, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { Logo, LogoText } from "@/components/LogoIcon";
 import { COLOR_MODE } from "@/constants";
 
 import LoginByPasswordPanel from "./mods/LoginByPasswordPanel";
@@ -47,15 +48,16 @@ export default function SignIn() {
   return (
     <div
       className={clsx(
-        "labtop:w-[560px] absolute left-1/2 top-1/2 -translate-y-1/2 rounded-[10px] p-[65px] pb-[100px] phone:left-0 phone:max-h-[400px] phone:w-screen phone:p-[45px] pc:w-[560px]",
+        "absolute right-[125px] top-1/2 h-[600px] w-[560px] -translate-y-1/2 rounded-3xl px-16 pt-[78px]",
         {
           "bg-lafDark-100": darkMode,
-          "bg-white": !darkMode,
+          "bg-[#FCFCFD]": !darkMode,
         },
       )}
     >
-      <div className="mb-[45px]">
-        <img src="/logo_light.png" alt="logo" width={80} className="mr-4" />
+      <div className="mb-9 flex items-center space-x-4">
+        <Logo size="43px" outerColor="#33BABB" innerColor="white" />
+        <LogoText size="51px" color="#363C42" />
       </div>
 
       {currentProvider === "phone" ? (

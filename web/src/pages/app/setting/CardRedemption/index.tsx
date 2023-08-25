@@ -28,9 +28,9 @@ export default function CardRedemption() {
 
   return (
     <div className="h-full w-full">
-      <div className="flex items-center pt-2 text-2xl">
-        <CardIcon boxSize={5} mr={3} />
-        {t("SettingPanel.CardRedemption")}
+      <div className="flex items-center space-x-2 pt-2 text-2xl">
+        <CardIcon size={20} color={"#24282C"} />
+        <p>{t("SettingPanel.CardRedemption")}</p>
       </div>
       <div className="m-auto mt-24 w-[265px]">
         <span>{t("SettingPanel.CardRedemption")}</span>
