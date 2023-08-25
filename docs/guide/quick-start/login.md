@@ -36,8 +36,8 @@ export default async function (ctx: FunctionContext) {
   const password = ctx.body?.password || "";
 
   // check param
-  if (!/[a-zA-Z0-9]{3,16}/.test(username)) return { error: "invalid username" };
-  if (!/[a-zA-Z0-9]{3,16}/.test(password)) return { error: "invalid password" };
+  if (!/^[a-zA-Z0-9]{3,16}$/.test(username)) return { error: "invalid username" };
+  if (!/^[a-zA-Z0-9]{3,16}$/.test(password)) return { error: "invalid password" };
 
   // check username existed
   const db = cloud.database();
