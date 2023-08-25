@@ -24,10 +24,10 @@ export default function AppMonitor() {
   const queryClient = useQueryClient();
 
   const podsArray = useMemo(() => {
-    return cpuUsage.map((item) => item.metric.pod).length >
-      memoryUsage.map((item) => item.metric.pod).length
-      ? cpuUsage.map((item) => item.metric.pod)
-      : memoryUsage.map((item) => item.metric.pod);
+    return cpuUsage?.map((item) => item.metric.pod).length >
+      memoryUsage?.map((item) => item.metric.pod).length
+      ? cpuUsage?.map((item) => item.metric.pod)
+      : memoryUsage?.map((item) => item.metric.pod);
   }, [cpuUsage, memoryUsage]);
 
   return (
