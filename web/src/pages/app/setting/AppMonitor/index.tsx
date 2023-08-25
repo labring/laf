@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Center } from "@chakra-ui/react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -21,21 +21,18 @@ export default function AppMonitor() {
     storageUsage: [],
   };
   const [dataNumber, setDataNumber] = useState(0);
-  const [podsArray, setPodsArray] = useState<string[]>([]);
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    setPodsArray(
-      cpuUsage.map((item) => item.metric.pod).length >
-        memoryUsage.map((item) => item.metric.pod).length
-        ? cpuUsage.map((item) => item.metric.pod)
-        : memoryUsage.map((item) => item.metric.pod),
-    );
+  const podsArray = useMemo(() => {
+    return cpuUsage.map((item) => item.metric.pod).length >
+      memoryUsage.map((item) => item.metric.pod).length
+      ? cpuUsage.map((item) => item.metric.pod)
+      : memoryUsage.map((item) => item.metric.pod);
   }, [cpuUsage, memoryUsage]);
 
   return (
     <div className="flex w-full">
-      {Object.keys(monitorData).length !== 0 ? (
+      {monitorData && Object.keys(monitorData).length !== 0 ? (
         <>
           <div className="mr-2 mt-10 h-[404px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
             <AreaCard
