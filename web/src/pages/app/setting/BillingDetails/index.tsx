@@ -82,9 +82,9 @@ export default function BillingDetails() {
 
   return (
     <div>
-      <div className="flex items-center pt-2 text-2xl">
-        <BillingIcon boxSize={5} mr={3} />
-        {t("SettingPanel.BillingDetails")}
+      <div className="flex items-center space-x-2 pt-2 text-2xl">
+        <BillingIcon size={20} color={"#24282C"} />
+        <p>{t("SettingPanel.BillingDetails")}</p>
       </div>
       <div className="mt-4 rounded border">
         <TableContainer>

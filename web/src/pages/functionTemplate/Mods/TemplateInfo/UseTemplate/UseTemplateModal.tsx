@@ -116,7 +116,7 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
                       <Box className="group mb-3 flex cursor-pointer items-center rounded-xl border-2 px-3 py-5 hover:border-primary-500 lg:px-6">
                         <div className="w-3/12 ">
                           <div className="text-lg font-bold">{item?.name}</div>
-                          <BundleInfo bundle={item.bundle} />
+                          <BundleInfo bundle={item.bundle} className="-ml-3" />
                         </div>
                         <div className="w-2/12 font-mono">{item?.appid}</div>
                         <div className="w-2/12 ">

@@ -47,14 +47,14 @@ export default function DependenceList() {
   });
 
   return (
-    <Panel className="min-w-[215px]">
+    <Panel className="min-w-[225px]">
       <Panel.Header
         title={t("FunctionPanel.Dependence")}
         actions={[<AddDependenceModal key="AddDependenceModal" />]}
       />
       <Tabs variant="soft-rounded" colorScheme={"gray"} size={"xs"}>
         <TabList>
-          <Tab className="mr-2 px-2">
+          <Tab className="mr-2 px-2 py-1">
             {t("FunctionPanel.CustomDependence")}
             {customPackage.length > 0 && (
               <Badge rounded={"full"} ml="1">
@@ -62,7 +62,7 @@ export default function DependenceList() {
               </Badge>
             )}
           </Tab>
-          <Tab>
+          <Tab className="mr-2 px-2 py-1">
             {t("FunctionPanel.SystemDependence")}
             <Badge rounded={"full"} ml="1">
               {builtinPackage.length}

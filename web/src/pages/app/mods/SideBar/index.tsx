@@ -105,7 +105,7 @@ export default function SideBar() {
                   <NavLink
                     to={`/app/${currentApp?.appid}/${item.pageId}`}
                     key={item.pageId}
-                    className={clsx(styles.icon, " mx-2 items-center ", {
+                    className={clsx(styles.icon, " mx-1 items-center ", {
                       [styles.current]: pageId === item.pageId,
                       "my-4": item.name !== undefined,
                     })}
@@ -116,20 +116,20 @@ export default function SideBar() {
                     }}
                   >
                     {item.icon}
-                    <p className="scale-90">{item.name ? item.name : null}</p>
+                    <p className="scale-[.75]">{item.name ? item.name : null}</p>
                   </NavLink>
                 );
               }
               return (
                 <Center
                   key={item.pageId}
-                  className={clsx(styles.icon, " mx-2 items-center ", {
+                  className={clsx(styles.icon, " mx-1 items-center ", {
                     [styles.current]: pageId === item.pageId,
                     "my-4": item.name !== undefined,
                   })}
                 >
                   {item.component}
-                  <p className="scale-90">{item.name ? item.name : null}</p>
+                  <p className="scale-[.75]">{item.name ? item.name : null}</p>
                 </Center>
               );
             })}

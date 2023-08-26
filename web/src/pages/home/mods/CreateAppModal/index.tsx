@@ -4,6 +4,7 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
+  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -253,18 +254,18 @@ const CreateAppModal = (props: {
       {isOpen && !isLoading ? (
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
-          <ModalContent maxW={"80%"} width={"auto"} minW={"700px"} m={"auto"}>
+          <ModalContent maxW={"80%"} width={"auto"} minW={"800px"} m={"auto"}>
             <ModalHeader>{title}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <VStack spacing={6} align="flex-start">
+              <VStack spacing={0} align="flex-start">
                 <FormControl
                   isRequired
                   isInvalid={!!errors?.name}
                   isDisabled={type === "change"}
                   hidden={type === "change"}
                 >
-                  <div className="mb-3 flex h-12 w-full items-center border-b-2">
+                  <div className="mb-4 flex h-12 w-full items-center border-b-2">
                     <input
                       {...register("name", {
                         required: `${t("HomePanel.Application") + t("Name") + t("IsRequired")}`,
@@ -286,57 +287,62 @@ const CreateAppModal = (props: {
                       billingResourceOptionsRes={billingResourceOptionsRes}
                       setCalculating={setCalculating}
                     />
-                    <AutoscalingControl autoscaling={autoscaling} setAutoscaling={setAutoscaling} />
+                    <AutoscalingControl
+                      autoscaling={autoscaling}
+                      setAutoscaling={setAutoscaling}
+                      className="!mt-6"
+                    />
                   </>
                 )}
               </VStack>
             </ModalBody>
             <ModalFooter h={20}>
-              {type !== "edit" && (
-                <div className="flex items-center">
-                  {t("Fee")}:
-                  {!calculating ? (
-                    <span className="ml-2 w-32 text-center text-xl font-semibold text-red-500">
-                      {totalPrice} / hour
-                    </span>
-                  ) : (
-                    <span className="ml-2 flex w-32 justify-center">
-                      <Spinner className="!h-4 !w-4" />
-                    </span>
-                  )}
-                </div>
-              )}
-              <div className="mr-2 flex items-center">
-                <span className="ml-4 mr-2">
-                  {t("Balance") + ":"}
-                  <span className="ml-2 text-xl">{formatPrice(accountRes?.data?.balance)}</span>
+              <HStack spacing={0}>
+                <span className="mr-2 flex text-center text-lg font-semibold text-grayModern-600">
+                  <p>{t("Balance") + ":"}</p>
+                  <p className="ml-1">{formatPrice(accountRes?.data?.balance)}</p>
                 </span>
                 {totalPrice > accountRes?.data?.balance! ? (
                   <span className="mr-2">{t("balance is insufficient")}</span>
                 ) : null}
                 <ChargeButton>
-                  <span className="cursor-pointer text-blue-800">{t("ChargeNow")}</span>
+                  <p className="!mr-2 cursor-pointer text-lg font-semibold text-blue-600">
+                    {t("ChargeNow")}
+                  </p>
                 </ChargeButton>
-              </div>
-              {type !== "edit" && totalPrice <= accountRes?.data?.balance! && (
-                <Button
-                  isLoading={createAppMutation.isLoading}
-                  type="submit"
-                  onClick={handleSubmit(onSubmit)}
-                  disabled={totalPrice > 0}
-                >
-                  {type === "change" ? t("Confirm") : t("CreateNow")}
-                </Button>
-              )}
-              {type === "edit" && (
-                <Button
-                  isLoading={updateAppMutation.isLoading}
-                  type="submit"
-                  onClick={handleSubmit(onSubmit)}
-                >
-                  {t("Confirm")}
-                </Button>
-              )}
+                {type !== "edit" && (
+                  <div className="!mx-6 flex items-center">
+                    {!calculating ? (
+                      <span className="mr-2 w-36 text-center text-xl font-semibold text-error-500">
+                        ¥{totalPrice} / hour
+                      </span>
+                    ) : (
+                      <span className="mr-2 flex w-36 justify-center">
+                        <Spinner className="!h-4 !w-4" />
+                      </span>
+                    )}
+                  </div>
+                )}
+                {type !== "edit" && totalPrice <= accountRes?.data?.balance! && (
+                  <Button
+                    isLoading={createAppMutation.isLoading}
+                    type="submit"
+                    onClick={handleSubmit(onSubmit)}
+                    disabled={totalPrice > 0}
+                  >
+                    {type === "change" ? t("Confirm") : t("CreateNow")}
+                  </Button>
+                )}
+                {type === "edit" && (
+                  <Button
+                    isLoading={updateAppMutation.isLoading}
+                    type="submit"
+                    onClick={handleSubmit(onSubmit)}
+                  >
+                    {t("Confirm")}
+                  </Button>
+                )}
+              </HStack>
             </ModalFooter>
           </ModalContent>
         </Modal>

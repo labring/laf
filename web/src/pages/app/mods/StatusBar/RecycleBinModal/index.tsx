@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BiAddToQueue } from "react-icons/bi";
-import { DeleteIcon } from "@chakra-ui/icons";
 import {
   Checkbox,
   Modal,
@@ -18,7 +17,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 
-import { GoSelectIcon, RestoreIcon } from "@/components/CommonIcon";
+import { GoSelectIcon, RecycleDeleteIcon, RestoreIcon } from "@/components/CommonIcon";
 import Pagination from "@/components/Pagination";
 import { formatDate } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
@@ -108,7 +107,7 @@ function FunctionItem({
               }
             }}
           >
-            <DeleteIcon className="mr-1" />
+            <RecycleDeleteIcon className="mr-1 text-lg" />
             {t("Delete")}
           </div>
           <div
@@ -270,7 +269,7 @@ export default function RecycleBinModal(props: { children: React.ReactElement })
                           }
                         }}
                       >
-                        <DeleteIcon className="mr-1" />
+                        <RecycleDeleteIcon className="mr-1 text-lg" />
                         {t("Delete")}
                       </div>
                       <div

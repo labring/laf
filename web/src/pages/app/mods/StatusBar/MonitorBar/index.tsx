@@ -75,7 +75,7 @@ export default function MonitorBar() {
   return (
     <SysSetting currentTab="monitor">
       <div className="flex items-center space-x-2">
-        <span className="mr-2 flex h-full cursor-pointer items-center text-grayModern-500">
+        <span className="mr-2 flex h-full cursor-pointer items-center text-grayModern-700">
           <MonitorIcon className="mr-1" />
           {t("SettingPanel.AppMonitor") + " :"}
         </span>

@@ -14,7 +14,6 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import axios from "axios";
-import clsx from "clsx";
 import { keyBy, mapValues } from "lodash";
 
 import JSONViewer from "@/components/Editor/JSONViewer";
@@ -71,6 +70,30 @@ export default function DebugPanel(props: { containerRef: any }) {
       enabled: globalStore.currentPageId === Pages.function,
     },
   );
+
+  const tabContent = [
+    { text: t("FunctionPanel.InterfaceDebug") },
+    { text: "Laf Pilot" },
+    { text: t("FunctionPanel.versionHistory") },
+  ];
+
+  const methods_tab = [
+    {
+      label: "Query",
+      count: queryParams.length,
+      shouldRender: true,
+    },
+    {
+      label: "Body",
+      count: Object.keys(bodyParams?.data || {}).length,
+      shouldRender: HAS_BODY_PARAMS_METHODS.includes(runningMethod),
+    },
+    {
+      label: "Headers",
+      count: headerParams.length,
+      shouldRender: true,
+    },
+  ];
 
   useEffect(() => {
     if (currentFunction?.methods) {
@@ -140,61 +163,41 @@ export default function DebugPanel(props: { containerRef: any }) {
           flexDirection={"column"}
           h="full"
           size={"sm"}
+          pt={"4px"}
         >
-          <TabList h={`${PanelMinHeight}px`}>
-            <Tab px="4">
-              <span
-                className={clsx("font-semibold", {
-                  "text-black": !darkMode,
-                  "text-white": darkMode,
-                })}
+          <TabList
+            h={`${PanelMinHeight}px`}
+            mx={3}
+            borderBottom={darkMode ? "" : "2px solid #F6F8F9"}
+          >
+            {tabContent.map((tab, index) => (
+              <Tab
+                key={index}
+                _selected={{
+                  borderColor: "primary.500",
+                  color: darkMode ? "white !important" : "#262A32 !important",
+                }}
+                style={{ color: "#7B838B", margin: "-1px 8px", padding: "0 0", fontWeight: 500 }}
               >
-                {t("FunctionPanel.InterfaceDebug")}
-              </span>
-            </Tab>
-            {/* <Tab px="4">
-              <span
-                className={clsx("font-semibold", {
-                  "text-black": !darkMode,
-                  "text-white": darkMode,
-                })}
-              >
-                {t("HomePage.NavBar.docs")}
-              </span>
-            </Tab> */}
-            <Tab>
-              <span
-                className={clsx("font-semibold", {
-                  "text-black": !darkMode,
-                  "text-white": darkMode,
-                })}
-              >
-                Laf Pilot
-              </span>
-            </Tab>
-            <Tab>
-              <span
-                className={clsx("font-semibold", {
-                  "text-black": !darkMode,
-                  "text-white": darkMode,
-                })}
-              >
-                {t("FunctionPanel.versionHistory")}
-              </span>
-            </Tab>
+                {tab.text}
+              </Tab>
+            ))}
           </TabList>
 
           <TabPanels flex={1} className="overflow-hidden">
             <TabPanel
               padding={0}
+              mt="1px"
               h="full"
               className={
                 darkMode ? "flex flex-col bg-lafDark-100" : "flex flex-col bg-grayModern-100"
               }
             >
               <Panel className="flex-1 flex-col">
-                <div className="flex flex-none items-center px-2 py-4">
-                  <span className="mr-3 whitespace-nowrap">{t("FunctionPanel.Methods")}</span>
+                <div className="flex flex-none items-center px-2 pb-2 pt-3">
+                  <span className="mr-3 whitespace-nowrap font-medium text-grayModern-500">
+                    {t("FunctionPanel.Methods")}
+                  </span>
                   <Select
                     width="100px"
                     variant="filled"
@@ -213,12 +216,10 @@ export default function DebugPanel(props: { containerRef: any }) {
                       );
                     })}
                   </Select>
-                  <Tooltip label={`快捷键: ${displayName.toUpperCase()}`}>
+                  <Tooltip label={`${t("shortcutKey")} ${displayName.toUpperCase()}`}>
                     <Button
-                      variant={"secondary"}
-                      size={"xs"}
                       disabled={getFunctionUrl() === ""}
-                      className="ml-2"
+                      className="ml-2 !h-6 !w-14 !bg-primary-600 !text-base"
                       onClick={() => runningCode()}
                       isLoading={isLoading}
                     >
@@ -228,37 +229,25 @@ export default function DebugPanel(props: { containerRef: any }) {
                 </div>
                 <div className="flex-grow overflow-hidden">
                   <Tabs
-                    p="0"
                     variant="soft-rounded"
                     colorScheme={"gray"}
                     size={"sm"}
                     className="h-full flex-col"
                     style={{ display: "flex" }}
                   >
-                    <TabList className="mb-1 flex-none">
-                      <Tab>
-                        Query
-                        {queryParams.length > 0 && (
-                          <span className="ml-1">({queryParams.length})</span>
-                        )}
-                      </Tab>
-                      {HAS_BODY_PARAMS_METHODS.includes(runningMethod) && (
-                        <Tab>
-                          Body
-                          {Object.keys(bodyParams?.data || {}).length > 0 && (
-                            <span className="ml-1">({Object.keys(bodyParams?.data).length})</span>
-                          )}
-                        </Tab>
+                    <TabList>
+                      {methods_tab.map(
+                        (tab, index) =>
+                          tab.shouldRender && (
+                            <Tab key={index} className="!font-medium">
+                              {tab.label}
+                              {tab.count > 0 && <span className="ml-1">({tab.count})</span>}
+                            </Tab>
+                          ),
                       )}
-                      <Tab>
-                        Headers
-                        {headerParams.length > 0 && (
-                          <span className="ml-1">({headerParams.length})</span>
-                        )}
-                      </Tab>
                     </TabList>
                     <TabPanels className="relative flex-1 overflow-auto">
-                      <TabPanel px={0} py={1}>
+                      <TabPanel px={0} py={2}>
                         <QueryParamsTab
                           key={"QueryParamsTab"}
                           onChange={(values: any) => {
@@ -271,7 +260,7 @@ export default function DebugPanel(props: { containerRef: any }) {
                       {HAS_BODY_PARAMS_METHODS.includes(runningMethod) && (
                         <TabPanel
                           px={0}
-                          py={1}
+                          py={2}
                           className="absolute bottom-0 left-0 right-0 top-0 overflow-auto"
                         >
                           <BodyParamsTab
@@ -283,7 +272,7 @@ export default function DebugPanel(props: { containerRef: any }) {
                         </TabPanel>
                       )}
 
-                      <TabPanel px={0} py={1}>
+                      <TabPanel px={0} py={2}>
                         <HeaderParamsTab
                           key={"HeaderParamsTab"}
                           onChange={(values: any) => {
@@ -332,25 +321,6 @@ export default function DebugPanel(props: { containerRef: any }) {
                 </Panel>
               </Row>
             </TabPanel>
-            {/* <TabPanel padding={0} h="full">
-              {props.showOverlay && (
-                <div
-                  style={{
-                    position: "fixed",
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "rgba(0, 0, 0, 0)",
-                    zIndex: 999,
-                  }}
-                />
-              )}
-              <iframe
-                title="docs"
-                height={"100%"}
-                width={"100%"}
-                src={String(t("HomePage.DocsLink"))}
-              />
-            </TabPanel> */}
             <TabPanel padding={0} h="full">
               <AIChatPanel />
             </TabPanel>

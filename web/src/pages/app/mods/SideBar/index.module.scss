@@ -3,9 +3,11 @@
   cursor: pointer;
   border-radius: 4px;
   height: 52px;
+  width: 42px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  font-weight: 500;
 
   svg {
     fill: #9ca2a8;

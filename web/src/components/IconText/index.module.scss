@@ -1,0 +1,16 @@
+.iconText {
+
+  color: #7B838B;
+
+  svg {
+    fill: #7B838B !important;
+  }
+
+
+  &:hover {
+    color: var(--chakra-colors-grayModern-600);
+    svg {
+      fill: var(--chakra-colors-grayModern-600) !important;
+    }
+  }
+}

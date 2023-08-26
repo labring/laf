@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useColorMode } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import { HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import ColorModeSwitch from "@/components/ColorModeSwitch";
-import { ChatIcon, TextIcon } from "@/components/CommonIcon";
+import { ChatIcon, DocIcon } from "@/components/CommonIcon";
 import LanguageSwitch from "@/components/LanguageSwitch";
+import { Logo, LogoText } from "@/components/LogoIcon";
 import { COLOR_MODE } from "@/constants";
 import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
@@ -13,14 +14,13 @@ import UserSetting from "../../pages/app/setting/UserSetting";
 
 import useGlobalStore from "@/pages/globalStore";
 
-const Header = (props: { width: string }) => {
-  const { width } = props;
+const Header = (props: { className?: string }) => {
+  const { className } = props;
   const { t } = useTranslation();
   const { userInfo, avatarUpdatedAt } = useGlobalStore((state) => state);
-
+  const navigate = useNavigate();
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
-  const [chosenItem, setChosenItem] = useState<string>("");
 
   const navList_left = [
     { text: t("HomePage.NavBar.dashboard"), ref: "/dashboard" },
@@ -31,86 +31,80 @@ const Header = (props: { width: string }) => {
     },
   ];
   const navList_right = [
-    { text: t("HomePage.NavBar.docs"), ref: String(t("HomePage.DocsLink")), icon: <TextIcon /> },
+    {
+      text: t("HomePage.NavBar.docs"),
+      ref: String(t("HomePage.DocsLink")),
+      icon: <DocIcon boxSize={5} />,
+    },
     {
       text: t("HomePage.NavBar.forum"),
       ref: "https://forum.laf.run/",
-      icon: <ChatIcon color={darkMode ? "#FFFFFF" : "#5A646E"} />,
+      icon: <ChatIcon boxSize={5} />,
     },
   ];
 
-  useEffect(() => {
-    if (window.location.href.includes("function-templates")) {
-      setChosenItem("templateMarket");
-    }
-  }, []);
-
   return (
-    <>
-      <div
-        className={clsx(
-          "flex h-[52px] w-full justify-between font-medium",
-          { [width]: !!width },
-          darkMode ? "" : "text-grayModern-600",
-        )}
-      >
-        <div className="flex items-center pl-12">
-          <a href="/">
-            <img
-              src={darkMode ? "/logo_light.png" : "/logo_text.png"}
-              className="mr-9 h-auto w-20"
-              alt={"logo"}
+    <div
+      className={clsx(
+        "flex h-[52px] w-full justify-between pl-8 pr-5 text-lg !font-medium",
+        className,
+        darkMode ? "" : "text-grayIron-700",
+      )}
+    >
+      <HStack spacing={4}>
+        <span
+          className="mr-5 flex cursor-pointer items-center space-x-2.5"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          <Logo size="28px" innerColor="white" outerColor="#00BAA4" />
+          <LogoText size="35px" color={darkMode ? "#00BAA4" : "#021513"} />
+        </span>
+
+        {navList_left.map((item) => {
+          return (
+            <span
+              key={item.text}
+              className="cursor-pointer rounded px-2 py-1 hover:bg-grayIron-700/5"
+              onClick={() => {
+                navigate(item.ref);
+              }}
+            >
+              {item.text}
+            </span>
+          );
+        })}
+      </HStack>
+
+      <HStack spacing={4}>
+        {navList_right.map((item) => {
+          return (
+            <span
+              key={item.text}
+              className="flex cursor-pointer items-center space-x-2 rounded px-2 py-1 hover:bg-grayIron-700/5"
+              onClick={() => {
+                window.open(item.ref);
+              }}
+            >
+              {item.icon}
+              <p>{item.text}</p>
+            </span>
+          );
+        })}
+        <LanguageSwitch className="hover:bg-grayIron-700/5" />
+        <ColorModeSwitch className="ml-4 mr-6 rounded p-2 hover:bg-grayIron-700/5" />
+        {userInfo?._id ? (
+          <span className="!ml-6">
+            <UserSetting
+              name={userInfo?.username!}
+              avatar={getAvatarUrl(userInfo?._id, avatarUpdatedAt)}
+              width="2rem"
             />
-          </a>
-
-          {navList_left.map((item, index) => {
-            return (
-              <a
-                key={index}
-                target={item.ref.startsWith("http") ? "_blank" : "_self"}
-                href={item.ref}
-                className={clsx(
-                  "mr-8 text-lg",
-                  item.value === chosenItem && !darkMode ? "font-semibold text-grayModern-900" : "",
-                  item.value === chosenItem && darkMode ? "font-semibold text-grayModern-100" : "",
-                )}
-                rel="noreferrer"
-              >
-                {item.text}
-              </a>
-            );
-          })}
-        </div>
-
-        <div className="flex items-center pr-9">
-          {navList_right.map((item, index) => {
-            return (
-              <a
-                key={index}
-                target={item.ref.startsWith("http") ? "_blank" : "_self"}
-                href={item.ref}
-                className="mr-8 flex items-center text-lg"
-                rel="noreferrer"
-              >
-                <span className={clsx("pr-2", index !== 1 && "pb-1")}>{item.icon}</span>
-                <span>{item.text}</span>
-              </a>
-            );
-          })}
-          <LanguageSwitch className="text-[20px]" />
-          <ColorModeSwitch className="ml-6 mr-8" />
-          {userInfo?._id ? (
-            <>
-              <UserSetting
-                name={userInfo?.username!}
-                avatar={getAvatarUrl(userInfo?._id, avatarUpdatedAt)}
-                width={"2.25rem"}
-              />
-            </>
-          ) : null}
-        </div>
-      </div>
-    </>
+          </span>
+        ) : null}
+      </HStack>
+    </div>
   );
 };
 

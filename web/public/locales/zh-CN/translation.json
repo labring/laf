@@ -310,7 +310,7 @@
   },
   "Restart": "重启应用",
   "ShutDown": "关闭应用",
-  "Charge": "余额充值",
+  "Charge": "充值",
   "Back": "返回",
   "Personal Access Token": "访问凭证 (PAT)",
   "SwitchLanguage": "切换语言",
@@ -347,7 +347,7 @@
     "ToRegister": "去注册",
     "ToLogin": "去登录",
     "PasswordLogin": "密码登录",
-    "PhoneLogin": "手机验证码登录",
+    "PhoneLogin": "验证码登录",
     "Account": "用户名",
     "AccountPlaceholder": "请输入用户名",
     "Password": "密码",
@@ -361,14 +361,15 @@
     "ResetPasswordSuccess": "重置密码成功",
     "NewPassword": "新密码",
     "SignUpSuccess": "注册成功",
-    "EmailTip": "请输入有效的邮箱"
+    "EmailTip": "请输入有效的邮箱",
+    "LoginOrRegister": "登录 / 注册"
   },
   "Time": "时间",
   "CreateTime": "创建时间",
   "EndTime": "到期时间",
   "Renew": "续期",
   "Balance": "账户余额",
-  "ChargeNow": "充值",
+  "ChargeNow": "立即充值",
   "balance is insufficient": "余额不足",
   "DeleteApp": "删除应用",
   "Recharge amount": "充值金额",
@@ -630,5 +631,7 @@
   "Pod": "实例",
   "EditFunction": "编辑函数",
   "Error": "监控不可用，",
-  "Retry": "点击重试"
+  "Retry": "点击重试",
+  "NoFunctionYet": "您还没有创建函数哦～ ",
+  "shortcutKey": "快捷键"
 }

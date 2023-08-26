@@ -68,9 +68,9 @@ export default function RechargeHistory() {
 
   return (
     <div>
-      <div className="flex items-center pt-2 text-2xl">
-        <ChargeIcon boxSize={5} mr={3} />
-        {t("SettingPanel.RechargeHistory")}
+      <div className="flex items-center space-x-2 pt-2 text-2xl">
+        <ChargeIcon size={16} color={"#24282C"} />
+        <p>{t("SettingPanel.RechargeHistory")}</p>
       </div>
       <div className="mt-4 rounded border">
         <TableContainer>

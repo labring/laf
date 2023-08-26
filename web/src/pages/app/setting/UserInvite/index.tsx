@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CopyIcon, InfoOutlineIcon } from "@chakra-ui/icons";
+import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { Button, Center, Input, Spinner, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import { CopyIcon } from "@/components/CommonIcon";
 import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
 import Pagination from "@/components/Pagination";
@@ -35,8 +36,11 @@ export default function UserInvite() {
           <Input value={inviteLink} height={8} mr={4} readOnly />
         </CopyText>
         <CopyText text={inviteLink} hideToolTip>
-          <Button variant="secondary" className="flex h-[30px] items-center">
-            <CopyIcon className="mr-2" />
+          <Button
+            variant="secondary"
+            className="h-[30px]"
+            leftIcon={<CopyIcon color="#33BABB" size={14} />}
+          >
             {t("Copy")}
           </Button>
         </CopyText>

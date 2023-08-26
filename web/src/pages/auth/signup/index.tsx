@@ -16,6 +16,7 @@ import {
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { Logo, LogoText } from "@/components/LogoIcon";
 import { Routes } from "@/constants";
 import { COLOR_MODE } from "@/constants";
 
@@ -166,28 +167,31 @@ export default function SignUp() {
   return (
     <div
       className={clsx(
-        "absolute left-1/2 top-1/2 w-[560px] -translate-y-1/2 rounded-[10px] p-[65px]",
+        "absolute right-[125px] top-1/2 h-[680px] w-[560px] -translate-y-1/2 rounded-3xl px-16 pt-[78px]",
         { "bg-white": !darkMode, "bg-lafDark-100": darkMode },
       )}
     >
-      <div className="mb-[45px]">
-        <img src="/logo.png" alt="logo" width={40} className="mr-4" />
+      <div className="mb-9 flex items-center space-x-4">
+        <Logo size="43px" outerColor="#33BABB" innerColor="white" />
+        <LogoText size="51px" color="#363C42" />
       </div>
-      <div className="mb-[65px]">
+      <div>
         <FormControl isInvalid={!!errors.account} className="mb-6 flex items-center">
-          <FormLabel className="w-20" htmlFor="account">
+          <FormLabel className="w-20 text-grayModern-700" htmlFor="account">
             {t("AuthPanel.Account")}
           </FormLabel>
           <Input
             {...register("account", { required: true })}
             id="account"
             placeholder={t("AuthPanel.AccountPlaceholder") || ""}
-            bg={"#F8FAFB"}
-            border={"1px solid #D5D6E1"}
+            bg="#F8FAFB"
+            border="1px solid #D5D6E1"
+            height="48px"
+            rounded="4px"
           />
         </FormControl>
         <FormControl isInvalid={!!errors.password} className="mb-6 flex items-center">
-          <FormLabel className="w-20" htmlFor="password">
+          <FormLabel className="w-20 text-grayModern-700" htmlFor="password">
             {t("AuthPanel.Password")}
           </FormLabel>
           <InputGroup>
@@ -198,20 +202,28 @@ export default function SignUp() {
               })}
               id="password"
               placeholder={t("AuthPanel.PasswordPlaceholder") || ""}
-              bg={"#F8FAFB"}
-              border={"1px solid #D5D6E1"}
+              bg="#F8FAFB"
+              border="1px solid #D5D6E1"
+              height="48px"
+              rounded="4px"
             />
-            <InputRightElement width="2rem">
+            <InputRightElement width="2rem" height="100%">
               {isShowPassword ? (
-                <ViewOffIcon className="cursor-pointer" onClick={() => setIsShowPassword(false)} />
+                <ViewOffIcon
+                  className="cursor-pointer !text-primary-500"
+                  onClick={() => setIsShowPassword(false)}
+                />
               ) : (
-                <ViewIcon className="cursor-pointer" onClick={() => setIsShowPassword(true)} />
+                <ViewIcon
+                  className="cursor-pointer !text-primary-500"
+                  onClick={() => setIsShowPassword(true)}
+                />
               )}
             </InputRightElement>
           </InputGroup>
         </FormControl>
         <FormControl isInvalid={!!errors.confirmPassword} className="mb-6 flex items-center">
-          <FormLabel className="w-20" htmlFor="confirmPassword">
+          <FormLabel className="w-20 text-grayModern-700" htmlFor="confirmPassword">
             {t("AuthPanel.ConfirmPassword")}
           </FormLabel>
           <InputGroup>
@@ -222,21 +234,29 @@ export default function SignUp() {
               })}
               id="confirmPassword"
               placeholder={t("AuthPanel.ConfirmPassword") || ""}
-              bg={"#F8FAFB"}
-              border={"1px solid #D5D6E1"}
+              bg="#F8FAFB"
+              border="1px solid #D5D6E1"
+              height="48px"
+              rounded="4px"
             />
-            <InputRightElement width="2rem">
+            <InputRightElement width="2rem" height="100%">
               {isShowPassword ? (
-                <ViewOffIcon className="cursor-pointer" onClick={() => setIsShowPassword(false)} />
+                <ViewOffIcon
+                  className="cursor-pointer !text-primary-500"
+                  onClick={() => setIsShowPassword(false)}
+                />
               ) : (
-                <ViewIcon className="cursor-pointer" onClick={() => setIsShowPassword(true)} />
+                <ViewIcon
+                  className="cursor-pointer !text-primary-500"
+                  onClick={() => setIsShowPassword(true)}
+                />
               )}
             </InputRightElement>
           </InputGroup>
         </FormControl>
         {isNeedPhone && (
           <FormControl isInvalid={!!errors?.phone} className="mb-6 flex items-center">
-            <FormLabel className="w-20" htmlFor="phone">
+            <FormLabel className="w-20 text-grayModern-700" htmlFor="phone">
               {t("AuthPanel.Phone")}
             </FormLabel>
             <InputGroup>
@@ -251,13 +271,15 @@ export default function SignUp() {
                 type="tel"
                 id="phone"
                 placeholder={t("AuthPanel.PhonePlaceholder") || ""}
-                bg={"#F8FAFB"}
-                border={"1px solid #D5D6E1"}
+                bg="#F8FAFB"
+                border="1px solid #D5D6E1"
+                height="48px"
+                rounded="4px"
               />
-              <InputRightElement width="6rem">
+              <InputRightElement width="6rem" height="100%">
                 <Button
                   className="w-20"
-                  variant={isSendSmsCode ? "thirdly_disabled" : "thirdly"}
+                  variant={isSendSmsCode ? "text_disabled" : "text"}
                   onClick={handleSendSmsCode}
                 >
                   {isSendSmsCode ? `${countdown}s` : t("AuthPanel.getValidationCode")}
@@ -268,7 +290,7 @@ export default function SignUp() {
         )}
         {isNeedPhone && (
           <FormControl isInvalid={!!errors.validationCode} className="mb-10 flex items-center">
-            <FormLabel className="w-20" htmlFor="validationCode">
+            <FormLabel className="w-20 text-grayModern-700" htmlFor="validationCode">
               {t("AuthPanel.ValidationCode")}
             </FormLabel>
             <Input
@@ -282,8 +304,10 @@ export default function SignUp() {
               })}
               id="validationCode"
               placeholder={t("AuthPanel.ValidationCodePlaceholder") || ""}
-              bg={"#F8FAFB"}
-              border={"1px solid #D5D6E1"}
+              bg="#F8FAFB"
+              border="1px solid #D5D6E1"
+              height="48px"
+              rounded="4px"
             />
           </FormControl>
         )}
@@ -311,15 +335,19 @@ export default function SignUp() {
         <div className="mb-6">
           <Button
             type="submit"
-            className="w-full pb-5 pt-5"
+            className="!h-[42px] w-full !bg-primary-500 hover:!bg-primary-600"
             isLoading={signupMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
           >
             {t("AuthPanel.Register")}
           </Button>
         </div>
-        <div className="mt-2 flex justify-end">
-          <Button size="xs" variant={"text"} onClick={() => navigate("/login", { replace: true })}>
+        <div className="mt-5 flex justify-end">
+          <Button
+            className="!px-2 text-lg"
+            variant={"text"}
+            onClick={() => navigate("/login", { replace: true })}
+          >
             {t("AuthPanel.ToLogin")}
           </Button>
         </div>

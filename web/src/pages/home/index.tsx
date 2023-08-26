@@ -48,7 +48,7 @@ function HomePage() {
   ) : appListQuery?.data.length === 0 ? (
     <Empty />
   ) : (
-    <div className="mx-auto mt-10 flex w-11/12 flex-col lg:w-8/12">
+    <div className="mx-auto mt-10 flex w-[1060px] flex-col">
       <List appList={appListQuery?.data} />
     </div>
   );

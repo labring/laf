@@ -68,8 +68,8 @@ export default function LoginByPasswordPanel({
 
   return (
     <div>
-      <FormControl isInvalid={!!errors?.account} className="mb-10 flex items-center">
-        <FormLabel className="w-20" htmlFor="account">
+      <FormControl isInvalid={!!errors?.account} className="mb-6">
+        <FormLabel className="w-20 text-grayModern-700" htmlFor="account">
           {t("AuthPanel.Account")}
         </FormLabel>
         <Input
@@ -77,12 +77,14 @@ export default function LoginByPasswordPanel({
           type="text"
           id="account"
           placeholder={t("AuthPanel.AccountPlaceholder") || ""}
-          bg={"#F8FAFB"}
-          border={"1px solid #D5D6E1"}
+          bg="#F8FAFB"
+          border="1px solid #D5D6E1"
+          height="48px"
+          rounded="4px"
         />
       </FormControl>
-      <FormControl isInvalid={!!errors.password} className="mb-10 flex items-center">
-        <FormLabel className="w-20" htmlFor="phone">
+      <FormControl isInvalid={!!errors.password} className="mb-12">
+        <FormLabel className="w-20 text-grayModern-700" htmlFor="phone">
           {t("AuthPanel.Password")}
         </FormLabel>
         <InputGroup>
@@ -93,47 +95,59 @@ export default function LoginByPasswordPanel({
             })}
             id="password"
             placeholder={t("AuthPanel.PasswordPlaceholder") || ""}
-            bg={"#F8FAFB"}
-            border={"1px solid #D5D6E1"}
+            bg="#F8FAFB"
+            border="1px solid #D5D6E1"
+            height="48px"
+            rounded="4px"
           />
-          <InputRightElement width="2rem">
+          <InputRightElement height="100%">
             {isShowPassword ? (
-              <ViewOffIcon className="cursor-pointer" onClick={() => setIsShowPassword(false)} />
+              <ViewOffIcon
+                className="cursor-pointer !text-primary-500"
+                onClick={() => setIsShowPassword(false)}
+              />
             ) : (
-              <ViewIcon className="cursor-pointer" onClick={() => setIsShowPassword(true)} />
+              <ViewIcon
+                className="cursor-pointer !text-primary-500"
+                onClick={() => setIsShowPassword(true)}
+              />
             )}
           </InputRightElement>
         </InputGroup>
       </FormControl>
-      <div className="mt-10">
+      <div>
         <Button
           type="submit"
-          className="w-full pb-5 pt-5"
+          className="!h-[42px] w-full !bg-primary-500 hover:!bg-primary-600"
           isLoading={signinByPasswordMutation.isLoading}
           onClick={handleSubmit(onSubmit)}
         >
           {t("AuthPanel.Login")}
         </Button>
-        <div className="mt-2 flex justify-between">
+        <div className="mt-5 flex justify-between">
           <div>
             <Button
-              className="mr-1"
-              size="xs"
+              className="!pl-2 !pr-0 text-lg"
               variant={"text"}
               onClick={() => navigate("/reset-password", { replace: true })}
             >
               {t("AuthPanel.ForgotPassword")}
             </Button>
           </div>
-          <div>
+          <div className="flex">
             {showPhoneSigninBtn && (
-              <Button className="mr-1" size="xs" variant={"text"} onClick={switchLoginType}>
+              <Button className="!px-2 text-lg" variant={"text"} onClick={switchLoginType}>
                 {t("AuthPanel.PhoneLogin")}
               </Button>
             )}
+            {showPhoneSigninBtn && showSignupBtn && (
+              <div className="mx-3 flex items-center">
+                <span className="h-3 w-[1px] bg-primary-500 text-primary-500"></span>
+              </div>
+            )}
             {showSignupBtn && (
               <Button
-                size="xs"
+                className="!px-2 text-lg"
                 variant={"text"}
                 onClick={() => navigate("/signup", { replace: true })}
               >

@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { CopyIcon } from "@/components/CommonIcon";
 import CopyText from "@/components/CopyText";
 
 import { useBindDomainMutation, useRemoveApplicationMutation } from "./service";
@@ -37,7 +38,15 @@ export default function CustomDomain() {
           <FormLabel>CNAME</FormLabel>
           <InputGroup>
             <Input variant="filled" value={currentApp?.domain?.domain} readOnly />
-            <InputRightAddon children={<CopyText text={currentApp?.domain?.domain} />} />
+            <InputRightAddon
+              children={
+                <CopyText text={currentApp?.domain?.domain}>
+                  <span>
+                    <CopyIcon color={"#BDC1C5"} size={14} />
+                  </span>
+                </CopyText>
+              }
+            />
           </InputGroup>
         </FormControl>
         <FormControl className="py-4">

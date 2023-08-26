@@ -25,7 +25,7 @@ export default function TemplateLayout() {
           darkMode ? "" : "border-b border-[#E4E9EE] bg-[#F8FAFB]",
         )}
       >
-        <Header width="max-w-screen-xl" />
+        <Header className="max-w-screen-xl" />
       </div>
       <div className="overflow-auto">
         <div
