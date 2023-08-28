@@ -228,14 +228,4 @@ export class UserController {
     const user = request.user
     return ResponseUtil.ok(user)
   }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('test')
-  @ApiResponseString()
-  @ApiBearerAuth('Authorization')
-  async test(@Req() request: IRequest) {
-    const uid = request.user._id
-    this.quotaServiceTsService.resourceLimit(uid)
-    return ResponseUtil.ok('ww')
-  }
 }

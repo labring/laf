@@ -25,6 +25,7 @@ export class InitializerService {
     await this.createDefaultAuthProvider()
     await this.createDefaultResourceOptions()
     await this.createDefaultResourceBundles()
+    await this.createDefaultSettings()
   }
 
   async createDefaultRegion() {
@@ -342,8 +343,8 @@ export class InitializerService {
       value: 'default',
       desc: 'resource limit of user',
       metadata: {
-        limitOfCPU: 2000,
-        limitOfMemory: 2000,
+        limitOfCPU: 20000,
+        limitOfMemory: 20480,
         limitCountOfApplication: 20,
         limitOfDatabaseSyncCount: {
           countLimit: 10,
@@ -355,8 +356,19 @@ export class InitializerService {
     await this.db.collection<Setting>('Setting').insertOne({
       public: true,
       key: 'invitation_profit',
-      value: '100',
+      value: '0',
       desc: 'Set up invitation rebate',
+    })
+
+    await this.db.collection<Setting>('Setting').insertOne({
+      public: true,
+      key: 'id_verify',
+      value: 'off', // on | off
+      desc: 'real name authentication',
+      metadata: {
+        message: '',
+        authenticateSite: '',
+      },
     })
 
     this.logger.verbose('Created default settings')

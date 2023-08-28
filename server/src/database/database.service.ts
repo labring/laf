@@ -16,6 +16,8 @@ import {
 } from './entities/database'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
+import { DatabaseSync } from './entities/database-sync'
+import { ObjectId } from 'mongodb'
 
 const p_exec = promisify(exec)
 
@@ -211,7 +213,7 @@ export class DatabaseService {
     }
   }
 
-  async exportDatabase(appid: string, filePath: string) {
+  async exportDatabase(appid: string, filePath: string, uid: ObjectId) {
     const region = await this.regionService.findByAppId(appid)
     const database = await this.findOne(appid)
     assert(database, 'Database not found')
@@ -223,6 +225,9 @@ export class DatabaseService {
       await p_exec(
         `mongodump --uri='${connectionUri}' --gzip --archive=${filePath}`,
       )
+      await this.db
+        .collection<DatabaseSync>('DatabaseSync')
+        .insertOne({ uid, createdAt: new Date() })
     } catch (error) {
       this.logger.error(`failed to export db ${appid}`, error)
       throw error
@@ -233,6 +238,7 @@ export class DatabaseService {
     appid: string,
     dbName: string,
     filePath: string,
+    uid: ObjectId,
   ): Promise<void> {
     const region = await this.regionService.findByAppId(appid)
     const database = await this.findOne(appid)
@@ -245,6 +251,9 @@ export class DatabaseService {
       await p_exec(
         `mongorestore --uri='${connectionUri}' --gzip --archive='${filePath}' --nsFrom="${dbName}.*" --nsTo="${appid}.*" -v --nsInclude="${dbName}.*"`,
       )
+      await this.db
+        .collection<DatabaseSync>('DatabaseSync')
+        .insertOne({ uid, createdAt: new Date() })
     } catch (error) {
       console.error(`failed to import db to ${appid}:`, error)
       throw error

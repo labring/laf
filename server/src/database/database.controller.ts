@@ -32,6 +32,9 @@ import { unlink, writeFile } from 'node:fs/promises'
 import * as os from 'os'
 import { ResponseUtil } from 'src/utils/response'
 import { ImportDatabaseDto } from './dto/import-database.dto'
+import { InjectUser } from 'src/utils/decorator'
+import { User } from 'src/user/entities/user'
+import { QuotaService } from 'src/user/quota.service'
 
 @ApiTags('Database')
 @ApiBearerAuth('Authorization')
@@ -39,7 +42,10 @@ import { ImportDatabaseDto } from './dto/import-database.dto'
 export class DatabaseController {
   private readonly logger = new Logger(DatabaseController.name)
 
-  constructor(private readonly dbService: DatabaseService) {}
+  constructor(
+    private readonly dbService: DatabaseService,
+    private readonly quotaService: QuotaService,
+  ) {}
 
   /**
    * The database proxy for database management
@@ -91,7 +97,15 @@ export class DatabaseController {
   async exportDatabase(
     @Param('appid') appid: string,
     @Res({ passthrough: true }) res: IResponse,
+    @InjectUser() user: User,
   ) {
+    // Check if user data import and export is out of limits
+    const databaseSyncLimit = await this.quotaService.databaseSyncLimit(
+      user._id,
+    )
+    if (databaseSyncLimit) {
+      return ResponseUtil.error('Database sync limit exceeded')
+    }
     const tempFilePath = path.join(
       os.tmpdir(),
       'mongodb-data',
@@ -104,7 +118,7 @@ export class DatabaseController {
       mkdirSync(path.dirname(tempFilePath), { recursive: true })
     }
 
-    await this.dbService.exportDatabase(appid, tempFilePath)
+    await this.dbService.exportDatabase(appid, tempFilePath, user._id)
     const filename = path.basename(tempFilePath)
 
     res.set({
@@ -132,7 +146,15 @@ export class DatabaseController {
     @UploadedFile() file: Express.Multer.File,
     @Body('sourceAppid') sourceAppid: string,
     @Param('appid') appid: string,
+    @InjectUser() user: User,
   ) {
+    // Check if user data import and export is out of limits
+    const databaseSyncLimit = await this.quotaService.databaseSyncLimit(
+      user._id,
+    )
+    if (databaseSyncLimit) {
+      return ResponseUtil.error('Database sync limit exceeded')
+    }
     // check if db is valid
     if (!/^[a-z0-9]{6}$/.test(sourceAppid)) {
       return ResponseUtil.error('Invalid source appid')
@@ -156,7 +178,12 @@ export class DatabaseController {
 
     try {
       await writeFile(tempFilePath, file.buffer)
-      await this.dbService.importDatabase(appid, sourceAppid, tempFilePath)
+      await this.dbService.importDatabase(
+        appid,
+        sourceAppid,
+        tempFilePath,
+        user._id,
+      )
       return ResponseUtil.ok({})
     } finally {
       if (existsSync(tempFilePath)) await unlink(tempFilePath)

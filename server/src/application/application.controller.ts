@@ -119,12 +119,12 @@ export class ApplicationController {
       }
     }
 
-    // one user can only have 20 applications in one region
+    // check if a user exceeds the resource limit in a region
     const limitResource = await this.quotaServiceTsService.resourceLimit(
       user._id,
     )
     if (limitResource) {
-      return ResponseUtil.error(`resource limit`)
+      return ResponseUtil.error(`exceed resource limit`)
     }
 
     // check account balance
@@ -346,12 +346,12 @@ export class ApplicationController {
       return ResponseUtil.error('invalid resource specification')
     }
 
-    // check resource limit
+    // check if a user exceeds the resource limit in a region
     const limitResource = await this.quotaServiceTsService.resourceLimit(
       user._id,
     )
     if (limitResource) {
-      return ResponseUtil.error(`resource limit`)
+      return ResponseUtil.error(`exceed resource limit`)
     }
 
     const doc = await this.application.updateBundle(appid, dto, isTrialTier)
