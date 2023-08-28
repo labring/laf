@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { RiCodeBoxFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import {
@@ -14,14 +13,16 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import clsx from "clsx";
 
+import { CopyIcon, DevelopIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import CopyText from "@/components/CopyText";
 import FileTypeIcon from "@/components/FileTypeIcon";
-import IconWrap from "@/components/IconWrap";
 import { APP_PHASE_STATUS, APP_STATUS, Pages } from "@/constants";
 import { formatDate } from "@/utils/format";
 import getRegionById from "@/utils/getRegionById";
@@ -40,6 +41,7 @@ import useGlobalStore from "@/pages/globalStore";
 function List(props: { appList: TApplicationItem[] }) {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const darkMode = useColorMode().colorMode === "dark";
 
   const { setCurrentApp, regions, userInfo } = useGlobalStore();
 
@@ -56,14 +58,14 @@ function List(props: { appList: TApplicationItem[] }) {
   return (
     <>
       <div className="mb-5 flex items-center justify-between">
-        <h2 className="flex items-center text-2xl font-semibold phone:text-base">
-          <FileTypeIcon type="app" className="mr-1 " />
+        <h2 className="flex items-center text-2xl font-medium">
+          <FileTypeIcon type="app" className="mr-3" />
           {t("HomePanel.MyApp")}
         </h2>
         <div className="flex phone:px-3">
           <InputGroup className="mr-4">
             <InputLeftElement
-              height={"8"}
+              height={"9"}
               left="2"
               pointerEvents="none"
               children={<Search2Icon color="gray.300" fontSize={12} />}
@@ -72,29 +74,31 @@ function List(props: { appList: TApplicationItem[] }) {
               rounded={"full"}
               placeholder={t("Search").toString()}
               variant="outline"
-              size={"sm"}
+              height="36px"
               onChange={(e: any) => setSearchKey(e.target.value)}
             />
           </InputGroup>
           <CreateAppModal type="create">
-            <Button colorScheme="primary" style={{ padding: "0 40px" }} leftIcon={<AddIcon />}>
-              {t("CreateApp")}
+            <Button
+              colorScheme="primary"
+              style={{ padding: "0 40px", height: "36px" }}
+              className="!bg-primary-600 hover:!bg-primary-700"
+              leftIcon={<AddIcon />}
+            >
+              {t("Create")}
             </Button>
           </CreateAppModal>
         </div>
       </div>
 
       <div className="flex flex-col overflow-auto">
-        <Box
-          bg={bg}
-          className="mb-3 flex h-12 flex-none items-center rounded-lg px-3 lg:px-6 phone:px-2"
-        >
+        <Box bg={bg} className="mb-3 flex h-12 flex-none items-center rounded-[10px] px-6">
           <div className="w-3/12 text-second ">{t("HomePanel.Application") + t("Name")}</div>
           <div className="w-2/12 whitespace-nowrap text-second">App ID</div>
           <div className="w-2/12 pl-2 text-second">{t("HomePanel.State")}</div>
           <div className="w-2/12 text-second ">{t("HomePanel.Region")}</div>
           <div className="w-4/12 text-second ">{t("Time")}</div>
-          <div className="w-1/12 min-w-[100px] pl-2 text-second">{t("Operation")}</div>
+          <div className="w-1/12 min-w-[150px] pl-4 text-second">{t("Operation")}</div>
         </Box>
         <div className="flex-grow overflow-auto">
           {(appList || [])
@@ -104,38 +108,53 @@ function List(props: { appList: TApplicationItem[] }) {
                 <Box
                   key={item?.appid}
                   bg={bg}
-                  className="group mb-3 flex items-center rounded-xl px-3 py-5 lg:px-6"
+                  className="group mb-3 flex h-[68px] items-center rounded-[10px] px-6"
                 >
                   <div className="w-3/12 ">
                     <div className="flex">
-                      <span className="mr-2 text-lg font-semibold">{item?.name}</span>
+                      <span className="mr-2 text-lg font-medium">{item?.name}</span>
                       {item?.createdBy !== userInfo?._id && (
-                        <span className="flex items-center rounded-[4px] border border-grayModern-200 px-1.5 text-sm text-grayModern-600">
+                        <span
+                          className={clsx(
+                            "-ml-2 flex scale-[.83] items-center rounded-full border  border-dashed border-[#DEE0E2] px-2",
+                            darkMode ? "" : "text-grayModern-600",
+                          )}
+                        >
                           {t("Collaborative")}
                         </span>
                       )}
                     </div>
                     <BundleInfo bundle={item.bundle} />
                   </div>
-                  <div className="w-2/12 font-mono">
-                    {item?.appid} <CopyText text={item?.appid} />
+                  <div className={clsx(darkMode ? "" : "text-grayIron-900", "w-2/12")}>
+                    <CopyText className="flex space-x-1 font-mono" text={item?.appid}>
+                      <span>
+                        <p>{item?.appid}</p>
+                        <CopyIcon size={14} color="#CDCDD0" />
+                      </span>
+                    </CopyText>
                   </div>
-                  <div className="w-2/12 ">
+                  <div className="w-2/12">
                     <StatusBadge statusConditions={item?.phase} state={item?.state} />
                   </div>
-                  <div className="w-2/12 ">
+                  <div className={clsx("w-2/12 font-medium", darkMode ? "" : " text-grayIron-700")}>
                     {getRegionById(regions, item.regionId)?.displayName}
                   </div>
-                  <div className="w-4/12 ">
+                  <div
+                    className={
+                      darkMode
+                        ? "text-white/16 w-4/12 font-medium"
+                        : "w-4/12 font-medium text-grayIron-700"
+                    }
+                  >
                     <p>
                       {t("CreateTime")}: {formatDate(item.createdAt)}{" "}
                     </p>
                   </div>
-                  <div className="flex w-1/12 min-w-[100px]">
+                  <div className="flex w-1/12 min-w-[150px]">
                     <Button
-                      className="mr-2"
+                      className="mr-4 !px-4 !py-1.5 !font-medium !text-primary-600"
                       fontWeight={"semibold"}
-                      size={"sm"}
                       variant={"text"}
                       disabled={item?.phase === APP_PHASE_STATUS.Deleting}
                       onClick={(event: any) => {
@@ -143,15 +162,13 @@ function List(props: { appList: TApplicationItem[] }) {
                         setCurrentApp(item);
                         navigate(`/app/${item?.appid}/${Pages.function}`);
                       }}
+                      leftIcon={<DevelopIcon boxSize="6" color={"primary.500"} />}
                     >
-                      <RiCodeBoxFill size={25} className="mr-2" />
                       {t("HomePanel.Develop")}
                     </Button>
                     <Menu placement="bottom-end">
-                      <MenuButton>
-                        <IconWrap>
-                          <BsThreeDotsVertical size={16} />
-                        </IconWrap>
+                      <MenuButton className="h-8 w-8 rounded-full hover:bg-lafWhite-600">
+                        <BsThreeDotsVertical color="#828289" size={16} className="m-auto" />
                       </MenuButton>
                       <MenuList width={12} minW={24}>
                         <CreateAppModal application={item} type="edit">
@@ -164,7 +181,7 @@ function List(props: { appList: TApplicationItem[] }) {
 
                         <CreateAppModal application={item} type="change">
                           <MenuItem minH="40px" display={"block"}>
-                            <a className="text-primary block" href="/edit">
+                            <a className="text-primary block whitespace-nowrap" href="/edit">
                               {t("Change")}
                             </a>
                           </MenuItem>

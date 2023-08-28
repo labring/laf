@@ -57,7 +57,7 @@ const useCustomSettingStore = create<State>()(
             SideBar: {
               id: "SideBar",
               style: {
-                width: 272,
+                width: 218,
                 minWidth: 0,
               },
             },
@@ -65,7 +65,7 @@ const useCustomSettingStore = create<State>()(
             RightPanel: {
               id: "RightPanel",
               style: {
-                width: 320,
+                width: 270,
                 minWidth: 0,
               },
             },
@@ -73,7 +73,7 @@ const useCustomSettingStore = create<State>()(
             DependencePanel: {
               id: "DependencePanel",
               style: {
-                height: 300,
+                height: 200,
                 minHeight: PanelMinHeight,
                 maxHeight: 500,
               },
@@ -82,7 +82,7 @@ const useCustomSettingStore = create<State>()(
             ConsolePanel: {
               id: "ConsolePanel",
               style: {
-                height: 200,
+                height: 118,
                 minHeight: PanelMinHeight,
               },
             },
@@ -90,7 +90,7 @@ const useCustomSettingStore = create<State>()(
             RunningPanel: {
               id: "RunningPanel",
               style: {
-                height: 200,
+                height: 322,
                 minHeight: PanelMinHeight,
               },
             },

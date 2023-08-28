@@ -14,6 +14,7 @@ import {
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { Logo, LogoText } from "@/components/LogoIcon";
 import { SendSmsCodeButton } from "@/components/SendSmsCodeButton";
 import { COLOR_MODE } from "@/constants";
 
@@ -76,14 +77,15 @@ export default function ResetPassword() {
   return (
     <div
       className={clsx(
-        "absolute left-1/2 top-1/2 w-[560px] -translate-y-1/2 rounded-[10px] p-[65px]",
+        "absolute right-[125px] top-1/2 h-[640px] w-[560px] -translate-y-1/2 rounded-3xl px-16 pt-[78px]",
         { "bg-white": !darkMode, "bg-lafDark-100": darkMode },
       )}
     >
-      <div className="mb-[45px]">
-        <img src="/logo.png" alt="logo" width={40} className="mr-4" />
+      <div className="mb-9 flex items-center space-x-4">
+        <Logo size="43px" outerColor="#33BABB" innerColor="white" />
+        <LogoText size="51px" color="#363C42" />
       </div>
-      <div className="mb-[65px]">
+      <div>
         <FormControl isInvalid={!!errors?.phone} className="mb-6 flex items-center">
           <FormLabel className="w-20" htmlFor="phone">
             {t("AuthPanel.Phone")}
@@ -100,10 +102,12 @@ export default function ResetPassword() {
               type="tel"
               id="phone"
               placeholder={t("AuthPanel.PhonePlaceholder") || ""}
-              bg={"#F8FAFB"}
-              border={"1px solid #D5D6E1"}
+              bg="#F8FAFB"
+              border="1px solid #D5D6E1"
+              height="48px"
+              rounded="4px"
             />
-            <InputRightElement width="6rem">
+            <InputRightElement width="6rem" height="100%">
               <SendSmsCodeButton getPhone={getValues} phoneNumber={"phone"} type="ResetPassword" />
             </InputRightElement>
           </InputGroup>
@@ -123,8 +127,10 @@ export default function ResetPassword() {
             })}
             id="validationCode"
             placeholder={t("AuthPanel.ValidationCodePlaceholder") || ""}
-            bg={"#F8FAFB"}
-            border={"1px solid #D5D6E1"}
+            bg="#F8FAFB"
+            border="1px solid #D5D6E1"
+            height="48px"
+            rounded="4px"
           />
         </FormControl>
         <FormControl isInvalid={!!errors.password} className="mb-6 flex items-center">
@@ -139,14 +145,22 @@ export default function ResetPassword() {
               })}
               id="password"
               placeholder={t("AuthPanel.PasswordPlaceholder") || ""}
-              bg={"#F8FAFB"}
-              border={"1px solid #D5D6E1"}
+              bg="#F8FAFB"
+              border="1px solid #D5D6E1"
+              height="48px"
+              rounded="4px"
             />
-            <InputRightElement width="2rem">
+            <InputRightElement width="2rem" height="100%">
               {isShowPassword ? (
-                <ViewOffIcon className="cursor-pointer" onClick={() => setIsShowPassword(false)} />
+                <ViewOffIcon
+                  className="cursor-pointer !text-primary-500"
+                  onClick={() => setIsShowPassword(false)}
+                />
               ) : (
-                <ViewIcon className="cursor-pointer" onClick={() => setIsShowPassword(true)} />
+                <ViewIcon
+                  className="cursor-pointer !text-primary-500"
+                  onClick={() => setIsShowPassword(true)}
+                />
               )}
             </InputRightElement>
           </InputGroup>
@@ -163,30 +177,42 @@ export default function ResetPassword() {
               })}
               id="confirmPassword"
               placeholder={t("AuthPanel.ConfirmPassword") || ""}
-              bg={"#F8FAFB"}
-              border={"1px solid #D5D6E1"}
+              bg="#F8FAFB"
+              border="1px solid #D5D6E1"
+              height="48px"
+              rounded="4px"
             />
-            <InputRightElement width="2rem">
+            <InputRightElement width="2rem" height="100%">
               {isShowPassword ? (
-                <ViewOffIcon className="cursor-pointer" onClick={() => setIsShowPassword(false)} />
+                <ViewOffIcon
+                  className="cursor-pointer !text-primary-500"
+                  onClick={() => setIsShowPassword(false)}
+                />
               ) : (
-                <ViewIcon className="cursor-pointer" onClick={() => setIsShowPassword(true)} />
+                <ViewIcon
+                  className="cursor-pointer !text-primary-500"
+                  onClick={() => setIsShowPassword(true)}
+                />
               )}
             </InputRightElement>
           </InputGroup>
         </FormControl>
-        <div className="mb-6">
+        <div className="mb-5 mt-12">
           <Button
             type="submit"
-            className={clsx("w-full", "pb-5 pt-5")}
+            className="!h-[42px] w-full !bg-primary-500 hover:!bg-primary-600"
             isLoading={resetPasswordMutation.isLoading}
             onClick={handleSubmit(onSubmit)}
           >
             {t("AuthPanel.ResetPassword")}
           </Button>
         </div>
-        <div className="mt-2 flex justify-end">
-          <Button size="xs" variant={"text"} onClick={() => navigate("/login", { replace: true })}>
+        <div className="flex justify-end">
+          <Button
+            className="!px-2 text-lg"
+            variant={"text"}
+            onClick={() => navigate("/login", { replace: true })}
+          >
             {t("AuthPanel.ToLogin")}
           </Button>
         </div>

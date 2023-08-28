@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Menu, MenuButton, MenuItem, MenuList, useColorMode } from "@chakra-ui/react";
-import { QueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 
 import { LikeIcon, MedalIcon } from "@/components/CommonIcon";
@@ -32,7 +32,7 @@ const TemplateCard = (props: {
   const { showSuccess } = useGlobalStore();
   const { setShowTemplateItem } = useTemplateStore();
   const darkMode = colorMode === "dark";
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
   const starMutation = useFunctionTemplateStarMutation();
   const [starNumber, setStarNumber] = useState(template.star);
   const [starState, setStarState] = useState(template.stared);

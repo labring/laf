@@ -1,10 +1,9 @@
-import { useTranslation } from "react-i18next";
-import { CopyIcon, EditIcon } from "@chakra-ui/icons";
 import { CloseIcon } from "@chakra-ui/icons";
-import { HStack, Input, Tooltip, useColorMode } from "@chakra-ui/react";
+import { HStack, Input, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import SimpleBar from "simplebar-react";
 
+import { CopyIcon, EditIconFull } from "@/components/CommonIcon";
 import CopyText from "@/components/CopyText";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
@@ -13,6 +12,8 @@ import { COLOR_MODE } from "@/constants";
 import useFunctionStore from "../../store";
 
 import FunctionDetailPopOver from "./FunctionDetailPopOver";
+
+import "./index.css";
 
 import useFunctionCache from "@/hooks/useFunctionCache";
 import CollaborateButton from "@/pages/app/collaboration/CollaborateButton";
@@ -29,13 +30,12 @@ function HeadPanel() {
     setCurrentFunction,
   } = useFunctionStore((state) => state);
   const functionCache = useFunctionCache();
-  const { t } = useTranslation();
 
   return (
-    <Panel className="!flex-row justify-between bg-grayModern-200 !px-0">
+    <Panel className="recentList !flex-row justify-between !px-0">
       <SimpleBar style={{ height: 36, flex: 1, overflowY: "hidden" }}>
         <HStack className="h-9 flex-1" data-simplebar>
-          <div className="flex h-full ">
+          <div className="flex h-full">
             {recentFunctionList.length > 0 &&
               recentFunctionList.map((item, index) => {
                 const selected = currentFunction?._id === item._id;
@@ -43,10 +43,10 @@ function HeadPanel() {
                   <div
                     key={index}
                     className={clsx(
-                      "group !ml-0 flex h-full w-28 cursor-pointer items-center justify-between border-y-[2px] px-3 font-medium",
+                      "group !ml-0 flex h-full w-28 cursor-pointer items-center justify-between border-y-[2px] px-3 text-[13px] font-medium",
                       darkMode ? "border-[#1A202C]" : "border-[#EEF0F2]",
                       selected
-                        ? "border-b-transparent border-t-primary-600 text-primary-600"
+                        ? "border-b-transparent border-t-primary-600 text-primary-700"
                         : darkMode
                         ? "border-t-lafDark-200 text-grayModern-400"
                         : "border-t-lafWhite-200 text-grayModern-600",
@@ -73,8 +73,8 @@ function HeadPanel() {
                     ) : (
                       <span className="ml-1 inline-block h-1 w-1 flex-none rounded-full bg-none group-hover:hidden"></span>
                     )}
-                    <span className="hidden group-hover:flex">
-                      <IconWrap className="!w-2">
+                    <span className="-mr-1 hidden group-hover:flex">
+                      <IconWrap size={16}>
                         <CloseIcon
                           boxSize="2"
                           className="!text-grayModern-600"
@@ -106,7 +106,6 @@ function HeadPanel() {
       </SimpleBar>
       <HStack
         minW="500px"
-        // width={`${functionPageConfig.RightPanel.style.width}px`}
         className={clsx(
           "flex justify-end border-b-[2px] pr-2",
           !darkMode ? "border-[#EEF0F2] " : "border-[#1A202C]",
@@ -117,23 +116,24 @@ function HeadPanel() {
         {!!currentFunction._id && (
           <>
             <DeployButton />
-            <div className={clsx("flex items-center", !darkMode && "bg-[#F6F8F9]")}>
+            <div className={clsx("flex items-center pl-1", !darkMode && "bg-[#F6F8F9]")}>
               <CopyText text={getFunctionUrl()}>
                 <Input w={"200px"} size="xs" readOnly value={getFunctionUrl()} />
               </CopyText>
-              <SysSetting currentTab="domain">
-                <span className="flex items-center">
-                  <Tooltip label={String(t("Edit"))}>
-                    <EditIcon className="mr-3 cursor-pointer !text-grayModern-300" />
-                  </Tooltip>
-                </span>
-              </SysSetting>
               <CopyText
                 text={getFunctionUrl()}
-                className="mr-3 cursor-pointer !text-grayModern-300"
+                className="mr-2 cursor-pointer !text-grayModern-300"
+                hideToolTip
               >
-                <CopyIcon />
+                <span>
+                  <CopyIcon color="#BDC1C5" size={14} />
+                </span>
               </CopyText>
+              <SysSetting currentTab="domain">
+                <span className="mr-2 flex cursor-pointer items-center text-lg !text-grayModern-300">
+                  <EditIconFull />
+                </span>
+              </SysSetting>
             </div>
           </>
         )}

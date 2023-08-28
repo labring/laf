@@ -57,9 +57,9 @@ export default function PricingStandards() {
 
   return (
     <div>
-      <div className="flex items-center pt-2 text-2xl">
-        <StandardIcon boxSize={5} mr={3} />
-        {t("SettingPanel.PricingStandards")}
+      <div className="flex items-center space-x-2 pt-2 text-2xl">
+        <StandardIcon size={20} color={"#24282C"} />
+        <p>{t("SettingPanel.PricingStandards")}</p>
       </div>
       <div className="flex justify-center pt-10">
         {pricingData.map((data) => (

@@ -196,7 +196,7 @@ const CreateModal = (props: {
                 <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
               </FormControl>
               <FormControl isInvalid={!!errors?.methods}>
-                <HStack spacing={6}>
+                <HStack spacing={6} className="mt-2">
                   <Controller
                     name="methods"
                     control={control}
@@ -227,12 +227,12 @@ const CreateModal = (props: {
                 </HStack>
               </FormControl>
               <FormControl>
-                <div className="flex w-full items-center border-b-2 border-transparent focus-within:border-grayModern-200">
+                <div className="mb-2 flex w-full items-center border-b-2 border-transparent pb-1 focus-within:border-grayModern-200">
                   <TextIcon fontSize={16} color={"gray.300"} />
                   <input
                     id="description"
                     placeholder={t("FunctionPanel.Description").toString()}
-                    className="w-full bg-transparent py-2 pl-2 text-lg text-second"
+                    className="w-full bg-transparent pl-2 text-lg text-second"
                     style={{ outline: "none", boxShadow: "none" }}
                     {...register("description")}
                   />
@@ -243,7 +243,7 @@ const CreateModal = (props: {
                 type="submit"
                 onClick={handleSubmit(onSubmit)}
                 isLoading={updateFunctionMutation.isLoading || createFunctionMutation.isLoading}
-                className="!h-9 w-full !rounded !bg-primary-600 !font-semibold"
+                className="!h-9 w-full !rounded !bg-primary-600 !font-semibold hover:!bg-primary-700"
               >
                 {!isEdit ? t("CreateFunction") : t("EditFunction")}
               </Button>
@@ -257,21 +257,21 @@ const CreateModal = (props: {
                   <div className="pb-3 text-lg font-medium text-grayModern-700">
                     {t("Template.Recommended")}
                   </div>
-                  <div className="mb-11 flex space-x-3">
+                  <div className="mb-11 flex w-full">
                     {!isLoading ? (
                       (TemplateList?.data.list.length > 0
                         ? TemplateList?.data.list
                         : InitialTemplateList.data?.data.list
                       ).map((item: TFunctionTemplate) => (
-                        <div
-                          className="h-28 w-1/3 py-1"
+                        <section
+                          className="h-28 w-1/3 px-1.5 py-1"
                           key={item._id}
                           onClick={() => {
                             setTemplateOpen(true);
                           }}
                         >
                           <TemplateCard template={item} isModal={true} />
-                        </div>
+                        </section>
                       ))
                     ) : (
                       <Center className="h-28 w-full">

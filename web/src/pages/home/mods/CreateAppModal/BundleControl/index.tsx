@@ -61,11 +61,11 @@ export default function BundleControl(props: {
         )}
       >
         <div className="flex items-center">
-          <TextIcon boxSize={3} mr={2} color={darkMode ? "" : "grayModern.600"} />
+          <TextIcon boxSize={4} mr={2} color={darkMode ? "" : "grayModern.600"} />
           <span className="text-lg font-semibold">{t("application.ChooseSpecifications")}</span>
         </div>
         <div className="flex items-center">
-          <RecommendIcon boxSize={4} mr={2} color={"primary.600"} />
+          <RecommendIcon boxSize={"14px"} mr={2} color={"primary.600"} />
           <span className="">{t("application.RecommendedSpecifications")}</span>
           {(sortedBundles || []).map((item: TBundle) => {
             return (

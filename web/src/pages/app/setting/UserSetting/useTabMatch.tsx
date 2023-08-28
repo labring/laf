@@ -50,31 +50,31 @@ export default function useTabMatch(type: string) {
       key: TabKeys.CostOverview,
       name: String(t("SettingPanel.CostOverview")),
       component: <Usage />,
-      icon: <CostIcon boxSize={4} />,
+      icon: <CostIcon size={16} />,
     },
     {
       key: TabKeys.CardRedemption,
       name: String(t("SettingPanel.CardRedemption")),
       component: <CardRedemption />,
-      icon: <CardIcon boxSize={4} />,
+      icon: <CardIcon size={16} />,
     },
     {
       key: TabKeys.BillingDetails,
       name: String(t("SettingPanel.BillingDetails")),
       component: <BillingDetails />,
-      icon: <BillingIcon boxSize={4} />,
+      icon: <BillingIcon size={16} />,
     },
     {
       key: TabKeys.RechargeHistory,
       name: String(t("SettingPanel.RechargeHistory")),
       component: <RechargeHistory />,
-      icon: <ChargeIcon boxSize={4} />,
+      icon: <ChargeIcon size={16} />,
     },
     {
       key: TabKeys.PricingStandards,
       name: String(t("SettingPanel.PricingStandards")),
       component: <PricingStandards />,
-      icon: <StandardIcon boxSize={4} />,
+      icon: <StandardIcon size={16} />,
     },
   ];
 

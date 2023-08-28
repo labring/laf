@@ -18,7 +18,7 @@ export default function BasicLayout() {
   }, [init]);
   return (
     <div>
-      <Header width="" />
+      <Header className="m-auto max-w-screen-xl" />
       <div className="pb-10">
         {loading ? (
           <Center style={{ minHeight: 500 }}>

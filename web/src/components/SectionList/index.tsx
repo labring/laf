@@ -1,5 +1,6 @@
 import React from "react";
 import clsx from "clsx";
+import SimpleBar from "simplebar-react";
 
 import styles from "./index.module.scss";
 
@@ -9,12 +10,12 @@ function SectionList(props: {
   className?: string;
 }) {
   return (
-    <ul
+    <SimpleBar
       className={styles.sectionList + " flex flex-col overflow-y-auto " + props.className}
       style={props.style || {}}
     >
       {props.children}
-    </ul>
+    </SimpleBar>
   );
 }
 

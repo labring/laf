@@ -17,7 +17,6 @@ module.exports = {
       DEFAULT: "0px 4px 10px rgba(191, 202, 213, 0.25)",
     },
     fontSize: {
-      sm: "10px",
       base: "12px",
       lg: "14px",
       xl: "16px",
@@ -132,6 +131,7 @@ module.exports = {
         frostyNightfall: {
           200: "#EAEBF0",
           300: "#D5D6E1",
+          700: "#787A90",
         },
       },
     },

@@ -101,7 +101,7 @@ export default function MyTemplateList() {
               navigate("/market/templates/create");
             }}
             leftIcon={<AddIcon />}
-            className="ml-4 !h-9 !w-[144px]"
+            className="ml-4 !h-9 !px-8"
           >
             {t("Template.CreateTemplate")}
           </Button>

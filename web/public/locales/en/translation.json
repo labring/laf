@@ -41,7 +41,7 @@
   "Close": "Close",
   "Confirm": "Confirm",
   "Copied": "copied",
-  "Copy": "copy",
+  "Copy": "Copy",
   "Create": "New application",
   "Change": "Specification",
   "CreateNow": "Create Now",
@@ -171,7 +171,7 @@
     "Memory": "Memory",
     "Restart": "Restart",
     "network": "Outgoing capacity",
-    "AppInfo": "Application Information",
+    "AppInfo": "Application Info",
     "Auth": "Real-name Authentication",
     "Code": "Code",
     "CodeTip": "Please enter a four-digit verification code",
@@ -187,7 +187,7 @@
     "noAuth": "Not Authenticated",
     "showAuth": "Go to Auth",
     "Subscription": "Subscription Info",
-    "Usage": "Usage",
+    "Usage": "Usage Center",
     "Avatar": "Avatar",
     "UserName": "UserName",
     "Email": "Email",
@@ -206,7 +206,7 @@
     "CostTrend": "Cost Trend",
     "Balance": "Balance",
     "Pause": "Pause",
-    "AppMonitor": "App Monitoring",
+    "AppMonitor": "Application Monitor",
     "PauseTips": "Are you sure you want to pause this application?",
     "RestartTips": "Are you sure you want to restart this application?"
   },
@@ -361,14 +361,15 @@
     "ResetPasswordSuccess": "Reset password successfully",
     "NewPassword": "New Password",
     "SignUpSuccess": "Sign up successfully",
-    "EmailTip": "Please input a valid Email"
+    "EmailTip": "Please input a valid Email",
+    "LoginOrRegister": "Login / Register"
   },
   "Time": "Time",
   "CreateTime": "Created",
   "EndTime": "Expired",
   "Renew": "Renew",
   "Balance": "Balance",
-  "ChargeNow": "Charge",
+  "ChargeNow": "Charge Now",
   "balance is insufficient": "balance is insufficient",
   "DeleteApp": "Delete",
   "Recharge amount": "Recharge amount",
@@ -401,7 +402,7 @@
       "contact": "Contact",
       "start": "Start Now",
       "stars": "3.9K",
-      "funcTemplate": "Function market",
+      "funcTemplate": "Function Market",
       "appMarket": "Application Market",
       "community": "Community"
     },
@@ -489,7 +490,7 @@
   "Template": {
     "Recent": "Recently Used",
     "AddEnvironmentVariables": "Add environment variables",
-    "Create": "new build",
+    "Create": "new",
     "CommunityTemplate": "All Template",
     "CreateTemplate": "New template",
     "DeleteTemplate": "Delete template",
@@ -628,5 +629,9 @@
   "Used": "Used",
   "Remaining": "Remaining",
   "Pod": "Pod",
-  "EditFunction": "Edit Function"
+  "EditFunction": "Edit Function",
+  "Error": "Error, ",
+  "Retry": "Retry",
+  "NoFunctionYet": "You haven't created a function yet~",
+  "shortcutKey": "shortcut key"
 }

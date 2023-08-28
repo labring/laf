@@ -58,6 +58,7 @@ function BodyParamsTab(props: {
     name: "params",
     control,
   });
+  const darkMode = colorMode === "dark";
 
   useWatch({
     control,
@@ -114,11 +115,11 @@ function BodyParamsTab(props: {
         <div>
           <form>
             <TableContainer>
-              <Table size="sm" className="rounded border border-grayModern-600">
+              <Table size="sm" variant={"params"}>
                 <Thead>
                   <Tr>
-                    <Th>{t("FunctionPanel.Name")}</Th>
-                    <Th>{t("FunctionPanel.Value")}</Th>
+                    <Th className="text-grayModern-500">{t("FunctionPanel.Name")}</Th>
+                    <Th className="text-grayModern-500">{t("FunctionPanel.Value")}</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -203,10 +204,12 @@ function BodyParamsTab(props: {
           </form>
           <Button
             size="sm"
-            mt={2}
+            mt={1}
             width={"100%"}
             variant="outline"
-            color={"gray.500"}
+            className="!rounded-sm !font-medium !text-grayModern-600"
+            bg={darkMode ? "lafDark.300" : "lafWhite.400"}
+            border={darkMode ? "1px solid" : "1px solid #EFF0F1"}
             onClick={() =>
               append({
                 name: "",

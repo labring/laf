@@ -1,7 +1,18 @@
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { CloseIcon } from "@chakra-ui/icons";
-import { Button, Input, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Button,
+  Input,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  useColorMode,
+} from "@chakra-ui/react";
 import { t } from "i18next";
 
 type Params = {
@@ -25,6 +36,8 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void; paramsList: 
     name: "params",
     control,
   });
+  const { colorMode } = useColorMode();
+  const darkMode = colorMode === "dark";
 
   useEffect(() => {
     const subscription = watch((value) => {
@@ -42,11 +55,11 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void; paramsList: 
     <div>
       <form>
         <TableContainer>
-          <Table size="sm" className="rounded border border-grayModern-600">
+          <Table size="sm" variant={"params"}>
             <Thead>
               <Tr>
-                <Th>{t("FunctionPanel.Name")}</Th>
-                <Th>{t("FunctionPanel.Value")}</Th>
+                <Th className="text-grayModern-500">{t("FunctionPanel.Name")}</Th>
+                <Th className="text-grayModern-500">{t("FunctionPanel.Value")}</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -87,10 +100,12 @@ function HeaderParamsTab(props: { onChange(values: Params[]): void; paramsList: 
       </form>
       <Button
         size="sm"
-        mt={2}
+        mt={1}
         width={"100%"}
         variant="outline"
-        color={"gray.500"}
+        className="!rounded-sm !font-medium !text-grayModern-600"
+        bg={darkMode ? "lafDark.300" : "lafWhite.400"}
+        border={darkMode ? "1px solid" : "1px solid #EFF0F1"}
         onClick={() =>
           append({
             name: "",

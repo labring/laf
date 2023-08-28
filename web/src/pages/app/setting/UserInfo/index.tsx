@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { CheckCircleIcon, ChevronRightIcon, EditIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { Avatar, Box, Divider, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -26,7 +25,6 @@ export default function UserInfo() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
-  const navigate = useNavigate();
   const { siteSettings } = useSiteSettingStore((state) => state);
 
   const handleClick = () => {
@@ -139,7 +137,10 @@ export default function UserInfo() {
                       className="flex cursor-pointer items-center text-[#0884DD]"
                       onClick={() => {
                         if (userInfo?.phone) {
-                          navigate("/auth/real-name");
+                          const w = window.open("about:blank");
+                          w!.location.href = `${
+                            siteSettings.id_verify?.metadata.authenticateSite
+                          }?token=${localStorage.getItem("token")}`;
                         } else {
                           showError(t("UserInfo.PleaseBindPhone"));
                           setShowItem("phone");
