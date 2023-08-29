@@ -86,7 +86,7 @@ export default function LogsPage() {
 
   return (
     <Content>
-      <Panel className="h-[95%]">
+      <Panel className="h-[98%]">
         <form
           onSubmit={(event) => {
             event?.preventDefault();
@@ -185,9 +185,11 @@ export default function LogsPage() {
                 );
               })
             ) : (
-              <EmptyBox>
-                <p>{t("LogPanel.EmptyLogTip")}</p>
-              </EmptyBox>
+              <Center className="h-[480px]">
+                <EmptyBox>
+                  <p>{t("LogPanel.EmptyLogTip")}</p>
+                </EmptyBox>
+              </Center>
             )}
           </div>
         </div>
