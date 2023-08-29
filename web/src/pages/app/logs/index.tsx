@@ -86,7 +86,7 @@ export default function LogsPage() {
 
   return (
     <Content>
-      <Panel className="h-full">
+      <Panel className="h-[95%]">
         <form
           onSubmit={(event) => {
             event?.preventDefault();
@@ -146,17 +146,17 @@ export default function LogsPage() {
             />
           </Panel.Header>
         </form>
-        <div className="relative h-full rounded-md py-1" style={{ paddingBottom: 100 }}>
+        <div className="relative overflow-auto rounded-md py-1">
           {logListQuery.isFetching ? (
             <Center className="bg-white-200 absolute bottom-0 left-0 right-0 top-0 z-10 opacity-60">
               <Spinner size="lg" />
             </Center>
           ) : null}
-          <div className="mb-4 h-full overflow-y-auto ">
+          <div>
             {logListQuery.data?.data?.list?.length ? (
               logListQuery.data?.data?.list.map((item: TLogItem) => {
                 return (
-                  <div key={item._id} className=" h-[22px] overflow-hidden font-mono">
+                  <div key={item._id} className="h-[22px] overflow-hidden font-mono">
                     <span className="float-left mr-2 text-grayIron-600">
                       [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
                     </span>
@@ -191,7 +191,6 @@ export default function LogsPage() {
             )}
           </div>
         </div>
-
         <Modal onClose={onClose} isOpen={isOpen} scrollBehavior={"inside"} size="4xl">
           <ModalOverlay />
           <ModalContent>

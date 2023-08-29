@@ -44,6 +44,7 @@ export default function AreaCard(props: {
   const { t } = useTranslation();
   const [chartData, setChartData] = useState<any[]>([]);
   useEffect(() => {
+    if (!data[dataNumber]?.values) return;
     setChartData(
       data[dataNumber]?.values.map((item) => {
         if (title === "CPU") {

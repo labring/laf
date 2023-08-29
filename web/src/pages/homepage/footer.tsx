@@ -103,7 +103,11 @@ const Footer = (props: Props) => {
                   }
                 >
                   <li>
-                    <a href="#" target="_blank">
+                    <a
+                      href="https://github.com/labring/laf/tree/main/deploy"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       {t("HomePage.Footer.item2_1")}
                     </a>
                   </li>
@@ -112,11 +116,6 @@ const Footer = (props: Props) => {
                       {t("HomePage.Footer.item2_2")}
                     </a>
                   </li>
-                  {/* <li>
-                    <a href="#" target="_blank">
-                      {t('Footer.item2_3')}
-                    </a>
-                  </li> */}
                   <li>
                     <a href="https://github.com/labring/laf" target="_blank" rel="noreferrer">
                       {t("HomePage.Footer.item2_4")}
@@ -292,7 +291,11 @@ const Footer = (props: Props) => {
 
               <ul className="leading-8">
                 <li>
-                  <a href="#" target="_blank">
+                  <a
+                    href="https://github.com/labring/laf/tree/main/deploy"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     {t("HomePage.Footer.item2_1")}
                   </a>
                 </li>
@@ -301,11 +304,6 @@ const Footer = (props: Props) => {
                     {t("HomePage.Footer.item2_2")}
                   </a>
                 </li>
-                {/* <li>
-                  <a href="#" target="_blank">
-                    {t('Footer.item2_3')}
-                  </a>
-                </li> */}
                 <li>
                   <a href="https://github.com/labring/laf" target="_blank" rel="noreferrer">
                     {t("HomePage.Footer.item2_4")}
