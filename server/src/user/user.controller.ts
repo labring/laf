@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Post,
   Req,
@@ -98,9 +96,6 @@ export class UserController {
     }
 
     const avatar = await this.userService.getAvatarData(new ObjectId(uid))
-    if (!avatar) {
-      throw new HttpException('avatar not found', HttpStatus.NOT_FOUND)
-    }
 
     res.set('Content-Type', 'image/webp')
     res.send(avatar)
