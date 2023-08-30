@@ -48,9 +48,9 @@ export type TBundle = {
   updatedAt: string;
 };
 
-export type TMonitorData = {
-  cpuUsage: TCpuUsageData;
-  memoryUsage: TCpuUsageData;
+export type TInstantMonitorData = {
+  cpuUsage: TDatabaseUsage;
+  memoryUsage: TDatabaseUsage;
   databaseUsage: TDatabaseUsage;
   storageUsage: TDatabaseUsage;
 };

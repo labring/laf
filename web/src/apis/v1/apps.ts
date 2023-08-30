@@ -533,6 +533,46 @@ export async function DatabaseControllerProxy(
 }
 
 /**
+ * Export database of an application
+ */
+export async function DatabaseControllerExportDatabase(
+  params: Paths.DatabaseControllerExportDatabase.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.DatabaseControllerExportDatabase.Responses;
+}> {
+  // /v1/apps/{appid}/databases/export
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/databases/export`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Import database of an application
+ */
+export async function DatabaseControllerImportDatabase(
+  params: Paths.DatabaseControllerImportDatabase.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.DatabaseControllerImportDatabase.Responses;
+}> {
+  // /v1/apps/{appid}/databases/import
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/databases/import`, {
+    method: "PUT",
+    data: params,
+  });
+}
+
+/**
  * Create database policy rule
  */
 export async function PolicyRuleControllerCreate(params: Definitions.CreatePolicyRuleDto): Promise<{

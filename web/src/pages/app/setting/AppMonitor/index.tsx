@@ -1,42 +1,54 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Center } from "@chakra-ui/react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ErrorIcon } from "@/components/CommonIcon";
+
+import { MonitorDataType } from "../../mods/StatusBar/MonitorBar";
 
 import AreaCard from "./AreaCard";
 import PieCard from "./PieCard";
 
+import { MonitorControllerGetData } from "@/apis/v1/monitor";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function AppMonitor() {
   const { t } = useTranslation();
-  const { currentApp, monitorData } = useGlobalStore();
+  const { currentApp } = useGlobalStore();
   const { limitCPU, limitMemory, databaseCapacity, storageCapacity } = currentApp.bundle.resource;
-  const { cpuUsage, memoryUsage, databaseUsage, storageUsage } = monitorData || {
-    cpuUsage: [],
-    memoryUsage: [],
-    databaseUsage: [],
-    storageUsage: [],
-  };
+
   const [dataNumber, setDataNumber] = useState(0);
   const queryClient = useQueryClient();
 
+  const { data: monitorData } = useQuery(
+    ["useGetMonitorDataQuery"],
+    () => {
+      return MonitorControllerGetData({
+        q: MonitorDataType,
+        step: 60,
+        type: "range",
+      });
+    },
+    {
+      refetchInterval: 60000,
+    },
+  );
+
   const podsArray = useMemo(() => {
-    return cpuUsage?.map((item) => item.metric.pod).length >
-      memoryUsage?.map((item) => item.metric.pod).length
-      ? cpuUsage?.map((item) => item.metric.pod)
-      : memoryUsage?.map((item) => item.metric.pod);
-  }, [cpuUsage, memoryUsage]);
+    return monitorData?.data?.cpuUsage?.map((item: any) => item.metric.pod).length >
+      monitorData?.data?.memoryUsage?.map((item: any) => item.metric.pod).length
+      ? monitorData?.data?.cpuUsage?.map((item: any) => item.metric.pod)
+      : monitorData?.data?.memoryUsage?.map((item: any) => item.metric.pod);
+  }, [monitorData?.data?.cpuUsage, monitorData?.data?.memoryUsage]);
 
   return (
     <div className="flex w-full">
-      {monitorData && Object.keys(monitorData).length !== 0 ? (
+      {monitorData?.data && Object.keys(monitorData?.data).length !== 0 ? (
         <>
           <div className="mr-2 mt-10 h-[404px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
             <AreaCard
-              data={cpuUsage}
+              data={monitorData?.data?.cpuUsage}
               strokeColor="#47C8BF"
               fillColor="#E6F6F6"
               setDataNumber={setDataNumber}
@@ -48,7 +60,7 @@ export default function AppMonitor() {
               className="h-1/2 p-4"
             />
             <AreaCard
-              data={memoryUsage}
+              data={monitorData?.data?.memoryUsage}
               strokeColor="#9A8EE0"
               fillColor="#F2F1FB"
               title={t("Spec.RAM")}
@@ -60,13 +72,13 @@ export default function AppMonitor() {
           </div>
           <div className="mr-2 mt-10 h-[396px] w-full space-y-2">
             <PieCard
-              data={databaseUsage}
+              data={monitorData?.data?.databaseUsage}
               maxValue={databaseCapacity}
               title={t("Spec.Database")}
               colors={["#47C8BF", "#D5D6E1"]}
             />
             <PieCard
-              data={storageUsage}
+              data={monitorData?.data?.storageUsage}
               maxValue={storageCapacity}
               title={t("Spec.Storage")}
               colors={["#9A8EE0", "#D5D6E1"]}
