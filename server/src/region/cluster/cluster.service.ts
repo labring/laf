@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { KubernetesObject } from '@kubernetes/client-node'
 import * as k8s from '@kubernetes/client-node'
-import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
+import { GetApplicationNamespace } from 'src/utils/getter'
 import { compare } from 'fast-json-patch'
 import { GroupVersionKind } from 'src/region/cluster/types'
 import {
@@ -9,7 +9,7 @@ import {
   LABEL_KEY_NAMESPACE_TYPE,
   LABEL_KEY_USER_ID,
 } from 'src/constants'
-import { Region } from '../entities/region'
+import { ApplicationNamespaceMode, Region } from '../entities/region'
 
 @Injectable()
 export class ClusterService {
@@ -40,7 +40,7 @@ export class ClusterService {
     try {
       const namespace = new k8s.V1Namespace()
       namespace.metadata = new k8s.V1ObjectMeta()
-      namespace.metadata.name = GetApplicationNamespaceByAppId(appid)
+      namespace.metadata.name = GetApplicationNamespace(region, appid)
       namespace.metadata.labels = {
         [LABEL_KEY_APP_ID]: appid,
         [LABEL_KEY_NAMESPACE_TYPE]: 'app',
@@ -61,7 +61,7 @@ export class ClusterService {
   async getAppNamespace(region: Region, appid: string) {
     try {
       const coreV1Api = this.makeCoreV1Api(region)
-      const namespace = GetApplicationNamespaceByAppId(appid)
+      const namespace = GetApplicationNamespace(region, appid)
       const res = await coreV1Api.readNamespace(namespace)
       return res.body
     } catch (err) {
@@ -74,9 +74,11 @@ export class ClusterService {
 
   // remove app namespace
   async removeAppNamespace(region: Region, appid: string) {
+    if (region.namespaceConf?.mode !== ApplicationNamespaceMode.AppId) return
+
     try {
       const coreV1Api = this.makeCoreV1Api(region)
-      const namespace = GetApplicationNamespaceByAppId(appid)
+      const namespace = GetApplicationNamespace(region, appid)
       const res = await coreV1Api.deleteNamespace(namespace)
       return res
     } catch (err) {

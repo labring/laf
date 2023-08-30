@@ -1,20 +1,22 @@
 import { Condition } from 'src/region/cluster/types'
-import { ServerConfig } from '../constants'
-
-/**
- * Get system namespace of laf (in kubernetes)
- * @returns
- */
-export function GetSystemNamespace(): string {
-  return ServerConfig.SYSTEM_NAMESPACE
-}
+import { ApplicationNamespaceMode, Region } from 'src/region/entities/region'
 
 /**
  * Get application namespace name by appid (in kubernetes)
  * @param appid
  * @returns
  */
-export function GetApplicationNamespaceByAppId(appid: string): string {
+export function GetApplicationNamespace(region: Region, appid: string) {
+  const conf = region.namespaceConf
+  if (conf?.mode === ApplicationNamespaceMode.Fixed) {
+    return conf.fixed
+  }
+
+  if (conf?.mode === ApplicationNamespaceMode.AppId) {
+    const prefix = conf?.prefix || ''
+    return `${prefix}${appid}`
+  }
+
   return appid
 }
 

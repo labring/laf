@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { LABEL_KEY_APP_ID, ServerConfig } from 'src/constants'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 import { Region } from 'src/region/entities/region'
-import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
+import { GetApplicationNamespace } from 'src/utils/getter'
 import { WebsiteHosting } from 'src/website/entities/website'
 import { RuntimeDomain } from './entities/runtime-domain'
 
@@ -11,12 +11,12 @@ import { RuntimeDomain } from './entities/runtime-domain'
 @Injectable()
 export class ApisixCustomCertService {
   private readonly logger = new Logger(ApisixCustomCertService.name)
-  constructor(private readonly clusterService: ClusterService) {}
+  constructor(private readonly clusterService: ClusterService) { }
 
   async readDomainCert(region: Region, appid: string, name: string) {
     try {
       // Get the namespace based on the application ID
-      const namespace = GetApplicationNamespaceByAppId(appid)
+      const namespace = GetApplicationNamespace(region, appid)
       // Create a Kubernetes API client for the specified region
       const api = this.clusterService.makeCustomObjectApi(region)
 
@@ -46,7 +46,7 @@ export class ApisixCustomCertService {
     labels: Record<string, string>,
   ) {
     // Get the namespace based on the application ID
-    const namespace = GetApplicationNamespaceByAppId(appid)
+    const namespace = GetApplicationNamespace(region, appid)
     // Create a Kubernetes API client for the specified region
     const api = this.clusterService.makeObjectApi(region)
 
@@ -75,7 +75,7 @@ export class ApisixCustomCertService {
 
   async deleteDomainCert(region: Region, appid: string, name: string) {
     // Get the namespace based on the application ID
-    const namespace = GetApplicationNamespaceByAppId(appid)
+    const namespace = GetApplicationNamespace(region, appid)
     // Create a Kubernetes API client for the specified region
     const api = this.clusterService.makeObjectApi(region)
 
@@ -111,7 +111,7 @@ export class ApisixCustomCertService {
   async readApisixTls(region: Region, appid: string, name: string) {
     try {
       // Get the namespace based on the application ID
-      const namespace = GetApplicationNamespaceByAppId(appid)
+      const namespace = GetApplicationNamespace(region, appid)
       // Create an API object for the specified region
       const api = this.clusterService.makeCustomObjectApi(region)
 
@@ -140,7 +140,7 @@ export class ApisixCustomCertService {
     labels: Record<string, string>,
   ) {
     // Get the namespace based on the application ID
-    const namespace = GetApplicationNamespaceByAppId(appid)
+    const namespace = GetApplicationNamespace(region, appid)
     // Create an API object for the specified region
     const api = this.clusterService.makeObjectApi(region)
 
@@ -168,7 +168,7 @@ export class ApisixCustomCertService {
 
   async deleteApisixTls(region: Region, appid: string, name: string) {
     // Get the application namespace using the website's appid
-    const namespace = GetApplicationNamespaceByAppId(appid)
+    const namespace = GetApplicationNamespace(region, appid)
 
     // Create an API object for the specified region
     const api = this.clusterService.makeObjectApi(region)

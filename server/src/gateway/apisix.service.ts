@@ -1,6 +1,6 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
-import { GetApplicationNamespaceByAppId } from '../utils/getter'
+import { GetApplicationNamespace } from 'src/utils/getter'
 import { Region } from 'src/region/entities/region'
 import { WebsiteHosting } from 'src/website/entities/website'
 import { RuntimeDomain } from './entities/runtime-domain'
@@ -37,7 +37,7 @@ export class ApisixService {
 
   async createAppRoute(region: Region, appid: string, domain: string) {
     const host = domain
-    const namespace = GetApplicationNamespaceByAppId(appid)
+    const namespace = GetApplicationNamespace(region, appid)
     const upstreamNode = `${appid}.${namespace}:8000`
 
     // TODO: use appid as route id instead of `app-{appid}
@@ -83,7 +83,7 @@ export class ApisixService {
   async createAppCustomRoute(region: Region, runtimeDomain: RuntimeDomain) {
     const appid = runtimeDomain.appid
     const host = runtimeDomain.customDomain
-    const namespace = GetApplicationNamespaceByAppId(appid)
+    const namespace = GetApplicationNamespace(region, appid)
     const upstreamNode = `${appid}.${namespace}:8000`
     const upstreamHost = runtimeDomain.domain
 

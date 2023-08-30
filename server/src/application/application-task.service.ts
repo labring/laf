@@ -23,6 +23,7 @@ import {
 import { DatabasePhase } from 'src/database/entities/database'
 import { DomainPhase } from 'src/gateway/entities/runtime-domain'
 import { StoragePhase } from 'src/storage/entities/storage-user'
+import { ApplicationNamespaceMode } from 'src/region/entities/region'
 
 @Injectable()
 export class ApplicationTaskService {
@@ -267,10 +268,12 @@ export class ApplicationTaskService {
     }
 
     // delete application namespace (include the instance)
-    const namespace = await this.clusterService.getAppNamespace(region, appid)
-    if (namespace) {
-      await this.clusterService.removeAppNamespace(region, appid)
-      return await this.unlock(appid)
+    if (region.namespaceConf?.mode === ApplicationNamespaceMode.AppId) {
+      const namespace = await this.clusterService.getAppNamespace(region, appid)
+      if (namespace) {
+        await this.clusterService.removeAppNamespace(region, appid)
+        return await this.unlock(appid)
+      }
     }
 
     // update phase to `Deleted`

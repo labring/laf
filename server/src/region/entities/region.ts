@@ -1,6 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
 
+export enum ApplicationNamespaceMode {
+  Fixed = 'fixed',
+  AppId = 'appid',
+}
+
+export type RegionNamespaceConf = {
+  mode: ApplicationNamespaceMode
+  prefix: string
+  fixed?: string
+}
+
 export type RegionClusterConf = {
   driver: string
   kubeconfig: string
@@ -52,6 +63,7 @@ export class Region {
   @ApiProperty()
   displayName: string
 
+  namespaceConf: RegionNamespaceConf
   clusterConf: RegionClusterConf
   databaseConf: RegionDatabaseConf
   gatewayConf: RegionGatewayConf
