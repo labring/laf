@@ -113,7 +113,7 @@ export class ServerConfig {
   }
 
   static get DEFAULT_REGION_NAMESPACE() {
-    return process.env.DEFAULT_REGION_NAMESPACE || 'laf-apps'
+    return process.env.DEFAULT_REGION_NAMESPACE
   }
 
   static get DEFAULT_REGION_DATABASE_URL() {
