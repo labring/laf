@@ -38,7 +38,7 @@ export default function MonitorBar() {
     },
   );
 
-  const getAverage = (data: any) => {
+  const getAverage = (data: any = []) => {
     let total = 0;
     data.forEach((item: any) => {
       if (!item.value?.length) return 0;
