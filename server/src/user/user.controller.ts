@@ -112,6 +112,11 @@ export class UserController {
     const { oldPhoneNumber, newPhoneNumber, oldSmsCode, newSmsCode } = dto
     // check code valid
     if (user.phone) {
+      if (!dto.oldPhoneNumber || !dto.oldSmsCode) {
+        return ResponseUtil.error(
+          'you should provide oldPhoneNumber and oldSmsCode',
+        )
+      }
       if (user.phone !== dto.oldPhoneNumber) {
         return ResponseUtil.error(
           'the old phone number is not the same as the new one',
@@ -126,6 +131,7 @@ export class UserController {
         return ResponseUtil.error(err)
       }
     }
+
     const err = await this.smsService.validateCode(
       newPhoneNumber,
       newSmsCode,
