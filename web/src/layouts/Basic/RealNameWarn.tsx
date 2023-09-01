@@ -20,7 +20,7 @@ export default function Warn() {
   return (
     <div
       className={clsx(
-        "absolute left-1/2 top-10 flex h-16 translate-x-[-50%] items-center justify-between rounded-lg px-4 text-lg drop-shadow-md",
+        "absolute left-1/2 top-10 z-10 flex h-16 translate-x-[-50%] items-center justify-between rounded-lg px-4 text-lg drop-shadow-md",
         darkMode ? "bg-gray-800" : "bg-white",
       )}
     >
