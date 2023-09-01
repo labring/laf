@@ -26,6 +26,7 @@ export default function BasicLayout() {
   useEffect(() => {
     init();
   }, [init]);
+
   return (
     <div>
       <Header className="m-auto max-w-screen-xl" />

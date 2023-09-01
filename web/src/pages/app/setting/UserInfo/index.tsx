@@ -15,6 +15,7 @@ import UsernameEditor from "./Mods/UsernameEditor";
 
 import "react-image-crop/dist/ReactCrop.css";
 
+import { useGetProvidersQuery } from "@/pages/auth/service";
 import useAuthStore from "@/pages/auth/store";
 import useGlobalStore from "@/pages/globalStore";
 import useSiteSettingStore from "@/pages/siteSetting";
@@ -27,7 +28,11 @@ export default function UserInfo() {
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
   const { siteSettings } = useSiteSettingStore((state) => state);
-  const { providers } = useAuthStore((state) => state);
+  const { providers, setProviders } = useAuthStore((state) => state);
+
+  useGetProvidersQuery((data: any) => {
+    setProviders(data?.data || []);
+  });
 
   const handleClick = () => {
     if (fileInputRef.current) {

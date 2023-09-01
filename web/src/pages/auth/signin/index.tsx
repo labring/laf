@@ -19,14 +19,16 @@ export default function SignIn() {
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
   const { providers, setProviders } = useAuthStore();
-  useGetProvidersQuery((data: any) => {
-    setProviders(data?.data || []);
-  });
   const [phoneProvider, setPhoneProvider] = useState<any>(null);
   const [passwordProvider, setPasswordProvider] = useState<any>(null);
   const [githubProvider, setGithubProvider] = useState<any>(null);
   const [wechatProvider, setWechatProvider] = useState<any>(null);
   const [currentProvider, setCurrentProvider] = useState<providersTypes>();
+
+  useGetProvidersQuery((data: any) => {
+    setProviders(data?.data || []);
+  });
+
   useEffect(() => {
     if (providers.length) {
       const phoneProvider = providers.find((provider: any) => provider.name === "phone");
