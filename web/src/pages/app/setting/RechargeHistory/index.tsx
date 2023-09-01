@@ -21,6 +21,7 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
+import { es, zhCN } from "date-fns/locale";
 
 import { CalendarIcon, ChargeIcon, FilterIcon } from "@/components/CommonIcon";
 import EmptyBox from "@/components/EmptyBox";
@@ -42,7 +43,7 @@ const DEFAULT_QUERY_DATA = {
 const STATE_LIST = ["Pending", "Paid", "Failed"];
 
 export default function RechargeHistory() {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
 
@@ -96,6 +97,7 @@ export default function RechargeHistory() {
                         <PopoverBody>
                           <DayPicker
                             mode="range"
+                            locale={i18n.language === "en" ? es : zhCN}
                             selected={selectedRange}
                             onSelect={handleRangeSelect}
                             styles={{

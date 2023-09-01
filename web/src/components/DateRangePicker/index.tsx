@@ -1,5 +1,6 @@
 import { ChangeEventHandler, useMemo, useState } from "react";
 import { DateRange, DayPicker, SelectRangeEventHandler } from "react-day-picker";
+import { useTranslation } from "react-i18next";
 import { CalendarIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -12,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import clsx from "clsx";
 import { format, isAfter, isBefore, isValid, parse } from "date-fns";
+import { es, zhCN } from "date-fns/locale";
 
 import "./index.css";
 import "react-day-picker/dist/style.css";
@@ -28,6 +30,7 @@ export default function DateRangePicker(props: {
   const [fromValue, setFromValue] = useState<string>(format(initState.from, "y-MM-dd"));
   const [toValue, setToValue] = useState<string>(format(initState.to, "y-MM-dd"));
   const darkMode = useColorMode().colorMode === "dark";
+  const { i18n } = useTranslation();
   const onClose = () => {
     selectedRange.from && setStartTime(selectedRange.from);
     selectedRange.to && setEndTime(selectedRange.to);
@@ -103,6 +106,7 @@ export default function DateRangePicker(props: {
         <PopoverContent zIndex={99}>
           <DayPicker
             mode="range"
+            locale={i18n.language === "en" ? es : zhCN}
             selected={selectedRange}
             onSelect={handleRangeSelect}
             styles={{
