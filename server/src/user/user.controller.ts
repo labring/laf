@@ -22,7 +22,7 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { IRequest, IResponse } from 'src/utils/interface'
 import { ApiResponseObject, ResponseUtil } from 'src/utils/response'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
-import { UserWithProfile } from './entities/user'
+import { User, UserWithProfile } from './entities/user'
 import { SmsService } from 'src/authentication/phone/sms.service'
 import { BindPhoneDto } from './dto/bind-phone.dto'
 import { SmsVerifyCodeType } from 'src/authentication/entities/sms-verify-code'
@@ -108,18 +108,25 @@ export class UserController {
   @ApiResponseObject(UserWithProfile)
   @UseGuards(JwtAuthGuard)
   @Post('bind/phone')
-  async bindPhone(@Body() dto: BindPhoneDto, @Req() req: IRequest) {
+  async bindPhone(@Body() dto: BindPhoneDto, @Req() user: User) {
     const { oldPhoneNumber, newPhoneNumber, oldSmsCode, newSmsCode } = dto
     // check code valid
-    let err = await this.smsService.validateCode(
-      oldPhoneNumber,
-      oldSmsCode,
-      SmsVerifyCodeType.Unbind,
-    )
-    if (err) {
-      return ResponseUtil.error(err)
+    if (user.phone) {
+      if (user.phone !== dto.oldPhoneNumber) {
+        return ResponseUtil.error(
+          'the old phone number is not the same as the new one',
+        )
+      }
+      const err = await this.smsService.validateCode(
+        oldPhoneNumber,
+        oldSmsCode,
+        SmsVerifyCodeType.Unbind,
+      )
+      if (err) {
+        return ResponseUtil.error(err)
+      }
     }
-    err = await this.smsService.validateCode(
+    const err = await this.smsService.validateCode(
       newPhoneNumber,
       newSmsCode,
       SmsVerifyCodeType.Bind,
@@ -129,13 +136,13 @@ export class UserController {
     }
 
     // check phone if have already been bound
-    const user = await this.userService.findOneByPhone(newPhoneNumber)
-    if (user) {
+    const _user = await this.userService.findOneByPhone(newPhoneNumber)
+    if (_user) {
       return ResponseUtil.error('phone has already been bound')
     }
 
     // bind phone
-    const res = await this.userService.updateUser(req.user._id, {
+    const res = await this.userService.updateUser(user._id, {
       phone: newPhoneNumber,
     })
     return res
