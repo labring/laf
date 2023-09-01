@@ -16,7 +16,6 @@ import SmsCodeInput from "@/components/SmsCodeInput";
 
 import { useBindPhoneMutation } from "../service";
 
-import useAuthStore from "@/pages/auth/store";
 import useGlobalStore from "@/pages/globalStore";
 
 type FormData = {
@@ -30,9 +29,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
   const { handleBack } = props;
   const { t } = useTranslation();
   const bindPhone = useBindPhoneMutation();
-  const { providers } = useAuthStore();
-
-  const { showSuccess, updateUserInfo } = useGlobalStore();
+  const { showSuccess, updateUserInfo, userInfo } = useGlobalStore();
 
   const {
     register,
@@ -69,7 +66,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
       <VStack>
         <span className="text-xl">{t("UserInfo.EditPhone")}</span>
         <Box className="w-[265px] pt-4">
-          {providers?.find((provider: any) => provider.name === "phone") || (
+          {userInfo?.phone && (
             <>
               <FormControl isInvalid={!!errors?.oldPhoneNumber}>
                 <div className="pb-2">{t("UserInfo.OldPhoneNumber")}</div>
@@ -100,7 +97,9 @@ export default function PhoneEditor(props: { handleBack: any }) {
             </>
           )}
           <FormControl isInvalid={!!errors.newPhoneNumber}>
-            <div className="pb-2 pt-4">{t("UserInfo.NewPhoneNumber")}</div>
+            <div className="pb-2 pt-4">
+              {!userInfo?.phone ? t("UserInfo.PhoneNumber") : t("UserInfo.NewPhoneNumber")}
+            </div>
             <InputGroup>
               <Input {...register("newPhoneNumber", { required: true })} variant="userInfo" />
               <InputRightElement width="6rem" height={8}>
@@ -114,7 +113,9 @@ export default function PhoneEditor(props: { handleBack: any }) {
             </InputGroup>
           </FormControl>
           <FormControl isInvalid={!!errors.newSmsCode}>
-            <div className="pb-2 pt-4">{t("UserInfo.NewSmsNumber")}</div>
+            <div className="pb-2 pt-4">
+              {!userInfo?.phone ? t("UserInfo.SmsNumber") : t("UserInfo.NewSmsNumber")}
+            </div>
             <Controller
               name="newSmsCode"
               control={control}
