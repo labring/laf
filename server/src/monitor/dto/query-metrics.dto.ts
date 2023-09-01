@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsArray, IsEnum, IsNumber, Max, Min } from 'class-validator'
+import {
+  IsArray,
+  IsEnum,
+  IsIn,
+  IsNumber,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator'
 import { MonitorMetric } from '../monitor.service'
 import { Transform } from 'class-transformer'
 
@@ -19,4 +27,12 @@ export class QueryMetricsDto {
   @Max(3600)
   @Transform(({ value }) => Number(value))
   step: number
+
+  @ApiProperty({
+    description: 'Query type',
+    enum: ['range', 'instant'],
+  })
+  @IsString()
+  @IsIn(['range', 'instant'])
+  type: 'range' | 'instant'
 }

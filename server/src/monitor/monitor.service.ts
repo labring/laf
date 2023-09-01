@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
 import { ApplicationService } from 'src/application/application.service'
@@ -14,72 +13,48 @@ const requestConfig = {
 
 export const getQuery =
   ({ rateAccuracy }: { rateAccuracy: string }) =>
-    (opts: Record<string, unknown>, metric: MonitorMetric) => {
-      switch (metric) {
-        case MonitorMetric.cpuUsage:
-          return {
-            instant: false,
-            query: `sum(rate(container_cpu_usage_seconds_total{image!="",container!="",pod=~"${opts.pods}",namespace="${opts.namespace}"}[${rateAccuracy}])) by (${opts.selector})`,
-          }
-        // case MonitorMetric.cpuRequests:
-        //   return {
-        //     instant: false,
-        //     query: `sum(kube_pod_container_resource_requests{pod=~"${opts.pods}",resource="cpu",namespace="${opts.namespace}"}) by (${opts.selector})`,
-        //   }
-        // case MonitorMetric.cpuLimits:
-        //   return {
-        //     instant: false,
-        //     query: `sum(kube_pod_container_resource_limits{pod=~"${opts.pods}",resource="cpu",namespace="${opts.namespace}"}) by (${opts.selector})`,
-        //   }
-        case MonitorMetric.memoryUsage:
-          return {
-            instant: false,
-            query: `sum(container_memory_working_set_bytes{image!="",container!="",pod=~"${opts.pods}",namespace="${opts.namespace}"}) by (${opts.selector})`,
-          }
-        // case MonitorMetric.memoryRequests:
-        //   return {
-        //     instant: false,
-        //     query: `sum(kube_pod_container_resource_requests{pod=~"${opts.pods}",resource="memory",namespace="${opts.namespace}"}) by (${opts.selector})`,
-        //   }
-        // case MonitorMetric.memoryLimits:
-        //   return {
-        //     instant: false,
-        //     query: `sum(kube_pod_container_resource_limits{pod=~"${opts.pods}",resource="memory",namespace="${opts.namespace}"}) by (${opts.selector})`,
-        //   }
-        // case MonitorMetric.networkReceive:
-        //   return {
-        //     instant: false,
-        //     query: `sum(rate(container_network_receive_bytes_total{pod=~"${opts.pods}",namespace="${opts.namespace}"}[${rateAccuracy}])) by (${opts.selector})`,
-        //   }
-        // case MonitorMetric.networkTransmit:
-        //   return {
-        //     instant: false,
-        //     query: `sum(rate(container_network_transmit_bytes_total{pod=~"${opts.pods}",namespace="${opts.namespace}"}[${rateAccuracy}])) by (${opts.selector})`,
-        //   }
-        case MonitorMetric.databaseUsage:
-          return {
-            instant: true,
-            query: `sum(mongodb_dbstats_dataSize{database="${opts.appid}"})`,
-          }
-        case MonitorMetric.storageUsage:
-          return {
-            instant: true,
-            query: `sum(minio_bucket_usage_total_bytes{bucket=~"${opts.appid}.+"})`,
-          }
-      }
+  (opts: Record<string, unknown>, metric: MonitorMetric) => {
+    switch (metric) {
+      case MonitorMetric.cpuUsage:
+        return {
+          instant: false,
+          query: `sum(rate(container_cpu_usage_seconds_total{image!="",container!="",pod=~"${opts.pods}",namespace="${opts.namespace}"}[${rateAccuracy}])) by (${opts.selector})`,
+        }
+      case MonitorMetric.memoryUsage:
+        return {
+          instant: false,
+          query: `sum(container_memory_working_set_bytes{image!="",container!="",pod=~"${opts.pods}",namespace="${opts.namespace}"}) by (${opts.selector})`,
+        }
+      case MonitorMetric.networkReceive:
+        return {
+          instant: false,
+          query: `sum(rate(container_network_receive_bytes_total{pod=~"${opts.pods}",namespace="${opts.namespace}"}[${rateAccuracy}])) by (${opts.selector})`,
+        }
+      case MonitorMetric.networkTransmit:
+        return {
+          instant: false,
+          query: `sum(rate(container_network_transmit_bytes_total{pod=~"${opts.pods}",namespace="${opts.namespace}"}[${rateAccuracy}])) by (${opts.selector})`,
+        }
+      case MonitorMetric.databaseUsage:
+        return {
+          instant: true,
+          query: `sum(mongodb_dbstats_dataSize{database="${opts.appid}"})`,
+        }
+      case MonitorMetric.storageUsage:
+        return {
+          instant: true,
+          query: `sum(minio_bucket_usage_total_bytes{bucket=~"${opts.appid}.+"})`,
+        }
     }
+  }
 
 export enum MonitorMetric {
-  cpuUsage = 'cpuUsage', //
-  // cpuRequests = 'cpuRequests',
-  // cpuLimits = 'cpuLimits',
-  memoryUsage = 'memoryUsage', //
-  // memoryRequests = 'memoryRequests',
-  // memoryLimits = 'memoryLimits',
-  // networkReceive = 'networkReceive', //
-  // networkTransmit = 'networkTransmit', //
-  databaseUsage = 'databaseUsage', //
-  storageUsage = 'storageUsage', //
+  cpuUsage = 'cpuUsage',
+  memoryUsage = 'memoryUsage',
+  networkReceive = 'networkReceive',
+  networkTransmit = 'networkTransmit',
+  databaseUsage = 'databaseUsage',
+  storageUsage = 'storageUsage',
 }
 
 @Injectable()
@@ -88,13 +63,14 @@ export class MonitorService {
     private readonly httpService: HttpService,
     private readonly applicationService: ApplicationService,
     private readonly regionService: RegionService,
-  ) { }
+  ) {}
   private readonly logger = new Logger(MonitorService.name)
 
   async getData(
     appid: string,
     metrics: MonitorMetric[],
     queryParams: Record<string, number | string>,
+    isRange: boolean,
   ) {
     const region = await this.regionService.findByAppId(appid)
     const conf = region?.prometheusConf
@@ -115,9 +91,10 @@ export class MonitorService {
         rateAccuracy: requestConfig.rateAccuracy,
       })(opts, metric)
 
-      data[metric] = instant
-        ? await this.query(conf, query)
-        : await this.queryRange(conf, query, queryParams)
+      data[metric] =
+        instant || !isRange
+          ? await this.query(conf, query)
+          : await this.queryRange(conf, query, queryParams)
     })
 
     await Promise.all(res)
