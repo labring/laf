@@ -6,12 +6,14 @@ import { Center, Spinner } from "@chakra-ui/react";
 import Warn from "./RealNameWarn";
 
 import Header from "@/layouts/Header";
+import useAuthStore from "@/pages/auth/store";
 import useGlobalStore from "@/pages/globalStore";
 import useSiteSettingStore from "@/pages/siteSetting";
 
 export default function BasicLayout() {
   const { init, loading, userInfo } = useGlobalStore((state) => state);
   const { siteSettings } = useSiteSettingStore((state) => state);
+  const { providers } = useAuthStore((state) => state);
 
   useEffect(() => {
     init();
@@ -27,7 +29,8 @@ export default function BasicLayout() {
         ) : (
           <>
             {siteSettings.id_verify?.value === "on" &&
-              !userInfo?.profile?.idVerified?.isVerified && <Warn />}
+              !userInfo?.profile?.idVerified?.isVerified &&
+              providers.find((provider: any) => provider.name === "phone") && <Warn />}
             <Outlet />
           </>
         )}

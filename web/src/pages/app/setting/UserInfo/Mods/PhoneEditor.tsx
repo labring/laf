@@ -16,6 +16,7 @@ import SmsCodeInput from "@/components/SmsCodeInput";
 
 import { useBindPhoneMutation } from "../service";
 
+import useAuthStore from "@/pages/auth/store";
 import useGlobalStore from "@/pages/globalStore";
 
 type FormData = {
@@ -29,6 +30,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
   const { handleBack } = props;
   const { t } = useTranslation();
   const bindPhone = useBindPhoneMutation();
+  const { providers } = useAuthStore();
 
   const { showSuccess, updateUserInfo } = useGlobalStore();
 
@@ -67,32 +69,36 @@ export default function PhoneEditor(props: { handleBack: any }) {
       <VStack>
         <span className="text-xl">{t("UserInfo.EditPhone")}</span>
         <Box className="w-[265px] pt-4">
-          <FormControl isInvalid={!!errors?.oldPhoneNumber}>
-            <div className="pb-2">{t("UserInfo.OldPhoneNumber")}</div>
-            <InputGroup>
-              <Input {...register("oldPhoneNumber", { required: true })} variant="userInfo" />
-              <InputRightElement width="6rem" height={8}>
-                <SendSmsCodeButton
-                  getPhone={getValues}
-                  phoneNumber={"oldPhoneNumber"}
-                  className="!h-6 !text-[12px]"
-                  type="Unbind"
+          {providers?.find((provider: any) => provider.name === "phone") || (
+            <>
+              <FormControl isInvalid={!!errors?.oldPhoneNumber}>
+                <div className="pb-2">{t("UserInfo.OldPhoneNumber")}</div>
+                <InputGroup>
+                  <Input {...register("oldPhoneNumber", { required: true })} variant="userInfo" />
+                  <InputRightElement width="6rem" height={8}>
+                    <SendSmsCodeButton
+                      getPhone={getValues}
+                      phoneNumber={"oldPhoneNumber"}
+                      className="!h-6 !text-[12px]"
+                      type="Unbind"
+                    />
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
+              <FormControl isInvalid={!!errors.oldSmsCode}>
+                <div className="pb-2 pt-4">{t("UserInfo.OldSmsNumber")}</div>
+                <Controller
+                  name="oldSmsCode"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <div>
+                      <SmsCodeInput value={value} onChange={onChange} />
+                    </div>
+                  )}
                 />
-              </InputRightElement>
-            </InputGroup>
-          </FormControl>
-          <FormControl isInvalid={!!errors.oldSmsCode}>
-            <div className="pb-2 pt-4">{t("UserInfo.OldSmsNumber")}</div>
-            <Controller
-              name="oldSmsCode"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <div>
-                  <SmsCodeInput value={value} onChange={onChange} />
-                </div>
-              )}
-            />
-          </FormControl>
+              </FormControl>
+            </>
+          )}
           <FormControl isInvalid={!!errors.newPhoneNumber}>
             <div className="pb-2 pt-4">{t("UserInfo.NewPhoneNumber")}</div>
             <InputGroup>
