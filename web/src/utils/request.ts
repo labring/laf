@@ -65,7 +65,7 @@ request.interceptors.response.use(
         return data;
       } else if (data.statusCode === 403) {
         toast({
-          title: "403 Forbidden",
+          title: data.message ? data.message : "403 Forbidden",
           position: "top",
           status: "error",
           duration: 1000,
@@ -73,7 +73,7 @@ request.interceptors.response.use(
         return data;
       } else if (data.statusCode === 404) {
         toast({
-          title: "404 Not Found",
+          title: data.message ? data.message : "403 Forbidden",
           position: "top",
           status: "error",
           duration: 1000,
