@@ -32,6 +32,7 @@ import { ObjectId } from 'mongodb'
 import { EmailService } from 'src/authentication/email/email.service'
 import { EmailVerifyCodeType } from 'src/authentication/entities/email-verify-code'
 import { BindEmailDto } from './dto/bind-email.dto'
+import { InjectUser } from 'src/utils/decorator'
 
 @ApiTags('User')
 @ApiBearerAuth('Authorization')
@@ -77,7 +78,7 @@ export class UserController {
     const user = req.user
     const res = await this.userService.updateAvatar(avatar, user._id)
 
-    return res
+    return ResponseUtil.ok(res)
   }
 
   /**
@@ -108,7 +109,7 @@ export class UserController {
   @ApiResponseObject(UserWithProfile)
   @UseGuards(JwtAuthGuard)
   @Post('bind/phone')
-  async bindPhone(@Body() dto: BindPhoneDto, @Req() user: User) {
+  async bindPhone(@Body() dto: BindPhoneDto, @InjectUser() user: User) {
     const { oldPhoneNumber, newPhoneNumber, oldSmsCode, newSmsCode } = dto
     // check code valid
     if (user.phone) {
@@ -151,7 +152,7 @@ export class UserController {
     const res = await this.userService.updateUser(user._id, {
       phone: newPhoneNumber,
     })
-    return res
+    return ResponseUtil.ok(res)
   }
 
   /**
@@ -183,7 +184,7 @@ export class UserController {
     const res = await this.userService.updateUser(req.user._id, {
       email,
     })
-    return res
+    return ResponseUtil.ok(res)
   }
 
   /**
@@ -213,7 +214,7 @@ export class UserController {
 
     // bind username
     const res = await this.userService.updateUser(req.user._id, { username })
-    return res
+    return ResponseUtil.ok(res)
   }
 
   /**
