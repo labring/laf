@@ -47,7 +47,9 @@ export default function PhoneEditor(props: { handleBack: any }) {
   });
 
   const onSubmit = async (data: FormData) => {
-    const res = await bindPhone.mutateAsync(data);
+    const res = await bindPhone.mutateAsync(
+      userInfo?.phone ? data : { newPhoneNumber: data.newPhoneNumber, newSmsCode: data.newSmsCode },
+    );
     if (!res.error) {
       updateUserInfo();
       showSuccess(t("UserInfo.EditPhoneSuccess"));
