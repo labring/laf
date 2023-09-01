@@ -488,7 +488,7 @@ export class InstanceService {
           name: 'cpu',
           target: {
             type: 'Utilization',
-            averageUtilization: targetCPUUtilizationPercentage,
+            averageUtilization: targetCPUUtilizationPercentage * 10,
           },
         },
       })
@@ -501,7 +501,7 @@ export class InstanceService {
           name: 'memory',
           target: {
             type: 'Utilization',
-            averageUtilization: targetMemoryUtilizationPercentage,
+            averageUtilization: targetMemoryUtilizationPercentage * 2,
           },
         },
       })
