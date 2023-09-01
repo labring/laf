@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import clsx from "clsx";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 import { uniformCapacity } from "@/utils/format";
@@ -45,7 +46,10 @@ export default function PieCard(props: {
 
   return (
     <div className="mb-2 h-1/2 rounded-xl border border-grayModern-200 bg-[#F8FAFB] p-4">
-      <div className="font-medium text-grayModern-900">{title}</div>
+      <span className={clsx("flex items-center font-medium text-grayModern-900")}>
+        <div className="mr-2 h-3 w-1 whitespace-nowrap rounded-xl bg-primary-600" />
+        {title}
+      </span>
       <ResponsiveContainer>
         <PieChart>
           <Pie

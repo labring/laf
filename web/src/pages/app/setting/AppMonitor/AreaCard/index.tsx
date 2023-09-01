@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Menu, MenuButton, MenuItemOption, MenuList } from "@chakra-ui/react";
+import clsx from "clsx";
 import {
   Area,
   AreaChart,
@@ -65,7 +66,10 @@ export default function AreaCard(props: {
   return (
     <div className={className}>
       <div className="mb-3 flex justify-between font-medium text-grayModern-900">
-        <span className="whitespace-nowrap">{title}</span>
+        <span className={clsx("flex items-center")}>
+          <div className="mr-2 h-3 w-1 whitespace-nowrap rounded-xl bg-primary-600" />
+          {title}
+        </span>
         {setDataNumber && podsArray && podsArray.length > 0 && (
           <Menu>
             <MenuButton className="text-grayModern-600">
@@ -88,7 +92,7 @@ export default function AreaCard(props: {
         )}
       </div>
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ left: -30, top: 6 }} syncId="sync">
+        <AreaChart data={chartData} margin={{ left: -28, top: 6 }} syncId="sync">
           <CartesianGrid stroke="#f5f5f5" vertical={false} />
           <XAxis
             dataKey="xData"
