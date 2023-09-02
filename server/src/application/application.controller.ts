@@ -349,13 +349,18 @@ export class ApplicationController {
     const isCpuChanged = origin.resource.limitCPU !== doc.resource.limitCPU
     const isMemoryChanged =
       origin.resource.limitMemory !== doc.resource.limitMemory
+    const isAutoscalingCanceled =
+      !doc.autoscaling.enable && origin.autoscaling.enable
 
     if (!isEqual(doc.autoscaling, origin.autoscaling)) {
       const { hpa, app } = await this.instance.get(appid)
       await this.instance.reapplyHorizontalPodAutoscaler(app, hpa)
     }
 
-    if (isRunning && (isCpuChanged || isMemoryChanged)) {
+    if (
+      isRunning &&
+      (isCpuChanged || isMemoryChanged || isAutoscalingCanceled)
+    ) {
       await this.application.updateState(appid, ApplicationState.Restarting)
     }
 

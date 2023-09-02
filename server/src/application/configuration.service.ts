@@ -29,7 +29,7 @@ export class ApplicationConfigurationService {
     try {
       await session.withTransaction(async () => {
         const coll = db.collection(CN_PUBLISHED_CONF)
-        await coll.deleteOne({ appid: conf.appid }, { session })
+        await coll.deleteMany({}, { session })
         await coll.insertOne(conf, { session })
       })
     } finally {
