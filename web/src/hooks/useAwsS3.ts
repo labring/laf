@@ -19,7 +19,6 @@ function useAwsS3() {
     const res = await s3
       .listObjects({
         Bucket: bucketName,
-        MaxKeys: 100,
         Marker: marker,
         Prefix: prefix,
         Delimiter: "/",
