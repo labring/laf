@@ -11,7 +11,7 @@ describe('query monitor metrics normally', () => {
   })
 
   test(
-    'query monitor metrics',
+    'query monitor metrics range',
     async () => {
       const metrics = [
         'cpuUsage',
@@ -23,6 +23,7 @@ describe('query monitor metrics normally', () => {
       const query = {
         q: metrics,
         step: 300,
+        type: 'range',
       }
 
       const res = await api.get(`/v1/monitor/${appid}/metrics`, {
@@ -43,6 +44,44 @@ describe('query monitor metrics normally', () => {
             ['value', 'metric'],
           ]).toContainEqual(expect.arrayContaining(Object.keys(item)))
         })
+      })
+    },
+    10 * 1000,
+  )
+
+  test(
+    'query monitor metrics instant',
+    async () => {
+      const metrics = [
+        'cpuUsage',
+        'memoryUsage',
+        'storageUsage',
+        'databaseUsage',
+      ]
+
+      const query = {
+        q: metrics,
+        step: 300,
+        type: 'instant',
+      }
+
+      const res = await api.get(`/v1/monitor/${appid}/metrics`, {
+        params: query,
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      expect(res.status).toBe(200)
+
+      const data = res.data?.data
+      expect(Object.keys(data)).toEqual(expect.arrayContaining(metrics))
+
+      Object.values(data).forEach((v: []) => {
+        expect(Array.isArray(v)).toBeTruthy()
+
+        expect([
+          ['values', 'metric'],
+          ['value', 'metric'],
+        ]).toContainEqual(expect.arrayContaining(Object.keys(v)))
       })
     },
     10 * 1000,

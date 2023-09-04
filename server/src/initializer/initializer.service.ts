@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ServerConfig } from '../constants'
 import { SystemDatabase } from 'src/system-database'
-import { Region } from 'src/region/entities/region'
+import { ApplicationNamespaceMode, Region } from 'src/region/entities/region'
 import { Runtime } from 'src/application/entities/runtime'
 import {
   ResourceOption,
@@ -37,10 +37,19 @@ export class InitializerService {
     }
 
     // create default region
+    let mode = ApplicationNamespaceMode.AppId
+    if (ServerConfig.DEFAULT_REGION_NAMESPACE) {
+      mode = ApplicationNamespaceMode.Fixed
+    }
     const res = await this.db.collection<Region>('Region').insertOne({
       name: 'default',
       displayName: 'Default',
       tls: ServerConfig.DEFAULT_REGION_TLS,
+      namespaceConf: {
+        mode: mode,
+        prefix: '',
+        fixed: ServerConfig.DEFAULT_REGION_NAMESPACE,
+      },
       clusterConf: {
         driver: 'kubernetes',
         kubeconfig: null,

@@ -505,9 +505,15 @@ declare namespace Definitions {
     openData?: {};
     avatar?: string;
     name?: string;
+    idVerified?: Definitions.IdVerified;
+    idCard?: string;
     createdAt?: string;
     updatedAt?: string;
-    idVerified?: { isVerified?: boolean };
+  };
+
+  export type IdVerified = {
+    isVerified?: boolean;
+    idVerifyFailedTimes?: number;
   };
 
   export type CreateDependencyDto = {
@@ -830,6 +836,22 @@ declare namespace Paths {
   }
 
   namespace DatabaseControllerProxy {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace DatabaseControllerExportDatabase {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace DatabaseControllerImportDatabase {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

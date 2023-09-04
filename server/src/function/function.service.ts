@@ -11,7 +11,6 @@ import * as assert from 'node:assert'
 import { JwtService } from '@nestjs/jwt'
 import { CompileFunctionDto } from './dto/compile-function.dto'
 import { DatabaseService } from 'src/database/database.service'
-import { GetApplicationNamespaceByAppId } from 'src/utils/getter'
 import { SystemDatabase } from 'src/system-database'
 import { ClientSession, ObjectId } from 'mongodb'
 import { CloudFunction } from './entities/cloud-function'
@@ -23,6 +22,8 @@ import { UpdateFunctionDebugDto } from './dto/update-function-debug.dto'
 import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
 import { HttpService } from '@nestjs/axios'
 import { RegionService } from 'src/region/region.service'
+import { GetApplicationNamespace } from 'src/utils/getter'
+import { Region } from 'src/region/entities/region'
 
 @Injectable()
 export class FunctionService {
@@ -36,7 +37,7 @@ export class FunctionService {
     private readonly functionRecycleBinService: FunctionRecycleBinService,
     private readonly httpService: HttpService,
     private readonly regionService: RegionService,
-  ) {}
+  ) { }
   async create(appid: string, userid: ObjectId, dto: CreateFunctionDto) {
     await this.db.collection<CloudFunction>('CloudFunction').insertOne({
       appid,
@@ -344,10 +345,11 @@ export class FunctionService {
    * @param appid
    * @returns
    */
-  getInClusterRuntimeUrl(appid: string) {
+  getInClusterRuntimeUrl(region: Region, appid: string) {
     const serviceName = appid
-    const namespace = GetApplicationNamespaceByAppId(appid)
+    const namespace = GetApplicationNamespace(region, appid)
     const appAddress = `${serviceName}.${namespace}:8000`
+
     const url = `http://${appAddress}`
     return url
   }

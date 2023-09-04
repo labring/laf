@@ -10,10 +10,6 @@ export class ServerConfig {
     return process.env.DATABASE_URL
   }
 
-  static get PROMETHEUS_URL() {
-    return process.env.PROMETHEUS_URL
-  }
-
   static get METERING_DATABASE_URL() {
     if (!process.env.METERING_DATABASE_URL) {
       throw new Error('METERING_DATABASE_URL is not defined')
@@ -30,10 +26,6 @@ export class ServerConfig {
 
   static get JWT_EXPIRES_IN() {
     return process.env.JWT_EXPIRES_IN || '7d'
-  }
-
-  static get SYSTEM_NAMESPACE() {
-    return process.env.SYSTEM_NAMESPACE || 'laf-system'
   }
 
   /* switcher of task controllers */
@@ -116,6 +108,14 @@ export class ServerConfig {
   }
 
   /** default region conf */
+  static get DEFAULT_REGION_NAMESPACE_MODE() {
+    return process.env.DEFAULT_REGION_NAMESPACE_MODE || 'appid'
+  }
+
+  static get DEFAULT_REGION_NAMESPACE() {
+    return process.env.DEFAULT_REGION_NAMESPACE
+  }
+
   static get DEFAULT_REGION_DATABASE_URL() {
     return process.env.DEFAULT_REGION_DATABASE_URL
   }

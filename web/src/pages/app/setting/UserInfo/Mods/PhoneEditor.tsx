@@ -29,8 +29,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
   const { handleBack } = props;
   const { t } = useTranslation();
   const bindPhone = useBindPhoneMutation();
-
-  const { showSuccess, updateUserInfo } = useGlobalStore();
+  const { showSuccess, updateUserInfo, userInfo } = useGlobalStore();
 
   const {
     register,
@@ -48,7 +47,9 @@ export default function PhoneEditor(props: { handleBack: any }) {
   });
 
   const onSubmit = async (data: FormData) => {
-    const res = await bindPhone.mutateAsync(data);
+    const res = await bindPhone.mutateAsync(
+      userInfo?.phone ? data : { newPhoneNumber: data.newPhoneNumber, newSmsCode: data.newSmsCode },
+    );
     if (!res.error) {
       updateUserInfo();
       showSuccess(t("UserInfo.EditPhoneSuccess"));
@@ -67,34 +68,40 @@ export default function PhoneEditor(props: { handleBack: any }) {
       <VStack>
         <span className="text-xl">{t("UserInfo.EditPhone")}</span>
         <Box className="w-[265px] pt-4">
-          <FormControl isInvalid={!!errors?.oldPhoneNumber}>
-            <div className="pb-2">{t("UserInfo.OldPhoneNumber")}</div>
-            <InputGroup>
-              <Input {...register("oldPhoneNumber", { required: true })} variant="userInfo" />
-              <InputRightElement width="6rem" height={8}>
-                <SendSmsCodeButton
-                  getPhone={getValues}
-                  phoneNumber={"oldPhoneNumber"}
-                  className="!h-6 !text-[12px]"
-                  type="Unbind"
+          {userInfo?.phone && (
+            <>
+              <FormControl isInvalid={!!errors?.oldPhoneNumber}>
+                <div className="pb-2">{t("UserInfo.OldPhoneNumber")}</div>
+                <InputGroup>
+                  <Input {...register("oldPhoneNumber", { required: true })} variant="userInfo" />
+                  <InputRightElement width="6rem" height={8}>
+                    <SendSmsCodeButton
+                      getPhone={getValues}
+                      phoneNumber={"oldPhoneNumber"}
+                      className="!h-6 !text-[12px]"
+                      type="Unbind"
+                    />
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
+              <FormControl isInvalid={!!errors.oldSmsCode}>
+                <div className="pb-2 pt-4">{t("UserInfo.OldSmsNumber")}</div>
+                <Controller
+                  name="oldSmsCode"
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <div>
+                      <SmsCodeInput value={value} onChange={onChange} />
+                    </div>
+                  )}
                 />
-              </InputRightElement>
-            </InputGroup>
-          </FormControl>
-          <FormControl isInvalid={!!errors.oldSmsCode}>
-            <div className="pb-2 pt-4">{t("UserInfo.OldSmsNumber")}</div>
-            <Controller
-              name="oldSmsCode"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <div>
-                  <SmsCodeInput value={value} onChange={onChange} />
-                </div>
-              )}
-            />
-          </FormControl>
+              </FormControl>
+            </>
+          )}
           <FormControl isInvalid={!!errors.newPhoneNumber}>
-            <div className="pb-2 pt-4">{t("UserInfo.NewPhoneNumber")}</div>
+            <div className="pb-2 pt-4">
+              {!userInfo?.phone ? t("UserInfo.PhoneNumber") : t("UserInfo.NewPhoneNumber")}
+            </div>
             <InputGroup>
               <Input {...register("newPhoneNumber", { required: true })} variant="userInfo" />
               <InputRightElement width="6rem" height={8}>
@@ -108,7 +115,9 @@ export default function PhoneEditor(props: { handleBack: any }) {
             </InputGroup>
           </FormControl>
           <FormControl isInvalid={!!errors.newSmsCode}>
-            <div className="pb-2 pt-4">{t("UserInfo.NewSmsNumber")}</div>
+            <div className="pb-2 pt-4">
+              {!userInfo?.phone ? t("UserInfo.SmsNumber") : t("UserInfo.NewSmsNumber")}
+            </div>
             <Controller
               name="newSmsCode"
               control={control}

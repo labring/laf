@@ -44,6 +44,7 @@ export default function AreaCard(props: {
   const { t } = useTranslation();
   const [chartData, setChartData] = useState<any[]>([]);
   useEffect(() => {
+    if (!data[dataNumber]?.values) return;
     setChartData(
       data[dataNumber]?.values.map((item) => {
         if (title === "CPU") {
@@ -65,7 +66,7 @@ export default function AreaCard(props: {
     <div className={className}>
       <div className="mb-3 flex justify-between font-medium text-grayModern-900">
         <span className="whitespace-nowrap">{title}</span>
-        {setDataNumber && podsArray && (
+        {setDataNumber && podsArray && podsArray.length > 0 && (
           <Menu>
             <MenuButton className="text-grayModern-600">
               {podsArray[dataNumber]}

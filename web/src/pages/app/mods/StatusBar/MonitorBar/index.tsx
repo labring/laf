@@ -1,67 +1,78 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Tooltip } from "@chakra-ui/react";
+import { Center, Spinner, Tooltip } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
 import { MonitorIcon } from "@/components/CommonIcon";
 import { uniformCapacity, uniformCPU, uniformMemory, uniformStorage } from "@/utils/format";
 
+import { TInstantMonitorData } from "@/apis/typing";
 import { MonitorControllerGetData } from "@/apis/v1/monitor";
 import SysSetting from "@/pages/app/setting/SysSetting";
 import useGlobalStore from "@/pages/globalStore";
 
+export const MonitorDataType = ["cpuUsage", "memoryUsage", "databaseUsage", "storageUsage"];
+
 export default function MonitorBar() {
-  const { currentApp, monitorData, setMonitorData } = useGlobalStore();
+  const { currentApp } = useGlobalStore();
   const { t } = useTranslation();
   const { limitCPU, limitMemory, databaseCapacity, storageCapacity } = currentApp.bundle.resource;
 
-  const [cpuUsagePercent, setCpuUsagePercent] = useState(0);
-  const [memoryUsagePercent, setMemoryUsagePercent] = useState(0);
-  const [databaseUsagePercent, setDatabaseUsagePercent] = useState(0);
-  const [storageUsagePercent, setStorageUsagePercent] = useState(0);
-
-  useEffect(() => {
-    if (!monitorData) return;
-    const { cpuUsage, memoryUsage, databaseUsage, storageUsage } = monitorData;
-    if (!cpuUsage?.length) return;
-    setCpuUsagePercent(
-      uniformCPU(Number(cpuUsage[0]?.values[cpuUsage[0].values.length - 1][1])) / limitCPU,
-    );
-    setMemoryUsagePercent(
-      uniformMemory(Number(memoryUsage[0]?.values[memoryUsage[0].values.length - 1][1])) /
-        limitMemory,
-    );
-    setDatabaseUsagePercent(
-      uniformCapacity(Number(databaseUsage[0]?.value[1] || 0)) / databaseCapacity,
-    );
-    setStorageUsagePercent(
-      uniformStorage(Number(storageUsage[0]?.value[1] || 0)) / storageCapacity,
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [monitorData]);
+  const [resources, setResources] = useState<any>([]);
+  const [instantData, setInstantData] = useState<TInstantMonitorData>();
 
   useQuery(
     ["useGetMonitorDataQuery"],
     () => {
       return MonitorControllerGetData({
-        q: ["cpuUsage", "memoryUsage", "databaseUsage", "storageUsage"],
+        q: MonitorDataType,
         step: 60,
+        type: "instant",
       });
     },
     {
       refetchInterval: 60000,
       onSuccess: (data) => {
-        setMonitorData(data.data);
+        setInstantData(data.data);
       },
     },
   );
 
-  const resources = [
-    { label: `CPU`, percent: cpuUsagePercent * 100, color: "#47C8BF" },
-    { label: t("Spec.RAM"), percent: memoryUsagePercent * 100, color: "#8172D8" },
-    { label: t("Spec.Database"), percent: databaseUsagePercent * 100, color: "#ED598E" },
-    { label: t("Spec.Storage"), percent: storageUsagePercent * 100, color: "#36ADEF" },
-  ];
+  const getAverage = (data: any = []) => {
+    let total = 0;
+    data.forEach((item: any) => {
+      if (!item.value?.length) return 0;
+      total += Number(item.value[1]);
+    });
+    return total / data.length || 0;
+  };
+
+  useEffect(() => {
+    if (!instantData) return;
+    setResources([
+      {
+        label: `CPU`,
+        percent: (uniformCPU(getAverage(instantData.cpuUsage)) / limitCPU) * 100,
+        color: "#47C8BF",
+      },
+      {
+        label: t("Spec.RAM"),
+        percent: (uniformMemory(getAverage(instantData.memoryUsage)) / limitMemory) * 100,
+        color: "#8172D8",
+      },
+      {
+        label: t("Spec.Database"),
+        percent: (uniformCapacity(getAverage(instantData.databaseUsage)) / databaseCapacity) * 100,
+        color: "#ED598E",
+      },
+      {
+        label: t("Spec.Storage"),
+        percent: (uniformStorage(getAverage(instantData.storageUsage)) / storageCapacity) * 100,
+        color: "#36ADEF",
+      },
+    ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [instantData]);
 
   const limitPercentage = (value: number) => {
     if (value > 100) {
@@ -74,24 +85,30 @@ export default function MonitorBar() {
 
   return (
     <SysSetting currentTab="monitor">
-      <div className="flex items-center space-x-2">
-        <span className="mr-2 flex h-full cursor-pointer items-center text-grayModern-700">
+      <div className="flex items-center">
+        <span className="mr-4 flex h-full cursor-pointer items-center text-grayModern-700">
           <MonitorIcon className="mr-1" />
           {t("SettingPanel.AppMonitor") + " :"}
         </span>
-        {resources.map((resource, index) => (
-          <Tooltip key={index} label={`${resource.label}: ${resource.percent.toFixed(2)}%`}>
-            <div className="h-1 w-12 cursor-pointer rounded-full bg-grayModern-100">
-              <div
-                style={{
-                  width: `${limitPercentage(resource.percent).toFixed(2)}%`,
-                  backgroundColor: resource.color,
-                }}
-                className={`h-full rounded-full`}
-              ></div>
-            </div>
-          </Tooltip>
-        ))}
+        <Center className="w-52 space-x-2">
+          {resources.length !== 0 ? (
+            resources.map((resource: any, index: number) => (
+              <Tooltip key={index} label={`${resource.label}: ${resource.percent.toFixed(2)}%`}>
+                <div className="h-1 w-12 cursor-pointer rounded-full bg-grayModern-100">
+                  <div
+                    style={{
+                      width: `${limitPercentage(resource.percent).toFixed(2)}%`,
+                      backgroundColor: resource.color,
+                    }}
+                    className={`h-full rounded-full`}
+                  ></div>
+                </div>
+              </Tooltip>
+            ))
+          ) : (
+            <Spinner size="xs" color={"grayModern.500"} />
+          )}
+        </Center>
       </div>
     </SysSetting>
   );

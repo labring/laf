@@ -6,16 +6,27 @@ import { Center, Spinner } from "@chakra-ui/react";
 import Warn from "./RealNameWarn";
 
 import Header from "@/layouts/Header";
+import { useGetProvidersQuery } from "@/pages/auth/service";
+import useAuthStore from "@/pages/auth/store";
 import useGlobalStore from "@/pages/globalStore";
 import useSiteSettingStore from "@/pages/siteSetting";
 
 export default function BasicLayout() {
   const { init, loading, userInfo } = useGlobalStore((state) => state);
   const { siteSettings } = useSiteSettingStore((state) => state);
+  const { providers, setProviders } = useAuthStore((state) => ({
+    providers: state.providers,
+    setProviders: state.setProviders,
+  }));
+
+  useGetProvidersQuery((data: any) => {
+    setProviders(data?.data || []);
+  });
 
   useEffect(() => {
     init();
   }, [init]);
+
   return (
     <div>
       <Header className="m-auto max-w-screen-xl" />
@@ -27,7 +38,8 @@ export default function BasicLayout() {
         ) : (
           <>
             {siteSettings.id_verify?.value === "on" &&
-              !userInfo?.profile?.idVerified?.isVerified && <Warn />}
+              !userInfo?.profile?.idVerified?.isVerified &&
+              providers.find((provider: any) => provider.name === "phone") && <Warn />}
             <Outlet />
           </>
         )}

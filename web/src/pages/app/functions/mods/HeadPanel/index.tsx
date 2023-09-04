@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { CloseIcon } from "@chakra-ui/icons";
 import { HStack, Input, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -7,7 +8,7 @@ import { CopyIcon, EditIconFull } from "@/components/CommonIcon";
 import CopyText from "@/components/CopyText";
 import IconWrap from "@/components/IconWrap";
 import Panel from "@/components/Panel";
-import { COLOR_MODE } from "@/constants";
+import { COLOR_MODE, Pages } from "@/constants";
 
 import useFunctionStore from "../../store";
 
@@ -19,6 +20,7 @@ import useFunctionCache from "@/hooks/useFunctionCache";
 import CollaborateButton from "@/pages/app/collaboration/CollaborateButton";
 import DeployButton from "@/pages/app/functions/mods/DeployButton";
 import SysSetting from "@/pages/app/setting/SysSetting";
+import useGlobalStore from "@/pages/globalStore";
 
 function HeadPanel() {
   const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
@@ -30,6 +32,8 @@ function HeadPanel() {
     setCurrentFunction,
   } = useFunctionStore((state) => state);
   const functionCache = useFunctionCache();
+  const navigate = useNavigate();
+  const { currentApp } = useGlobalStore();
 
   return (
     <Panel className="recentList !flex-row justify-between !px-0">
@@ -58,7 +62,10 @@ function HeadPanel() {
                         ? "pr-[14px]"
                         : "px-[14px]",
                     )}
-                    onClick={() => setCurrentFunction(item)}
+                    onClick={() => {
+                      navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`);
+                      setCurrentFunction(item);
+                    }}
                   >
                     <div className="max-w-20 flex truncate">
                       <FunctionDetailPopOver

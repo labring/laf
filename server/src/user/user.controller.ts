@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Post,
   Req,
@@ -28,7 +26,7 @@ import {
   ApiResponseString,
 } from 'src/utils/response'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
-import { UserWithProfile } from './entities/user'
+import { User, UserWithProfile } from './entities/user'
 import { SmsService } from 'src/authentication/phone/sms.service'
 import { BindPhoneDto } from './dto/bind-phone.dto'
 import { SmsVerifyCodeType } from 'src/authentication/entities/sms-verify-code'
@@ -39,6 +37,7 @@ import { EmailService } from 'src/authentication/email/email.service'
 import { EmailVerifyCodeType } from 'src/authentication/entities/email-verify-code'
 import { BindEmailDto } from './dto/bind-email.dto'
 import { QuotaService } from './quota.service'
+import { InjectUser } from 'src/utils/decorator'
 
 @ApiTags('User')
 @ApiBearerAuth('Authorization')
@@ -85,7 +84,7 @@ export class UserController {
     const user = req.user
     const res = await this.userService.updateAvatar(avatar, user._id)
 
-    return res
+    return ResponseUtil.ok(res)
   }
 
   /**
@@ -104,9 +103,6 @@ export class UserController {
     }
 
     const avatar = await this.userService.getAvatarData(new ObjectId(uid))
-    if (!avatar) {
-      throw new HttpException('avatar not found', HttpStatus.NOT_FOUND)
-    }
 
     res.set('Content-Type', 'image/webp')
     res.send(avatar)
@@ -119,18 +115,31 @@ export class UserController {
   @ApiResponseObject(UserWithProfile)
   @UseGuards(JwtAuthGuard)
   @Post('bind/phone')
-  async bindPhone(@Body() dto: BindPhoneDto, @Req() req: IRequest) {
+  async bindPhone(@Body() dto: BindPhoneDto, @InjectUser() user: User) {
     const { oldPhoneNumber, newPhoneNumber, oldSmsCode, newSmsCode } = dto
     // check code valid
-    let err = await this.smsService.validateCode(
-      oldPhoneNumber,
-      oldSmsCode,
-      SmsVerifyCodeType.Unbind,
-    )
-    if (err) {
-      return ResponseUtil.error(err)
+    if (user.phone) {
+      if (!dto.oldPhoneNumber || !dto.oldSmsCode) {
+        return ResponseUtil.error(
+          'you should provide oldPhoneNumber and oldSmsCode',
+        )
+      }
+      if (user.phone !== dto.oldPhoneNumber) {
+        return ResponseUtil.error(
+          'the old phone number is not the same as the new one',
+        )
+      }
+      const err = await this.smsService.validateCode(
+        oldPhoneNumber,
+        oldSmsCode,
+        SmsVerifyCodeType.Unbind,
+      )
+      if (err) {
+        return ResponseUtil.error(err)
+      }
     }
-    err = await this.smsService.validateCode(
+
+    const err = await this.smsService.validateCode(
       newPhoneNumber,
       newSmsCode,
       SmsVerifyCodeType.Bind,
@@ -140,16 +149,16 @@ export class UserController {
     }
 
     // check phone if have already been bound
-    const user = await this.userService.findOneByPhone(newPhoneNumber)
-    if (user) {
+    const _user = await this.userService.findOneByPhone(newPhoneNumber)
+    if (_user) {
       return ResponseUtil.error('phone has already been bound')
     }
 
     // bind phone
-    const res = await this.userService.updateUser(req.user._id, {
+    const res = await this.userService.updateUser(user._id, {
       phone: newPhoneNumber,
     })
-    return res
+    return ResponseUtil.ok(res)
   }
 
   /**
@@ -181,7 +190,7 @@ export class UserController {
     const res = await this.userService.updateUser(req.user._id, {
       email,
     })
-    return res
+    return ResponseUtil.ok(res)
   }
 
   /**
@@ -211,7 +220,7 @@ export class UserController {
 
     // bind username
     const res = await this.userService.updateUser(req.user._id, { username })
-    return res
+    return ResponseUtil.ok(res)
   }
 
   /**

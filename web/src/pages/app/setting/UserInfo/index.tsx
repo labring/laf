@@ -15,6 +15,8 @@ import UsernameEditor from "./Mods/UsernameEditor";
 
 import "react-image-crop/dist/ReactCrop.css";
 
+import { useGetProvidersQuery } from "@/pages/auth/service";
+import useAuthStore from "@/pages/auth/store";
 import useGlobalStore from "@/pages/globalStore";
 import useSiteSettingStore from "@/pages/siteSetting";
 
@@ -26,6 +28,11 @@ export default function UserInfo() {
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
   const { siteSettings } = useSiteSettingStore((state) => state);
+  const { providers, setProviders } = useAuthStore((state) => state);
+
+  useGetProvidersQuery((data: any) => {
+    setProviders(data?.data || []);
+  });
 
   const handleClick = () => {
     if (fileInputRef.current) {
@@ -113,69 +120,74 @@ export default function UserInfo() {
               </span>
             </div>
             <Divider className="mb-4 text-grayModern-200" />
-            {siteSettings.id_verify?.value === "on" && (
+            {providers?.find((provider: any) => provider.name === "phone") &&
+              siteSettings.id_verify?.value === "on" && (
+                <div className="flex flex-col pb-4">
+                  <span
+                    className={clsx(
+                      "flex items-center pb-3 text-xl",
+                      !darkMode && "text-grayModern-900",
+                    )}
+                  >
+                    {t("SettingPanel.Auth")}
+                    {!userInfo?.profile?.idVerified?.isVerified && (
+                      <InfoOutlineIcon className="ml-2 !text-primary-600" />
+                    )}
+                  </span>
+                  <span className="flex justify-between text-base">
+                    <span className={!darkMode ? "text-grayModern-700" : ""}>
+                      {userInfo?.profile?.idVerified?.isVerified
+                        ? userInfo?.profile?.name
+                        : t("UserInfo.NoAuth")}
+                    </span>
+                    {!userInfo?.profile?.idVerified?.isVerified ? (
+                      <span
+                        className="flex cursor-pointer items-center text-[#0884DD]"
+                        onClick={() => {
+                          if (userInfo?.phone) {
+                            const w = window.open("about:blank");
+                            w!.location.href = `${
+                              siteSettings.id_verify?.metadata.authenticateSite
+                            }?token=${localStorage.getItem("token")}`;
+                          } else {
+                            showError(t("UserInfo.PleaseBindPhone"));
+                            setShowItem("phone");
+                          }
+                        }}
+                      >
+                        {t("UserInfo.GotoAuth")} <ChevronRightIcon boxSize={5} />
+                      </span>
+                    ) : (
+                      <span className="flex items-center">
+                        <span className="mr-2 text-[#485058]">
+                          {t("UserInfo.VerifiedIdentity")}
+                        </span>
+                        <CheckCircleIcon className="!text-primary-600" />
+                      </span>
+                    )}
+                  </span>
+                </div>
+              )}
+            {providers.find((provider: any) => provider.name === "phone") && (
               <div className="flex flex-col pb-4">
-                <span
-                  className={clsx(
-                    "flex items-center pb-3 text-xl",
-                    !darkMode && "text-grayModern-900",
-                  )}
-                >
-                  {t("SettingPanel.Auth")}
-                  {!userInfo?.profile?.idVerified?.isVerified && (
-                    <InfoOutlineIcon className="ml-2 !text-primary-600" />
-                  )}
+                <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
+                  {t("SettingPanel.Tel")}
                 </span>
                 <span className="flex justify-between text-base">
                   <span className={!darkMode ? "text-grayModern-700" : ""}>
-                    {userInfo?.profile?.idVerified?.isVerified
-                      ? userInfo?.profile?.name
-                      : t("UserInfo.NoAuth")}
+                    {userInfo?.phone ? hidePhoneNumber(userInfo.phone) : t("NoInfo")}
                   </span>
-                  {!userInfo?.profile?.idVerified?.isVerified ? (
-                    <span
-                      className="flex cursor-pointer items-center text-[#0884DD]"
-                      onClick={() => {
-                        if (userInfo?.phone) {
-                          const w = window.open("about:blank");
-                          w!.location.href = `${
-                            siteSettings.id_verify?.metadata.authenticateSite
-                          }?token=${localStorage.getItem("token")}`;
-                        } else {
-                          showError(t("UserInfo.PleaseBindPhone"));
-                          setShowItem("phone");
-                        }
-                      }}
-                    >
-                      {t("UserInfo.GotoAuth")} <ChevronRightIcon boxSize={5} />
-                    </span>
-                  ) : (
-                    <span className="flex items-center">
-                      <span className="mr-2 text-[#485058]">{t("UserInfo.VerifiedIdentity")}</span>
-                      <CheckCircleIcon className="!text-primary-600" />
-                    </span>
-                  )}
+                  <span
+                    className="flex cursor-pointer items-center text-[#0884DD]"
+                    onClick={() => {
+                      setShowItem("phone");
+                    }}
+                  >
+                    {t("UserInfo.Change")} <ChevronRightIcon boxSize={5} />
+                  </span>
                 </span>
               </div>
             )}
-            <div className="flex flex-col pb-4">
-              <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
-                {t("SettingPanel.Tel")}
-              </span>
-              <span className="flex justify-between text-base">
-                <span className={!darkMode ? "text-grayModern-700" : ""}>
-                  {userInfo?.phone ? hidePhoneNumber(userInfo.phone) : t("NoInfo")}
-                </span>
-                <span
-                  className="flex cursor-pointer items-center text-[#0884DD]"
-                  onClick={() => {
-                    setShowItem("phone");
-                  }}
-                >
-                  {t("UserInfo.Change")} <ChevronRightIcon boxSize={5} />
-                </span>
-              </span>
-            </div>
             <div className="flex flex-col pb-4">
               <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
                 {t("SettingPanel.Email")}

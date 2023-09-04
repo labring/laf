@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsMobilePhone, IsNotEmpty, IsString, Length } from 'class-validator'
+import {
+  IsMobilePhone,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator'
 
 export class BindPhoneDto {
   @ApiProperty({
@@ -7,9 +13,9 @@ export class BindPhoneDto {
     example: '13805718888',
   })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @IsMobilePhone('zh-CN')
-  oldPhoneNumber: string
+  oldPhoneNumber?: string
 
   @ApiProperty({
     description: 'new phone number',
@@ -24,9 +30,9 @@ export class BindPhoneDto {
     description: 'sms verify code for old phone number',
     example: '032476',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @Length(6, 6)
-  oldSmsCode: string
+  oldSmsCode?: string
 
   @ApiProperty({
     description: 'sms verify code for new phone number',
