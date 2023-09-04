@@ -22,6 +22,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
+import { es, zhCN } from "date-fns/locale";
 
 import { BillingIcon, CalendarIcon, FilterIcon } from "@/components/CommonIcon";
 import EmptyBox from "@/components/EmptyBox";
@@ -45,7 +46,7 @@ const DEFAULT_QUERY_DATA = {
 const STATE_LIST = ["Pending", "Done"];
 
 export default function BillingDetails() {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
 
@@ -148,6 +149,7 @@ export default function BillingDetails() {
                         <PopoverBody>
                           <DayPicker
                             mode="range"
+                            locale={i18n.language === "en" ? es : zhCN}
                             selected={selectedRange}
                             onSelect={handleRangeSelect}
                             styles={{
