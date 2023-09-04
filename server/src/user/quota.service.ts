@@ -5,7 +5,7 @@ import { ApplicationWithRelations } from 'src/application/entities/application'
 import { SystemDatabase } from 'src/system-database'
 import { UserQuota } from './entities/user-quota'
 import { SettingService } from 'src/setting/setting.service'
-import { DatabaseSync } from 'src/database/entities/database-sync'
+import { DatabaseSyncRecord } from 'src/database/entities/database-sync-record'
 
 @Injectable()
 export class QuotaService {
@@ -17,10 +17,15 @@ export class QuotaService {
     private readonly settingService: SettingService,
   ) {}
 
-  async resourceLimit(uid: ObjectId) {
+  async resourceLimit(
+    uid: ObjectId,
+    cpu: number,
+    memory: number,
+    appid?: string,
+  ) {
     const userQuota = await this.getUserQuota(uid)
     if (!userQuota) {
-      return true
+      return 'user quota not found'
     }
 
     const allApplications: ApplicationWithRelations[] =
@@ -30,21 +35,25 @@ export class QuotaService {
     let totalLimitMemory = 0
 
     for (const app of allApplications) {
-      if (app.bundle && app.bundle.resource) {
+      if (app.bundle && app.bundle.resource && app.appid !== appid) {
         totalLimitCPU += app.bundle.resource.limitCPU
         totalLimitMemory += app.bundle.resource.limitMemory
       }
     }
 
-    if (
-      totalLimitCPU > userQuota.limitOfCPU ||
-      totalLimitMemory > userQuota.limitOfMemory ||
-      allApplications.length > userQuota.limitCountOfApplication
-    ) {
-      return true
+    if (totalLimitCPU + cpu > userQuota.limitOfCPU) {
+      return 'cpu exceeds resource limit'
     }
 
-    return false
+    if (totalLimitMemory + memory > userQuota.limitOfMemory) {
+      return 'memory exceeds resource limit'
+    }
+
+    if (allApplications.length > userQuota.limitCountOfApplication) {
+      return 'application counts exceeds resource limit'
+    }
+
+    return null
   }
 
   async databaseSyncLimit(uid: ObjectId) {
@@ -60,7 +69,7 @@ export class QuotaService {
     )
 
     const counts = await this.db
-      .collection<DatabaseSync>('DatabaseSync')
+      .collection<DatabaseSyncRecord>('DatabaseSyncRecord')
       .countDocuments({
         uid: uid,
         createdAt: {

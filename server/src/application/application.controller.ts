@@ -122,9 +122,11 @@ export class ApplicationController {
     // check if a user exceeds the resource limit in a region
     const limitResource = await this.quotaServiceTsService.resourceLimit(
       user._id,
+      dto.cpu,
+      dto.memory,
     )
     if (limitResource) {
-      return ResponseUtil.error(`exceed resource limit`)
+      return ResponseUtil.error(limitResource)
     }
 
     // check account balance
@@ -349,9 +351,12 @@ export class ApplicationController {
     // check if a user exceeds the resource limit in a region
     const limitResource = await this.quotaServiceTsService.resourceLimit(
       user._id,
+      dto.cpu,
+      dto.memory,
+      appid,
     )
     if (limitResource) {
-      return ResponseUtil.error(`exceed resource limit`)
+      return ResponseUtil.error(limitResource)
     }
 
     const doc = await this.application.updateBundle(appid, dto, isTrialTier)

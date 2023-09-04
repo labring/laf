@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 
-export class DatabaseSync {
+export class DatabaseSyncRecord {
   uid: ObjectId
   createdAt: Date
 }

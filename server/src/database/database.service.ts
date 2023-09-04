@@ -16,7 +16,7 @@ import {
 } from './entities/database'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
-import { DatabaseSync } from './entities/database-sync'
+import { DatabaseSyncRecord } from './entities/database-sync-record'
 import { ObjectId } from 'mongodb'
 
 const p_exec = promisify(exec)
@@ -226,7 +226,7 @@ export class DatabaseService {
         `mongodump --uri='${connectionUri}' --gzip --archive=${filePath}`,
       )
       await this.db
-        .collection<DatabaseSync>('DatabaseSync')
+        .collection<DatabaseSyncRecord>('DatabaseSyncRecord')
         .insertOne({ uid, createdAt: new Date() })
     } catch (error) {
       this.logger.error(`failed to export db ${appid}`, error)
@@ -252,7 +252,7 @@ export class DatabaseService {
         `mongorestore --uri='${connectionUri}' --gzip --archive='${filePath}' --nsFrom="${dbName}.*" --nsTo="${appid}.*" -v --nsInclude="${dbName}.*"`,
       )
       await this.db
-        .collection<DatabaseSync>('DatabaseSync')
+        .collection<DatabaseSyncRecord>('DatabaseSyncRecord')
         .insertOne({ uid, createdAt: new Date() })
     } catch (error) {
       console.error(`failed to import db to ${appid}:`, error)
