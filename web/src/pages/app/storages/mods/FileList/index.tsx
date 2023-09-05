@@ -1,10 +1,17 @@
 import { useState } from "react";
 import { BiCloudUpload, BiRefresh } from "react-icons/bi";
-import { DeleteIcon, LinkIcon, ViewIcon } from "@chakra-ui/icons";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DeleteIcon,
+  LinkIcon,
+  ViewIcon,
+} from "@chakra-ui/icons";
 import {
   Button,
   Center,
   HStack,
+  Select,
   Spinner,
   Table,
   TableContainer,
@@ -24,7 +31,6 @@ import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconWrap from "@/components/IconWrap";
-import Pagination from "@/components/Pagination";
 import Panel from "@/components/Panel";
 import { BUCKET_POLICY_TYPE, COLOR_MODE } from "@/constants";
 import { formatDate, formateType, formatSize } from "@/utils/format";
@@ -38,26 +44,32 @@ import UploadButton from "../UploadButton";
 import useAwsS3 from "@/hooks/useAwsS3";
 export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
-  const { currentStorage, prefix, setPrefix, getOrigin } = useStorageStore();
+  const { currentStorage, prefix, setPrefix, getOrigin, markerArray, setMarkerArray } =
+    useStorageStore();
   const [pageSize, setPageSize] = useState(20);
-  const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
   const bucketName = currentStorage?.name;
   const bucketType = currentStorage?.policy;
 
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
 
-  const query = useQuery(
-    ["fileList", bucketName, prefix],
-    () => getList(bucketName, { marker: "", prefix }),
+  const {
+    data: query,
+    refetch,
+    isFetching,
+  } = useQuery(
+    ["fileList", bucketName, prefix, markerArray.length, pageSize],
+    () =>
+      getList(bucketName, {
+        marker: markerArray[markerArray.length - 1],
+        maxKeys: pageSize,
+        prefix,
+      }),
     {
       enabled: !!bucketName,
-      onSuccess: (data) => {
-        setTotal(data.length);
-      },
     },
   );
+  const queryData = query as any;
 
   const getLinkUrl = (file: TFile) => {
     let fileUrl = "";
@@ -80,6 +92,7 @@ export default function FileList() {
 
   const changeDirectory = (file: TFile) => {
     setPrefix(file.Prefix!);
+    setMarkerArray([]);
   };
 
   return (
@@ -87,7 +100,7 @@ export default function FileList() {
       <Panel style={{ flexBasis: 40, flexShrink: 0 }}>
         <Panel.Header>
           <HStack spacing={2}>
-            <UploadButton onUploadSuccess={() => query.refetch()}>
+            <UploadButton onUploadSuccess={() => refetch()}>
               <Button
                 size="sm"
                 variant="textGhost"
@@ -97,28 +110,48 @@ export default function FileList() {
                 <p className="font-semibold">{t("StoragePanel.Upload")}</p>
               </Button>
             </UploadButton>
-            <CreateFolderModal onCreateSuccess={() => query.refetch()} />
+            <CreateFolderModal onCreateSuccess={() => refetch()} />
             <Button
               size="xs"
               variant="textGhost"
               leftIcon={<BiRefresh fontSize={22} className="text-grayModern-500" />}
               disabled={currentStorage === undefined}
               onClick={() => {
-                query.refetch();
+                refetch();
               }}
             >
               {t("RefreshData")}
             </Button>
           </HStack>
           <HStack spacing={2}>
-            <Pagination
-              values={{ page, pageSize, total }}
-              onChange={(value) => {
-                setPage(value.page!);
-                setPageSize(value.pageSize!);
+            <IconWrap
+              showBg
+              className="!mr-4"
+              onClick={() => {
+                if (markerArray.length === 0) return;
+                setMarkerArray(markerArray.slice(0, markerArray.length - 1));
               }}
-              options={[20, 50, 100]}
-            />
+            >
+              <ChevronLeftIcon className={markerArray.length === 0 ? "!text-grayModern-300" : ""} />
+            </IconWrap>
+            <IconWrap
+              showBg
+              onClick={() => {
+                if (!queryData?.marker) return;
+                setMarkerArray([...markerArray, queryData?.marker]);
+              }}
+            >
+              <ChevronRightIcon className={!queryData?.marker ? "!text-grayModern-300" : ""} />
+            </IconWrap>
+            <div className="!ml-2 w-20">
+              <Select className="!h-6" onChange={(e) => setPageSize(Number(e.target.value))}>
+                {[20, 50, 100].map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </Select>
+            </div>
             <CreateWebsiteModal />
           </HStack>
         </Panel.Header>
@@ -133,15 +166,15 @@ export default function FileList() {
           <PathLink />
         </Panel.Header>
         <div className="flex-grow overflow-y-scroll px-2 pb-2">
-          {query.isFetching ? (
+          {isFetching ? (
             <Center className="bg-white-200 h-full opacity-60">
               <Spinner size="lg" />
             </Center>
-          ) : !query.data ||
-            query.data.length === 0 ||
-            (query.data.length === 1 && query.data[0].Key === prefix) ? (
+          ) : !queryData ||
+            queryData.data.length === 0 ||
+            (queryData.data.length === 1 && queryData.data[0].Key === prefix) ? (
             <EmptyBox>
-              <UploadButton onUploadSuccess={() => query.refetch()}>
+              <UploadButton onUploadSuccess={() => refetch()}>
                 <div className="text-lg">
                   <span>{t("StoragePanel.UploadTip")}</span>
                   <span className="ml-2 cursor-pointer text-primary-600 hover:border-b-2 hover:border-primary-600">
@@ -171,9 +204,8 @@ export default function FileList() {
                     </Tr>
                   </Thead>
                   <Tbody className="text-grayModern-500">
-                    {query.data
-                      .slice((page - 1) * pageSize, page * pageSize)
-                      .filter((file) => file.Key !== prefix)
+                    {queryData.data
+                      .filter((file: any) => file.Key !== prefix)
                       .map((file: TFile) => {
                         const fileName = file.Key?.split("/");
                         const dirName = file.Prefix?.split("/") || [];
@@ -237,7 +269,7 @@ export default function FileList() {
                                   <ConfirmButton
                                     onSuccessAction={async () => {
                                       await deleteFile(bucketName!, file.Key);
-                                      query.refetch();
+                                      refetch();
                                     }}
                                     headerText={String(t("Delete"))}
                                     bodyText={t("StoragePanel.DeleteFileTip")}
@@ -251,7 +283,7 @@ export default function FileList() {
                                 <ConfirmButton
                                   onSuccessAction={async () => {
                                     await deleteFile(bucketName!, file.Prefix as string);
-                                    query.refetch();
+                                    refetch();
                                   }}
                                   headerText={String(t("Delete"))}
                                   bodyText={t("StoragePanel.DeleteFolderTip")}

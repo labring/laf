@@ -111,7 +111,7 @@ function CreateWebsiteModal() {
           style={{ borderRadius: "1rem" }}
           disabled={currentStorage === undefined}
           onClick={() => {
-            if (currentStorage?.policy === BUCKET_POLICY_TYPE.private) {
+            if (!(currentStorage?.policy === BUCKET_POLICY_TYPE.readonly)) {
               toast({
                 status: "warning",
                 position: "top",
@@ -137,7 +137,7 @@ function CreateWebsiteModal() {
 
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
-              {currentStorage?.policy === BUCKET_POLICY_TYPE.private ? (
+              {!(currentStorage?.policy === BUCKET_POLICY_TYPE.readonly) ? (
                 <p className="font-semibold text-error-500">{t("StoragePanel.editHostTip")}</p>
               ) : null}
               <FormControl>

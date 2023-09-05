@@ -13,12 +13,13 @@ function useAwsS3() {
     signatureVersion: "v4",
   });
 
-  const getList = async (bucketName: string | undefined, { marker, prefix }: any) => {
+  const getList = async (bucketName: string | undefined, { marker, maxKeys, prefix }: any) => {
     if (!bucketName || bucketName === "") return [];
 
     const res = await s3
       .listObjects({
         Bucket: bucketName,
+        MaxKeys: maxKeys,
         Marker: marker,
         Prefix: prefix,
         Delimiter: "/",
@@ -28,7 +29,7 @@ function useAwsS3() {
     const files = res.Contents || [];
     const dirs = res.CommonPrefixes || [];
     // console.log(files, dirs)
-    return [...files, ...dirs];
+    return { data: [...files, ...dirs], marker: res.NextMarker };
   };
 
   const getFileUrl = (bucket: string, key: string) => {
