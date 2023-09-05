@@ -383,8 +383,6 @@
   "TryLafAI": "试试 🎉 Laf AI !",
   "HomePage": {
     "LafLink": "/dashboard",
-    "DocsLink": "https://doc.laf.run/guide/",
-    "VideoLink": "https://itceb8-video.oss.laf.run/laf-website.mp4",
     "WebSite": {
       "title": "Laf 云开发官网",
       "description": "Laf 是一个集函数、数据库、存储为一体的云开发平台，随时随地，发布上线"
@@ -633,5 +631,6 @@
   "Error": "监控不可用，",
   "Retry": "点击重试",
   "NoFunctionYet": "您还没有创建函数哦～ ",
-  "shortcutKey": "快捷键"
+  "shortcutKey": "快捷键",
+  "NameCopiedSuccessfully": "名称复制成功"
 }

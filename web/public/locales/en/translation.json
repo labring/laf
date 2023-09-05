@@ -383,8 +383,6 @@
   "TryLafAI": "Try 🎉 Laf AI !",
   "HomePage": {
     "LafLink": "/dashboard",
-    "DocsLink": "https://doc.laf.run/guide/",
-    "VideoLink": "https://itceb8-video.oss.laf.run/laf-website-en.mp4",
     "WebSite": {
       "title": "Laf - Serverless Cloud Development",
       "description": "Laf provides cloud functions, cloud databases, object storage and other capabilities, writing code like a blog! Launch the ChatGPT app in 3 minutes!"
@@ -633,5 +631,6 @@
   "Error": "Error, ",
   "Retry": "Retry",
   "NoFunctionYet": "You haven't created a function yet~",
-  "shortcutKey": "shortcut key"
+  "shortcutKey": "shortcut key",
+  "NameCopiedSuccessfully": "Name copied successfully"
 }

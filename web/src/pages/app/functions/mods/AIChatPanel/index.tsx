@@ -8,10 +8,13 @@ import { v4 as uuidv4 } from "uuid";
 
 import { LafAILogoIcon } from "@/components/CommonIcon";
 import Markdown from "@/components/Markdown";
-import { LAF_AI_URL } from "@/constants";
+import { site_url } from "@/constants";
+
+import useSiteSettingStore from "@/pages/siteSetting";
 
 export default function AIChatPanel() {
   const { t } = useTranslation();
+  const { siteSettings } = useSiteSettingStore();
 
   const CancelToken = axios.CancelToken;
   let source = CancelToken.source();
@@ -76,7 +79,7 @@ export default function AIChatPanel() {
   const { data: generateCodeRes, ...generateCode } = useMutation((params: any) => {
     inputRef.current?.focus();
     return axios({
-      url: LAF_AI_URL,
+      url: siteSettings.site_url?.metadata.laf_pilot || site_url.laf_pilot,
       method: "POST",
       data: params,
       cancelToken: source.token,

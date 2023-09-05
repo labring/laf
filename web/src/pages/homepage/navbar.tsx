@@ -6,19 +6,30 @@ import axios from "axios";
 import clsx from "clsx";
 
 import { GithubIcon, MenuIcon } from "@/components/CommonIcon";
-import { COLOR_MODE, Routes } from "@/constants";
+import { COLOR_MODE, Routes, site_url } from "@/constants";
 
 import LanguageSwitch from "../../components/LanguageSwitch";
+import useSiteSettingStore from "../siteSetting";
 
 const Navbar = () => {
   const [showBanner, setShowBanner] = useState(false);
   const [toggleSidebar, setToggleSidebar] = useState(false);
   const [stars, setStars] = useState<string | null>(null);
   const { t } = useTranslation();
+  const { siteSettings } = useSiteSettingStore();
   const navList = [
-    { text: t("HomePage.NavBar.docs"), ref: String(t("HomePage.DocsLink")) },
-    { text: t("HomePage.NavBar.forum"), ref: "https://forum.laf.run/" },
-    { text: t("HomePage.NavBar.contact"), ref: "https://www.wenjuan.com/s/I36ZNbl/" },
+    {
+      text: t("HomePage.NavBar.docs"),
+      ref: siteSettings.site_url?.metadata.laf_doc || site_url.laf_doc,
+    },
+    {
+      text: t("HomePage.NavBar.forum"),
+      ref: siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum,
+    },
+    {
+      text: t("HomePage.NavBar.contact"),
+      ref: siteSettings.site_url?.metadata.laf_business || site_url.laf_business,
+    },
   ];
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
@@ -64,7 +75,7 @@ const Navbar = () => {
           <a
             className="whitespace-nowrap text-[6px] text-white lg:text-xl"
             target="_blank"
-            href="https://github.com/labring/laf"
+            href={siteSettings.site_url?.metadata.laf_github || site_url.laf_github}
             rel="noreferrer"
           >
             {t("HomePage.NavBar.title")}
@@ -120,7 +131,7 @@ const Navbar = () => {
           <div className="flex w-80 items-center justify-evenly">
             {stars ? (
               <a
-                href="https://github.com/labring/laf"
+                href={siteSettings.site_url?.metadata.laf_github || site_url.laf_github}
                 target="_blank"
                 className="flex"
                 rel="noreferrer"
@@ -215,7 +226,7 @@ const Navbar = () => {
             <div>
               {stars ? (
                 <a
-                  href="https://github.com/labring/laf"
+                  href={siteSettings.site_url?.metadata.laf_github || site_url.laf_github}
                   className={
                     darkMode
                       ? "flex px-4 py-2 hover:bg-gray-900"

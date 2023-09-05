@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useColorMode } from "@chakra-ui/react";
 
 import { DiscordIcon, ForumIcon, WechatIcon } from "@/components/CommonIcon";
-import { COLOR_MODE } from "@/constants";
+import { COLOR_MODE, site_url } from "@/constants";
 
 import useSiteSettingStore from "../siteSetting";
 
@@ -66,7 +66,9 @@ const Footer = (props: Props) => {
                   </li>
                   <li>
                     <a
-                      href="https://github.com/labring/laf/releases"
+                      href={`${
+                        siteSettings.site_url?.metadata.laf_github || site_url.laf_github
+                      }/releases`}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -104,7 +106,9 @@ const Footer = (props: Props) => {
                 >
                   <li>
                     <a
-                      href="https://github.com/labring/laf/tree/main/deploy"
+                      href={`${
+                        siteSettings.site_url?.metadata.laf_github || site_url.laf_github
+                      }/tree/main/deploy`}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -117,12 +121,20 @@ const Footer = (props: Props) => {
                     </a>
                   </li>
                   <li>
-                    <a href="https://github.com/labring/laf" target="_blank" rel="noreferrer">
+                    <a
+                      href={siteSettings.site_url?.metadata.laf_github || site_url.laf_github}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       {t("HomePage.Footer.item2_4")}
                     </a>
                   </li>
                   <li>
-                    <a href={String(t("HomePage.DocsLink"))} target="_blank" rel="noreferrer">
+                    <a
+                      href={siteSettings.site_url?.metadata.laf_doc || site_url.laf_doc}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       {t("HomePage.Footer.item2_5")}
                     </a>
                   </li>
@@ -143,7 +155,9 @@ const Footer = (props: Props) => {
                 >
                   <li>
                     <a
-                      href="https://github.com/labring/laf/issues"
+                      href={`${
+                        siteSettings.site_url?.metadata.laf_github || site_url.laf_github
+                      }/issues`}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -152,7 +166,11 @@ const Footer = (props: Props) => {
                   </li>
 
                   <li>
-                    <a href="https://forum.laf.run/" target="_blank" rel="noreferrer">
+                    <a
+                      href={siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       {t("HomePage.Footer.item3_2")}
                     </a>
                   </li>
@@ -172,18 +190,23 @@ const Footer = (props: Props) => {
             <div className="flex justify-evenly ">
               <Status />
               <a
-                href="https://w4mci7-images.oss.laf.run/wechat.png"
+                href={siteSettings.site_url?.metadata.laf_wechat || site_url.laf_wechat}
                 target="_blank"
                 rel="noreferrer"
                 className="mr-1"
               >
                 <WechatIcon fontSize={22} color={darkMode ? "#F6F8F9" : "#3C455D"} />
               </a>
-              <a href="https://forum.laf.run" target="_blank" rel="noreferrer" className="mr-1">
+              <a
+                href={siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum}
+                target="_blank"
+                rel="noreferrer"
+                className="mr-1"
+              >
                 <ForumIcon fontSize={22} color={darkMode ? "#F6F8F9" : "#3C455D"} />
               </a>
               <a
-                href="https://discord.com/channels/1061659231599738901/1098516786170839050"
+                href={siteSettings.site_url?.metadata.laf_discord || site_url.laf_discord}
                 target="_blank"
                 rel="noreferrer"
                 className="mr-1"
@@ -231,7 +254,9 @@ const Footer = (props: Props) => {
                 </li>
                 <li>
                   <a
-                    href="https://github.com/labring/laf/releases"
+                    href={`${
+                      siteSettings.site_url?.metadata.laf_github || site_url.laf_github
+                    }/releases`}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -248,11 +273,7 @@ const Footer = (props: Props) => {
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="https://github.com/labring/laf/releases"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <a href="https://github.com/labring/sealos" target="_blank" rel="noreferrer">
                     {t("HomePage.Footer.item1_2")}
                   </a>
                 </li>
@@ -266,7 +287,9 @@ const Footer = (props: Props) => {
                 <ul className="leading-8">
                   <li>
                     <a
-                      href="https://github.com/labring/laf/issues"
+                      href={`${
+                        siteSettings.site_url?.metadata.laf_github || site_url.laf_github
+                      }/issues`}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -275,7 +298,11 @@ const Footer = (props: Props) => {
                   </li>
 
                   <li>
-                    <a href="https://forum.laf.run/" target="_blank" rel="noreferrer">
+                    <a
+                      href={siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       {t("HomePage.Footer.item3_2")}
                     </a>
                   </li>
@@ -292,7 +319,9 @@ const Footer = (props: Props) => {
               <ul className="leading-8">
                 <li>
                   <a
-                    href="https://github.com/labring/laf/tree/main/deploy"
+                    href={`${
+                      siteSettings.site_url?.metadata.laf_github || site_url.laf_github
+                    }/tree/main/deploy`}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -305,12 +334,20 @@ const Footer = (props: Props) => {
                   </a>
                 </li>
                 <li>
-                  <a href="https://github.com/labring/laf" target="_blank" rel="noreferrer">
+                  <a
+                    href={siteSettings.site_url?.metadata.laf_github || site_url.laf_github}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     {t("HomePage.Footer.item2_4")}
                   </a>
                 </li>
                 <li>
-                  <a href={String(t("HomePage.DocsLink"))} target="_blank" rel="noreferrer">
+                  <a
+                    href={siteSettings.site_url?.metadata.laf_doc || site_url.laf_doc}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     {t("HomePage.Footer.item2_5")}
                   </a>
                 </li>
@@ -325,14 +362,22 @@ const Footer = (props: Props) => {
             <div dangerouslySetInnerHTML={{ __html: siteSettings.site_footer?.value || "" }} />
           </div>
           <div className="flex ">
-            <a href="https://w4mci7-images.oss.laf.run/wechat.png" target="_blank" rel="noreferrer">
+            <a
+              href={siteSettings.site_url?.metadata.laf_wechat || site_url.laf_wechat}
+              target="_blank"
+              rel="noreferrer"
+            >
               <WechatIcon fontSize={28} color={darkMode ? "#F6F8F9" : "#3C455D"} />
             </a>
-            <a href="https://forum.laf.run" target="_blank" rel="noreferrer">
+            <a
+              href={siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum}
+              target="_blank"
+              rel="noreferrer"
+            >
               <ForumIcon fontSize={28} color={darkMode ? "#F6F8F9" : "#3C455D"} />
             </a>
             <a
-              href="https://discord.com/channels/1061659231599738901/1098516786170839050"
+              href={siteSettings.site_url?.metadata.laf_discord || site_url.laf_discord}
               target="_blank"
               rel="noreferrer"
             >

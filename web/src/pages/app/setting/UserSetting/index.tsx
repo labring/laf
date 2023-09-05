@@ -21,14 +21,17 @@ import {
   WalletIcon,
   WechatIcon,
 } from "@/components/CommonIcon";
+import { site_url } from "@/constants";
 
 import useTabMatch from "./useTabMatch";
 
 import UserBalance from "@/layouts/Header/UserBalance";
 import SettingModal, { TabKeys } from "@/pages/app/setting";
+import useSiteSettingStore from "@/pages/siteSetting";
 
 export default function UserSetting(props: { name: string; avatar?: string; width: string }) {
   const darkMode = useColorMode().colorMode === "dark";
+  const { siteSettings } = useSiteSettingStore();
 
   return (
     <Popover>
@@ -136,7 +139,10 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
                   : "!text-grayModern-600 hover:bg-[#F4F6F8]",
               )}
               onClick={() => {
-                window.open("https://www.wenjuan.com/s/I36ZNbl/", "_blank");
+                window.open(
+                  siteSettings.site_url?.metadata.laf_business || site_url.laf_business,
+                  "_blank",
+                );
               }}
             >
               <span className="flex items-center">
@@ -157,7 +163,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               </span>
               <span>
                 <a
-                  href="https://w4mci7-images.oss.laf.run/wechat.png"
+                  href={siteSettings.site_url?.metadata.laf_wechat || site_url.laf_wechat}
                   target="_blank"
                   rel="noreferrer"
                   className="mr-2.5"
@@ -165,7 +171,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
                   <WechatIcon className="cursor-pointer !text-grayModern-400" fontSize={20} />
                 </a>
                 <a
-                  href="https://discord.com/channels/1061659231599738901/1098516786170839050"
+                  href={siteSettings.site_url?.metadata.laf_discord || site_url.laf_discord}
                   target="_blank"
                   rel="noreferrer"
                 >
