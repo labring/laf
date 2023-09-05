@@ -12,7 +12,7 @@ import {
   AuthProvider,
   AuthProviderState,
 } from 'src/authentication/entities/auth-provider'
-import { Setting } from 'src/setting/entities/setting'
+import { Setting, SettingKey } from 'src/setting/entities/setting'
 
 @Injectable()
 export class InitializerService {
@@ -379,6 +379,58 @@ export class InitializerService {
         authenticateSite: '',
       },
     })
+
+    await this.db.collection<Setting>('Setting').insertMany([
+      {
+        public: true,
+        key: SettingKey.SiteUrl,
+        value: 'https://doc.laf.run/guide',
+        desc: 'laf doc site',
+      },
+      {
+        public: true,
+        key: SettingKey.SiteUrl,
+        value: 'https://forum.laf.run',
+        desc: 'laf forum',
+      },
+      {
+        public: true,
+        key: SettingKey.SiteUrl,
+        value: 'https://www.wenjuan.com/s/I36ZNbl',
+        desc: 'laf business cooperation',
+      },
+      {
+        public: true,
+        key: SettingKey.SiteUrl,
+        value:
+          'https://discord.com/channels/1061659231599738901/1098516786170839050',
+        desc: 'laf discord',
+      },
+      {
+        public: true,
+        key: SettingKey.SiteUrl,
+        value: 'https://w4mci7-images.oss.laf.run/wechat.png',
+        desc: 'laf wechat',
+      },
+      {
+        public: true,
+        key: SettingKey.SiteUrl,
+        value: 'https://hnpsxzqqtavv.cloud.sealos.cn/status/laf ',
+        desc: 'laf status',
+      },
+      {
+        public: true,
+        key: SettingKey.SiteUrl,
+        value: 'https://htr4n1.laf.run/laf-gpt',
+        desc: 'laf pilot',
+      },
+      {
+        public: true,
+        key: SettingKey.SiteUrl,
+        value: 'https://github.com/labring/laf',
+        desc: 'laf github',
+      },
+    ])
 
     this.logger.verbose('Created default settings')
   }
