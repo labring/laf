@@ -108,10 +108,6 @@ export class ServerConfig {
   }
 
   /** default region conf */
-  static get DEFAULT_REGION_NAMESPACE_MODE() {
-    return process.env.DEFAULT_REGION_NAMESPACE_MODE || 'appid'
-  }
-
   static get DEFAULT_REGION_NAMESPACE() {
     return process.env.DEFAULT_REGION_NAMESPACE
   }
