@@ -12,6 +12,8 @@ import { ApplicationService } from 'src/application/application.service'
 import { BundleService } from 'src/application/bundle.service'
 import { DatabaseUsageLimitTaskService } from './database-usage-limit-task.service'
 import { DatabaseUsageCaptureTaskService } from './database-usage-capture-task.service'
+import { QuotaService } from 'src/user/quota.service'
+import { SettingService } from 'src/setting/setting.service'
 
 @Module({
   imports: [],
@@ -31,6 +33,8 @@ import { DatabaseUsageCaptureTaskService } from './database-usage-capture-task.s
     BundleService,
     DatabaseUsageCaptureTaskService,
     DatabaseUsageLimitTaskService,
+    SettingService,
+    QuotaService,
   ],
   exports: [
     CollectionService,

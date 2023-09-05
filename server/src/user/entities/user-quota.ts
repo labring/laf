@@ -1,6 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
 
+type LimitOfDatabaseSyncCount = {
+  countLimit: number
+  timePeriodInSeconds: number
+}
+
 export class UserQuota {
   @ApiProperty({ type: String })
   _id?: ObjectId
@@ -16,6 +21,12 @@ export class UserQuota {
 
   @ApiProperty()
   limitCountOfApplication: number
+
+  @ApiProperty({
+    description: 'Limits of database synchronization count and time period.',
+    type: { countLimit: Number, timePeriodInSeconds: Number },
+  })
+  limitOfDatabaseSyncCount: LimitOfDatabaseSyncCount
 
   @ApiProperty()
   createdAt: Date

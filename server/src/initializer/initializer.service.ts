@@ -12,6 +12,7 @@ import {
   AuthProvider,
   AuthProviderState,
 } from 'src/authentication/entities/auth-provider'
+import { Setting } from 'src/setting/entities/setting'
 
 @Injectable()
 export class InitializerService {
@@ -24,6 +25,7 @@ export class InitializerService {
     await this.createDefaultAuthProvider()
     await this.createDefaultResourceOptions()
     await this.createDefaultResourceBundles()
+    await this.createDefaultSettings()
   }
 
   async createDefaultRegion() {
@@ -330,5 +332,54 @@ export class InitializerService {
     ])
 
     this.logger.verbose('Created default resource templates')
+  }
+
+  // create default settings
+  async createDefaultSettings() {
+    // check if exists
+    const existed = await this.db
+      .collection<Setting>('Setting')
+      .countDocuments()
+
+    if (existed) {
+      this.logger.debug('default settings already exists')
+      return
+    }
+
+    await this.db.collection<Setting>('Setting').insertOne({
+      public: false,
+      key: 'resource_limit',
+      value: 'default',
+      desc: 'resource limit of user',
+      metadata: {
+        limitOfCPU: 20000,
+        limitOfMemory: 20480,
+        limitCountOfApplication: 20,
+        limitOfDatabaseSyncCount: {
+          countLimit: 10,
+          timePeriodInSeconds: 86400,
+        },
+      },
+    })
+
+    await this.db.collection<Setting>('Setting').insertOne({
+      public: true,
+      key: 'invitation_profit',
+      value: '0',
+      desc: 'Set up invitation rebate',
+    })
+
+    await this.db.collection<Setting>('Setting').insertOne({
+      public: true,
+      key: 'id_verify',
+      value: 'off', // on | off
+      desc: 'real name authentication',
+      metadata: {
+        message: '',
+        authenticateSite: '',
+      },
+    })
+
+    this.logger.verbose('Created default settings')
   }
 }

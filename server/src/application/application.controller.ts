@@ -55,6 +55,7 @@ import { User } from 'src/user/entities/user'
 import { GroupWithRole } from 'src/group/entities/group'
 import { isEqual } from 'lodash'
 import { InstanceService } from 'src/instance/instance.service'
+import { QuotaService } from 'src/user/quota.service'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -71,6 +72,7 @@ export class ApplicationController {
     private readonly account: AccountService,
     private readonly resource: ResourceService,
     private readonly runtimeDomain: RuntimeDomainService,
+    private readonly quotaServiceTsService: QuotaService,
   ) {}
 
   /**
@@ -117,10 +119,14 @@ export class ApplicationController {
       }
     }
 
-    // one user can only have 20 applications in one region
-    const count = await this.application.countByUser(user._id)
-    if (count > 20) {
-      return ResponseUtil.error(`too many applications, limit is 20`)
+    // check if a user exceeds the resource limit in a region
+    const limitResource = await this.quotaServiceTsService.resourceLimit(
+      user._id,
+      dto.cpu,
+      dto.memory,
+    )
+    if (limitResource) {
+      return ResponseUtil.error(limitResource)
     }
 
     // check account balance
@@ -311,6 +317,7 @@ export class ApplicationController {
     @Param('appid') appid: string,
     @Body() dto: UpdateApplicationBundleDto,
     @InjectApplication() app: ApplicationWithRelations,
+    @InjectUser() user: User,
   ) {
     const error = dto.autoscaling.validate()
     if (error) {
@@ -339,6 +346,17 @@ export class ApplicationController {
     const checkSpec = await this.checkResourceSpecification(dto, regionId)
     if (!checkSpec) {
       return ResponseUtil.error('invalid resource specification')
+    }
+
+    // check if a user exceeds the resource limit in a region
+    const limitResource = await this.quotaServiceTsService.resourceLimit(
+      user._id,
+      dto.cpu,
+      dto.memory,
+      appid,
+    )
+    if (limitResource) {
+      return ResponseUtil.error(limitResource)
     }
 
     const doc = await this.application.updateBundle(appid, dto, isTrialTier)
