@@ -48,43 +48,44 @@ export default function FunctionLayout() {
   }, [currentApp, init, pageId, setCurrentPage]);
 
   return (
-    <div>
-      <div
-        style={{
-          height: "100vh",
-          overflow: "hidden",
-          position: "relative",
-        }}
-      >
-        {loading || !currentApp?.appid ? (
-          <Center height={200}>
-            <Spinner />
-          </Center>
-        ) : (
-          <>
-            {currentApp?.phase !== APP_PHASE_STATUS.Started &&
-            currentApp?.phase !== APP_PHASE_STATUS.Stopped &&
-            currentApp?.phase !== APP_PHASE_STATUS.Deleted ? (
-              <div
-                className={clsx(
-                  "absolute bottom-0 left-0 right-0 top-0 z-[999] flex flex-col items-center justify-center  opacity-70 ",
-                  darkMode ? "bg-lafDark-100" : "bg-lafWhite-600",
-                )}
-              >
-                <Spinner
-                  thickness="4px"
-                  speed="0.65s"
-                  emptyColor="gray.200"
-                  color="blue.500"
-                  size="xl"
-                />
-                <Badge className="mt-4">{currentApp.phase}...</Badge>
-              </div>
-            ) : null}
-            <Outlet />
-          </>
-        )}
-      </div>
+    <div
+      style={{
+        overflow: "hidden",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
+    >
+      {loading || !currentApp?.appid ? (
+        <Center height={200}>
+          <Spinner />
+        </Center>
+      ) : (
+        <>
+          {currentApp?.phase !== APP_PHASE_STATUS.Started &&
+          currentApp?.phase !== APP_PHASE_STATUS.Stopped &&
+          currentApp?.phase !== APP_PHASE_STATUS.Deleted ? (
+            <div
+              className={clsx(
+                "absolute bottom-0 left-0 right-0 top-0 z-[999] flex flex-col items-center justify-center opacity-70 ",
+                darkMode ? "bg-lafDark-100" : "bg-lafWhite-600",
+              )}
+            >
+              <Spinner
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+                size="xl"
+              />
+              <Badge className="mt-4">{currentApp.phase}...</Badge>
+            </div>
+          ) : null}
+          <Outlet />
+        </>
+      )}
     </div>
   );
 }
