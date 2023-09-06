@@ -8,14 +8,14 @@ import useStorageStore from "../../store";
 
 export default function Status() {
   const { currentStorage } = useStorageStore();
-  const isPrivate = currentStorage?.policy === BUCKET_POLICY_TYPE.private;
+  const isReadOnly = currentStorage?.policy === BUCKET_POLICY_TYPE.readonly;
   return (
     <DotBadge
-      type={isPrivate ? "warning" : "success"}
+      type={!isReadOnly ? "warning" : "success"}
       text={
         <>
-          {isPrivate ? (
-            <Tooltip placement="bottom-end" label={isPrivate ? t("Bucket.StatusTip") : ""}>
+          {!isReadOnly ? (
+            <Tooltip placement="bottom-end" label={!isReadOnly ? t("Bucket.StatusTip") : ""}>
               {t("StoragePanel.Inaccessible")}
             </Tooltip>
           ) : (

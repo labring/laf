@@ -24,6 +24,8 @@ export type TFile = {
 type State = {
   currentStorage?: TBucket | undefined;
   setCurrentStorage: (currentStorage: TBucket | undefined) => void;
+  markerArray: string[];
+  setMarkerArray: (markerArray: string[]) => void;
   prefix?: string;
   setPrefix: (prefix: string) => void;
   maxStorage: number;
@@ -38,6 +40,11 @@ const useStorageStore = create<State>()(
       setCurrentStorage: (currentStorage) =>
         set((state) => {
           state.currentStorage = currentStorage;
+        }),
+      markerArray: [],
+      setMarkerArray: (markerArray) =>
+        set((state) => {
+          state.markerArray = markerArray;
         }),
       prefix: "/",
       setPrefix: (prefix) =>

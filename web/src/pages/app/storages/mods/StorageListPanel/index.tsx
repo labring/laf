@@ -98,6 +98,7 @@ export default function StorageListPanel() {
                       onClick={() => {
                         store.setCurrentStorage(storage);
                         store.setPrefix("/");
+                        store.setMarkerArray([]);
                       }}
                     >
                       <>
