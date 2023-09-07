@@ -7,38 +7,36 @@ import ColorModeSwitch from "@/components/ColorModeSwitch";
 import { ChatIcon, DocIcon } from "@/components/CommonIcon";
 import LanguageSwitch from "@/components/LanguageSwitch";
 import { Logo, LogoText } from "@/components/LogoIcon";
-import { COLOR_MODE } from "@/constants";
+import { COLOR_MODE, Routes, site_url } from "@/constants";
 import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
 import UserSetting from "../../pages/app/setting/UserSetting";
 
 import useGlobalStore from "@/pages/globalStore";
+import useSiteSettingStore from "@/pages/siteSetting";
 
 const Header = (props: { className?: string }) => {
   const { className } = props;
   const { t } = useTranslation();
   const { userInfo, avatarUpdatedAt } = useGlobalStore((state) => state);
+  const { siteSettings } = useSiteSettingStore();
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
 
   const navList_left = [
-    { text: t("HomePage.NavBar.dashboard"), ref: "/dashboard" },
-    {
-      text: t("HomePage.NavBar.funcTemplate"),
-      ref: "/market/templates",
-      value: "templateMarket",
-    },
+    { text: t("HomePage.NavBar.dashboard"), ref: Routes.dashboard },
+    { text: t("HomePage.NavBar.funcTemplate"), ref: Routes.templates },
   ];
   const navList_right = [
     {
       text: t("HomePage.NavBar.docs"),
-      ref: String(t("HomePage.DocsLink")),
+      ref: siteSettings.site_url?.metadata.laf_doc || site_url.laf_doc,
       icon: <DocIcon boxSize={5} />,
     },
     {
       text: t("HomePage.NavBar.forum"),
-      ref: "https://forum.laf.run/",
+      ref: siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum,
       icon: <ChatIcon boxSize={5} />,
     },
   ];

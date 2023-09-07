@@ -113,7 +113,11 @@ export default function CollectionListPanel() {
                         isHidden={db.name !== store.currentDB?.name || store.currentShow !== "DB"}
                       >
                         <>
-                          <CopyText hideToolTip text={db.name} tip="名称复制成功">
+                          <CopyText
+                            hideToolTip
+                            text={db.name}
+                            tip={String(t("NameCopiedSuccessfully"))}
+                          >
                             <IconText icon={<CopyIcon />} text={t("Copy")} />
                           </CopyText>
                           <DeleteCollectionModal database={db} />
