@@ -188,7 +188,7 @@ export default function UserInfo() {
                 </span>
               </div>
             )}
-            <div className="flex flex-col pb-4">
+            {/* <div className="flex flex-col pb-4">
               <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
                 {t("SettingPanel.Email")}
               </span>
@@ -205,7 +205,7 @@ export default function UserInfo() {
                   {t("UserInfo.Change")} <ChevronRightIcon boxSize={5} />
                 </span>
               </span>
-            </div>
+            </div> */}
           </Box>
         </>
       )}

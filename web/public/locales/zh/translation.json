@@ -268,7 +268,7 @@
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
-    "CornTip": "例:0/1 * * * * ？\n表示每 1 秒执行任务",
+    "CornTip": "例 * * * * * \n表示每 1 分钟执行任务",
     "DeleteConfirm": "确定删除该触发器吗",
     "Express": "表达式",
     "Function": "关联函数",
