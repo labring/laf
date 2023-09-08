@@ -347,22 +347,6 @@ export class InitializerService {
     }
 
     await this.db.collection<Setting>('Setting').insertOne({
-      public: false,
-      key: 'resource_limit',
-      value: 'default',
-      desc: 'resource limit of user',
-      metadata: {
-        limitOfCPU: 20000,
-        limitOfMemory: 20480,
-        limitCountOfApplication: 20,
-        limitOfDatabaseSyncCount: {
-          countLimit: 10,
-          timePeriodInSeconds: 86400,
-        },
-      },
-    })
-
-    await this.db.collection<Setting>('Setting').insertOne({
       public: true,
       key: 'invitation_profit',
       value: '0',
@@ -381,5 +365,29 @@ export class InitializerService {
     })
 
     this.logger.verbose('Created default settings')
+  }
+
+  async createNecessarySettings() {
+    const find = await this.db
+      .collection<Setting>('Setting')
+      .findOne({ key: 'resource_limit' })
+
+    if (!find) {
+      await this.db.collection<Setting>('Setting').insertOne({
+        public: false,
+        key: 'resource_limit',
+        value: 'default',
+        desc: 'resource limit of user',
+        metadata: {
+          limitOfCPU: 20000,
+          limitOfMemory: 20480,
+          limitCountOfApplication: 20,
+          limitOfDatabaseSyncCount: {
+            countLimit: 10,
+            timePeriodInSeconds: 86400,
+          },
+        },
+      })
+    }
   }
 }
