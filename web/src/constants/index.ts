@@ -70,12 +70,6 @@ export const Routes = {
 
 export const site_url = {
   laf_doc: "https://doc.laf.run/guide/",
-  laf_forum: "https://forum.laf.run",
-  laf_business: "https://www.wenjuan.com/s/I36ZNbl",
-  laf_discord: "https://discord.com/channels/1061659231599738901/1098516786170839050",
-  laf_wechat: "https://w4mci7-images.oss.laf.run/wechat.png",
-  laf_status: "https://hnpsxzqqtavv.cloud.sealos.cn/status/laf",
-  laf_pilot: "https://htr4n1.laf.run/laf-gpt",
   laf_github: "https://github.com/labring/laf",
   laf_index_video: "https://itceb8-video.oss.laf.run/laf-website.mp4",
 };

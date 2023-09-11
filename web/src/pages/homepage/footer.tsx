@@ -65,13 +65,7 @@ const Footer = (props: Props) => {
                     <a href={String(t(`HomePage.LafLink`))}>{t("HomePage.Footer.item1_1")}</a>
                   </li>
                   <li>
-                    <a
-                      href={`${
-                        siteSettings.site_url?.metadata.laf_github || site_url.laf_github
-                      }/releases`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <a href={`${site_url.laf_github}/releases`} target="_blank" rel="noreferrer">
                       {t("HomePage.Footer.item1_3")}
                     </a>
                   </li>
@@ -106,9 +100,7 @@ const Footer = (props: Props) => {
                 >
                   <li>
                     <a
-                      href={`${
-                        siteSettings.site_url?.metadata.laf_github || site_url.laf_github
-                      }/tree/main/deploy`}
+                      href={`${site_url.laf_github}/tree/main/deploy`}
                       target="_blank"
                       rel="noreferrer"
                     >
@@ -121,20 +113,12 @@ const Footer = (props: Props) => {
                     </a>
                   </li>
                   <li>
-                    <a
-                      href={siteSettings.site_url?.metadata.laf_github || site_url.laf_github}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <a href={site_url.laf_github} target="_blank" rel="noreferrer">
                       {t("HomePage.Footer.item2_4")}
                     </a>
                   </li>
                   <li>
-                    <a
-                      href={siteSettings.site_url?.metadata.laf_doc || site_url.laf_doc}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <a href={site_url.laf_doc} target="_blank" rel="noreferrer">
                       {t("HomePage.Footer.item2_5")}
                     </a>
                   </li>
@@ -154,23 +138,13 @@ const Footer = (props: Props) => {
                   }
                 >
                   <li>
-                    <a
-                      href={`${
-                        siteSettings.site_url?.metadata.laf_github || site_url.laf_github
-                      }/issues`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <a href={`${site_url.laf_github}/issues`} target="_blank" rel="noreferrer">
                       {t("HomePage.Footer.item3_1")}
                     </a>
                   </li>
 
                   <li>
-                    <a
-                      href={siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <a href={siteSettings.laf_forum_url?.value} target="_blank" rel="noreferrer">
                       {t("HomePage.Footer.item3_2")}
                     </a>
                   </li>
@@ -188,31 +162,37 @@ const Footer = (props: Props) => {
               <div dangerouslySetInnerHTML={{ __html: siteSettings.site_footer?.value || "" }} />
             </div>
             <div className="flex justify-evenly ">
-              <Status />
-              <a
-                href={siteSettings.site_url?.metadata.laf_wechat || site_url.laf_wechat}
-                target="_blank"
-                rel="noreferrer"
-                className="mr-1"
-              >
-                <WechatIcon fontSize={22} color={darkMode ? "#F6F8F9" : "#3C455D"} />
-              </a>
-              <a
-                href={siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum}
-                target="_blank"
-                rel="noreferrer"
-                className="mr-1"
-              >
-                <ForumIcon fontSize={22} color={darkMode ? "#F6F8F9" : "#3C455D"} />
-              </a>
-              <a
-                href={siteSettings.site_url?.metadata.laf_discord || site_url.laf_discord}
-                target="_blank"
-                rel="noreferrer"
-                className="mr-1"
-              >
-                <DiscordIcon fontSize={22} color={darkMode ? "#F6F8F9" : "#3C455D"} />
-              </a>
+              {siteSettings.laf_status_url?.value && <Status />}
+              {siteSettings.laf_wechat_url?.value && (
+                <a
+                  href={siteSettings.laf_wechat_url?.value}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mr-1"
+                >
+                  <WechatIcon fontSize={22} color={darkMode ? "#F6F8F9" : "#3C455D"} />
+                </a>
+              )}
+              {siteSettings.laf_forum_url?.value && (
+                <a
+                  href={siteSettings.laf_forum_url?.value}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mr-1"
+                >
+                  <ForumIcon fontSize={22} color={darkMode ? "#F6F8F9" : "#3C455D"} />
+                </a>
+              )}
+              {siteSettings.laf_discord_url?.value && (
+                <a
+                  href={siteSettings.laf_discord_url?.value}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mr-1"
+                >
+                  <DiscordIcon fontSize={22} color={darkMode ? "#F6F8F9" : "#3C455D"} />
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -253,13 +233,7 @@ const Footer = (props: Props) => {
                   <a href={String(t(`HomePage.LafLink`))}>{t("HomePage.Footer.item1_1")}</a>
                 </li>
                 <li>
-                  <a
-                    href={`${
-                      siteSettings.site_url?.metadata.laf_github || site_url.laf_github
-                    }/releases`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <a href={`${site_url.laf_github}/releases`} target="_blank" rel="noreferrer">
                     {t("HomePage.Footer.item1_3")}
                   </a>
                 </li>
@@ -286,23 +260,13 @@ const Footer = (props: Props) => {
                 </div>
                 <ul className="leading-8">
                   <li>
-                    <a
-                      href={`${
-                        siteSettings.site_url?.metadata.laf_github || site_url.laf_github
-                      }/issues`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <a href={`${site_url.laf_github}/issues`} target="_blank" rel="noreferrer">
                       {t("HomePage.Footer.item3_1")}
                     </a>
                   </li>
 
                   <li>
-                    <a
-                      href={siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
+                    <a href={siteSettings.laf_forum_url?.value} target="_blank" rel="noreferrer">
                       {t("HomePage.Footer.item3_2")}
                     </a>
                   </li>
@@ -319,9 +283,7 @@ const Footer = (props: Props) => {
               <ul className="leading-8">
                 <li>
                   <a
-                    href={`${
-                      siteSettings.site_url?.metadata.laf_github || site_url.laf_github
-                    }/tree/main/deploy`}
+                    href={`${site_url.laf_github}/tree/main/deploy`}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -334,20 +296,12 @@ const Footer = (props: Props) => {
                   </a>
                 </li>
                 <li>
-                  <a
-                    href={siteSettings.site_url?.metadata.laf_github || site_url.laf_github}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <a href={site_url.laf_github} target="_blank" rel="noreferrer">
                     {t("HomePage.Footer.item2_4")}
                   </a>
                 </li>
                 <li>
-                  <a
-                    href={siteSettings.site_url?.metadata.laf_doc || site_url.laf_doc}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <a href={site_url.laf_doc} target="_blank" rel="noreferrer">
                     {t("HomePage.Footer.item2_5")}
                   </a>
                 </li>
@@ -362,25 +316,15 @@ const Footer = (props: Props) => {
             <div dangerouslySetInnerHTML={{ __html: siteSettings.site_footer?.value || "" }} />
           </div>
           <div className="flex ">
-            <a
-              href={siteSettings.site_url?.metadata.laf_wechat || site_url.laf_wechat}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <WechatIcon fontSize={28} color={darkMode ? "#F6F8F9" : "#3C455D"} />
-            </a>
-            <a
-              href={siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum}
-              target="_blank"
-              rel="noreferrer"
-            >
+            {siteSettings.laf_wechat_url?.value && (
+              <a href={siteSettings.laf_wechat_url?.value} target="_blank" rel="noreferrer">
+                <WechatIcon fontSize={28} color={darkMode ? "#F6F8F9" : "#3C455D"} />
+              </a>
+            )}
+            <a href={siteSettings.laf_forum_url?.value} target="_blank" rel="noreferrer">
               <ForumIcon fontSize={28} color={darkMode ? "#F6F8F9" : "#3C455D"} />
             </a>
-            <a
-              href={siteSettings.site_url?.metadata.laf_discord || site_url.laf_discord}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={siteSettings.laf_discord_url?.value} target="_blank" rel="noreferrer">
               <DiscordIcon fontSize={28} color={darkMode ? "#F6F8F9" : "#3C455D"} />
             </a>
           </div>

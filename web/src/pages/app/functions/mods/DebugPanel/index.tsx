@@ -36,6 +36,7 @@ import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
+import useSiteSettingStore from "@/pages/siteSetting";
 
 const HAS_BODY_PARAMS_METHODS: (TMethod | undefined)[] = ["POST", "PUT", "PATCH", "DELETE"];
 
@@ -45,6 +46,8 @@ export default function DebugPanel(props: { containerRef: any }) {
     useFunctionStore((state: any) => state);
   const updateDebugFunctionMutation = useUpdateDebugFunctionMutation();
   const globalStore = useGlobalStore((state) => state);
+  const siteSettings = useSiteSettingStore((state) => state.siteSettings);
+  console.log(siteSettings);
 
   const functionCache = useFunctionCache();
 
@@ -70,12 +73,6 @@ export default function DebugPanel(props: { containerRef: any }) {
       enabled: globalStore.currentPageId === Pages.function,
     },
   );
-
-  const tabContent = [
-    { text: t("FunctionPanel.InterfaceDebug") },
-    { text: "Laf Pilot" },
-    { text: t("FunctionPanel.versionHistory") },
-  ];
 
   const methods_tab = [
     {
@@ -170,18 +167,35 @@ export default function DebugPanel(props: { containerRef: any }) {
             mx={3}
             borderBottom={darkMode ? "" : "2px solid #F6F8F9"}
           >
-            {tabContent.map((tab, index) => (
+            <Tab
+              _selected={{
+                borderColor: "primary.500",
+                color: darkMode ? "white !important" : "#262A32 !important",
+              }}
+              style={{ color: "#7B838B", margin: "-1px 8px", padding: "0 0", fontWeight: 500 }}
+            >
+              {t("FunctionPanel.InterfaceDebug")}
+            </Tab>
+            {!!siteSettings.ai_pilot_url?.value && (
               <Tab
-                key={index}
                 _selected={{
                   borderColor: "primary.500",
                   color: darkMode ? "white !important" : "#262A32 !important",
                 }}
                 style={{ color: "#7B838B", margin: "-1px 8px", padding: "0 0", fontWeight: 500 }}
               >
-                {tab.text}
+                Laf Pilot
               </Tab>
-            ))}
+            )}
+            <Tab
+              _selected={{
+                borderColor: "primary.500",
+                color: darkMode ? "white !important" : "#262A32 !important",
+              }}
+              style={{ color: "#7B838B", margin: "-1px 8px", padding: "0 0", fontWeight: 500 }}
+            >
+              {t("FunctionPanel.versionHistory")}
+            </Tab>
           </TabList>
 
           <TabPanels flex={1} className="overflow-hidden">
@@ -321,9 +335,11 @@ export default function DebugPanel(props: { containerRef: any }) {
                 </Panel>
               </Row>
             </TabPanel>
-            <TabPanel padding={0} h="full">
-              <AIChatPanel />
-            </TabPanel>
+            {!!siteSettings.ai_pilot_url?.value && (
+              <TabPanel padding={0} h="full">
+                <AIChatPanel />
+              </TabPanel>
+            )}
             <TabPanel padding={0} h="full">
               <VersionHistoryPanel />
             </TabPanel>

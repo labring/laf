@@ -31,12 +31,12 @@ const Header = (props: { className?: string }) => {
   const navList_right = [
     {
       text: t("HomePage.NavBar.docs"),
-      ref: siteSettings.site_url?.metadata.laf_doc || site_url.laf_doc,
+      ref: site_url.laf_doc,
       icon: <DocIcon boxSize={5} />,
     },
     {
       text: t("HomePage.NavBar.forum"),
-      ref: siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum,
+      ref: siteSettings.laf_forum_url?.value,
       icon: <ChatIcon boxSize={5} />,
     },
   ];
@@ -77,6 +77,7 @@ const Header = (props: { className?: string }) => {
 
       <HStack spacing={4}>
         {navList_right.map((item) => {
+          if (!item.ref) return null;
           return (
             <span
               key={item.text}
