@@ -94,6 +94,9 @@ export default function CollectionListPanel() {
           <SectionList>
             {res?.data
               .filter((db: any) => db.name.indexOf(search) >= 0)
+              .sort((a: any, b: any) => {
+                return a.name.localeCompare(b.name);
+              })
               .map((db: any) => {
                 return (
                   <SectionList.Item
