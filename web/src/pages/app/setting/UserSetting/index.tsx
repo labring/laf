@@ -21,7 +21,6 @@ import {
   WalletIcon,
   WechatIcon,
 } from "@/components/CommonIcon";
-import { site_url } from "@/constants";
 
 import useTabMatch from "./useTabMatch";
 
@@ -131,54 +130,55 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
               </SettingModal>
             </div>
             <Divider />
-            <div
-              className={clsx(
-                "flex h-[42px] w-full cursor-pointer items-center justify-between rounded px-[9px] text-lg",
-                darkMode
-                  ? "!text-white hover:bg-grayModern-600"
-                  : "!text-grayModern-600 hover:bg-[#F4F6F8]",
-              )}
-              onClick={() => {
-                window.open(
-                  siteSettings.site_url?.metadata.laf_business || site_url.laf_business,
-                  "_blank",
-                );
-              }}
-            >
-              <span className="flex items-center">
-                <ContactIcon fontSize={20} mr={3} />
-                {t("HomePage.NavBar.contact")}
-              </span>
-              <ChevronRightIcon />
-            </div>
-            <div className="flex h-[42px] w-full items-center justify-between px-[9px] text-lg">
-              <span
+            {siteSettings.laf_business_url?.value && (
+              <div
                 className={clsx(
-                  "flex items-center",
-                  darkMode ? "!text-white" : "!text-grayModern-600",
+                  "flex h-[42px] w-full cursor-pointer items-center justify-between rounded px-[9px] text-lg",
+                  darkMode
+                    ? "!text-white hover:bg-grayModern-600"
+                    : "!text-grayModern-600 hover:bg-[#F4F6F8]",
                 )}
+                onClick={() => {
+                  window.open(siteSettings.laf_business_url?.value, "_blank");
+                }}
               >
-                <GroupIcon fontSize={20} mr={3} />
-                {t("HomePage.NavBar.community")}
-              </span>
-              <span>
-                <a
-                  href={siteSettings.site_url?.metadata.laf_wechat || site_url.laf_wechat}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mr-2.5"
+                <span className="flex items-center">
+                  <ContactIcon fontSize={20} mr={3} />
+                  {t("HomePage.NavBar.contact")}
+                </span>
+                <ChevronRightIcon />
+              </div>
+            )}
+            {(siteSettings.laf_wechat_url?.value || siteSettings.laf_discord_url?.value) && (
+              <div className="flex h-[42px] w-full items-center justify-between px-[9px] text-lg">
+                <span
+                  className={clsx(
+                    "flex items-center",
+                    darkMode ? "!text-white" : "!text-grayModern-600",
+                  )}
                 >
-                  <WechatIcon className="cursor-pointer !text-grayModern-400" fontSize={20} />
-                </a>
-                <a
-                  href={siteSettings.site_url?.metadata.laf_discord || site_url.laf_discord}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <DiscordIcon className="cursor-pointer !text-grayModern-400" fontSize={20} />
-                </a>
-              </span>
-            </div>
+                  <GroupIcon fontSize={20} mr={3} />
+                  {t("HomePage.NavBar.community")}
+                </span>
+                <span>
+                  {siteSettings.laf_wechat_url?.value && (
+                    <a
+                      href={siteSettings.laf_wechat_url?.value}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mr-2.5"
+                    >
+                      <WechatIcon className="cursor-pointer !text-grayModern-400" fontSize={20} />
+                    </a>
+                  )}
+                  {siteSettings.laf_discord_url?.value && (
+                    <a href={siteSettings.laf_discord_url?.value} target="_blank" rel="noreferrer">
+                      <DiscordIcon className="cursor-pointer !text-grayModern-400" fontSize={20} />
+                    </a>
+                  )}
+                </span>
+              </div>
+            )}
           </VStack>
         </PopoverBody>
       </PopoverContent>

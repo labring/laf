@@ -20,15 +20,15 @@ const Navbar = () => {
   const navList = [
     {
       text: t("HomePage.NavBar.docs"),
-      ref: siteSettings.site_url?.metadata.laf_doc || site_url.laf_doc,
+      ref: site_url.laf_doc,
     },
     {
       text: t("HomePage.NavBar.forum"),
-      ref: siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum,
+      ref: siteSettings.laf_forum_url?.value,
     },
     {
       text: t("HomePage.NavBar.contact"),
-      ref: siteSettings.site_url?.metadata.laf_business || site_url.laf_business,
+      ref: siteSettings.laf_business_url?.value,
     },
   ];
   const { colorMode } = useColorMode();
@@ -75,7 +75,7 @@ const Navbar = () => {
           <a
             className="whitespace-nowrap text-[6px] text-white lg:text-xl"
             target="_blank"
-            href={siteSettings.site_url?.metadata.laf_github || site_url.laf_github}
+            href={site_url.laf_github}
             rel="noreferrer"
           >
             {t("HomePage.NavBar.title")}
@@ -115,6 +115,7 @@ const Navbar = () => {
             </div>
 
             {navList.map((item, index) => {
+              if (!item.ref) return null;
               return (
                 <a
                   key={index}
@@ -130,12 +131,7 @@ const Navbar = () => {
           </div>
           <div className="flex w-80 items-center justify-evenly">
             {stars ? (
-              <a
-                href={siteSettings.site_url?.metadata.laf_github || site_url.laf_github}
-                target="_blank"
-                className="flex"
-                rel="noreferrer"
-              >
+              <a href={site_url.laf_github} target="_blank" className="flex" rel="noreferrer">
                 <GithubIcon
                   className="mr-1"
                   fontSize={24}
@@ -205,6 +201,7 @@ const Navbar = () => {
           >
             <div>
               {navList.map((item, index) => {
+                if (!item.ref) return null;
                 return (
                   <li key={index}>
                     <a
@@ -226,7 +223,7 @@ const Navbar = () => {
             <div>
               {stars ? (
                 <a
-                  href={siteSettings.site_url?.metadata.laf_github || site_url.laf_github}
+                  href={site_url.laf_github}
                   className={
                     darkMode
                       ? "flex px-4 py-2 hover:bg-gray-900"
