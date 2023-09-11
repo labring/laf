@@ -13,7 +13,12 @@ export enum SettingKey {
   InvitationProfit = 'invitation_profit',
   IdVerify = 'id_verify',
 
-  AIPilotApiUrl = 'ai_pilot_api_url',
+  AiPilotUrl = 'ai_pilot_url',
+  LafForumUrl = 'laf_forum_url',
+  LafBusinessUrl = 'laf_business_url',
+  LafDiscordUrl = 'laf_discord_url',
+  LafWeChatUrl = 'laf_wechat_url',
+  LafStatusUrl = 'laf_status_url',
 }
 
 export class Setting {
