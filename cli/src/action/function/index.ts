@@ -297,7 +297,7 @@ function getLocalFunction(dir: string, prefix: string): string[] {
       funcNames.push(...getLocalFunction(filePath, path.join(prefix || '', file)))
     }
     if (stat.isFile() && file.endsWith('.ts')) {
-      funcNames.push(path.join(prefix || '', file).replace(/\.ts$/, ''))
+      funcNames.push(path.join(prefix || '', file).replace(/\\/g, '/').replace(/\.ts$/, ''))
     }
   })
   return funcNames
