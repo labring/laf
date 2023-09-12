@@ -59,19 +59,21 @@ export default function SignIn() {
     >
       <div className="mb-9 flex items-center space-x-4">
         <Logo size="43px" outerColor="#33BABB" innerColor="white" />
-        <LogoText size="51px" color="#363C42" />
+        <LogoText size="51px" color={darkMode ? "#33BABB" : "#363C42"} />
       </div>
 
       {currentProvider === "phone" ? (
         <LoginByPhonePanel
           showPasswordSigninBtn={!!passwordProvider}
           switchLoginType={() => setCurrentProvider("user-password")}
+          isDarkMode={darkMode}
         />
       ) : currentProvider === "user-password" ? (
         <LoginByPasswordPanel
           showSignupBtn={!!passwordProvider?.register}
           showPhoneSigninBtn={!!phoneProvider}
           switchLoginType={() => setCurrentProvider("phone")}
+          isDarkMode={darkMode}
         />
       ) : null}
 

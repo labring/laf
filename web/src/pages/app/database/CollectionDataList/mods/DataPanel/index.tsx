@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { BiRefresh } from "react-icons/bi";
-import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
+import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import {
   Button,
   HStack,
@@ -12,6 +11,7 @@ import {
 import { t } from "i18next";
 import { throttle } from "lodash";
 
+import { OutlineCopyIcon, RefreshIcon } from "@/components/CommonIcon";
 import CopyText from "@/components/CopyText";
 import JSONEditor from "@/components/Editor/JSONEditor";
 import JSONViewer from "@/components/Editor/JSONViewer";
@@ -27,6 +27,8 @@ import RightPanelEditBox from "../../../RightComponent/EditBox";
 import RightPanelList from "../../../RightComponent/List";
 import { useDeleteDataMutation, useEntryDataQuery, useUpdateDataMutation } from "../../../service";
 import useDBMStore from "../../../store";
+
+import "./index.css";
 
 import useGlobalStore from "@/pages/globalStore";
 
@@ -166,6 +168,7 @@ export default function DataPanel() {
               variant="textGhost"
               leftIcon={<AddIcon fontSize={10} className="text-grayModern-500" />}
               disabled={store.currentDB === undefined}
+              isLoading={entryDataQuery.isFetching}
               className="mr-2 font-bold"
             >
               {t("CollectionPanel.AddData")}
@@ -178,7 +181,7 @@ export default function DataPanel() {
             disabled={store.currentDB === undefined}
             className="mr-2"
             isLoading={entryDataQuery.isFetching}
-            leftIcon={<BiRefresh fontSize={20} />}
+            leftIcon={<RefreshIcon fontSize={16} />}
             onClick={() => refresh(search)}
           >
             {t("RefreshData")}
@@ -194,15 +197,16 @@ export default function DataPanel() {
               <HStack spacing={2} className="flex flex-1">
                 <InputGroup className="mr-4 flex-1">
                   <InputLeftElement
-                    height={"8"}
+                    height="7"
                     pointerEvents="none"
                     children={<Search2Icon color="gray.300" />}
                   />
                   <Input
-                    rounded={"full"}
+                    rounded="full"
                     disabled={store.currentDB === undefined}
                     placeholder={t("CollectionPanel.Query").toString()}
                     size="sm"
+                    height="7"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
@@ -256,7 +260,13 @@ export default function DataPanel() {
               }}
               deleteRuleMutation={deleteDataMutation}
               component={(item: any) => {
-                return <JSONViewer colorMode={colorMode} code={JSON.stringify(item, null, 2)} />;
+                return (
+                  <JSONViewer
+                    colorMode={colorMode}
+                    code={JSON.stringify(item, null, 2)}
+                    className="dataList"
+                  />
+                );
               }}
               toolComponent={(item: any) => {
                 const newData = { ...item };
@@ -274,7 +284,7 @@ export default function DataPanel() {
                       size={32}
                       className="group/icon"
                     >
-                      <CopyIcon />
+                      <OutlineCopyIcon size="14" color="#24282C" />
                     </IconWrap>
                   </CopyText>
                 );

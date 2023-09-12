@@ -227,7 +227,7 @@
     "Private": "Private",
     "Readonly": "Readonly",
     "ReadWrite": "ReadWrite",
-    "SearchBucket": "Enter the bucket name to search",
+    "SearchBucket": "Please enter the bucket name to search",
     "Size": "Size",
     "Storage": "Storage",
     "StorageNameTip": "Please enter the cloud storage name",
@@ -632,5 +632,10 @@
   "Retry": "Retry",
   "NoFunctionYet": "You haven't created a function yet~",
   "shortcutKey": "shortcut key",
-  "NameCopiedSuccessfully": "Name copied successfully"
+  "NameCopiedSuccessfully": "Name copied successfully",
+  "NameCannotBeEmpty": "name can't be empty",
+  "PreviousPage": "Previous Page",
+  "NextPage": "Next Page",
+  "LastPage": "Last Page",
+  "FirstPage": "First Page"
 }

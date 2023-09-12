@@ -89,7 +89,7 @@ export default function Usage() {
     <div>
       <div className="flex items-center pb-6 pt-2 text-2xl">
         <span className="flex items-center space-x-2 pr-4">
-          <CostIcon size={20} color={"#24282C"} />
+          <CostIcon size={20} color={darkMode ? "#F4F6F8" : "#24282C"} />
           <p>{t("SettingPanel.CostOverview")}</p>
         </span>
         <DateRangePicker
@@ -133,8 +133,8 @@ export default function Usage() {
           <div className="mt-3 flex">
             <div
               className={clsx(
-                "mr-4 h-36 w-36 rounded-lg border border-grayModern-200",
-                !darkMode && "bg-[#F4F6F8]",
+                "mr-4 h-36 w-36 rounded-lg border border-frostyNightfall-200",
+                !darkMode && "bg-lafWhite-500",
               )}
             >
               <div className="flex w-full justify-center pt-6">
@@ -153,8 +153,8 @@ export default function Usage() {
             </div>
             <div
               className={clsx(
-                "h-36 w-36 rounded-lg border border-grayModern-200",
-                !darkMode && "bg-[#F4F6F8]",
+                "h-36 w-36 rounded-lg border border-frostyNightfall-200",
+                !darkMode && "bg-lafWhite-500",
               )}
             >
               <div className="flex w-full justify-center pt-6">

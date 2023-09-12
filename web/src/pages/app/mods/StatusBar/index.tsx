@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { HStack } from "@chakra-ui/react";
+import { HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import ColorModeSwitch from "@/components/ColorModeSwitch";
@@ -18,12 +18,19 @@ import StatusBadge from "@/pages/home/mods/StatusBadge";
 function StatusBar() {
   const { t } = useTranslation();
   const { currentApp } = useGlobalStore((state) => state);
+  const darkMode = useColorMode().colorMode === "dark";
 
   return (
     <Panel className="!mt-1 !flex-row justify-between">
       <HStack spacing={2}>
-        <LanguageSwitch className="!-space-x-1 !text-[12px] !text-grayModern-700" size="14px" />
-        <ColorModeSwitch className="pr-2 !text-grayModern-700" fontSize={13} />
+        <LanguageSwitch
+          className={clsx("!-space-x-1 !text-[12px]", darkMode ? "" : "!text-grayModern-700")}
+          size="14px"
+        />
+        <ColorModeSwitch
+          className={clsx("pr-2", darkMode ? "" : "!text-grayModern-700")}
+          fontSize={13}
+        />
         <div>
           {t("StatusBar.CurrentApplication")}: {currentApp?.name}
         </div>
@@ -32,7 +39,11 @@ function StatusBar() {
             <Icons type="info" />
           </div>
         </SysSetting>
-        <StatusBadge statusConditions={currentApp?.phase} state={currentApp?.state} />
+        <StatusBadge
+          className="!bg-transparent"
+          statusConditions={currentApp?.phase}
+          state={currentApp?.state}
+        />
       </HStack>
       <HStack spacing={4}>
         <MonitorBar />

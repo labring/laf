@@ -74,7 +74,9 @@ export default function MyTemplateList() {
         >
           <TabList>
             {TABS.map((item) => (
-              <Tab key={item.value}>{item.label}</Tab>
+              <Tab key={item.value} className="mr-8 !px-0">
+                {item.label}
+              </Tab>
             ))}
           </TabList>
           <TabIndicator mt="-1.5px" height="2px" bg="primary.600" />

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { BiRefresh } from "react-icons/bi";
 import {
   Button,
   Center,
@@ -21,6 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
+import { RefreshIcon } from "@/components/CommonIcon";
 import Content from "@/components/Content";
 import CopyText from "@/components/CopyText";
 import JSONViewer from "@/components/Editor/JSONViewer";
@@ -125,7 +125,7 @@ export default function LogsPage() {
               <Button
                 size="xs"
                 variant="textGhost"
-                leftIcon={<BiRefresh fontSize={22} className="text-grayModern-500" />}
+                leftIcon={<RefreshIcon fontSize={22} className="!text-grayModern-500" />}
                 disabled={logListQuery === undefined}
                 onClick={() => {
                   logListQuery.refetch();

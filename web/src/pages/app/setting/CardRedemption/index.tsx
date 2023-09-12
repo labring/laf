@@ -29,7 +29,7 @@ export default function CardRedemption() {
   return (
     <div className="h-full w-full">
       <div className="flex items-center space-x-2 pt-2 text-2xl">
-        <CardIcon size={20} color={"#24282C"} />
+        <CardIcon size={20} color={darkMode ? "#F4F6F8" : "#24282C"} />
         <p>{t("SettingPanel.CardRedemption")}</p>
       </div>
       <div className="m-auto mt-24 w-[265px]">

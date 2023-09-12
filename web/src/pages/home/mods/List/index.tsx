@@ -75,6 +75,7 @@ function List(props: { appList: TApplicationItem[] }) {
               placeholder={t("Search").toString()}
               variant="outline"
               height="36px"
+              border={darkMode ? "1px solid #485058" : "1px solid #DEE0E2"}
               onChange={(e: any) => setSearchKey(e.target.value)}
             />
           </InputGroup>
@@ -135,7 +136,11 @@ function List(props: { appList: TApplicationItem[] }) {
                     </CopyText>
                   </div>
                   <div className="w-2/12">
-                    <StatusBadge statusConditions={item?.phase} state={item?.state} />
+                    <StatusBadge
+                      className="!bg-transparent"
+                      statusConditions={item?.phase}
+                      state={item?.state}
+                    />
                   </div>
                   <div className={clsx("w-2/12 font-medium", darkMode ? "" : " text-grayIron-700")}>
                     {getRegionById(regions, item.regionId)?.displayName}

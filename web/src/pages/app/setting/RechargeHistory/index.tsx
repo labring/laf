@@ -70,12 +70,17 @@ export default function RechargeHistory() {
   return (
     <div>
       <div className="flex items-center space-x-2 pt-2 text-2xl">
-        <ChargeIcon size={16} color={"#24282C"} />
+        <ChargeIcon size={20} color={darkMode ? "#F4F6F8" : "#24282C"} />
         <p>{t("SettingPanel.RechargeHistory")}</p>
       </div>
       <div className="mt-4 rounded border">
         <TableContainer>
-          <Table variant="striped" colorScheme="whiteAlpha" size={"sm"} textTransform={"none"}>
+          <Table
+            variant="striped"
+            colorScheme={darkMode ? "none" : "whiteAlpha"}
+            size={"sm"}
+            textTransform={"none"}
+          >
             <Thead>
               <Tr className={clsx("h-8", !darkMode && "bg-[#F4F6F8]")}>
                 <Th className="!pr-0">
@@ -166,19 +171,48 @@ export default function RechargeHistory() {
             {!isLoading && rechargeRes?.data.list && rechargeRes?.data.list.length > 0 && (
               <Tbody bg={"none"}>
                 {(rechargeRes?.data?.list || []).map((item: any, index: number) => (
-                  <Tr key={item._id} bg={index % 2 === 1 ? "#FBFBFC" : "white"}>
-                    <Td className="font-medium text-grayModern-900">{item._id}</Td>
+                  <Tr key={item._id} bg={darkMode ? "" : index % 2 === 1 ? "#FBFBFC" : "white"}>
+                    <Td
+                      className={clsx(
+                        "font-medium",
+                        darkMode ? "!border-b-grayModern-600" : "text-grayModern-900",
+                      )}
+                    >
+                      {item._id}
+                    </Td>
                     <Td className="text-grayModern-600">{formatDate(item.createdAt)}</Td>
-                    <Td className={item.phase === "Paid" ? "text-primary-600" : "text-error-600"}>
+                    <Td
+                      className={clsx(
+                        darkMode ? "border-b-grayModern-600" : "",
+                        item.phase === "Paid" ? "text-primary-600" : "text-error-600",
+                      )}
+                    >
                       {item.phase}
                     </Td>
-                    <Td className="font-medium text-grayModern-900">
+                    <Td
+                      className={clsx(
+                        "font-medium",
+                        darkMode ? "!border-b-grayModern-600" : "text-grayModern-900",
+                      )}
+                    >
                       {item.channel === "GiftCode"
                         ? formatPrice(item.amount)
                         : formatPrice(item.amount + item.reward)}
                     </Td>
-                    <Td className="font-medium text-grayModern-900">{formatPrice(item.reward)}</Td>
-                    <Td className="font-medium text-grayModern-900">
+                    <Td
+                      className={clsx(
+                        "font-medium",
+                        darkMode ? "!border-b-grayModern-600" : "text-grayModern-900",
+                      )}
+                    >
+                      {formatPrice(item.reward)}
+                    </Td>
+                    <Td
+                      className={clsx(
+                        "font-medium",
+                        darkMode ? "!border-b-grayModern-600" : "text-grayModern-900",
+                      )}
+                    >
                       {item.channel === "GiftCode" ? "-" : formatPrice(item.amount)}
                     </Td>
                   </Tr>

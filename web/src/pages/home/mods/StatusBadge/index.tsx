@@ -36,21 +36,20 @@ export default function StatusBadge(props: {
 
   return (
     <>
-      <div className={clsx("flex", className)}>
-        <div
-          className={clsx(
-            styles.badgeStyle,
-            styles[colorScheme[statusConditions]],
-            "px-2 py-1 font-medium lg:px-3",
-          )}
-        >
-          <span>{getStatus(statusConditions, state || "")}</span>
-        </div>
+      <div
+        className={clsx(
+          styles.badgeStyle,
+          styles[colorScheme[statusConditions]],
+          "flex px-2 py-1 font-medium",
+          className,
+        )}
+      >
+        <span>{getStatus(statusConditions, state || "")}</span>
         {statusConditions === APP_PHASE_STATUS.Started ||
         statusConditions === APP_PHASE_STATUS.Stopped ? (
           ""
         ) : (
-          <div className="flex items-center pr-2">
+          <div className="flex items-center pl-1 text-grayModern-400">
             <Spinner size="xs" />
           </div>
         )}

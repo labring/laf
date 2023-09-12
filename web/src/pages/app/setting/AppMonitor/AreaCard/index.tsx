@@ -98,11 +98,11 @@ export default function AreaCard(props: {
             dataKey="xData"
             type="number"
             fontSize="10"
+            color="#9CA2A8"
             tickFormatter={(value) => formatDate(new Date(value)).split(" ")[1]}
             tickCount={10}
             domain={[Date.now() - 60 * 60 * 1000, Date.now()]}
-            className="!text-grayModern-100"
-            stroke="#9CA2A8"
+            stroke="#C0C2D2"
           />
           <YAxis fontSize="10" stroke="#9CA2A8" />
           <ReferenceLine

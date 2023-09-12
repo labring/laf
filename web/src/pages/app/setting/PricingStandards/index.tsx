@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useColorMode } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { t } from "i18next";
 
@@ -20,6 +21,7 @@ type price = {
 export default function PricingStandards() {
   const { regions } = useGlobalStore((state) => state);
 
+  const darkMode = useColorMode().colorMode === "dark";
   const [price, setPrice] = useState<price>({
     cpu: 0,
     memory: 0,
@@ -58,7 +60,7 @@ export default function PricingStandards() {
   return (
     <div>
       <div className="flex items-center space-x-2 pt-2 text-2xl">
-        <StandardIcon size={20} color={"#24282C"} />
+        <StandardIcon size={20} color={darkMode ? "#F4F6F8" : "#24282C"} />
         <p>{t("SettingPanel.PricingStandards")}</p>
       </div>
       <div className="flex justify-center pt-10">

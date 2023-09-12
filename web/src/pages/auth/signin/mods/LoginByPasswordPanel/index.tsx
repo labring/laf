@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -12,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { OutlineViewOffIcon, OutlineViewOnIcon } from "@/components/CommonIcon";
 import { Routes } from "@/constants";
 
 import { useGroupMemberAddMutation } from "@/pages/app/collaboration/service";
@@ -27,10 +27,12 @@ export default function LoginByPasswordPanel({
   switchLoginType,
   showSignupBtn,
   showPhoneSigninBtn,
+  isDarkMode,
 }: {
   switchLoginType: () => void;
   showSignupBtn: boolean;
   showPhoneSigninBtn: boolean;
+  isDarkMode: boolean;
 }) {
   const signinByPasswordMutation = useSigninByPasswordMutation();
   const navigate = useNavigate();
@@ -69,7 +71,7 @@ export default function LoginByPasswordPanel({
   return (
     <div>
       <FormControl isInvalid={!!errors?.account} className="mb-6">
-        <FormLabel className="w-20 text-grayModern-700" htmlFor="account">
+        <FormLabel className={isDarkMode ? "" : "text-grayModern-700"} htmlFor="account">
           {t("AuthPanel.Account")}
         </FormLabel>
         <Input
@@ -77,14 +79,14 @@ export default function LoginByPasswordPanel({
           type="text"
           id="account"
           placeholder={t("AuthPanel.AccountPlaceholder") || ""}
-          bg="#F8FAFB"
-          border="1px solid #D5D6E1"
+          bg={isDarkMode ? "#363C42" : "#F8FAFB"}
+          border={isDarkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
           height="48px"
           rounded="4px"
         />
       </FormControl>
       <FormControl isInvalid={!!errors.password} className="mb-12">
-        <FormLabel className="w-20 text-grayModern-700" htmlFor="phone">
+        <FormLabel className={isDarkMode ? "" : "text-grayModern-700"} htmlFor="phone">
           {t("AuthPanel.Password")}
         </FormLabel>
         <InputGroup>
@@ -95,19 +97,24 @@ export default function LoginByPasswordPanel({
             })}
             id="password"
             placeholder={t("AuthPanel.PasswordPlaceholder") || ""}
-            bg="#F8FAFB"
-            border="1px solid #D5D6E1"
+            bg={isDarkMode ? "#363C42" : "#F8FAFB"}
+            border={isDarkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
             height="48px"
             rounded="4px"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSubmit(onSubmit)();
+              }
+            }}
           />
           <InputRightElement height="100%">
             {isShowPassword ? (
-              <ViewOffIcon
+              <OutlineViewOffIcon
                 className="cursor-pointer !text-primary-500"
                 onClick={() => setIsShowPassword(false)}
               />
             ) : (
-              <ViewIcon
+              <OutlineViewOnIcon
                 className="cursor-pointer !text-primary-500"
                 onClick={() => setIsShowPassword(true)}
               />

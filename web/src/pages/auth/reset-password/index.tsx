@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -14,6 +13,7 @@ import {
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { OutlineViewOffIcon, OutlineViewOnIcon } from "@/components/CommonIcon";
 import { Logo, LogoText } from "@/components/LogoIcon";
 import { SendSmsCodeButton } from "@/components/SendSmsCodeButton";
 import { COLOR_MODE } from "@/constants";
@@ -83,7 +83,7 @@ export default function ResetPassword() {
     >
       <div className="mb-9 flex items-center space-x-4">
         <Logo size="43px" outerColor="#33BABB" innerColor="white" />
-        <LogoText size="51px" color="#363C42" />
+        <LogoText size="51px" color={darkMode ? "#33BABB" : "#363C42"} />
       </div>
       <div>
         <FormControl isInvalid={!!errors?.phone} className="mb-6 flex items-center">
@@ -102,8 +102,8 @@ export default function ResetPassword() {
               type="tel"
               id="phone"
               placeholder={t("AuthPanel.PhonePlaceholder") || ""}
-              bg="#F8FAFB"
-              border="1px solid #D5D6E1"
+              bg={darkMode ? "#363C42" : "#F8FAFB"}
+              border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
               height="48px"
               rounded="4px"
             />
@@ -127,8 +127,8 @@ export default function ResetPassword() {
             })}
             id="validationCode"
             placeholder={t("AuthPanel.ValidationCodePlaceholder") || ""}
-            bg="#F8FAFB"
-            border="1px solid #D5D6E1"
+            bg={darkMode ? "#363C42" : "#F8FAFB"}
+            border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
             height="48px"
             rounded="4px"
           />
@@ -145,19 +145,19 @@ export default function ResetPassword() {
               })}
               id="password"
               placeholder={t("AuthPanel.PasswordPlaceholder") || ""}
-              bg="#F8FAFB"
-              border="1px solid #D5D6E1"
+              bg={darkMode ? "#363C42" : "#F8FAFB"}
+              border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
               height="48px"
               rounded="4px"
             />
             <InputRightElement width="2rem" height="100%">
               {isShowPassword ? (
-                <ViewOffIcon
+                <OutlineViewOffIcon
                   className="cursor-pointer !text-primary-500"
                   onClick={() => setIsShowPassword(false)}
                 />
               ) : (
-                <ViewIcon
+                <OutlineViewOnIcon
                   className="cursor-pointer !text-primary-500"
                   onClick={() => setIsShowPassword(true)}
                 />
@@ -177,19 +177,19 @@ export default function ResetPassword() {
               })}
               id="confirmPassword"
               placeholder={t("AuthPanel.ConfirmPassword") || ""}
-              bg="#F8FAFB"
-              border="1px solid #D5D6E1"
+              bg={darkMode ? "#363C42" : "#F8FAFB"}
+              border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
               height="48px"
               rounded="4px"
             />
             <InputRightElement width="2rem" height="100%">
               {isShowPassword ? (
-                <ViewOffIcon
+                <OutlineViewOffIcon
                   className="cursor-pointer !text-primary-500"
                   onClick={() => setIsShowPassword(false)}
                 />
               ) : (
-                <ViewIcon
+                <OutlineViewOnIcon
                   className="cursor-pointer !text-primary-500"
                   onClick={() => setIsShowPassword(true)}
                 />

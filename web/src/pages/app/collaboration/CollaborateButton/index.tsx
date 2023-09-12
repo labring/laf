@@ -183,6 +183,8 @@ export default function CollaborateButton() {
                         border={"2px solid #DEE0E2"}
                         mr="2"
                         name={member.username}
+                        bgColor="primary.500"
+                        color="white"
                         src={getAvatarUrl(member.uid)}
                       />
                     ) : (

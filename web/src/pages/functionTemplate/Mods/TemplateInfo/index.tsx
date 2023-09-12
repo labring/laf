@@ -54,8 +54,8 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any 
           {(functionList || []).map((item) => {
             return (
               <div key={item.name} className="my-5 flex items-center font-medium">
-                <FileTypeIcon type="ts" fontSize={18} />
-                <span className="pl-1 text-lg">{item.name}</span>
+                <FileTypeIcon type="ts" fontSize={14} />
+                <span className="pl-2">{item.name}</span>
               </div>
             );
           })}
@@ -69,8 +69,8 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any 
             return (
               <div key={item} className="my-5 flex items-center justify-between font-medium">
                 <div className="flex items-center">
-                  <FileTypeIcon type="npm" />
-                  <span className="pl-1">{name}</span>
+                  <FileTypeIcon type="npm" fontSize={18} />
+                  <span className="pl-2">{name}</span>
                 </div>
                 <span>{version}</span>
               </div>

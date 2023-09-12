@@ -1,6 +1,12 @@
-import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Button, HStack, Select, Text } from "@chakra-ui/react";
+import { Button, HStack, Select, Text, useColorMode } from "@chakra-ui/react";
 import { t } from "i18next";
+
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "@/components/CommonIcon";
 
 import IconWrap from "../IconWrap";
 
@@ -20,6 +26,7 @@ export default function Pagination(props: {
   const { values, onChange, options, notShowSelect } = props;
   const { page, total, pageSize } = values;
   const maxPage = total && pageSize ? Math.ceil(total / pageSize) : -1;
+  const darkMode = useColorMode().colorMode === "dark";
 
   if (maxPage > 0 && page && page > maxPage) {
     onChange({
@@ -41,78 +48,94 @@ export default function Pagination(props: {
       whiteSpace={"nowrap"}
       justifyContent={!notShowSelect ? "space-between" : "flex-end"}
     >
-      <HStack spacing={"1"}>
-        <Text as="div" className="mr-2">
+      <HStack spacing="2" className="mr-4">
+        <Text as="div" className="mr-4">
           {t("Total")}: {total}
         </Text>
-        <IconWrap showBg tooltip="First Page" size={18}>
+        <IconWrap
+          showBg
+          tooltip={t("FirstPage").toString()}
+          size={24}
+          onClick={() => {
+            onChange({
+              pageSize: values.pageSize,
+              page: 1,
+            });
+          }}
+        >
           <Button
             variant="link"
-            onClick={() => {
-              onChange({
-                pageSize: values.pageSize,
-                page: 1,
-              });
-            }}
+            className={darkMode ? "" : "!text-[#262A32]"}
             isDisabled={page === 1 || maxPage === -1}
           >
-            <ArrowLeftIcon fontSize={"8px"} />
+            <ArrowLeftIcon fontSize="12px" />
           </Button>
         </IconWrap>
-        <IconWrap showBg tooltip="Previous Page" size={18}>
+        <IconWrap
+          showBg
+          tooltip={t("PreviousPage").toString()}
+          size={24}
+          onClick={() =>
+            onChange({
+              pageSize: values.pageSize,
+              page: page! - 1,
+            })
+          }
+        >
           <Button
             variant="link"
-            onClick={() =>
-              onChange({
-                pageSize: values.pageSize,
-                page: page! - 1,
-              })
-            }
+            className={darkMode ? "" : "!text-[#262A32]"}
             isDisabled={page === 1 || maxPage === -1}
           >
-            <ChevronLeftIcon fontSize={"16px"} />
+            <ChevronLeftIcon fontSize="12px" />
           </Button>
         </IconWrap>
-        <Text fontWeight="bold" as="p" minWidth={"36px"} px="8px" textAlign={"center"}>
-          {page}
-        </Text>
+        <Text className="min-w-[10px] text-center font-medium text-[#828289]">{page}</Text>
         <Text>/</Text>
-        <Text fontWeight="bold" as="p" minWidth={"36px"} px="8px" textAlign={"center"}>
-          {maxPage < 0 ? "-" : maxPage}
-        </Text>
-        <IconWrap showBg tooltip="Next Page" size={18}>
+        <Text className="min-w-[10px] text-center font-medium">{maxPage < 0 ? "-" : maxPage}</Text>
+        <IconWrap
+          showBg
+          tooltip={t("NextPage").toString()}
+          size={24}
+          onClick={() => {
+            onChange({
+              pageSize: values.pageSize,
+              page: page! + 1,
+            });
+          }}
+        >
           <Button
             variant="link"
             isDisabled={maxPage === page || maxPage === -1}
-            onClick={() => {
-              onChange({
-                pageSize: values.pageSize,
-                page: page! + 1,
-              });
-            }}
+            className={darkMode ? "" : "!text-[#262A32]"}
           >
-            <ChevronRightIcon fontSize={"16px"} />
+            <ChevronRightIcon fontSize="12px" />
           </Button>
         </IconWrap>
-        <IconWrap showBg tooltip="Last Page" size={18}>
+        <IconWrap
+          showBg
+          tooltip={t("LastPage").toString()}
+          onClick={() => {
+            onChange({
+              pageSize: values.pageSize,
+              page: maxPage,
+            });
+          }}
+          size={24}
+        >
           <Button
             variant="link"
-            onClick={() => {
-              onChange({
-                pageSize: values.pageSize,
-                page: maxPage,
-              });
-            }}
+            className={darkMode ? "" : "!text-[#262A32]"}
             isDisabled={maxPage === page || maxPage === -1}
           >
-            <ArrowRightIcon fontSize={"8px"} />
+            <ArrowRightIcon fontSize="12px" />
           </Button>
         </IconWrap>
       </HStack>
       {!notShowSelect && (
         <Select
-          size="sm"
-          w="120px"
+          className="flex !h-8 cursor-pointer justify-center !pl-3 !text-base hover:!bg-grayModern-100/50"
+          width="92px"
           value={pageSize}
           onChange={(e: any) => {
             onChange({
@@ -120,6 +143,7 @@ export default function Pagination(props: {
               page: 1,
             });
           }}
+          variant="unstyled"
         >
           {(options || [10, 20, 30]).map((data: any) => (
             <option key={data} value={data}>

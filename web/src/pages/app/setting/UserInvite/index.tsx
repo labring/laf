@@ -45,9 +45,16 @@ export default function UserInvite() {
           </Button>
         </CopyText>
       </div>
-      <div className="mb-6 mt-3 flex items-center bg-[#ECF8FF] px-4 py-2">
-        <InfoOutlineIcon className="mr-1 !text-[#219BF4]" />
-        <span className="text-[#0884DD]">{t("UserInfo.InviteTips")}</span>
+      <div
+        className={clsx(
+          "mb-6 mt-3 flex items-center rounded-sm px-4 py-2",
+          darkMode ? "bg-[#20688F]" : " bg-[#ECF8FF]",
+        )}
+      >
+        <InfoOutlineIcon className={"mr-1 !text-[#219BF4]"} />
+        <span className={darkMode ? "text-[#86CEF5]" : "text-[#0884DD]"}>
+          {t("UserInfo.InviteTips")}
+        </span>
       </div>
       <span className="text-lg text-grayModern-500">{t("UserInfo.BonusDetails")}</span>
       <div className="pt-3">

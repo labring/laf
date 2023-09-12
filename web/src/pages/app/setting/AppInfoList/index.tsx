@@ -32,7 +32,7 @@ const AppEnvList = () => {
       <div className="flex flex-col pt-10">
         <VStack spacing={0}>
           <StatusBadge
-            className="mb-3 rounded-full bg-primary-100"
+            className="mb-3 px-3"
             statusConditions={currentApp?.phase}
             state={currentApp?.state}
           />

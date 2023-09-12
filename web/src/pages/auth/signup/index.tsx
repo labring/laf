@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Button,
   Checkbox,
@@ -16,6 +15,7 @@ import {
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { OutlineViewOffIcon, OutlineViewOnIcon } from "@/components/CommonIcon";
 import { Logo, LogoText } from "@/components/LogoIcon";
 import { Routes } from "@/constants";
 import { COLOR_MODE } from "@/constants";
@@ -173,25 +173,25 @@ export default function SignUp() {
     >
       <div className="mb-9 flex items-center space-x-4">
         <Logo size="43px" outerColor="#33BABB" innerColor="white" />
-        <LogoText size="51px" color="#363C42" />
+        <LogoText size="51px" color={darkMode ? "#33BABB" : "#363C42"} />
       </div>
       <div>
         <FormControl isInvalid={!!errors.account} className="mb-6 flex items-center">
-          <FormLabel className="w-20 text-grayModern-700" htmlFor="account">
+          <FormLabel className={darkMode ? "w-20" : "w-20 text-grayModern-700"} htmlFor="account">
             {t("AuthPanel.Account")}
           </FormLabel>
           <Input
             {...register("account", { required: true })}
             id="account"
             placeholder={t("AuthPanel.AccountPlaceholder") || ""}
-            bg="#F8FAFB"
-            border="1px solid #D5D6E1"
+            bg={darkMode ? "#363C42" : "#F8FAFB"}
+            border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
             height="48px"
             rounded="4px"
           />
         </FormControl>
         <FormControl isInvalid={!!errors.password} className="mb-6 flex items-center">
-          <FormLabel className="w-20 text-grayModern-700" htmlFor="password">
+          <FormLabel className={darkMode ? "w-20" : "w-20 text-grayModern-700"} htmlFor="password">
             {t("AuthPanel.Password")}
           </FormLabel>
           <InputGroup>
@@ -202,19 +202,19 @@ export default function SignUp() {
               })}
               id="password"
               placeholder={t("AuthPanel.PasswordPlaceholder") || ""}
-              bg="#F8FAFB"
-              border="1px solid #D5D6E1"
+              bg={darkMode ? "#363C42" : "#F8FAFB"}
+              border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
               height="48px"
               rounded="4px"
             />
             <InputRightElement width="2rem" height="100%">
               {isShowPassword ? (
-                <ViewOffIcon
+                <OutlineViewOffIcon
                   className="cursor-pointer !text-primary-500"
                   onClick={() => setIsShowPassword(false)}
                 />
               ) : (
-                <ViewIcon
+                <OutlineViewOnIcon
                   className="cursor-pointer !text-primary-500"
                   onClick={() => setIsShowPassword(true)}
                 />
@@ -223,7 +223,10 @@ export default function SignUp() {
           </InputGroup>
         </FormControl>
         <FormControl isInvalid={!!errors.confirmPassword} className="mb-6 flex items-center">
-          <FormLabel className="w-20 text-grayModern-700" htmlFor="confirmPassword">
+          <FormLabel
+            className={darkMode ? "w-20" : "w-20 text-grayModern-700"}
+            htmlFor="confirmPassword"
+          >
             {t("AuthPanel.ConfirmPassword")}
           </FormLabel>
           <InputGroup>
@@ -234,19 +237,19 @@ export default function SignUp() {
               })}
               id="confirmPassword"
               placeholder={t("AuthPanel.ConfirmPassword") || ""}
-              bg="#F8FAFB"
-              border="1px solid #D5D6E1"
+              bg={darkMode ? "#363C42" : "#F8FAFB"}
+              border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
               height="48px"
               rounded="4px"
             />
             <InputRightElement width="2rem" height="100%">
               {isShowPassword ? (
-                <ViewOffIcon
+                <OutlineViewOffIcon
                   className="cursor-pointer !text-primary-500"
                   onClick={() => setIsShowPassword(false)}
                 />
               ) : (
-                <ViewIcon
+                <OutlineViewOnIcon
                   className="cursor-pointer !text-primary-500"
                   onClick={() => setIsShowPassword(true)}
                 />
@@ -256,7 +259,7 @@ export default function SignUp() {
         </FormControl>
         {isNeedPhone && (
           <FormControl isInvalid={!!errors?.phone} className="mb-6 flex items-center">
-            <FormLabel className="w-20 text-grayModern-700" htmlFor="phone">
+            <FormLabel className={darkMode ? "w-20" : "w-20 text-grayModern-700"} htmlFor="phone">
               {t("AuthPanel.Phone")}
             </FormLabel>
             <InputGroup>
@@ -271,8 +274,8 @@ export default function SignUp() {
                 type="tel"
                 id="phone"
                 placeholder={t("AuthPanel.PhonePlaceholder") || ""}
-                bg="#F8FAFB"
-                border="1px solid #D5D6E1"
+                bg={darkMode ? "#363C42" : "#F8FAFB"}
+                border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
                 height="48px"
                 rounded="4px"
               />
@@ -290,7 +293,10 @@ export default function SignUp() {
         )}
         {isNeedPhone && (
           <FormControl isInvalid={!!errors.validationCode} className="mb-10 flex items-center">
-            <FormLabel className="w-20 text-grayModern-700" htmlFor="validationCode">
+            <FormLabel
+              className={darkMode ? "w-20" : "w-20 text-grayModern-700"}
+              htmlFor="validationCode"
+            >
               {t("AuthPanel.ValidationCode")}
             </FormLabel>
             <Input
@@ -304,8 +310,8 @@ export default function SignUp() {
               })}
               id="validationCode"
               placeholder={t("AuthPanel.ValidationCodePlaceholder") || ""}
-              bg="#F8FAFB"
-              border="1px solid #D5D6E1"
+              bg={darkMode ? "#363C42" : "#F8FAFB"}
+              border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
               height="48px"
               rounded="4px"
             />

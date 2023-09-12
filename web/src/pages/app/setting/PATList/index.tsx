@@ -47,7 +47,7 @@ const PATList = () => {
                 (data: any) => {
                   return {
                     isValidate: data !== "",
-                    errorInfo: "name不能为空",
+                    errorInfo: t("NameCannotBeEmpty").toString(),
                   };
                 },
               ],
@@ -71,7 +71,7 @@ const PATList = () => {
           ]}
           configuration={{
             key: "_id",
-            tableHeight: "40vh",
+            tableHeight: "335px",
             hiddenEditButton: true,
             addButtonText: t("Add") + "Token",
             saveButtonText: t("Generate") + "Token",

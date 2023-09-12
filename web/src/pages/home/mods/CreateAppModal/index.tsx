@@ -22,7 +22,7 @@ import { debounce } from "lodash";
 
 import ChargeButton from "@/components/ChargeButton";
 import { APP_STATUS } from "@/constants/index";
-import { formatPrice } from "@/utils/format";
+import { formatOriginalPrice, formatPrice } from "@/utils/format";
 
 import { APP_LIST_QUERY_KEY } from "../..";
 import { queryKeys, useAccountQuery } from "../../service";
@@ -302,9 +302,6 @@ const CreateAppModal = (props: {
                   <p>{t("Balance") + ":"}</p>
                   <p className="ml-1">{formatPrice(accountRes?.data?.balance)}</p>
                 </span>
-                {totalPrice > accountRes?.data?.balance! ? (
-                  <span className="mr-2">{t("balance is insufficient")}</span>
-                ) : null}
                 <ChargeButton>
                   <p className="!mr-2 cursor-pointer text-lg font-semibold text-blue-600">
                     {t("ChargeNow")}
@@ -314,7 +311,7 @@ const CreateAppModal = (props: {
                   <div className="!mx-6 flex items-center">
                     {!calculating ? (
                       <span className="mr-2 w-36 text-center text-xl font-semibold text-error-500">
-                        ¥{totalPrice} / hour
+                        {formatOriginalPrice(totalPrice, 6)} / hour
                       </span>
                     ) : (
                       <span className="mr-2 flex w-36 justify-center">
@@ -323,14 +320,18 @@ const CreateAppModal = (props: {
                     )}
                   </div>
                 )}
-                {type !== "edit" && totalPrice <= accountRes?.data?.balance! && (
+                {type !== "edit" && (
                   <Button
                     isLoading={createAppMutation.isLoading}
                     type="submit"
                     onClick={handleSubmit(onSubmit)}
-                    disabled={totalPrice > 0}
+                    isDisabled={totalPrice > accountRes?.data?.balance!}
                   >
-                    {type === "change" ? t("Confirm") : t("CreateNow")}
+                    {totalPrice > accountRes?.data?.balance!
+                      ? t("balance is insufficient")
+                      : type === "change"
+                      ? t("Confirm")
+                      : t("CreateNow")}
                   </Button>
                 )}
                 {type === "edit" && (

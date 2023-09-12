@@ -79,7 +79,7 @@ export default function AvatarEditor(props: { img: string | null; handleBack: an
       >
         <ChevronLeftIcon boxSize={6} /> {t("Back")}
       </span>
-      <VStack>
+      <VStack className="mt-6">
         {!!img && (
           <ReactCrop
             crop={crop}

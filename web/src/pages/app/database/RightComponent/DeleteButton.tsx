@@ -1,4 +1,3 @@
-import { DeleteIcon } from "@chakra-ui/icons";
 import {
   Button,
   ButtonGroup,
@@ -9,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { RecycleDeleteIcon } from "@/components/CommonIcon";
 import IconWrap from "@/components/IconWrap";
 
 export default function DeleteButton(props: { data: any; deleteMethod: any }) {
@@ -33,7 +33,10 @@ export default function DeleteButton(props: { data: any; deleteMethod: any }) {
           }}
         >
           <PopoverTrigger>
-            <DeleteIcon fontSize={12} className="align-middle group-hover/icon:text-error-500" />
+            <RecycleDeleteIcon
+              fontSize={16}
+              className="align-middle group-hover/icon:text-error-500"
+            />
           </PopoverTrigger>
         </IconWrap>
         <PopoverContent p="2" maxWidth={130}>

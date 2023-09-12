@@ -227,7 +227,7 @@
     "Private": "私有 (private)",
     "Readonly": "公共读 (readonly)",
     "ReadWrite": "公共读写 (readwrite)",
-    "SearchBucket": "输入 bucket 名进行搜索",
+    "SearchBucket": "请输入 bucket 名进行搜索",
     "Size": "大小",
     "Storage": "存储",
     "StorageList": "云存储",
@@ -632,5 +632,10 @@
   "Retry": "点击重试",
   "NoFunctionYet": "您还没有创建函数哦～ ",
   "shortcutKey": "快捷键",
-  "NameCopiedSuccessfully": "名称复制成功"
+  "NameCopiedSuccessfully": "名称复制成功",
+  "NameCannotBeEmpty": "name 不能为空",
+  "PreviousPage": "上一页",
+  "NextPage": "下一页",
+  "LastPage": "最后一页",
+  "FirstPage": "第一页"
 }

@@ -41,11 +41,10 @@ const TemplateCard = (props: {
     <div className={className}>
       <div
         className={clsx("cursor-pointer rounded-lg border-[1px]", isModal ? "pb-4" : "mr-4")}
-        style={{ boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)" }}
+        style={{ boxShadow: "0px 4px 4px 0px rgba(198, 205, 214, 0.25)" }}
         onMouseEnter={(e) => {
           e.currentTarget.style.outlineWidth = "2px";
-          e.currentTarget.style.boxShadow =
-            "0px 2px 4px rgba(0, 0, 0, 0.1), 0px 0px 0px 2px #66CBCA";
+          e.currentTarget.style.boxShadow = "0px 0px 0px 2px #66CBCA";
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.outlineWidth = "1px";
@@ -161,7 +160,7 @@ const TemplateCard = (props: {
                 </span>
                 <div
                   className={clsx(
-                    "flex items-center text-base hover:text-rose-500",
+                    "flex items-center text-lg hover:text-rose-500",
                     starState && "text-rose-500",
                   )}
                   onClick={async (e) => {

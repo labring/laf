@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { AddIcon, CopyIcon } from "@chakra-ui/icons";
-import { Button, Center, Spinner, Text, useColorMode } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { Button, Center, Input, Spinner, Text, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { OutlineCopyIcon } from "@/components/CommonIcon";
 import CopyText from "@/components/CopyText";
 import JSONEditor from "@/components/Editor/JSONEditor";
 import JSONViewer from "@/components/Editor/JSONViewer";
@@ -117,6 +118,9 @@ export default function PolicyDataList() {
               ListQuery={rulesListQuery?.data?.data}
               setKey="_id"
               isActive={(item: any) => currentData?._id === item._id}
+              customStyle={{
+                "border-lafWhite-600": colorMode === COLOR_MODE.light,
+              }}
               onClick={(data: any) => {
                 setCurrentData(data);
                 setRecord(JSON.stringify(data.value, null, 2));
@@ -127,7 +131,7 @@ export default function PolicyDataList() {
                 return (
                   <>
                     <div
-                      className={clsx("mb-4 border-b-2 p-2", {
+                      className={clsx("mb-4 border-b-2 pb-2 pl-2", {
                         "border-lafWhite-600": !darkMode,
                       })}
                     >
@@ -153,7 +157,7 @@ export default function PolicyDataList() {
                       size={32}
                       className="group/icon"
                     >
-                      <CopyIcon />
+                      <OutlineCopyIcon size="14" color="#24282C" />
                     </IconWrap>
                   </CopyText>
                 );
@@ -166,8 +170,13 @@ export default function PolicyDataList() {
               onSave={handleData}
             >
               <Text fontSize="md" className="mb-2 font-semibold leading-loose">
-                {t("CollectionPanel.SelectCollection")}: {currentData?.collectionName}
+                {t("CollectionPanel.SelectCollection")}:
               </Text>
+              <Input
+                isDisabled
+                value={currentData?.collectionName}
+                className={darkMode ? "bg-lafDark-200" : "bg-lafWhite-400"}
+              ></Input>
               <Text fontSize="md" className="mb-2 mt-4 font-semibold leading-loose">
                 {t("CollectionPanel.RulesContent")}
               </Text>

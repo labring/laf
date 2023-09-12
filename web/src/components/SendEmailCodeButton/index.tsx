@@ -58,7 +58,7 @@ export function SendEmailCodeButton(props: {
   return (
     <Button
       className={clsx("w-20", className)}
-      variant={isSendSmsCode ? "thirdly_disabled" : "thirdly"}
+      variant={isSendSmsCode ? "text_disabled" : "text"}
       onClick={handleSendSmsCode}
     >
       {isSendSmsCode ? `${countdown}s` : t("AuthPanel.getValidationCode")}

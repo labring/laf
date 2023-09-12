@@ -76,9 +76,9 @@ function HeadPanel() {
                     </div>
                     {functionCache.getCache(item?._id, (item as any)?.source?.code) !==
                     (item as any)?.source?.code ? (
-                      <span className="ml-1 inline-block h-1 w-1 flex-none rounded-full bg-rose-500 group-hover:hidden"></span>
+                      <span className="ml-2 inline-block h-1 w-1 flex-none rounded-full bg-rose-500 group-hover:hidden"></span>
                     ) : (
-                      <span className="ml-1 inline-block h-1 w-1 flex-none rounded-full bg-none group-hover:hidden"></span>
+                      <span className="ml-2 inline-block h-1 w-1 flex-none rounded-full bg-none group-hover:hidden"></span>
                     )}
                     <span className="-mr-1 hidden group-hover:flex">
                       <IconWrap size={16}>
