@@ -1,8 +1,8 @@
-![laf](https://socialify.git.ci/labring/laf/image?description=1&descriptionEditable=Write%20code%20like%20writing%20a%20blog!&font=Inter&forks=1&language=1&name=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Dark)
+![laf](https://socialify.git.ci/labring/laf/image?description=1&descriptionEditable=%E5%83%8F%E5%86%99%E5%8D%9A%E5%AE%A2%E4%B8%80%E6%A0%B7%E5%86%99%E4%BB%A3%E7%A0%81%EF%BC%81&font=Inter&forks=1&language=1&name=1&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Dark)
 
 <div align="center">
   <p>
-    <b>Write code like writing a blog!</b>
+    <b>像写博客一样写函数！</b>
   </p>
 
   <p>
@@ -10,7 +10,7 @@
   [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/labring/laf)
   [![](https://img.shields.io/docker/pulls/lafyun/system-server)](https://hub.docker.com/r/lafyun/system-server)
   ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?logo=typescript&logoColor=white)
-  [![Website](https://img.shields.io/website?url=https%3A%2F%2Flaf.dev&logo=Postwoman)](https://laf.dev/)
+  [![Website](https://img.shields.io/website?url=https%3A%2F%2Flaf.run&logo=Postwoman)](https://laf.run/)
   <img src="https://img.shields.io/badge/%E5%BE%AE%E4%BF%A1%E7%BE%A4-2000%2B-brightgreen"></a>
 
   </p>
@@ -18,62 +18,63 @@
 
 ---
 
-> English | [中文](README_cn.md)
+> 中文 | [English](README_en.md)
 
 ## 🚀 Quick Start
 
-[Three minutes experience using fans write an own ChatGPT (development to online)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)  
-[Three minutes to experience using fans develop a simple "Todo List"](./docs/guide/quick-start/Todo.md)
+[三分钟体验使用 laf 写一个自己的 ChatGPT (开发到上线)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)  
+[三分钟体验使用 laf 开发一个简单的「Todo List」](./docs/guide/quick-start/Todo.md)
 
-## 🖥 Online experience
+## 🖥 在线体验
 
-🎉 [laf.dev](https://laf.dev) Free experience ` laf ` cloud development.
+🎉 [laf.run](https://laf.run) 可免费体验 `laf` 云开发。（国内版）
 
-## 👀 What is `laf`
+🎉 [laf.dev](https://laf.dev) 可免费体验 `laf` 云开发。（海外版）
 
-`laf` is an open-source cloud development platform that offers ready-to-use application resources such as cloud functions, cloud databases, and cloud storage. It allows developers to focus on business development without the need to tinker with servers, enabling them to quickly unleash their creativity.
+## 👀 `laf` 是什么
 
-## 🎉 Features of `laf`
+laf 是开源的云开发平台，提供云函数、云数据库、云存储等开箱即用的应用资源。让开发者专注于业务开发，无需折腾服务器，快速释放创意。
 
-- Cloud Functions
-- Cloud Database
-- Cloud Storage
-- WebIDE, Write code like writing a blog
-- Web-hosting
-- WebSocket support
+## 🎉 `laf` 有什么
 
-![dev](https://sif268-laf-image.oss.laf.dev/dev.png)
+- 云函数
+- 云数据库
+- 云存储
+- WebIDE，像写博客一样写代码
+- 网站托管
+- WebSocket 支持
 
-## 👨‍💻 Who uses `laf`?
+![](https://sif268-laf-image.oss.laf.dev/dev.png)
 
-1. Front-end developers + `laf` = Full-stack developers, transforming front-end developers into true full-stack developers.
+## 👨‍💻 谁适合使用 `laf` ?
 
-   - `laf` provides [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk) for front-end developers, suitable for any JavaScript runtime environment.
-   - `laf` allows front-end and back-end code to be developed using JavaScript/TypeScript, eliminating the barrier between them and enabling a quick learning curve.
-   - `laf` offers static website hosting, allowing direct deployment of front-end built web pages without the need for server configuration, nginx, domains, etc.
-   - `laf` will provide SDKs for various client platforms (Flutter/Android/iOS, etc.) in the future, offering backend development services and a consistent development experience for all client developers.
+1. 前端开发者 + `laf` = 全栈开发者，前端秒变全栈，成为真正的大前端
 
-2. Back-end developers can free themselves from trivial tasks and focus on the core business, enhancing development efficiency.
+   - `laf` 为前端提供了 [laf-client-sdk](https://github.com/labring/laf/tree/main/packages/client-sdk)，适用于任何 js 运行环境
+   - `laf` 云函数使用 js/ts 开发，前后端代码无隔裂，无门槛快速上手
+   - `laf` 提供了静态网站托管，可将前端构建的网页直接同步部署上来，无需再配置服务器、nginx、域名等
+   - `laf` 后续会提供多种客户端的 SDK（Flutter/Android/iOS 等），为所有客户端开发者提供后端开发服务和一致的开发体验
 
-   - `laf` saves effort on server maintenance, multi-environment deployment, and management.
-   - `laf` eliminates the need for configuration and debugging of nginx.
-   - `laf` eliminates the repetitive work of manually deploying databases and addressing security concerns for each project.
-   - `laf` eliminates the tedious iterative experience of "making changes and taking half a day to publish."
-   - `laf` allows you to view function execution logs anytime, anywhere on the web without the need to connect to servers or spend time searching.
-   - `laf` enables you to "write a function like writing a blog," making it easy to publish and invoke functions effortlessly.
+2. 后端开发者，可以从琐事中解放出来，专注于业务本身，提升开发效率
 
-3. Cloud development users, if you are a user of other cloud development platforms, `laf` not only provides a more powerful and fast development experience but also prevents vendor lock-in.
+   - `laf` 可以节约服务器运维、多环境部署和管理精力
+   - `laf` 让你告别配置、调试 nginx
+   - `laf` 让你告别「为每个项目手动部署数据库、安全顾虑等重复性工作」
+   - `laf` 让你告别「修改一次、发布半天」的重复繁琐的迭代体验
+   - `laf` 让你随时随地在 Web 上查看函数的运行日志，不必再连接服务器，费神费眼翻找
+   - `laf` 让你「像写博客一样写一个函数」，招之即来，挥之即去，随手发布！
 
-   - You can deliver source code to clients and privately deploy a `laf` + your cloud development application. Closed-source cloud development services cannot deliver independently runnable source code.
-   - You can deploy your own product to your servers at any time according to future needs, as `laf` is open-source and free.
-   - You can even modify and customize your own cloud development platform, as `laf` is open-source and highly extensible.
+3. 云开发用户，若你是其它厂商的云开发用户，你不仅可以获得更强大、快速的开发体验，还不被云厂商锁定
 
-4. Independent developers and startup teams can save costs, start quickly, and focus on their business.
+   - 你可以为客户提供源码交付，为客户私有部署一套 `laf` + 你的云开发应用，而使用闭源的云开发服务，无法交付可独立运行的源码
+   - 你可以根据未来的需要，随时将自己的产品部署到自己的服务器上，`laf` 是开源免费的
+   - 你甚至可以修改、订制自己的云开发平台，`laf` 是开源的、高度可扩展的
 
-   - Reduce the project development process, start quickly, and shorten the product validation cycle.
-   - Greatly improve iteration speed, adapt to changes at any time, and release updates quickly.
-   - Focus on the core business of the product, quickly launch Minimum Viable Products (MVP), and validate the product and market rapidly.
-   - One person + `laf` = a team.
+4. 独立开发者、创业团队，节约成本，快速开始，专注业务
+   - 减少启动项目开发的流程，快速启动，缩短产品验证周期
+   - 极大程度提高迭代速度，随时应对变化，随时发布
+   - 专注于产品业务本身，快速推出最小可用产品 (MVP)，快速进行产品、市场验证
+   - 一个人 + `laf` = 团队
 
 > life is short, you need laf:)
 
@@ -83,8 +84,8 @@
 
 ## 🏘️ Community Groups
 
-- [Discord](https://discord.gg/uWZqAwwdvy)
-- [Twitter](https://twitter.com/laf_dev)
+- [微信群](https://w4mci7-images.oss.laf.run/wechat.png)
+- [QQ 群：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
 
 ## :point_right: Roadmap
 
