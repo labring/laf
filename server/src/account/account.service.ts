@@ -37,16 +37,16 @@ export class AccountService {
   async create(userid: ObjectId): Promise<Account> {
     // get signup Profit Amount
     let amount = 0
-    const signupProfit = await this.db.collection<Setting>('Setting').findOne({
-      key: SettingKey.SignupProfit,
+    const signupBonus = await this.db.collection<Setting>('Setting').findOne({
+      key: SettingKey.SignupBonus,
     })
-    if (signupProfit) {
-      amount = parseFloat(signupProfit.value)
+    if (signupBonus) {
+      amount = parseFloat(signupBonus.value)
     }
     await this.db.collection<Account>('Account').insertOne({
       balance: amount,
       state: BaseState.Active,
-      createdBy: new ObjectId(userid),
+      createdBy: userid,
       createdAt: new Date(),
       updatedAt: new Date(),
     })

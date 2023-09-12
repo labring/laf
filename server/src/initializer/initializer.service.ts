@@ -349,9 +349,9 @@ export class InitializerService {
 
     await this.db.collection<Setting>('Setting').insertOne({
       public: false,
-      key: SettingKey.SignupProfit,
+      key: SettingKey.SignupBonus,
       value: '0',
-      desc: 'Set up signup profit',
+      desc: 'Set up signup bonus',
     })
 
     await this.db.collection<Setting>('Setting').insertOne({

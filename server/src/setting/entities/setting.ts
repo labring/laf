@@ -13,7 +13,7 @@ export enum SettingKey {
   InvitationProfit = 'invitation_profit',
   IdVerify = 'id_verify',
   DefaultUserQuota = 'default_user_quota',
-  SignupProfit = 'signup_profit',
+  SignupBonus = 'signup_bonus',
 
   AiPilotUrl = 'ai_pilot_url',
   LafForumUrl = 'laf_forum_url',
