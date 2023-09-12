@@ -26,6 +26,7 @@ export class InitializerService {
     await this.createDefaultResourceOptions()
     await this.createDefaultResourceBundles()
     await this.createDefaultSettings()
+    await this.createNecessarySettings()
   }
 
   async createDefaultRegion() {
@@ -347,31 +348,15 @@ export class InitializerService {
     }
 
     await this.db.collection<Setting>('Setting').insertOne({
-      public: false,
-      key: 'resource_limit',
-      value: 'default',
-      desc: 'resource limit of user',
-      metadata: {
-        limitOfCPU: 20000,
-        limitOfMemory: 20480,
-        limitCountOfApplication: 20,
-        limitOfDatabaseSyncCount: {
-          countLimit: 10,
-          timePeriodInSeconds: 86400,
-        },
-      },
-    })
-
-    await this.db.collection<Setting>('Setting').insertOne({
       public: true,
-      key: 'invitation_profit',
+      key: SettingKey.InvitationProfit,
       value: '0',
       desc: 'Set up invitation rebate',
     })
 
     await this.db.collection<Setting>('Setting').insertOne({
       public: true,
-      key: 'id_verify',
+      key: SettingKey.IdVerify,
       value: 'off', // on | off
       desc: 'real name authentication',
       metadata: {
@@ -421,5 +406,29 @@ export class InitializerService {
     ])
 
     this.logger.verbose('Created default settings')
+  }
+
+  async createNecessarySettings() {
+    const find = await this.db
+      .collection<Setting>('Setting')
+      .findOne({ key: SettingKey.DefaultUserQuota })
+
+    if (!find) {
+      await this.db.collection<Setting>('Setting').insertOne({
+        public: false,
+        key: SettingKey.DefaultUserQuota,
+        value: 'default',
+        desc: 'resource limit of user',
+        metadata: {
+          limitOfCPU: 20000,
+          limitOfMemory: 20480,
+          limitCountOfApplication: 20,
+          limitOfDatabaseSyncCount: {
+            countLimit: 10,
+            timePeriodInSeconds: 86400,
+          },
+        },
+      })
+    }
   }
 }

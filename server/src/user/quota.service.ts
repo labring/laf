@@ -6,6 +6,7 @@ import { SystemDatabase } from 'src/system-database'
 import { UserQuota } from './entities/user-quota'
 import { SettingService } from 'src/setting/setting.service'
 import { DatabaseSyncRecord } from 'src/database/entities/database-sync-record'
+import { SettingKey } from 'src/setting/entities/setting'
 
 @Injectable()
 export class QuotaService {
@@ -87,7 +88,7 @@ export class QuotaService {
 
   async getUserQuota(uid: ObjectId) {
     const defaultUserQuotaSetting = await this.settingService.findOne(
-      'resource_limit',
+      SettingKey.DefaultUserQuota,
     )
 
     if (!defaultUserQuotaSetting) {

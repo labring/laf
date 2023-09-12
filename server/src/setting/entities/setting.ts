@@ -12,6 +12,7 @@ export enum SettingKey {
   SiteFooter = 'site_footer',
   InvitationProfit = 'invitation_profit',
   IdVerify = 'id_verify',
+  DefaultUserQuota = 'default_user_quota',
 
   AiPilotUrl = 'ai_pilot_url',
   LafForumUrl = 'laf_forum_url',
