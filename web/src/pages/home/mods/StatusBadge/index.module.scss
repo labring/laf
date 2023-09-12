@@ -15,6 +15,7 @@
 
   &.primary {
     color: var(--chakra-colors-primary-600);
+    background-color: var(--chakra-colors-primary-100);
 
     span::before {
       background-color: var(--chakra-colors-primary-600);
@@ -23,6 +24,7 @@
 
   &.warn {
     color: var(--chakra-colors-warn-600);
+    background-color: var(--chakra-colors-warn-100);
 
     span::before {
       background-color: var(--chakra-colors-warn-600);
@@ -31,6 +33,7 @@
 
   &.blue {
     color: var(--chakra-colors-blue-600);
+    background-color: var(--chakra-colors-blue-100);
 
     span::before {
       background-color: var(--chakra-colors-blue-600);
@@ -39,6 +42,7 @@
 
   &.error {
     color: var(--chakra-colors-error-600);
+    background-color: var(--chakra-colors-error-100);
 
     span::before {
       background-color: var(--chakra-colors-error-600);

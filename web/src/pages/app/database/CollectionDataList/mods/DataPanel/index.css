@@ -1,0 +1,5 @@
+.dataList .simplebar-scrollbar::before {
+  background: #7B838B;
+  width: 4px;
+  transform: translateX(100%);
+}

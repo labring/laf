@@ -46,7 +46,12 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
           className="cursor-pointer"
         />
       </PopoverTrigger>
-      <PopoverContent w={300} borderRadius={12} mr={6}>
+      <PopoverContent
+        w={300}
+        borderRadius={12}
+        mr={6}
+        boxShadow={"0px 10px 18px 0px rgba(187, 196, 206, 0.25)"}
+      >
         <PopoverBody className="cursor-auto">
           <div
             className={clsx(

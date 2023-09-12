@@ -120,7 +120,11 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
                         </div>
                         <div className="w-2/12 font-mono">{item?.appid}</div>
                         <div className="w-2/12 ">
-                          <StatusBadge statusConditions={item?.phase} state={item?.state} />
+                          <StatusBadge
+                            className="!bg-transparent"
+                            statusConditions={item?.phase}
+                            state={item?.state}
+                          />
                         </div>
                         <div className="w-2/12 ">
                           {getRegionById(regions, item.regionId)?.displayName}

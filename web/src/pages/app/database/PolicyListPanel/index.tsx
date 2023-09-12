@@ -2,8 +2,11 @@
  * cloud functions list sidebar
  ***************************/
 import { useTranslation } from "react-i18next";
-import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons";
+import { useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
 
+import { RecycleDeleteIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon from "@/components/FileTypeIcon";
@@ -20,6 +23,7 @@ export default function PolicyListPanel() {
   const { t } = useTranslation();
   const deletePolicyMutation = useDeletePolicyMutation();
   const store = useDBMStore((state) => state);
+  const darkMode = useColorMode().colorMode === "dark";
   const policyQuery = usePolicyListQuery((data) => {
     if (data.data.length === 0) {
       store.setCurrentPolicy(undefined);
@@ -53,13 +57,20 @@ export default function PolicyListPanel() {
                   isActive={
                     store.currentShow === "Policy" && item?._id === store.currentPolicy?._id
                   }
+                  className={clsx(
+                    "group h-7 hover:!text-primary-700",
+                    darkMode ? "text-grayIron-200" : " text-grayIron-700",
+                    store.currentShow === "Policy" &&
+                      item?._id === store.currentPolicy?._id &&
+                      "!text-primary-700",
+                  )}
                   key={item?._id}
                   onClick={() => {
                     store.setCurrentPolicy(item);
                   }}
                 >
                   <div className="group flex w-full items-center justify-between">
-                    <div className="overflow-hidden text-ellipsis whitespace-nowrap font-semibold leading-loose">
+                    <div className="overflow-hidden text-ellipsis whitespace-nowrap font-medium leading-loose">
                       <FileTypeIcon type="policy" />
                       <span className="ml-2 text-base">{item.name}</span>
                     </div>
@@ -79,7 +90,7 @@ export default function PolicyListPanel() {
                           bodyText={t("CollectionPanel.ConformDelete")}
                         >
                           <IconText
-                            icon={<DeleteIcon />}
+                            icon={<RecycleDeleteIcon fontSize={16} />}
                             text={t("Delete")}
                             className="hover:!text-error-600"
                           />

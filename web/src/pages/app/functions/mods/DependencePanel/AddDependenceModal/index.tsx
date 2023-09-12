@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AddIcon, EditIcon, ExternalLinkIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import { AddIcon, ExternalLinkIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -19,10 +19,12 @@ import {
   Select,
   Spinner,
   Text,
+  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import { debounce } from "lodash";
 
+import { EditIconLine } from "@/components/CommonIcon";
 import DependenceList from "@/components/DependenceList";
 import IconWrap from "@/components/IconWrap";
 import { APP_STATUS } from "@/constants";
@@ -52,6 +54,8 @@ const AddDependenceModal = () => {
   const [packageList, setPackageList] = useState<TDependenceItem[]>([]);
   const [originPackageList, setOriginPackageList] = useState<TDependenceItem[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const darkMode = useColorMode().colorMode === "dark";
+
   usePackageQuery((data) => {
     const newList = (data || [])
       .filter((item: any) => !item.builtin)
@@ -296,7 +300,7 @@ const AddDependenceModal = () => {
             initModal();
           }}
         >
-          <EditIcon fontSize={12} />
+          <EditIconLine color={darkMode ? "#F4F6F8" : "#363C42"} size="12" />
         </IconWrap>
       ) : null}
       <IconWrap

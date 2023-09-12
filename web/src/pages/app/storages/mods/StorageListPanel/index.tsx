@@ -1,9 +1,18 @@
 import { useState } from "react";
-import { BiRefresh } from "react-icons/bi";
-import { AddIcon, EditIcon, Search2Icon } from "@chakra-ui/icons";
-import { Center, Input, InputGroup, InputLeftElement, Spinner, Tag } from "@chakra-ui/react";
+import { AddIcon, Search2Icon } from "@chakra-ui/icons";
+import {
+  Center,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Spinner,
+  Tag,
+  useColorMode,
+} from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
+import { EditIconLine, RefreshIcon } from "@/components/CommonIcon";
 import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconText from "@/components/IconText";
@@ -17,15 +26,13 @@ import useStorageStore from "../../store";
 import CreateBucketModal from "../CreateBucketModal";
 import DeleteBucketModal from "../DeleteBucketModal";
 
-// import styles from "../index.module.scss";
 import { TBucket } from "@/apis/typing";
-// import useGlobalStore from "@/pages/globalStore";
 
 export default function StorageListPanel() {
   const [search, setSearch] = useState("");
   const [storageList, setStorageList] = useState<any>([]);
-  // const globalStore = useGlobalStore();
   const store = useStorageStore((store) => store);
+  const darkMode = useColorMode().colorMode === "dark";
   const bucketListQuery = useBucketListQuery({
     onSuccess(data) {
       if (data?.data?.length) {
@@ -56,7 +63,7 @@ export default function StorageListPanel() {
               bucketListQuery.refetch();
             }}
           >
-            <BiRefresh size={16} />
+            <RefreshIcon fontSize={16} />
           </IconWrap>,
           <CreateBucketModal key="create_modal">
             <IconWrap size={20} tooltip={t("Create") + " Bucket"}>
@@ -66,16 +73,18 @@ export default function StorageListPanel() {
         ]}
       />
       <div className="flex w-full flex-col" style={{ height: "calc(100% - 36px)" }}>
-        <InputGroup className="mb-4">
+        <InputGroup className="my-1.5">
           <InputLeftElement
-            height={"8"}
+            height="6"
             pointerEvents="none"
-            children={<Search2Icon color="gray.300" />}
+            children={<Search2Icon color="gray.300" fontSize="12" />}
           />
           <Input
-            rounded={"full"}
+            rounded="full"
             placeholder={t("StoragePanel.SearchBucket").toString()}
-            size="sm"
+            height="6"
+            pl="8"
+            fontSize="sm"
             onChange={(e) => setSearch(e.target.value)}
           />
         </InputGroup>
@@ -94,7 +103,11 @@ export default function StorageListPanel() {
                     <SectionList.Item
                       isActive={storage?.name === store.currentStorage?.name}
                       key={storage?.name}
-                      className="group"
+                      className={clsx(
+                        "group h-7 hover:!text-primary-700",
+                        darkMode ? "text-grayIron-200" : " text-grayIron-700",
+                        storage?.name === store.currentStorage?.name && "!text-primary-700",
+                      )}
                       onClick={() => {
                         store.setCurrentStorage(storage);
                         store.setPrefix("/");
@@ -102,9 +115,9 @@ export default function StorageListPanel() {
                       }}
                     >
                       <>
-                        <div className="font-semibold">
+                        <div className="font-medium">
                           <FileTypeIcon type={FileType.bucket} />
-                          <span className="ml-2 text-base">{storage.name}</span>
+                          <span className="ml-1 text-base">{storage.name}</span>
                         </div>
                         <div className="flex items-center">
                           <Tag size="sm" className="w-16 justify-center" variant={storage?.policy}>
@@ -113,7 +126,14 @@ export default function StorageListPanel() {
                           <MoreButton isHidden={false} label={t("Operation")}>
                             <>
                               <CreateBucketModal storage={storage}>
-                                <IconText icon={<EditIcon />} text={t("Edit")} />
+                                <IconText
+                                  icon={
+                                    <div className="flex h-full items-center">
+                                      <EditIconLine />
+                                    </div>
+                                  }
+                                  text={t("Edit")}
+                                />
                               </CreateBucketModal>
                               <DeleteBucketModal storage={storage} onSuccessAction={() => {}} />
                             </>
@@ -130,23 +150,6 @@ export default function StorageListPanel() {
             </EmptyBox>
           )}
         </div>
-        {/* <div className="bg-lafWhite-400 w-full rounded-md flex px-4 mb-4 justify-around  items-center h-[139px] flex-none">
-          <div>
-            <CircularProgress color="primary.500" value={30} thickness="7px" size="90px">
-              <CircularProgressLabel>20%</CircularProgressLabel>
-            </CircularProgress>
-          </div>
-          <div>
-            <div>
-              <span className={"before:bg-error-500 " + styles.circle}>{t("StoragePanel.All")}</span>
-              <p className="text-lg">{globalStore.currentApp?.bundle.storageCapacity}</p>
-            </div>
-            <div className="mt-4">
-              <span className={"before:bg-primary-500 " + styles.circle}>{t("StoragePanel.Used")}</span>
-              <p className="text-lg">1Gi</p>
-            </div>
-          </div>
-        </div> */}
       </div>
     </Panel>
   );

@@ -35,7 +35,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
         >
           <ENVEditor
             value={convertToEnv(environmentQuery?.data?.data)}
-            height="98%"
+            height="96%"
             colorMode={colorMode}
             onChange={(value) => {
               envValue.current = value;

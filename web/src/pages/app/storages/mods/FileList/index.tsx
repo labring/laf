@@ -1,12 +1,4 @@
 import { useState } from "react";
-import { BiCloudUpload, BiRefresh } from "react-icons/bi";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  DeleteIcon,
-  LinkIcon,
-  ViewIcon,
-} from "@chakra-ui/icons";
 import {
   Button,
   Center,
@@ -26,6 +18,13 @@ import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import { t } from "i18next";
 
+import {
+  LinkIcon,
+  OutlineViewOnIcon,
+  RecycleDeleteIcon,
+  RefreshIcon,
+  UploadIcon,
+} from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
@@ -98,13 +97,18 @@ export default function FileList() {
   return (
     <>
       <Panel style={{ flexBasis: 40, flexShrink: 0 }}>
-        <Panel.Header>
+        <HStack
+          className={clsx(
+            "flex h-10 justify-between border-b",
+            darkMode ? "border-b-grayModern-700" : "border-grayModern-100",
+          )}
+        >
           <HStack spacing={2}>
             <UploadButton onUploadSuccess={() => refetch()}>
               <Button
                 size="sm"
                 variant="textGhost"
-                leftIcon={<BiCloudUpload fontSize={22} className="text-grayModern-500" />}
+                leftIcon={<UploadIcon boxSize="6" className="!text-grayModern-500" />}
                 disabled={currentStorage === undefined}
               >
                 <p className="font-semibold">{t("StoragePanel.Upload")}</p>
@@ -114,7 +118,7 @@ export default function FileList() {
             <Button
               size="xs"
               variant="textGhost"
-              leftIcon={<BiRefresh fontSize={22} className="text-grayModern-500" />}
+              leftIcon={<RefreshIcon boxSize="6" className="!text-grayModern-500" />}
               disabled={currentStorage === undefined}
               onClick={() => {
                 refetch();
@@ -124,42 +128,53 @@ export default function FileList() {
             </Button>
           </HStack>
           <HStack spacing={2}>
-            <IconWrap
-              showBg
-              className="!mr-4"
+            <Button
+              className={clsx(
+                "!mr-2 !text-base !font-normal",
+                darkMode ? "!text-grayModern-300" : "!text-grayModern-600",
+              )}
+              isDisabled={markerArray.length === 0}
               onClick={() => {
                 if (markerArray.length === 0) return;
                 setMarkerArray(markerArray.slice(0, markerArray.length - 1));
               }}
+              variant="unstyled"
             >
-              <ChevronLeftIcon className={markerArray.length === 0 ? "!text-grayModern-300" : ""} />
-            </IconWrap>
-            <IconWrap
-              showBg
+              {t("PreviousPage")}
+            </Button>
+            <Button
+              className={clsx(
+                "!text-base !font-normal",
+                darkMode ? "!text-grayModern-300" : "!text-grayModern-600",
+              )}
+              isDisabled={!queryData?.marker}
               onClick={() => {
                 if (!queryData?.marker) return;
                 setMarkerArray([...markerArray, queryData?.marker]);
               }}
+              variant="unstyled"
             >
-              <ChevronRightIcon className={!queryData?.marker ? "!text-grayModern-300" : ""} />
-            </IconWrap>
-            <div className="!ml-2 w-20">
-              <Select className="!h-6" onChange={(e) => setPageSize(Number(e.target.value))}>
+              {t("NextPage")}
+            </Button>
+            <div className="!mx-4">
+              <Select
+                className="!h-6 !text-base"
+                onChange={(e) => setPageSize(Number(e.target.value))}
+              >
                 {[20, 50, 100].map((item) => (
                   <option key={item} value={item}>
-                    {item}
+                    {item} / {t("Page")}
                   </option>
                 ))}
               </Select>
             </div>
             <CreateWebsiteModal />
           </HStack>
-        </Panel.Header>
+        </HStack>
       </Panel>
       <Panel className="flex-grow overflow-hidden">
         <Panel.Header
-          className={clsx("mb-4 ml-4 flex-none", {
-            "border-b-2": !darkMode,
+          className={clsx("mb-2 ml-4 flex-none", {
             "border-lafWhite-400": !darkMode,
           })}
         >
@@ -257,13 +272,13 @@ export default function FileList() {
                                 }
                                 onClick={() => viewAppFile(file)}
                               >
-                                <ViewIcon fontSize={12} />
+                                <OutlineViewOnIcon fontSize={14} />
                               </IconWrap>
                               {!file.Prefix ? (
                                 <>
                                   <IconWrap>
                                     <CopyText text={getLinkUrl(file)} tip={String(t("LinkCopied"))}>
-                                      <LinkIcon />
+                                      <LinkIcon fontSize={22} />
                                     </CopyText>
                                   </IconWrap>
                                   <ConfirmButton
@@ -275,7 +290,7 @@ export default function FileList() {
                                     bodyText={t("StoragePanel.DeleteFileTip")}
                                   >
                                     <IconWrap tooltip={String(t("Delete"))}>
-                                      <DeleteIcon fontSize={14} />
+                                      <RecycleDeleteIcon fontSize={16} />
                                     </IconWrap>
                                   </ConfirmButton>
                                 </>
@@ -289,7 +304,7 @@ export default function FileList() {
                                   bodyText={t("StoragePanel.DeleteFolderTip")}
                                 >
                                   <IconWrap tooltip={String(t("Delete"))}>
-                                    <DeleteIcon fontSize={14} />
+                                    <RecycleDeleteIcon fontSize={16} />
                                   </IconWrap>
                                 </ConfirmButton>
                               )}

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { AiOutlineFolderAdd } from "react-icons/ai";
 import {
   Button,
   FormControl,
@@ -17,6 +16,8 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
+
+import { OutlineFolderAddIcon } from "@/components/CommonIcon";
 
 import useStorageStore from "../../store";
 
@@ -34,7 +35,7 @@ function CreateModal({ onCreateSuccess }: { onCreateSuccess: () => void }) {
       <Button
         size="xs"
         variant="textGhost"
-        leftIcon={<AiOutlineFolderAdd fontSize={22} className="text-grayModern-500" />}
+        leftIcon={<OutlineFolderAddIcon boxSize="6" className="!text-grayModern-500" />}
         disabled={currentStorage === undefined}
         onClick={() => {
           onOpen();

@@ -36,7 +36,7 @@ const RightPanelEditBox: React.FC<{
           {title}
         </Text>
         <Button
-          style={{ width: "56px" }}
+          style={{ width: "56px", height: "28px" }}
           colorScheme="primary"
           fontSize="sm"
           size="md"

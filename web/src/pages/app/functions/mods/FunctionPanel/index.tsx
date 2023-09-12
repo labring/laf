@@ -35,7 +35,7 @@ import "./index.css";
 
 import { TFunction } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
-import RecycleBinModal from "@/pages/app/mods/StatusBar/RecycleBinModal";
+import RecycleBinModal from "@/pages/app/functions/mods/RecycleBinModal";
 import useGlobalStore from "@/pages/globalStore";
 
 type TagItem = {
@@ -259,7 +259,7 @@ export default function FunctionList() {
               </span>
             </div>
             {!item.children?.length && (
-              <HStack spacing={1} className="-mr-2">
+              <HStack spacing={1}>
                 {functionCache.getCache(item?._id, (item as any)?.source?.code) !==
                   (item as any)?.source?.code && (
                   <span className="mt-[1px] inline-block h-1 w-1 flex-none rounded-full bg-rose-500"></span>

@@ -125,7 +125,7 @@ function ENVEditor(props: {
 
   return (
     <div
-      style={{ height: height, width: "100%", padding: "12px 2px", ...style }}
+      style={{ height: height, width: "99%", padding: "12px 2px", ...style }}
       ref={monacoEl}
     ></div>
   );

@@ -9,7 +9,9 @@ import {
   InputLeftElement,
   InputRightElement,
   Spinner,
+  useColorMode,
 } from "@chakra-ui/react";
+import clsx from "clsx";
 
 import EmptyBox from "@/components/EmptyBox";
 import Pagination from "@/components/Pagination";
@@ -31,6 +33,7 @@ export default function AllTemplateList() {
   const { t } = useTranslation();
   const [searchKey, setSearchKey] = useState("");
   const [templateList, setTemplateList] = useState<TemplateList>();
+  const darkMode = useColorMode().colorMode === "dark";
   const [queryData, setQueryData] = useState({
     page: 1,
     pageSize: 12,
@@ -57,7 +60,10 @@ export default function AllTemplateList() {
         <InputGroup>
           <InputLeftElement children={<Search2Icon />} />
           <Input
-            className="!rounded-full !border-[#DEE0E2]"
+            className={clsx(
+              "!rounded-full",
+              darkMode ? "!border-grayModern-800" : "!border-[#DEE0E2] !bg-lafWhite-400",
+            )}
             placeholder={String(t("Search"))}
             onChange={(e) => setSearchKey(e.target.value)}
             value={searchKey || ""}
@@ -69,7 +75,7 @@ export default function AllTemplateList() {
           />
           <InputRightElement className="!w-24">
             <Button
-              className="mr-1 !h-9 w-full !bg-primary-600"
+              className="mr-[3px] !h-9 w-full !bg-primary-600"
               onClick={() => {
                 setQueryData({ ...queryData, keyword: searchKey });
               }}

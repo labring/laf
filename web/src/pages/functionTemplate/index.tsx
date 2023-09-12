@@ -36,7 +36,7 @@ export default function FunctionTemplate(props: { isModal: boolean }) {
   }, []);
 
   return (
-    <div className={clsx("mt-10 flex", isModal ? "" : "px-14")}>
+    <div className={clsx("mt-6 flex", isModal ? "" : "px-14")}>
       {!showTemplateItem ? (
         <>
           <div className="flex flex-col">

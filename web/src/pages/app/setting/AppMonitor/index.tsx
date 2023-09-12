@@ -46,7 +46,7 @@ export default function AppMonitor() {
     <div className="flex w-full">
       {monitorData?.data && Object.keys(monitorData?.data).length !== 0 ? (
         <>
-          <div className="mr-2 mt-10 h-[404px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
+          <div className="mr-4 mt-10 h-[413px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
             <AreaCard
               data={monitorData?.data?.cpuUsage}
               strokeColor="#47C8BF"
@@ -70,7 +70,7 @@ export default function AppMonitor() {
               className="h-1/2 p-4"
             />
           </div>
-          <div className="mr-2 mt-10 h-[396px] w-full space-y-2">
+          <div className="mr-2 mt-10 h-[396px] w-full space-y-4">
             <PieCard
               data={monitorData?.data?.databaseUsage}
               maxValue={databaseCapacity}

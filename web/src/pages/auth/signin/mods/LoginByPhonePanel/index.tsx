@@ -26,9 +26,11 @@ type FormData = {
 export default function LoginByPhonePanel({
   switchLoginType,
   showPasswordSigninBtn,
+  isDarkMode,
 }: {
   switchLoginType: () => void;
   showPasswordSigninBtn: boolean;
+  isDarkMode: boolean;
 }) {
   const navigate = useNavigate();
   const sendSmsCodeMutation = useSendSmsCodeMutation();
@@ -115,7 +117,7 @@ export default function LoginByPhonePanel({
   return (
     <div>
       <FormControl isInvalid={!!errors?.phone} className="mb-6">
-        <FormLabel className="text-grayModern-700" htmlFor="phone">
+        <FormLabel className={isDarkMode ? "" : "text-grayModern-700"} htmlFor="phone">
           {t("AuthPanel.Phone")}
         </FormLabel>
         <InputGroup>
@@ -130,8 +132,8 @@ export default function LoginByPhonePanel({
             type="tel"
             id="phone"
             placeholder={t("AuthPanel.PhonePlaceholder") || ""}
-            bg="#F8FAFB"
-            border="1px solid #D5D6E1"
+            bg={isDarkMode ? "#363C42" : "#F8FAFB"}
+            border={isDarkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
             height="48px"
             rounded="4px"
           />
@@ -148,7 +150,7 @@ export default function LoginByPhonePanel({
       </FormControl>
 
       <FormControl isInvalid={!!errors.validationCode} className="mb-12">
-        <FormLabel className="w-20 text-grayModern-700" htmlFor="phone">
+        <FormLabel className={isDarkMode ? "" : "text-grayModern-700"} htmlFor="phone">
           {t("AuthPanel.ValidationCode")}
         </FormLabel>
         <Input
@@ -161,10 +163,15 @@ export default function LoginByPhonePanel({
           })}
           id="validationCode"
           placeholder={t("AuthPanel.ValidationCodeTip") || ""}
-          bg="#F8FAFB"
-          border="1px solid #D5D6E1"
+          bg={isDarkMode ? "#363C42" : "#F8FAFB"}
+          border={isDarkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
           height="48px"
           rounded="4px"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSubmit(onSubmit)();
+            }
+          }}
         />
       </FormControl>
       <div>

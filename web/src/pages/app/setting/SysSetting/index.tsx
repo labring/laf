@@ -29,7 +29,7 @@ export default function SysSetting(props: {
           icon: <TextIcon boxSize={4} />,
         },
         {
-          key: "monitor",
+          key: APP_SETTING_KEY.MONITOR,
           name: t("SettingPanel.AppMonitor"),
           component: <AppMonitor />,
           icon: <MonitorIcon boxSize={4} />,
@@ -38,7 +38,7 @@ export default function SysSetting(props: {
           key: APP_SETTING_KEY.ENV,
           name: t("SettingPanel.AppEnv"),
           component: <AppEnvList />,
-          icon: <ENVIcon boxSize={4} />,
+          icon: <ENVIcon fontSize={16} />,
         },
         {
           key: APP_SETTING_KEY.DOMAIN,

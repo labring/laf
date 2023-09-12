@@ -84,12 +84,12 @@ export default function BillingDetails() {
   return (
     <div>
       <div className="flex items-center space-x-2 pt-2 text-2xl">
-        <BillingIcon size={20} color={"#24282C"} />
+        <BillingIcon size={20} color={darkMode ? "#F4F6F8" : "#24282C"} />
         <p>{t("SettingPanel.BillingDetails")}</p>
       </div>
       <div className="mt-4 rounded border">
         <TableContainer>
-          <Table variant="striped" colorScheme="whiteAlpha" size={"sm"}>
+          <Table variant="striped" colorScheme={darkMode ? "none" : "whiteAlpha"} size={"sm"}>
             <Thead>
               <Tr className={clsx("h-8", !darkMode && "bg-[#F4F6F8]")}>
                 <Th className="!pr-0">
@@ -228,17 +228,40 @@ export default function BillingDetails() {
             {!isLoading && billingRes?.data.list && billingRes?.data.list.length > 0 && (
               <Tbody bg={"none"}>
                 {(billingRes?.data?.list || []).map((item: any, index: number) => (
-                  <Tr key={item._id} bg={index % 2 === 1 ? "#FBFBFC" : "white"}>
-                    <Td className="font-medium text-grayModern-900">{item.appid}</Td>
+                  <Tr key={item._id} bg={darkMode ? "" : index % 2 === 1 ? "#FBFBFC" : "white"}>
+                    <Td
+                      className={clsx(
+                        "font-medium",
+                        darkMode
+                          ? "!border-b-grayModern-600 text-lafWhite-100"
+                          : "text-grayModern-900",
+                      )}
+                    >
+                      {item.appid}
+                    </Td>
                     <Td className="text-grayModern-600">{formatDate(item.endAt)}</Td>
                     <Td className="text-grayModern-600">{item.detail?.cpu?.amount}</Td>
                     <Td className="text-grayModern-600">{item.detail?.memory?.amount}</Td>
                     <Td className="text-grayModern-600">{item.detail?.databaseCapacity?.amount}</Td>
                     <Td className="text-grayModern-600">{item.detail?.storageCapacity?.amount}</Td>
-                    <Td className={item.state === "Done" ? "text-primary-600" : "text-error-600"}>
+                    <Td
+                      className={clsx(
+                        darkMode ? "!border-b-grayModern-600" : "",
+                        item.state === "Done" ? "text-primary-600" : "text-error-600",
+                      )}
+                    >
                       {item.state}
                     </Td>
-                    <Td className="font-medium text-grayModern-900">￥{item.amount}</Td>
+                    <Td
+                      className={clsx(
+                        "font-medium",
+                        darkMode
+                          ? "!border-b-grayModern-600 text-lafWhite-100"
+                          : "text-grayModern-900",
+                      )}
+                    >
+                      ￥{item.amount}
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>

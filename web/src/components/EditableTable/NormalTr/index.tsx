@@ -1,7 +1,8 @@
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { EditIcon } from "@chakra-ui/icons";
 import { Td } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { RecycleDeleteIcon } from "@/components/CommonIcon";
 import IconWrap from "@/components/IconWrap";
 
 import ConfirmButton from "../../ConfirmButton";
@@ -51,7 +52,7 @@ const NormalTr = function (props: {
               configuration?.deleteButtonText ? configuration.deleteButtonText : String(t("Delete"))
             }
           >
-            <DeleteIcon fontSize={15} />
+            <RecycleDeleteIcon fontSize={15} />
           </IconWrap>
         </ConfirmButton>
       </Td>

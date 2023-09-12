@@ -140,7 +140,9 @@ const Navbar = () => {
                 {stars}
               </a>
             ) : null}
-            <LanguageSwitch className="text-xl !font-normal" size="24px" color="#1A202C" />
+            <div className="hover:opacity-75">
+              <LanguageSwitch className="text-xl !font-normal" size="24px" color="#1A202C" />
+            </div>
             <div>
               <Link
                 to={Routes.dashboard}

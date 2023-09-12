@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { DeleteIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -16,6 +15,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
+import { RecycleDeleteIcon } from "@/components/CommonIcon";
 import IconText from "@/components/IconText";
 
 import { useDeleteDBMutation } from "../../service";
@@ -49,7 +49,7 @@ function DeleteCollectionModal(props: { database: any }) {
             setFocus("name");
           }, 0);
         }}
-        icon={<DeleteIcon />}
+        icon={<RecycleDeleteIcon fontSize={16} />}
         text={t("Delete")}
         className="hover:!text-error-600"
       />

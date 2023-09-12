@@ -53,7 +53,9 @@ function CreateWebsiteModal() {
       {currentStorage?.websiteHosting &&
       currentStorage.websiteHosting.state === BUCKET_STATUS.Active ? (
         <div className="flex">
-          <span className="mr-2 font-semibold">{t("StoragePanel.CurrentDomain")}</span>
+          <span className="mr-2 font-semibold text-grayModern-600">
+            {t("StoragePanel.CurrentDomain")}
+          </span>
           <Link
             className="mr-2 cursor-pointer"
             href={
@@ -71,7 +73,7 @@ function CreateWebsiteModal() {
 
           <Menu>
             <MenuButton className="-mt-[2px] ml-2">
-              <MoreIcon fontSize={10} />
+              <MoreIcon fontSize={14} />
             </MenuButton>
             <MenuList minWidth="100px">
               <MenuItem
@@ -107,6 +109,8 @@ function CreateWebsiteModal() {
       ) : (
         <Button
           size="xs"
+          px={4}
+          height={8}
           variant={"secondary"}
           style={{ borderRadius: "1rem" }}
           disabled={currentStorage === undefined}
@@ -134,7 +138,6 @@ function CreateWebsiteModal() {
         <ModalContent>
           <ModalHeader>{t("StoragePanel.CustomDomain")}</ModalHeader>
           <ModalCloseButton />
-
           <ModalBody pb={6}>
             <VStack spacing={6} align="flex-start">
               {!(currentStorage?.policy === BUCKET_POLICY_TYPE.readonly) ? (
@@ -168,7 +171,6 @@ function CreateWebsiteModal() {
               </FormControl>
             </VStack>
           </ModalBody>
-
           <ModalFooter>
             <Button
               type="submit"

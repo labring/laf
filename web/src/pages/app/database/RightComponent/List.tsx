@@ -41,7 +41,7 @@ const RightPanelList: React.FC<{
             }}
           >
             <div
-              className={clsx(" absolute right-2 top-2  z-50 group-hover/item:block ", {
+              className={clsx(" absolute right-4 top-2  z-50 group-hover/item:block ", {
                 hidden: !isActive(item),
               })}
               onClick={(e) => {

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Center, Spinner, Tooltip } from "@chakra-ui/react";
+import { Center, Spinner, Tooltip, useColorMode } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
 
 import { MonitorIcon } from "@/components/CommonIcon";
 import { uniformCapacity, uniformCPU, uniformMemory, uniformStorage } from "@/utils/format";
@@ -20,6 +21,8 @@ export default function MonitorBar() {
 
   const [resources, setResources] = useState<any>([]);
   const [instantData, setInstantData] = useState<TInstantMonitorData>();
+
+  const darkMode = useColorMode().colorMode === "dark";
 
   useQuery(
     ["useGetMonitorDataQuery"],
@@ -86,7 +89,12 @@ export default function MonitorBar() {
   return (
     <SysSetting currentTab="monitor">
       <div className="flex items-center">
-        <span className="mr-4 flex h-full cursor-pointer items-center text-grayModern-700">
+        <span
+          className={clsx(
+            "mr-4 flex h-full cursor-pointer items-center",
+            darkMode ? "" : "text-grayModern-700",
+          )}
+        >
           <MonitorIcon className="mr-1" />
           {t("SettingPanel.AppMonitor") + " :"}
         </span>

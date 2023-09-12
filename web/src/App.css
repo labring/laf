@@ -75,10 +75,8 @@ a {
   }
 }
 
-/* noto-sans-sc-regular */
 @font-face {
   font-family: 'Noto Sans SC';
-  /* font-style: normal; */
   font-display: swap;
   font-weight: 400;
   src: url('//lib.baomitu.com/fonts/noto-sans-sc/noto-sans-sc-regular.eot'), /* IE9 Compat Modes */

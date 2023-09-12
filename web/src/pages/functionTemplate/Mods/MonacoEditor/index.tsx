@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import clsx from "clsx";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
+import { EditIconLine, RecycleDeleteIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import { COLOR_MODE } from "@/constants";
 
@@ -166,7 +166,7 @@ const MonacoEditor = (props: {
         </span>
         <span>
           {!readOnly && (
-            <span className="text-grayIron-600">
+            <span className="flex items-center space-x-4">
               <AddFunctionModal
                 functionList={functionList}
                 setFunctionList={setFunctionList}
@@ -174,14 +174,9 @@ const MonacoEditor = (props: {
                 setCurrentFunction={setCurrentFunction}
                 isEdit={true}
               >
-                <EditIcon
-                  boxSize={3}
-                  color={"grayModern.900"}
-                  className={clsx(
-                    "mr-6 cursor-pointer hover:text-gray-400",
-                    darkMode && "!text-gray-400",
-                  )}
-                />
+                <span className="cursor-pointer">
+                  <EditIconLine color={darkMode ? "#F4F6F8" : "#24282C"} />
+                </span>
               </AddFunctionModal>
               <ConfirmButton
                 onSuccessAction={async () => {
@@ -194,13 +189,10 @@ const MonacoEditor = (props: {
                 headerText={String(t("Delete"))}
                 bodyText={String(t("FunctionPanel.DeleteConfirm"))}
               >
-                <DeleteIcon
-                  boxSize={3}
-                  color={"grayModern.900"}
-                  className={clsx(
-                    "mr-2 cursor-pointer hover:text-gray-400",
-                    darkMode && "!text-gray-400",
-                  )}
+                <RecycleDeleteIcon
+                  fontSize="17"
+                  color={darkMode ? "#F4F6F8" : "#24282C"}
+                  className="cursor-pointer"
                 />
               </ConfirmButton>
             </span>

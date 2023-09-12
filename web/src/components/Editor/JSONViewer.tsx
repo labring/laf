@@ -1,4 +1,5 @@
 import SyntaxHighlighter from "react-syntax-highlighter";
+import SimpleBar from "simplebar-react";
 
 import { COLOR_MODE } from "@/constants";
 
@@ -246,10 +247,9 @@ export default function JSONViewer(props: JSONViewerProps) {
   };
 
   return (
-    <div
+    <SimpleBar
       style={{
         maxHeight: 390,
-        overflow: "auto",
       }}
       {...rest}
     >
@@ -260,6 +260,6 @@ export default function JSONViewer(props: JSONViewerProps) {
       >
         {code}
       </SyntaxHighlighter>
-    </div>
+    </SimpleBar>
   );
 }

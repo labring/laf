@@ -64,7 +64,10 @@ const Header = (props: { className?: string }) => {
           return (
             <span
               key={item.text}
-              className="cursor-pointer rounded px-2 py-1 hover:bg-grayIron-700/5"
+              className={clsx(
+                "cursor-pointer rounded px-2 py-1",
+                darkMode ? "hover:bg-grayIron-200/5" : "hover:bg-grayIron-700/5",
+              )}
               onClick={() => {
                 navigate(item.ref);
               }}
@@ -81,7 +84,10 @@ const Header = (props: { className?: string }) => {
           return (
             <span
               key={item.text}
-              className="flex cursor-pointer items-center space-x-2 rounded px-2 py-1 hover:bg-grayIron-700/5"
+              className={clsx(
+                "flex cursor-pointer items-center space-x-2 rounded px-2 py-1",
+                darkMode ? "hover:bg-grayIron-200/5" : "hover:bg-grayIron-700/5",
+              )}
               onClick={() => {
                 window.open(item.ref);
               }}
@@ -91,8 +97,15 @@ const Header = (props: { className?: string }) => {
             </span>
           );
         })}
-        <LanguageSwitch className="hover:bg-grayIron-700/5" />
-        <ColorModeSwitch className="ml-4 mr-6 rounded p-2 hover:bg-grayIron-700/5" />
+        <LanguageSwitch
+          className={darkMode ? "hover:bg-grayIron-200/5" : "hover:bg-grayIron-700/5"}
+        />
+        <ColorModeSwitch
+          className={clsx(
+            "ml-4 mr-6 rounded p-2",
+            darkMode ? "hover:bg-grayIron-200/5" : "hover:bg-grayIron-700/5",
+          )}
+        />
         {userInfo?._id ? (
           <span className="!ml-6">
             <UserSetting

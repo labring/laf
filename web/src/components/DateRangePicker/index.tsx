@@ -1,10 +1,8 @@
 import { ChangeEventHandler, useMemo, useState } from "react";
 import { DateRange, DayPicker, SelectRangeEventHandler } from "react-day-picker";
 import { useTranslation } from "react-i18next";
-import { CalendarIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Button,
   Input,
   Popover,
   PopoverContent,
@@ -14,6 +12,8 @@ import {
 import clsx from "clsx";
 import { format, isAfter, isBefore, isValid, parse } from "date-fns";
 import { es, zhCN } from "date-fns/locale";
+
+import { CalendarIcon } from "../CommonIcon";
 
 import "./index.css";
 import "react-day-picker/dist/style.css";
@@ -80,8 +80,8 @@ export default function DateRangePicker(props: {
   return (
     <div
       className={clsx(
-        "flex h-8 w-64 rounded-md border border-grayModern-200",
-        !darkMode && "bg-grayModern-100",
+        "flex h-8 w-64 rounded-md border border-frostyNightfall-200",
+        !darkMode && "bg-lafWhite-500",
       )}
     >
       <Input
@@ -99,9 +99,9 @@ export default function DateRangePicker(props: {
       />
       <Popover onClose={onClose}>
         <PopoverTrigger>
-          <Button display={"flex"} variant={"unstyled"}>
-            <CalendarIcon />
-          </Button>
+          <div>
+            <CalendarIcon className="mr-3 cursor-pointer !text-grayModern-500" fontSize="16" />
+          </div>
         </PopoverTrigger>
         <PopoverContent zIndex={99}>
           <DayPicker

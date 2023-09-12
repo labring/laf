@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
-import { CheckCircleIcon, ChevronRightIcon, EditIcon, InfoOutlineIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, ChevronRightIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { Avatar, Box, Divider, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { EditIconLine } from "@/components/CommonIcon";
 import { hidePhoneNumber } from "@/utils/format";
 import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
@@ -81,8 +82,8 @@ export default function UserInfo() {
                 className="flex cursor-pointer items-center justify-center pt-3 text-base text-grayModern-600"
                 onClick={handleClick}
               >
-                <EditIcon className="mr-1" />
-                {t("Edit")}
+                <EditIconLine color="#5A646E" />
+                <span className="ml-1">{t("Edit")}</span>
               </span>
             </div>
           </Box>

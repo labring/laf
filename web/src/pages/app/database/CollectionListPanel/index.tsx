@@ -1,12 +1,20 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BiRefresh } from "react-icons/bi";
-import { AddIcon, CopyIcon, Search2Icon } from "@chakra-ui/icons";
-import { Badge, Center, Input, InputGroup, InputLeftElement, Spinner } from "@chakra-ui/react";
+import { AddIcon, Search2Icon } from "@chakra-ui/icons";
+import {
+  Badge,
+  Center,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Spinner,
+  useColorMode,
+} from "@chakra-ui/react";
+import clsx from "clsx";
 
+import { DatabaseIcon, OutlineCopyIcon, RefreshIcon } from "@/components/CommonIcon";
 import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
-import FileTypeIcon from "@/components/FileTypeIcon";
 import IconText from "@/components/IconText";
 import IconWrap from "@/components/IconWrap";
 import MoreButton from "@/components/MoreButton";
@@ -30,6 +38,7 @@ export default function CollectionListPanel() {
       }
     },
   });
+  const darkMode = useColorMode().colorMode === "dark";
 
   const [search, setSearch] = useState("");
 
@@ -59,7 +68,7 @@ export default function CollectionListPanel() {
               collectionListQuery.refetch();
             }}
           >
-            <BiRefresh size={16} />
+            <RefreshIcon fontSize={15} />
           </IconWrap>,
           <CreateCollectionModal key={"create_database"}>
             <IconWrap tooltip={t("CollectionPanel.AddCollection").toString()} size={20}>
@@ -68,17 +77,19 @@ export default function CollectionListPanel() {
           </CreateCollectionModal>,
         ]}
       />
-      <div className="mb-3 flex w-full items-center">
+      <div className="my-1.5 flex w-full items-center">
         <InputGroup>
           <InputLeftElement
-            height={"8"}
+            height="6"
             pointerEvents="none"
-            children={<Search2Icon color="gray.300" />}
+            children={<Search2Icon color="gray.300" fontSize="12" />}
           />
           <Input
-            rounded={"full"}
+            rounded="full"
+            pl="8"
             placeholder={t("CollectionPanel.Search").toString()}
-            size="sm"
+            height="6"
+            fontSize="sm"
             onChange={(e) => setSearch(e.target.value)}
           />
         </InputGroup>
@@ -102,14 +113,27 @@ export default function CollectionListPanel() {
                   <SectionList.Item
                     isActive={store.currentShow === "DB" && db.name === store.currentDB?.name}
                     key={db.name}
+                    className={clsx(
+                      "group h-7 hover:!text-primary-700",
+                      darkMode ? "text-grayIron-200" : "text-grayIron-700",
+                      store.currentShow !== "Policy" &&
+                        db?.name === store.currentDB?.name &&
+                        "!text-primary-700",
+                    )}
                     onClick={() => {
                       store.setCurrentDB(db);
                     }}
                   >
                     <div className="group flex w-full items-center justify-between">
-                      <div className="overflow-hidden text-ellipsis whitespace-nowrap font-semibold leading-loose">
-                        <FileTypeIcon type="db" />
-                        <span className="ml-2 text-base">{db.name}</span>
+                      <div className="flex items-center overflow-hidden text-ellipsis whitespace-nowrap font-medium">
+                        <DatabaseIcon
+                          className={
+                            store.currentShow !== "Policy" && db?.name === store.currentDB?.name
+                              ? ""
+                              : "!text-grayModern-400 group-hover:!text-primary-700"
+                          }
+                        />
+                        <span className="ml-2">{db.name}</span>
                       </div>
                       <MoreButton
                         label={t("Operation")}
@@ -121,7 +145,14 @@ export default function CollectionListPanel() {
                             text={db.name}
                             tip={String(t("NameCopiedSuccessfully"))}
                           >
-                            <IconText icon={<CopyIcon />} text={t("Copy")} />
+                            <IconText
+                              icon={
+                                <div className="flex h-full items-center">
+                                  <OutlineCopyIcon size={16} />
+                                </div>
+                              }
+                              text={t("Copy")}
+                            />
                           </CopyText>
                           <DeleteCollectionModal database={db} />
                         </>

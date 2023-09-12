@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { ChevronLeftIcon } from "@chakra-ui/icons";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -12,6 +11,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
+import { OutlineViewOffIcon, OutlineViewOnIcon } from "@/components/CommonIcon";
 import { SendSmsCodeButton } from "@/components/SendSmsCodeButton";
 import SmsCodeInput from "@/components/SmsCodeInput";
 
@@ -129,12 +129,15 @@ export default function UserNameEditor(props: { handleBack: any }) {
               />
               <InputRightElement width="2rem" height={8}>
                 {isShowPassword ? (
-                  <ViewOffIcon
-                    className="cursor-pointer"
+                  <OutlineViewOffIcon
+                    className="cursor-pointer !text-primary-600"
                     onClick={() => setIsShowPassword(false)}
                   />
                 ) : (
-                  <ViewIcon className="cursor-pointer" onClick={() => setIsShowPassword(true)} />
+                  <OutlineViewOnIcon
+                    className="cursor-pointer !text-primary-600"
+                    onClick={() => setIsShowPassword(true)}
+                  />
                 )}
               </InputRightElement>
             </InputGroup>
@@ -152,12 +155,15 @@ export default function UserNameEditor(props: { handleBack: any }) {
               />
               <InputRightElement width="2rem" height={8}>
                 {isShowPassword ? (
-                  <ViewOffIcon
-                    className="cursor-pointer"
+                  <OutlineViewOffIcon
+                    className="cursor-pointer !text-primary-600"
                     onClick={() => setIsShowPassword(false)}
                   />
                 ) : (
-                  <ViewIcon className="cursor-pointer" onClick={() => setIsShowPassword(true)} />
+                  <OutlineViewOnIcon
+                    className="cursor-pointer !text-primary-600"
+                    onClick={() => setIsShowPassword(true)}
+                  />
                 )}
               </InputRightElement>
             </InputGroup>
