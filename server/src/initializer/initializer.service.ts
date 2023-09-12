@@ -26,6 +26,7 @@ export class InitializerService {
     await this.createDefaultResourceOptions()
     await this.createDefaultResourceBundles()
     await this.createDefaultSettings()
+    await this.createNecessarySettings()
   }
 
   async createDefaultRegion() {
@@ -348,14 +349,14 @@ export class InitializerService {
 
     await this.db.collection<Setting>('Setting').insertOne({
       public: true,
-      key: 'invitation_profit',
+      key: SettingKey.InvitationProfit,
       value: '0',
       desc: 'Set up invitation rebate',
     })
 
     await this.db.collection<Setting>('Setting').insertOne({
       public: true,
-      key: 'id_verify',
+      key: SettingKey.IdVerify,
       value: 'off', // on | off
       desc: 'real name authentication',
       metadata: {
@@ -410,12 +411,12 @@ export class InitializerService {
   async createNecessarySettings() {
     const find = await this.db
       .collection<Setting>('Setting')
-      .findOne({ key: 'resource_limit' })
+      .findOne({ key: SettingKey.DefaultUserQuota })
 
     if (!find) {
       await this.db.collection<Setting>('Setting').insertOne({
         public: false,
-        key: 'resource_limit',
+        key: SettingKey.DefaultUserQuota,
         value: 'default',
         desc: 'resource limit of user',
         metadata: {
