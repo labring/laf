@@ -22,6 +22,7 @@ import {
   InviteRelation,
 } from 'src/authentication/entities/invite-code'
 import { AccountChargeOrderQuery } from './interface/account-query.interface'
+import { Setting, SettingKey } from 'src/setting/entities/setting'
 
 @Injectable()
 export class AccountService {
@@ -34,10 +35,18 @@ export class AccountService {
   ) {}
 
   async create(userid: ObjectId): Promise<Account> {
+    // get signup Profit Amount
+    let amount = 0
+    const signupBonus = await this.db.collection<Setting>('Setting').findOne({
+      key: SettingKey.SignupBonus,
+    })
+    if (signupBonus) {
+      amount = parseFloat(signupBonus.value)
+    }
     await this.db.collection<Account>('Account').insertOne({
-      balance: 0,
+      balance: amount,
       state: BaseState.Active,
-      createdBy: new ObjectId(userid),
+      createdBy: userid,
       createdAt: new Date(),
       updatedAt: new Date(),
     })
