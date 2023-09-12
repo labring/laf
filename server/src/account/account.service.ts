@@ -39,7 +39,6 @@ export class AccountService {
     let amount = 0
     const signupProfit = await this.db.collection<Setting>('Setting').findOne({
       key: SettingKey.InvitationProfit,
-      public: true,
     })
     if (signupProfit) {
       amount = parseFloat(signupProfit.value)
