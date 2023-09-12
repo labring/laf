@@ -1,8 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { site_url } from "@/constants";
-
 import useSiteSettingStore from "../siteSetting";
 
 import Circle from "./circle";
@@ -21,32 +19,20 @@ const JoinUs = (props: Props) => {
           <p className="mb-6 font-thin text-white">{t("HomePage.Join.content")}</p>
 
           <div className="flex justify-start gap-4">
-            <a
-              href={siteSettings.site_url?.metadata.laf_discord || site_url.laf_discord}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={siteSettings.laf_discord_url?.value} target="_blank" rel="noreferrer">
               <div className="flex h-12 w-36 flex-row items-center	 justify-center gap-2 rounded-md border border-blue-200 border-opacity-30 bg-gradient-to-r from-[#394DFF1A] to-[#66E3FF33]">
                 <img src="/homepage/discord.svg" alt="discord" />
                 <p className="text-white">Discord</p>
               </div>
             </a>
-            <a
-              href={siteSettings.site_url?.metadata.laf_wechat || site_url.laf_wechat}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={siteSettings.laf_wechat_url?.value} target="_blank" rel="noreferrer">
               <div className="flex h-12 w-36 flex-row items-center	 justify-center gap-2 rounded-md border border-green-200 border-opacity-30 bg-gradient-to-r from-[#2CE25E1A] to-[#1DFFD61A]">
                 <img src="/homepage/wechat_02.svg" alt="wechat" />
                 <p className="text-white">{t("HomePage.Join.WeChat")}</p>
               </div>
             </a>
-            <a
-              href={siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div className="flex h-12 w-36 flex-row items-center	 justify-center gap-2 rounded-md border border-blue-300 border-opacity-30 bg-gradient-to-r from-[#0B9DFF1A] to-[#4FC67E1A]">
+            <a href={siteSettings.laf_forum_url?.value} target="_blank" rel="noreferrer">
+              <div className="flex h-12 w-36 flex-row items-center justify-center gap-2 rounded-md border border-blue-300 border-opacity-30 bg-gradient-to-r from-[#0B9DFF1A] to-[#4FC67E1A]">
                 <img src="/homepage/forum.svg" alt="forum" />
                 <p className="text-white">{t("HomePage.Join.forum")}</p>
               </div>
@@ -99,22 +85,13 @@ const JoinUs = (props: Props) => {
         <div className="mb-4 text-4xl text-white">{t("HomePage.Join.subtitle")}</div>
         <p className="mx-4 mb-8 text-center font-thin text-white">{t("HomePage.Join.content")}</p>
         <div className="flex justify-start gap-4">
-          <a
-            href={siteSettings.site_url?.metadata.laf_wechat || site_url.laf_wechat}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href={siteSettings.laf_wechat_url?.value} target="_blank" rel="noreferrer">
             <img className="w-6" src="/homepage/wechat_01.svg" alt="wechat" />
           </a>
-
-          <a href={siteSettings.site_url?.metadata.laf_forum || site_url.laf_forum}>
+          <a href={siteSettings.laf_forum_url?.value}>
             <img className="w-6" src="/homepage/forum1.svg" alt="forum1" />
           </a>
-          <a
-            href={siteSettings.site_url?.metadata.laf_discord || site_url.laf_discord}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href={siteSettings.laf_discord_url?.value} target="_blank" rel="noreferrer">
             <img className="w-6" src="/homepage/discord_2.svg" alt="discord" />
           </a>
         </div>

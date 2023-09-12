@@ -8,7 +8,6 @@ import { v4 as uuidv4 } from "uuid";
 
 import { LafAILogoIcon } from "@/components/CommonIcon";
 import Markdown from "@/components/Markdown";
-import { site_url } from "@/constants";
 
 import useSiteSettingStore from "@/pages/siteSetting";
 
@@ -79,7 +78,7 @@ export default function AIChatPanel() {
   const { data: generateCodeRes, ...generateCode } = useMutation((params: any) => {
     inputRef.current?.focus();
     return axios({
-      url: siteSettings.site_url?.metadata.laf_pilot || site_url.laf_pilot,
+      url: siteSettings.ai_pilot_url?.value,
       method: "POST",
       data: params,
       cancelToken: source.token,
