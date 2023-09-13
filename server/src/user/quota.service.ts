@@ -51,7 +51,9 @@ export class QuotaService {
     }
 
     if (allApplications.length > userQuota.limitCountOfApplication) {
-      return 'application counts exceeds resource limit'
+      if (!appid) {
+        return 'application counts exceeds resource limit'
+      }
     }
 
     return null
