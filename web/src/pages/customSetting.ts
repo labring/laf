@@ -46,6 +46,9 @@ type State = {
     position: { width: number; height: number },
   ) => void;
   togglePanel: (pageId: page, panelId: panel) => void;
+  generalSettings: {
+    fontSize: number;
+  };
 };
 
 const useCustomSettingStore = create<State>()(
@@ -163,6 +166,10 @@ const useCustomSettingStore = create<State>()(
               state.layoutInfo[pageId][panelId].style.height = position.height;
             }
           });
+        },
+
+        generalSettings: {
+          fontSize: 14,
         },
       })),
 
