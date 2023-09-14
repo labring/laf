@@ -93,7 +93,9 @@ export default function UserInfo() {
                 {t("SettingPanel.UserName")}
               </span>
               <span className="flex justify-between text-base">
-                <span className={!darkMode ? "text-grayModern-700" : ""}>{userInfo?.username}</span>
+                <span className={!darkMode ? "w-[80%] text-grayModern-700" : ""}>
+                  {userInfo?.username}
+                </span>
                 <span
                   className="flex cursor-pointer items-center text-[#0884DD]"
                   onClick={() => {
