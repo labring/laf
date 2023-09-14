@@ -42,12 +42,17 @@ const HAS_BODY_PARAMS_METHODS: (TMethod | undefined)[] = ["POST", "PUT", "PATCH"
 
 export default function DebugPanel(props: { containerRef: any }) {
   const { t } = useTranslation();
-  const { getFunctionUrl, currentFunction, setCurrentFunction, setCurrentRequestId } =
-    useFunctionStore((state: any) => state);
+  const {
+    getFunctionUrl,
+    currentFunction,
+    setCurrentRequestId,
+    allFunctionList,
+    setAllFunctionList,
+    setCurrentFunction,
+  } = useFunctionStore((state: any) => state);
   const updateDebugFunctionMutation = useUpdateDebugFunctionMutation();
   const globalStore = useGlobalStore((state) => state);
   const siteSettings = useSiteSettingStore((state) => state.siteSettings);
-  console.log(siteSettings);
 
   const functionCache = useFunctionCache();
 
@@ -118,12 +123,19 @@ export default function DebugPanel(props: { containerRef: any }) {
         runningMethod: runningMethod,
       };
 
-      updateDebugFunctionMutation.mutateAsync({
+      const res = await updateDebugFunctionMutation.mutateAsync({
         name: currentFunction?.name,
         params: params,
       });
 
-      setCurrentFunction({ ...currentFunction, params: params });
+      if (!res.error) {
+        setCurrentFunction({ ...currentFunction, params: params });
+        setAllFunctionList(
+          allFunctionList.map((item: any) =>
+            item._id === currentFunction._id ? { ...currentFunction, params: params } : item,
+          ),
+        );
+      }
 
       if (!compileRes.error) {
         const _funcData = JSON.stringify(compileRes.data);
