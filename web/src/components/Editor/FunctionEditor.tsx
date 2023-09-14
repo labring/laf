@@ -159,7 +159,7 @@ function FunctionEditor(props: {
         formatOnPaste: true,
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
-        fontSize: 13,
+        fontSize: 14,
         theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
         scrollBeyondLastLine: false,
       });

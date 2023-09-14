@@ -3,10 +3,8 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
-  Center,
   Checkbox,
   CheckboxGroup,
-  Divider,
   FormControl,
   FormErrorMessage,
   HStack,
@@ -17,24 +15,24 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spinner,
+  Select,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
 import { t } from "i18next";
 import { debounce } from "lodash";
 
-import { MoreTemplateIcon, TextIcon } from "@/components/CommonIcon";
+import { TextIcon } from "@/components/CommonIcon";
 import InputTag from "@/components/InputTag";
-import { DEFAULT_CODE, SUPPORTED_METHODS } from "@/constants";
+import { SUPPORTED_METHODS } from "@/constants";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
 
-import { TFunctionTemplate, TMethod } from "@/apis/typing";
+import functionTemplates from "./functionTemplates";
+
+import { TMethod } from "@/apis/typing";
 import FunctionTemplate from "@/pages/functionTemplate";
-import TemplateCard from "@/pages/functionTemplate/Mods/TemplateCard";
-import { useGetRecommendFunctionTemplatesQuery } from "@/pages/functionTemplate/service";
 import useTemplateStore from "@/pages/functionTemplate/store";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -60,7 +58,7 @@ const CreateModal = (props: {
     description: functionItem?.desc || "",
     websocket: !!functionItem?.websocket,
     methods: functionItem?.methods || ["GET", "POST"],
-    code: functionItem?.source?.code || aiCode || DEFAULT_CODE || "",
+    code: functionItem?.source?.code || aiCode || functionTemplates[0].value.trim() || "",
     tags: functionItem?.tags || [],
   };
 
@@ -87,34 +85,6 @@ const CreateModal = (props: {
 
   const createFunctionMutation = useCreateFunctionMutation();
   const updateFunctionMutation = useUpdateFunctionMutation();
-
-  const { isLoading, data: TemplateList } = useGetRecommendFunctionTemplatesQuery(
-    {
-      page: 1,
-      pageSize: 3,
-      keyword: searchKey,
-      type: "default",
-      asc: 1,
-      sort: null,
-    },
-    {
-      enabled: isOpen && !isEdit,
-    },
-  );
-
-  const InitialTemplateList = useGetRecommendFunctionTemplatesQuery(
-    {
-      page: 1,
-      pageSize: 3,
-      keyword: "",
-      type: "default",
-      asc: 1,
-      sort: null,
-    },
-    {
-      enabled: !isOpen && !isEdit,
-    },
-  );
 
   const onSubmit = async (data: any) => {
     let res: any = {};
@@ -162,7 +132,7 @@ const CreateModal = (props: {
 
       <Modal isOpen={isOpen} onClose={onClose} size="3xl">
         <ModalOverlay />
-        <ModalContent m="auto" className="!pb-12">
+        <ModalContent m="auto" className="!pb-2">
           <ModalHeader>
             {isEdit ? t("FunctionPanel.EditFunction") : t("FunctionPanel.AddFunction")}
           </ModalHeader>
@@ -227,7 +197,7 @@ const CreateModal = (props: {
                 </HStack>
               </FormControl>
               <FormControl>
-                <div className="mb-2 flex w-full items-center border-b-2 border-transparent pb-1 focus-within:border-grayModern-200">
+                <div className="flex w-full items-center border-b-2 border-transparent pb-1 focus-within:border-grayModern-200">
                   <TextIcon fontSize={16} color={"gray.300"} />
                   <input
                     id="description"
@@ -239,64 +209,54 @@ const CreateModal = (props: {
                 </div>
               </FormControl>
 
-              <Button
-                type="submit"
-                onClick={handleSubmit(onSubmit)}
-                isLoading={updateFunctionMutation.isLoading || createFunctionMutation.isLoading}
-                className="!h-9 w-full !rounded !bg-primary-600 !font-semibold hover:!bg-primary-700"
-              >
-                {!isEdit ? t("CreateFunction") : t("EditFunction")}
-              </Button>
+              {isEdit || aiCode ? null : (
+                <FormControl className="flex">
+                  <div className="flex w-20 items-center text-base font-medium">
+                    {t("FunctionPanel.Code")}
+                  </div>
+                  <Select
+                    {...register("code")}
+                    id="code"
+                    placeholder=""
+                    variant="filled"
+                    className="!h-8 !bg-lafWhite-400"
+                  >
+                    {functionTemplates.map((item) => {
+                      return (
+                        <option value={item.value.trim()} key={item.label}>
+                          {item.label}
+                        </option>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              )}
+
+              <div className="!mt-4 flex w-full items-center justify-end">
+                {!(isEdit || aiCode) && (
+                  <Button
+                    variant="text"
+                    className="mr-2 !h-9 w-32"
+                    onClick={() => {
+                      setTemplateOpen(true);
+                      setShowTemplateItem(false);
+                    }}
+                    isLoading={createFunctionMutation.isLoading}
+                  >
+                    {t("FunctionPanel.CreateFromTemplate")}
+                  </Button>
+                )}
+                <Button
+                  type="submit"
+                  onClick={handleSubmit(onSubmit)}
+                  isLoading={updateFunctionMutation.isLoading || createFunctionMutation.isLoading}
+                  className="!h-9 w-32 !bg-primary-600 !font-semibold hover:!bg-primary-700"
+                >
+                  {!isEdit ? t("CreateFunction") : t("EditFunction")}
+                </Button>
+              </div>
             </VStack>
           </ModalBody>
-          {!isEdit && !aiCode && (
-            <>
-              <Divider />
-              <ModalFooter className="!px-16">
-                <div className="mt-2 w-full">
-                  <div className="pb-3 text-lg font-medium text-grayModern-700">
-                    {t("Template.Recommended")}
-                  </div>
-                  <div className="mb-11 flex w-full">
-                    {!isLoading ? (
-                      (TemplateList?.data.list.length > 0
-                        ? TemplateList?.data.list
-                        : InitialTemplateList.data?.data.list
-                      ).map((item: TFunctionTemplate) => (
-                        <section
-                          className="h-28 w-1/3 px-1.5 py-1"
-                          key={item._id}
-                          onClick={() => {
-                            setTemplateOpen(true);
-                          }}
-                        >
-                          <TemplateCard template={item} isModal={true} />
-                        </section>
-                      ))
-                    ) : (
-                      <Center className="h-28 w-full">
-                        <span>
-                          <Spinner />
-                        </span>
-                      </Center>
-                    )}
-                  </div>
-                  <div>
-                    <button
-                      className="flex w-full cursor-pointer items-center justify-center bg-primary-100 py-2 text-primary-600"
-                      onClick={() => {
-                        setTemplateOpen(true);
-                        setShowTemplateItem(false);
-                      }}
-                    >
-                      <MoreTemplateIcon className="mr-2 text-lg" />
-                      {t("FunctionPanel.CreateFromTemplate")}
-                    </button>
-                  </div>
-                </div>
-              </ModalFooter>
-            </>
-          )}
         </ModalContent>
       </Modal>
 
