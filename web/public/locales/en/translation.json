@@ -117,7 +117,8 @@
     "versionHistory": "Version History",
     "Restore": "Restore",
     "Invite": "Invite",
-    "HistoryTips": "No historical versions available"
+    "HistoryTips": "No historical versions available",
+    "NoDesc": "No Description"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
@@ -210,7 +211,11 @@
     "PauseTips": "Are you sure you want to pause this application?",
     "RestartTips": "Are you sure you want to restart this application?",
     "CommonSetting": "Common Settings",
-    "ClientSetting": "Client Settings"
+    "ClientSetting": "Client Settings",
+    "EditorFont": "Editor Font",
+    "FontSize": "Font Size",
+    "FuncListDisplay": "Function List Display",
+    "ListDisplay": "List Display"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -574,7 +579,9 @@
   },
   "Reset": "Reset",
   "SettingModal": {
-    "Exchange": "Exchange"
+    "Exchange": "Exchange",
+    "FunctionName": "Funciton Name",
+    "FunctionDesc": "Function Description"
   },
   "Expenses": "Expenses",
   "OrderNumber": "Order Number",
@@ -639,5 +646,6 @@
   "PreviousPage": "Previous Page",
   "NextPage": "Next Page",
   "LastPage": "Last Page",
-  "FirstPage": "First Page"
+  "FirstPage": "First Page",
+  "SavedSuccessfully": "Saved Successfully"
 }

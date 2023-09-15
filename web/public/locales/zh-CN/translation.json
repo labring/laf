@@ -117,7 +117,8 @@
     "versionHistory": "历史版本",
     "Restore": "恢复",
     "Invite": "邀请",
-    "HistoryTips": "暂无历史版本"
+    "HistoryTips": "暂无历史版本",
+    "NoDesc": "暂无描述"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
@@ -210,7 +211,11 @@
     "PauseTips": "确定要暂停此应用吗？",
     "RestartTips": "确定要重启此应用吗？",
     "CommonSetting": "常用设置",
-    "ClientSetting": "客户端设置"
+    "ClientSetting": "客户端设置",
+    "EditorFont": "编辑器字体",
+    "FontSize": "字体大小",
+    "FuncListDisplay": "函数列表显示",
+    "ListDisplay": "列表显示"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -574,7 +579,9 @@
   },
   "Reset": "重置",
   "SettingModal": {
-    "Exchange": "兑换"
+    "Exchange": "兑换",
+    "FunctionName": "函数名",
+    "FunctionDesc": "函数描述"
   },
   "Expenses": "支出",
   "OrderNumber": "订单号",
@@ -639,5 +646,6 @@
   "PreviousPage": "上一页",
   "NextPage": "下一页",
   "LastPage": "最后一页",
-  "FirstPage": "第一页"
+  "FirstPage": "第一页",
+  "SavedSuccessfully": "保存成功"
 }

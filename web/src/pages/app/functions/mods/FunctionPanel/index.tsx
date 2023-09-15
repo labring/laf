@@ -36,6 +36,7 @@ import "./index.css";
 import { TFunction, TFunctionNode } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
 import RecycleBinModal from "@/pages/app/functions/mods/RecycleBinModal";
+import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
 
 type TagItem = {
@@ -68,6 +69,7 @@ export default function FunctionList() {
   const darkMode = colorMode === COLOR_MODE.dark;
 
   const { currentApp, showSuccess } = useGlobalStore();
+  const { commonSettings } = useCustomSettingStore();
 
   const { id: functionName } = useParams();
   const navigate = useNavigate();
@@ -221,6 +223,10 @@ export default function FunctionList() {
         fileType = FileType.folder;
       }
       const level = item.level || item?.name.split("/").length - 1;
+      const itemDisplay =
+        commonSettings.funcListDisplay === "name"
+          ? item?.name.split("/")[level]
+          : item?.desc || t("FunctionPanel.NoDesc");
 
       return (
         <React.Fragment key={index}>
@@ -253,7 +259,7 @@ export default function FunctionList() {
             >
               <FileTypeIcon type={fileType} width="12px" />
               <span className="ml-2">
-                {item.children?.length || isFuncList ? item?.name : item?.name.split("/")[level]}
+                {item.children?.length || isFuncList ? item.name : itemDisplay}
               </span>
             </div>
             {!item.children?.length && (
