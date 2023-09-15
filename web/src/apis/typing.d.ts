@@ -291,6 +291,14 @@ export type TFunction = {
   params: any;
 };
 
+export type TFunctionNode = {
+  _id: string;
+  name: string;
+  level?: number;
+  isExpanded?: boolean;
+  children: TreeNode[];
+};
+
 export type TFunctionList = {
   list: TFunction[];
   total: number;

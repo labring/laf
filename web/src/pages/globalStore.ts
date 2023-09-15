@@ -115,7 +115,6 @@ const useGlobalStore = create<State>()(
       },
 
       setCurrentApp: (app) => {
-        localStorage.setItem("app", app?.appid || "");
         set((state) => {
           state.currentApp = app;
 

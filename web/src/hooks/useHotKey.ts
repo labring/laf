@@ -17,7 +17,7 @@ export function getDisplayString(str: string) {
 }
 
 export const DEFAULT_SHORTCUTS = {
-  send_request: [`${MODIFY_KEY.metaKey}+s`, `${MODIFY_KEY.metaKey}+r`],
+  send_request: [`${MODIFY_KEY.metaKey}+r`, `${MODIFY_KEY.metaKey}+s`],
   deploy: [`${MODIFY_KEY.metaKey}+p`],
 };
 

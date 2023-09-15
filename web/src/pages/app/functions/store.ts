@@ -2,11 +2,11 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
-import { TFunction } from "@/apis/typing";
+import { TFunction, TFunctionNode } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
 
 type State = {
-  allFunctionList: TFunction[];
+  allFunctionList: TFunctionNode[];
   recentFunctionList: TFunction[];
   currentFunction: TFunction | { [key: string]: any };
   currentRequestId: string | undefined;
@@ -14,7 +14,7 @@ type State = {
   isFetchButtonClicked: Boolean;
   getFunctionUrl: () => string;
   setCurrentRequestId: (requestId: string | undefined) => void;
-  setAllFunctionList: (functionList: TFunction[]) => void;
+  setAllFunctionList: (functionList: TFunctionNode[]) => void;
   setRecentFunctionList: (functionList: TFunction[]) => void;
   setCurrentFunction: (currentFunction: TFunction | { [key: string]: any }) => void;
   updateFunctionCode: (current: TFunction | { [key: string]: any }, codes: string) => void;
