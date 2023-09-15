@@ -208,7 +208,9 @@
     "Pause": "暂停应用",
     "AppMonitor": "资源监控",
     "PauseTips": "确定要暂停此应用吗？",
-    "RestartTips": "确定要重启此应用吗？"
+    "RestartTips": "确定要重启此应用吗？",
+    "CommonSetting": "常用设置",
+    "ClientSetting": "客户端设置"
   },
   "StoragePanel": {
     "All": "总容量",

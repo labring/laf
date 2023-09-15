@@ -105,7 +105,7 @@ export default function Usage() {
           <div className="mt-3 flex h-36 w-[306px] flex-col justify-between rounded-lg bg-primary-500 px-6 text-white">
             <div className="flex items-center justify-end pt-3 text-lg">
               <span className="flex items-center">
-                <span className="w-16 truncate">{userInfo?.username}</span>
+                <span className="flex w-16 justify-end truncate">{userInfo?.username}</span>
                 <Avatar
                   className="ml-2"
                   boxShadow="base"

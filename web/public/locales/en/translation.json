@@ -208,7 +208,9 @@
     "Pause": "Pause",
     "AppMonitor": "Application Monitor",
     "PauseTips": "Are you sure you want to pause this application?",
-    "RestartTips": "Are you sure you want to restart this application?"
+    "RestartTips": "Are you sure you want to restart this application?",
+    "CommonSetting": "Common Settings",
+    "ClientSetting": "Client Settings"
   },
   "StoragePanel": {
     "All": "Total Capacity",

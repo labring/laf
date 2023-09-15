@@ -25,6 +25,11 @@ export type TTabItem = {
   icon: React.ReactElement;
 };
 
+export type TTabMatch = {
+  title: string;
+  items: TTabItem[];
+}[];
+
 export const TabKeys = {
   CostOverview: "cost-overview",
   CardRedemption: "card-redemption",
@@ -40,15 +45,18 @@ const SettingModal = (props: {
   headerTitle: string;
   children?: React.ReactElement;
   setApp?: TApplicationDetail;
-  tabMatch?: TTabItem[];
+  tabMatch?: TTabMatch;
   currentTab: string;
   openModal?: boolean;
   setOpenModal?: (open: boolean) => void;
 }) => {
   const { headerTitle, children, setApp, tabMatch = [], openModal, setOpenModal } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const currentIndex = tabMatch.findIndex((tab) => tab.key === props.currentTab);
-  const [item, setItem] = useState<TTabItem>(tabMatch[currentIndex]);
+  const allItems = tabMatch.reduce((prev: any, curr) => [...prev, ...curr.items], []);
+  const currentIndex = allItems
+    .map((tab: any) => tab)
+    .findIndex((tab: TTabItem) => tab.key === props.currentTab);
+  const [item, setItem] = useState<TTabItem>(allItems[currentIndex]);
   const { setCurrentApp } = useGlobalStore((state) => state);
   const borderColor = useColorModeValue("lafWhite.600", "lafDark.600");
   const darkMode = useColorMode().colorMode === "dark";
@@ -91,21 +99,30 @@ const SettingModal = (props: {
                 <div className="relative left-6 top-6">
                   {tabMatch.map((tab) => {
                     return (
-                      <SectionList.Item
-                        className={clsx(
-                          "mt-2 !h-[42px] w-[180px] rounded-md font-medium text-grayModern-500",
+                      <div key={tab.title}>
+                        {tab.title !== "" && (
+                          <div className="mt-4 font-medium text-grayModern-500">{tab.title}</div>
                         )}
-                        isActive={item?.key === tab.key}
-                        key={tab.key}
-                        onClick={() => {
-                          setItem(tab);
-                        }}
-                      >
-                        <span className="flex">
-                          <span className="flex items-center pr-2 ">{tab.icon}</span>
-                          {tab.name}
-                        </span>
-                      </SectionList.Item>
+                        {tab.items.map((tab) => {
+                          return (
+                            <SectionList.Item
+                              className={clsx(
+                                "mt-2 !h-[42px] w-[180px] rounded-md font-medium text-grayModern-500",
+                              )}
+                              isActive={item?.key === tab.key}
+                              key={tab.key}
+                              onClick={() => {
+                                setItem(tab);
+                              }}
+                            >
+                              <span className="flex">
+                                <span className="flex items-center pr-2 ">{tab.icon}</span>
+                                {tab.name}
+                              </span>
+                            </SectionList.Item>
+                          );
+                        })}
+                      </div>
                     );
                   })}
                 </div>
