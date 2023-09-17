@@ -1,6 +1,7 @@
 import { request, RequestParams } from "../../util/request";
 import {
   ApplicationControllerFindOneData,
+  BindCustomDomainDto,
   CreateApplicationDto,
   CreateDependencyDto,
   CreateEnvironmentDto,
@@ -141,6 +142,64 @@ export async function applicationControllerUpdateBundle(
   return request({
     url: `/v1/applications/${appid}/bundle`,
     method: "PATCH",
+    data: data,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Application
+ * @name ApplicationControllerBindDomain
+ * @summary Bind custom domain to application
+ * @request PATCH:/v1/applications/{appid}/domain
+ * @secure
+ */
+export async function applicationControllerBindDomain(
+  appid: string,
+  data: BindCustomDomainDto,
+  configParams: RequestParams = {},
+): Promise<any> {
+  return request({
+    url: `/v1/applications/${appid}/domain`,
+    method: "PATCH",
+    data: data,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Application
+ * @name ApplicationControllerRemove
+ * @summary Remove custom domain of application
+ * @request DELETE:/v1/applications/{appid}/domain
+ * @secure
+ */
+export async function applicationControllerRemove(appid: string, configParams: RequestParams = {}): Promise<any> {
+  return request({
+    url: `/v1/applications/${appid}/domain`,
+    method: "DELETE",
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Application
+ * @name ApplicationControllerCheckResolved
+ * @summary Check if domain is resolved
+ * @request POST:/v1/applications/{appid}/domain/resolved
+ * @secure
+ */
+export async function applicationControllerCheckResolved(
+  appid: string,
+  data: BindCustomDomainDto,
+  configParams: RequestParams = {},
+): Promise<any> {
+  return request({
+    url: `/v1/applications/${appid}/domain/resolved`,
+    method: "POST",
     data: data,
     ...configParams,
   });

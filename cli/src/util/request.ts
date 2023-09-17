@@ -11,8 +11,13 @@ export const request = axios.create({
 // request interceptor
 request.interceptors.request.use(
   async (config: any) => {
-    let _headers: AxiosRequestHeaders | any = {
-      'Content-Type': 'application/json',
+
+    console.log(config)
+    let _headers: AxiosRequestHeaders | any = {}
+    if (config.headers['Content-Type']) {
+      _headers['Content-Type'] = config.headers['Content-Type']
+    } else {
+      _headers['Content-Type'] = 'application/json'
     }
 
     // load remote server and token
@@ -48,7 +53,11 @@ request.interceptors.request.use(
 // response interceptor
 request.interceptors.response.use(
   (response: AxiosResponse) => {
-    const { data } = response
+
+    const { data, headers } = response
+    if (headers['content-type'] === 'application/octet-stream') {
+      return data
+    }
     if (data.error == null) {
       return data.data
     }
@@ -61,6 +70,7 @@ request.interceptors.response.use(
       process.exit(1)
     } else {
       // handle error code
+      console.log(error.message)
       const { status, data } = error.response
       if (status === 400) {
         console.log('Bad request!')
