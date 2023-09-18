@@ -44,7 +44,7 @@ const FuncTemplateItem = (props: { isModal: boolean }) => {
   );
 
   return (
-    <div className={clsx("flex flex-grow flex-col px-12 ", isModal ? "" : "pt-4")}>
+    <div className={clsx("flex w-full flex-grow flex-col px-12 ", isModal ? "" : "pt-4")}>
       <div className="flex text-lg">
         <span
           className="cursor-pointer text-second"

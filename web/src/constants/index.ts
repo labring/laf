@@ -86,4 +86,5 @@ export enum APP_SETTING_KEY {
   ENV = "env",
   MONITOR = "monitor",
   DOMAIN = "domain",
+  COMMON = "common",
 }

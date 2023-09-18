@@ -10,10 +10,12 @@ import useFunctionStore from "../../store";
 import CreateModal from "../FunctionPanel/CreateModal";
 
 import useFunctionCache from "@/hooks/useFunctionCache";
+import useCustomSettingStore from "@/pages/customSetting";
 
 function EditorPanel() {
   const store = useFunctionStore((store) => store);
   const { currentFunction, updateFunctionCode, recentFunctionList } = store;
+  const { commonSettings } = useCustomSettingStore();
   const { colorMode } = useColorMode();
   const { t } = useTranslation();
   const functionCache = useFunctionCache();
@@ -47,6 +49,7 @@ function EditorPanel() {
             updateFunctionCode(currentFunction, value || "");
             functionCache.setCache(currentFunction!._id, value || "");
           }}
+          fontSize={commonSettings.fontSize}
         />
       ) : (
         functionListQuery.data?.data?.length !== 0 && (
