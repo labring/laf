@@ -12,7 +12,7 @@ export async function exportDB(exportPath: string): Promise<void> {
   const res = await databaseControllerExport(appSchema.appid)
   // get absolute path
   const absPath = path.resolve(exportPath)
-  fs.writeFileSync(path.join(absPath, `${appSchema.appid}-db.gz`), res);
+  res.pipe(fs.createWriteStream(path.join(absPath, `${appSchema.appid}-db.gz`)))
   console.log(`${getEmoji('✅')} database export success`)
 }
 

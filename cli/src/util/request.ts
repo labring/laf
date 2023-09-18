@@ -11,8 +11,7 @@ export const request = axios.create({
 // request interceptor
 request.interceptors.request.use(
   async (config: any) => {
-
-    console.log(config)
+    
     let _headers: AxiosRequestHeaders | any = {}
     if (config.headers['Content-Type']) {
       _headers['Content-Type'] = config.headers['Content-Type']
@@ -70,7 +69,6 @@ request.interceptors.response.use(
       process.exit(1)
     } else {
       // handle error code
-      console.log(error.message)
       const { status, data } = error.response
       if (status === 400) {
         console.log('Bad request!')

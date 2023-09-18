@@ -5,6 +5,7 @@ export async function databaseControllerExport(appid: string):Promise<any> {
   return request({
     url: `/v1/apps/${appid}/databases/export`,
     method: 'GET',
+    responseType: 'stream',
   })
 }
 

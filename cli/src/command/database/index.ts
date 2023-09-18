@@ -3,7 +3,10 @@ import { checkApplication } from "../../common/hook";
 import { exportDB, importDB } from "../../action/database";
 
 export function command(): Command {
-  const cmd = program.command('database').hook('preAction', () => {
+  const cmd = program
+    .command('database')
+    .alias('db')
+    .hook('preAction', () => {
       checkApplication()
     })
   
