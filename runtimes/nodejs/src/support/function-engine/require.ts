@@ -26,7 +26,11 @@ export class FunctionRequire {
       requestId: '',
     }
 
-    const sandbox = FunctionVm.buildSandbox(context, this.requireFunc, fromModules)
+    const sandbox = FunctionVm.buildSandbox(
+      context,
+      this.requireFunc,
+      fromModules,
+    )
     const wrapped = this.warp(code)
     const script = FunctionVm.createVM(wrapped, {})
     return script.runInNewContext(sandbox, {})

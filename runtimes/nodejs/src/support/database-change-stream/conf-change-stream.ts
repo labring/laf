@@ -2,12 +2,14 @@ import { CONFIG_COLLECTION } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { DatabaseChangeStream } from '.'
 
-
 export class ConfChangeStream {
   static initialize() {
-    DatabaseChangeStream.onStreamChange(CONFIG_COLLECTION, this.updateEnvironments)
+    DatabaseChangeStream.onStreamChange(
+      CONFIG_COLLECTION,
+      this.updateEnvironments,
+    )
   }
-  
+
   private static async updateEnvironments() {
     const conf = await DatabaseAgent.db
       .collection(CONFIG_COLLECTION)

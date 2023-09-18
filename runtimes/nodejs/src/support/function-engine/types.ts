@@ -26,7 +26,7 @@ export interface RuntimeContext {
   process: {
     env: { [key: string]: string }
   }
-  global: RuntimeContext,
+  global: RuntimeContext
   fromModules: string[]
 }
 

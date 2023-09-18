@@ -50,7 +50,7 @@ export default class Config {
     return (process.env.PORT ?? 8000) as number
   }
 
-  static get STORAGE_PORT(): number { 
+  static get STORAGE_PORT(): number {
     return (process.env.STORAGE_PORT ?? 9000) as number
   }
 
@@ -81,19 +81,19 @@ export default class Config {
     return process.env.REQUEST_LIMIT_SIZE || '10mb'
   }
 
-  static get LOG_SERVER_URL(): string { 
+  static get LOG_SERVER_URL(): string {
     return process.env.LOG_SERVER_URL || ''
   }
 
-  static get LOG_SERVER_TOKEN(): string { 
+  static get LOG_SERVER_TOKEN(): string {
     return process.env.LOG_SERVER_TOKEN || ''
   }
 
-  static get CHANGE_STREAM_RECONNECT_INTERVAL(): number { 
+  static get CHANGE_STREAM_RECONNECT_INTERVAL(): number {
     return (process.env.CHANGE_STREAM_RECONNECT_INTERVAL || 3000) as number
   }
 
-  static get MINIO_INTERNAL_ENDPOINT(): string { 
+  static get MINIO_INTERNAL_ENDPOINT(): string {
     return process.env.MINIO_INTERNAL_ENDPOINT || ''
   }
 }

@@ -21,7 +21,10 @@ export class FunctionCache {
       FunctionCache.cache.set(func.name, func)
     }
 
-    DatabaseChangeStream.onStreamChange(CLOUD_FUNCTION_COLLECTION, this.streamChange.bind(this))
+    DatabaseChangeStream.onStreamChange(
+      CLOUD_FUNCTION_COLLECTION,
+      this.streamChange.bind(this),
+    )
     logger.info('Function cache initialized.')
 
     // invoke init function

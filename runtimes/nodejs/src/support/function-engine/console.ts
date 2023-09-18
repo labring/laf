@@ -16,14 +16,18 @@ export class FunctionConsole {
       created_at: new Date(),
     }
 
-    axios.post(`${Config.LOG_SERVER_URL}/function/log`, {
-      appid: Config.APPID,
-      log: doc,
-    }, {
-      headers: {
-        'x-token': Config.LOG_SERVER_TOKEN
-      }
-    })
+    axios.post(
+      `${Config.LOG_SERVER_URL}/function/log`,
+      {
+        appid: Config.APPID,
+        log: doc,
+      },
+      {
+        headers: {
+          'x-token': Config.LOG_SERVER_TOKEN,
+        },
+      },
+    )
   }
 
   constructor(ctx: FunctionContext) {

@@ -68,7 +68,8 @@ app.use(function (req, res, next) {
   if (req.url !== '/_/healthz') {
     logger.info(
       requestId,
-      `${req.method} "${req.url}" - referer: ${req.get('referer') || '-'
+      `${req.method} "${req.url}" - referer: ${
+        req.get('referer') || '-'
       } ${req.get('user-agent')}`,
     )
     logger.trace(requestId, `${req.method} ${req.url}`, {
@@ -103,7 +104,7 @@ async function gracefullyExit() {
   await DatabaseAgent.accessor.close()
   await server.close()
   await storageServer.close()
-  
+
   logger.info('process gracefully exited!')
   process.exit(0)
 }

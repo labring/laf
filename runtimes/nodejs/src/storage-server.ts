@@ -28,7 +28,6 @@ app.use(
 
 app.use(xmlparser())
 
-
 /**
  * Parsing bearer token
  */
@@ -42,7 +41,8 @@ app.use(function (req, res, next) {
   if (req.url !== '/_/healthz') {
     logger.info(
       requestId,
-      `${req.method} "${req.url}" - referer: ${req.get('referer') || '-'
+      `${req.method} "${req.url}" - referer: ${
+        req.get('referer') || '-'
       } ${req.get('user-agent')}`,
     )
     logger.trace(requestId, `${req.method} ${req.url}`, {
@@ -55,53 +55,56 @@ app.use(function (req, res, next) {
   next()
 })
 
-const tryPath = (path: string) => { 
-  return [
-    path,
-    path + '/index.html',
-    path + 'index.html',
-    '/index.html',
-  ]
+const tryPath = (path: string) => {
+  return [path, path + '/index.html', path + 'index.html', '/index.html']
 }
 
-app.use('/:bucket/:file', proxy(Config.MINIO_INTERNAL_ENDPOINT, {
-  filter: function(req) {
-     return req.method == 'GET';
-  },
-  proxyReqPathResolver: async function (req) {
-    const minioUrl = new URL(req.url, Config.MINIO_INTERNAL_ENDPOINT)
+app.use(
+  '/:bucket/:file',
+  proxy(Config.MINIO_INTERNAL_ENDPOINT, {
+    filter: function (req) {
+      return req.method == 'GET'
+    },
+    proxyReqPathResolver: async function (req) {
+      const minioUrl = new URL(req.url, Config.MINIO_INTERNAL_ENDPOINT)
 
-    const websiteHosting = WebsiteHostingChangeStream.websiteHosting.find((item) => item.bucket === req.params.bucket)
-    if (!websiteHosting) { 
-      return minioUrl.toString()
-    }
-    const paths = tryPath(req.path)
-    if (paths.length === 0) {
-      return minioUrl.toString()
-    }
-
-
-    for (const [idx, path] of paths.entries()) { 
-      minioUrl.pathname = path
-
-      if (idx === paths.length - 1) { 
+      const websiteHosting = WebsiteHostingChangeStream.websiteHosting.find(
+        (item) => item.bucket === req.params.bucket,
+      )
+      if (!websiteHosting) {
+        return minioUrl.toString()
+      }
+      const paths = tryPath(req.path)
+      if (paths.length === 0) {
         return minioUrl.toString()
       }
 
-      try {
-        const res = await axios.head(minioUrl.toString())
-        
-        if (res.status === 404 || res.status=== 403 || res.status === 400 || res.headers['Content-Type'] === "folder") { 
-          continue
+      for (const [idx, path] of paths.entries()) {
+        minioUrl.pathname = path
+
+        if (idx === paths.length - 1) {
+          return minioUrl.toString()
         }
-        return minioUrl.toString()
-      } catch (err) {
-        return err
-      }
-    }
-  }
-}));
 
+        try {
+          const res = await axios.head(minioUrl.toString())
+
+          if (
+            res.status === 404 ||
+            res.status === 403 ||
+            res.status === 400 ||
+            res.headers['Content-Type'] === 'folder'
+          ) {
+            continue
+          }
+          return minioUrl.toString()
+        } catch (err) {
+          return err
+        }
+      }
+    },
+  }),
+)
 
 const storageServer = app.listen(Config.STORAGE_PORT, () =>
   logger.info(`storage server ${process.pid} listened on ${Config.PORT}`),
