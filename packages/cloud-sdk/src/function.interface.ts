@@ -23,6 +23,7 @@ export interface FunctionContext {
   socket?: WebSocket
   request?: Request
   response?: Response
+  varMap?: Map<string, any>,
   __function_name?: string
 }
 

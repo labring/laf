@@ -9,7 +9,7 @@ import { ICloudFunctionData } from '@lafjs/cloud'
 /**
  * Handler of debugging cloud function
  */
-export async function handleDebugFunction(req: IRequest, res: Response) {
+export async function handleDebugFunction(ctx: FunctionContext, req: IRequest, res: Response) {
   // verify the debug token
   const token = req.get('x-laf-develop-token')
   if (!token) {
@@ -35,7 +35,7 @@ export async function handleDebugFunction(req: IRequest, res: Response) {
     return res.status(400).send('x-laf-func-data is invalid')
   }
 
-  const requestId = req['requestId']
+  const requestId = ctx.requestId
   const func_name = req.params?.name
 
   if (!func_data) {
@@ -46,19 +46,7 @@ export async function handleDebugFunction(req: IRequest, res: Response) {
 
   try {
     // execute the func
-    const ctx: FunctionContext = {
-      query: req.query,
-      files: req.files as any,
-      body: req.body,
-      headers: req.headers,
-      method: req.method,
-      auth: req.user,
-      user: req.user,
-      requestId,
-      request: req,
-      response: res,
-      __function_name: func.name,
-    }
+    ctx.__function_name = func_name
     const result = await func.invoke(ctx)
 
     if (result.error) {
