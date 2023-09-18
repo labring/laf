@@ -50,6 +50,10 @@ export default class Config {
     return (process.env.PORT ?? 8000) as number
   }
 
+  static get STORAGE_PORT(): number { 
+    return (process.env.STORAGE_PORT ?? 9000) as number
+  }
+
   /**
    * in production deploy or not
    */
@@ -87,5 +91,9 @@ export default class Config {
 
   static get CHANGE_STREAM_RECONNECT_INTERVAL(): number { 
     return (process.env.CHANGE_STREAM_RECONNECT_INTERVAL || 3000) as number
+  }
+
+  static get MINIO_INTERNAL_ENDPOINT(): string { 
+    return process.env.MINIO_INTERNAL_ENDPOINT || ''
   }
 }

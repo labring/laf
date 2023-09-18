@@ -21,6 +21,7 @@ import xmlparser from 'express-xml-bodyparser'
 import './support/cloud-sdk'
 import { FunctionCache } from './support/function-engine/cache'
 import { DatabaseChangeStream } from './support/db-change-stream'
+import storageServer from './storage-server'
 
 const app = express()
 
@@ -102,8 +103,9 @@ process.on('SIGINT', gracefullyExit)
 
 async function gracefullyExit() {
   await DatabaseAgent.accessor.close()
-  server.close(async () => {
-    logger.info('process gracefully exited!')
-    process.exit(0)
-  })
+  await server.close()
+  await storageServer.close()
+  
+  logger.info('process gracefully exited!')
+  process.exit(0)
 }
