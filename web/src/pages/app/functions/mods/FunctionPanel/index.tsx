@@ -226,7 +226,7 @@ export default function FunctionList() {
       const itemDisplay =
         commonSettings.funcListDisplay === "name"
           ? item?.name.split("/")[level]
-          : item?.desc || t("FunctionPanel.NoDesc");
+          : item?.desc || item?.name.split("/")[level];
 
       return (
         <React.Fragment key={index}>
@@ -258,7 +258,7 @@ export default function FunctionList() {
               )}
             >
               <FileTypeIcon type={fileType} width="12px" />
-              <span className="ml-2">
+              <span className="ml-2" style={{ fontSize: commonSettings.fontSize - 2 }}>
                 {item.children?.length || isFuncList ? item.name : itemDisplay}
               </span>
             </div>
