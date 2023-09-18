@@ -31,6 +31,7 @@ type State = {
   maxStorage: number;
   setMaxStorage: (number: number) => void;
   getOrigin: (origin: string) => string;
+  getFilePath: (bucket: string, file: string) => string;
 };
 
 const useStorageStore = create<State>()(
@@ -60,6 +61,13 @@ const useStorageStore = create<State>()(
       getOrigin: (domain: string) => {
         const currentApp = useGlobalStore.getState().currentApp;
         return `${currentApp?.tls ? "https" : "http"}://${domain}${formatPort(currentApp?.port)}`;
+      },
+
+      getFilePath: (bucket: string, file: string) => {
+        const currentApp = useGlobalStore.getState().currentApp;
+        return `${currentApp.storage.credentials.endpoint}/${bucket}${formatPort(
+          currentApp?.port,
+        )}/${file}`;
       },
     })),
   ),
