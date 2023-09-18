@@ -1,26 +1,57 @@
-import Config from "../../config"
-import { DatabaseAgent } from "../../db"
-import { logger } from "../logger"
+import EventEmitter from "events";
+import { DatabaseAgent } from "../../db";
+import { logger } from "../logger";
+import Config from "../../config";
+import { CLOUD_FUNCTION_COLLECTION, CONFIG_COLLECTION, WEBSITE_HOSTING_COLLECTION } from "../../constants";
 
-
-export class DatabaseChangeStream {
-  static collectionName: string
-  static async onStreamChange(change: any) {
+const collectionsToWatch = [CONFIG_COLLECTION, CLOUD_FUNCTION_COLLECTION, WEBSITE_HOSTING_COLLECTION] as const;
+export class DatabaseChangeStream extends EventEmitter {
+  private static instance: DatabaseChangeStream;
+  
+  private constructor() {
+    super();
   }
 
-  static async initialize() {
-    const stream = DatabaseAgent.db.collection(this.collectionName).watch()
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new DatabaseChangeStream();
+    }
+    return this.instance;
+  }
 
-    stream.on('change', this.onStreamChange)
+  initializeForCollection(collectionName: string) {
+    const stream = DatabaseAgent.db.collection(collectionName).watch();
+
+    stream.on('change', (change) => {
+      this.emit(collectionName, change);
+    });
 
     stream.once('close', () => {
-      stream.off('change',this.onStreamChange)
-      logger.error(`${this.collectionName} collection change stream closed.`)
+      stream.off('change', this.emit);
+      logger.error(`${collectionName} collection change stream closed.`);
 
       setTimeout(() => {
-        logger.info(`Reconnecting ${this.collectionName} collection change stream...`)
-        this.initialize()
-      }, Config.CHANGE_STREAM_RECONNECT_INTERVAL)
-    })
+        logger.info(`Reconnecting ${collectionName} collection change stream...`);
+        this.initializeForCollection(collectionName);
+      }, Config.CHANGE_STREAM_RECONNECT_INTERVAL);
+    });
+  }
+
+  static initialize() {
+    const instance = DatabaseChangeStream.getInstance();
+
+    collectionsToWatch.forEach(collectionName => {
+      instance.initializeForCollection(collectionName);
+    });
+  }
+
+  static onStreamChange(collectionName: typeof collectionsToWatch[number], listener: (...args: any[]) => void) {
+    const instance = DatabaseChangeStream.getInstance();
+    instance.on(collectionName, listener);
+  }
+
+  static removeAllListeners() { 
+    const instance = DatabaseChangeStream.getInstance();
+    instance.removeAllListeners();
   }
 }

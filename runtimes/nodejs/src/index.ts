@@ -19,14 +19,12 @@ import xmlparser from 'express-xml-bodyparser'
 
 // init static method of class
 import './support/cloud-sdk'
-import { FunctionCache } from './support/function-engine/cache'
-import { DatabaseChangeStream } from './support/db-change-stream'
 import storageServer from './storage-server'
+import { DatabaseChangeStream } from './support/database-change-stream'
 
 const app = express()
 
 DatabaseAgent.accessor.ready.then(() => {
-  FunctionCache.initialize()
   DatabaseChangeStream.initialize()
 })
 

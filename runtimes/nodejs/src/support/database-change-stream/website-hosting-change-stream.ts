@@ -2,14 +2,14 @@ import { DatabaseChangeStream } from ".";
 import { WEBSITE_HOSTING_COLLECTION } from "../../constants";
 import { DatabaseAgent } from "../../db";
 
-
-
-export class WebsiteHostingStreamChange extends DatabaseChangeStream {
+export class WebsiteHostingChangeStream  {
   static websiteHosting = []
-  static collectionName = WEBSITE_HOSTING_COLLECTION
+
+  static initialize() {
+    DatabaseChangeStream.onStreamChange(WEBSITE_HOSTING_COLLECTION, this.onStreamChange)
+  }
   
-  
-  static async onStreamChange(change: any) {
+  static async onStreamChange() {
     const websiteHosting = await DatabaseAgent.db.collection(WEBSITE_HOSTING_COLLECTION).find().toArray()
     this.websiteHosting = websiteHosting
   }

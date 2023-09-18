@@ -9,14 +9,14 @@ import xmlparser from 'express-xml-bodyparser'
 
 // init static method of class
 import './support/cloud-sdk'
-import { WebsiteHostingStreamChange } from './support/database-change-stream/website-hosting-stream-change'
+import { WebsiteHostingChangeStream } from './support/database-change-stream/website-hosting-change-stream'
 import proxy from 'express-http-proxy'
 import axios from 'axios'
 
 const app = express()
 
 DatabaseAgent.accessor.ready.then(() => {
-  WebsiteHostingStreamChange.initialize()
+  WebsiteHostingChangeStream.initialize()
 })
 
 app.use(
@@ -71,7 +71,7 @@ app.use('/:bucket/:file', proxy(Config.MINIO_INTERNAL_ENDPOINT, {
   proxyReqPathResolver: async function (req) {
     const minioUrl = new URL(req.url, Config.MINIO_INTERNAL_ENDPOINT)
 
-    const websiteHosting = WebsiteHostingStreamChange.websiteHosting.find((item) => item.bucket === req.params.bucket)
+    const websiteHosting = WebsiteHostingChangeStream.websiteHosting.find((item) => item.bucket === req.params.bucket)
     if (!websiteHosting) { 
       return minioUrl.toString()
     }
