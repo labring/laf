@@ -226,12 +226,16 @@ export const GB = 1024 * MB
 export const PHONE_AUTH_PROVIDER_NAME = 'phone'
 export const PASSWORD_AUTH_PROVIDER_NAME = 'user-password'
 export const EMAIL_AUTH_PROVIDER_NAME = 'email'
+export const GITHUB_AUTH_PROVIDER_NAME = 'github'
 
 // Sms constants
 export const ALISMS_KEY = 'alisms'
 export const LIMIT_CODE_FREQUENCY = 60 * 1000 // 60 seconds (in milliseconds)
 export const LIMIT_CODE_PER_IP_PER_DAY = 30 // 30 times
 export const CODE_VALIDITY = 10 * 60 * 1000 // 10 minutes (in milliseconds)
+
+// Github constants
+export const GITHUB_SIGNIN_TOKEN_VALIDITY = 5 * 60 * 1000
 
 // Recycle bin constants
 export const STORAGE_LIMIT = 1000 // 1000 items

@@ -59,6 +59,15 @@ export class UserService {
     return user
   }
 
+  // find user by github id
+  async findOneByGithub(gid: number) {
+    const user = await this.db.collection<User>('User').findOne({
+      github: gid,
+    })
+
+    return user
+  }
+
   // find user by username | phone | email
   async findOneByUsernameOrPhoneOrEmail(key: string) {
     // match either username or phone or email
@@ -75,6 +84,19 @@ export class UserService {
       .updateOne({ _id: id }, { $set: data })
 
     return await this.findOneById(id)
+  }
+
+  async updateAvatarUrl(url: string, userid: ObjectId) {
+    await this.db.collection<UserProfile>('UserProfile').updateOne(
+      { uid: userid },
+      {
+        $set: {
+          avatar: url,
+        },
+      },
+    )
+
+    return await this.findOneById(userid)
   }
 
   async updateAvatar(image: Express.Multer.File, userid: ObjectId) {
