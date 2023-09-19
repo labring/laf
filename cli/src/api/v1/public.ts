@@ -1,6 +1,5 @@
 import { request, RequestParams } from "../../util/request";
 import {
-  AppControllerGetRuntimesData,
   RegionControllerGetRegionsData,
   SettingControllerGetSettingByKeyData,
   SettingControllerGetSettingsData,
@@ -14,9 +13,7 @@ import {
  * @summary Get application runtime list
  * @request GET:/v1/runtimes
  */
-export async function appControllerGetRuntimes(
-  configParams: RequestParams = {},
-): Promise<AppControllerGetRuntimesData> {
+export async function appControllerGetRuntimes(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/runtimes`,
     method: "GET",

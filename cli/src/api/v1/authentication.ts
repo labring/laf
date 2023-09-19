@@ -1,7 +1,5 @@
 import { request, RequestParams } from "../../util/request";
 import {
-  BindPhoneDto,
-  BindUsernameDto,
   CreatePATDto,
   PasswdCheckDto,
   PasswdResetDto,
@@ -9,41 +7,10 @@ import {
   PasswdSignupDto,
   Pat2TokenDto,
   PhoneSigninDto,
+  SendEmailCodeDto,
   SendPhoneCodeDto,
 } from "./data-contracts";
 
-/**
- * No description
- *
- * @tags Authentication
- * @name AuthControllerPat2Token
- * @summary Get user token by PAT
- * @request POST:/v1/auth/pat2token
- */
-export async function authControllerPat2Token(data: Pat2TokenDto, configParams: RequestParams = {}): Promise<any> {
-  return request({
-    url: `/v1/auth/pat2token`,
-    method: "POST",
-    data: data,
-    ...configParams,
-  });
-}
-/**
- * No description
- *
- * @tags Authentication
- * @name AuthControllerGetProfile
- * @summary Get current user profile
- * @request GET:/v1/auth/profile
- * @secure
- */
-export async function authControllerGetProfile(configParams: RequestParams = {}): Promise<any> {
-  return request({
-    url: `/v1/auth/profile`,
-    method: "GET",
-    ...configParams,
-  });
-}
 /**
  * No description
  *
@@ -171,16 +138,16 @@ export async function authenticationControllerGetProviders(configParams: Request
  * No description
  *
  * @tags Authentication
- * @name AuthenticationControllerBindPhone
- * @summary Bind username
- * @request POST:/v1/auth/bind/phone
+ * @name AuthenticationControllerPat2Token
+ * @summary Get user token by PAT
+ * @request POST:/v1/auth/pat2token
  */
-export async function authenticationControllerBindPhone(
-  data: BindPhoneDto,
+export async function authenticationControllerPat2Token(
+  data: Pat2TokenDto,
   configParams: RequestParams = {},
 ): Promise<any> {
   return request({
-    url: `/v1/auth/bind/phone`,
+    url: `/v1/auth/pat2token`,
     method: "POST",
     data: data,
     ...configParams,
@@ -190,16 +157,13 @@ export async function authenticationControllerBindPhone(
  * No description
  *
  * @tags Authentication
- * @name AuthenticationControllerBindUsername
- * @summary Bind username
- * @request POST:/v1/auth/bind/username
+ * @name EmailControllerSendCode
+ * @summary Send email verify code
+ * @request POST:/v1/auth/email/code
  */
-export async function authenticationControllerBindUsername(
-  data: BindUsernameDto,
-  configParams: RequestParams = {},
-): Promise<any> {
+export async function emailControllerSendCode(data: SendEmailCodeDto, configParams: RequestParams = {}): Promise<any> {
   return request({
-    url: `/v1/auth/bind/username`,
+    url: `/v1/auth/email/code`,
     method: "POST",
     data: data,
     ...configParams,
