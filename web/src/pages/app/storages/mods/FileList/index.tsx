@@ -43,10 +43,11 @@ import UploadButton from "../UploadButton";
 import useAwsS3 from "@/hooks/useAwsS3";
 export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
-  const { currentStorage, prefix, setPrefix, getOrigin, markerArray, setMarkerArray } =
+  const { currentStorage, prefix, setPrefix, markerArray, setMarkerArray, getFilePath } =
     useStorageStore();
   const [pageSize, setPageSize] = useState(20);
   const bucketName = currentStorage?.name;
+  console.log(currentStorage);
   const bucketType = currentStorage?.policy;
 
   const { colorMode } = useColorMode();
@@ -75,17 +76,12 @@ export default function FileList() {
     if (bucketType === "private") {
       fileUrl = getFileUrl(bucketName!, file.Key);
     } else {
-      fileUrl = getOrigin(currentStorage?.domain?.domain || "") + `/${file.Key}` || "";
+      fileUrl = getFilePath(bucketName!, file.Key);
     }
-
     return fileUrl;
   };
 
   const viewAppFile = (file: TFile) => {
-    if (file.Prefix) {
-      changeDirectory(file);
-      return;
-    }
     window.open(getLinkUrl(file), "_blank");
   };
 
