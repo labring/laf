@@ -24,7 +24,7 @@ import { debounce } from "lodash";
 
 import { MoreTemplateIcon, TextIcon } from "@/components/CommonIcon";
 import InputTag from "@/components/InputTag";
-import { SUPPORTED_METHODS } from "@/constants";
+import { DEFAULT_CODE, SUPPORTED_METHODS } from "@/constants";
 
 import { useCreateFunctionMutation, useUpdateFunctionMutation } from "../../../service";
 import useFunctionStore from "../../../store";
@@ -58,7 +58,7 @@ const CreateModal = (props: {
     description: functionItem?.desc || "",
     websocket: !!functionItem?.websocket,
     methods: functionItem?.methods || ["GET", "POST"],
-    code: functionItem?.source?.code || aiCode || "",
+    code: functionItem?.source?.code || aiCode || DEFAULT_CODE || "",
     tags: functionItem?.tags || [],
   };
 
