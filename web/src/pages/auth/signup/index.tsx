@@ -24,6 +24,7 @@ import useInviteCode from "@/hooks/useInviteCode";
 import { useGroupMemberAddMutation } from "@/pages/app/collaboration/service";
 import {
   useGetProvidersQuery,
+  useGithubAuthControllerBindMutation,
   useSendSmsCodeMutation,
   useSignupMutation,
 } from "@/pages/auth/service";
@@ -68,6 +69,7 @@ export default function SignUp() {
   const [countdown, setCountdown] = useState(60);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const joinGroupMutation = useGroupMemberAddMutation();
+  const githubAuthControllerBindMutation = useGithubAuthControllerBindMutation();
   const inviteCode = useInviteCode();
 
   const {
@@ -109,7 +111,15 @@ export default function SignUp() {
 
     const res = await signupMutation.mutateAsync(params);
 
-    if (res?.data) {
+    if (!res?.data) {
+      const githubToken = sessionStorage.getItem("githubToken");
+      sessionStorage.removeItem("githubToken");
+      if (githubToken && githubToken !== "null") {
+        githubAuthControllerBindMutation.mutateAsync({
+          token: githubToken,
+          isRegister: true,
+        });
+      }
       const sessionData = sessionStorage.getItem("collaborationCode");
       const collaborationCode = JSON.parse(sessionData || "{}");
       sessionStorage.removeItem("collaborationCode");
@@ -119,6 +129,8 @@ export default function SignUp() {
           showSuccess(t("Collaborate.JoinSuccess"));
         }
         navigate(`/app/${collaborationCode.appid}/function`);
+      } else if (res?.error === "user already exists") {
+        navigate(Routes.login, { replace: true });
       } else {
         navigate(Routes.dashboard, { replace: true });
       }
@@ -167,14 +179,20 @@ export default function SignUp() {
   return (
     <div
       className={clsx(
-        "absolute right-[125px] top-1/2 h-[680px] w-[560px] -translate-y-1/2 rounded-3xl px-16 pt-[78px]",
+        "absolute right-[125px] top-1/2 w-[560px] -translate-y-1/2 rounded-3xl px-16 pb-16 pt-[78px]",
         { "bg-white": !darkMode, "bg-lafDark-100": darkMode },
       )}
     >
-      <div className="mb-9 flex items-center space-x-4">
-        <Logo size="43px" outerColor="#33BABB" innerColor="white" />
-        <LogoText size="51px" color={darkMode ? "#33BABB" : "#363C42"} />
-      </div>
+      {sessionStorage.getItem("githubToken") && sessionStorage.getItem("githubToken") !== "null" ? (
+        <div className="mb-10 text-2xl font-semibold text-grayModern-700">
+          {t("AuthPanel.BindGitHub")}
+        </div>
+      ) : (
+        <div className="mb-9 flex items-center space-x-4">
+          <Logo size="43px" outerColor="#33BABB" innerColor="white" />
+          <LogoText size="51px" color={darkMode ? "#33BABB" : "#363C42"} />
+        </div>
+      )}
       <div>
         <FormControl isInvalid={!!errors.account} className="mb-6 flex items-center">
           <FormLabel className={darkMode ? "w-20" : "w-20 text-grayModern-700"} htmlFor="account">

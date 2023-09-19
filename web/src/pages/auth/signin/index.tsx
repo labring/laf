@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { AiFillGithub } from "react-icons/ai";
 import { Button, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
+import { GithubIcon } from "@/components/CommonIcon";
 import { Logo, LogoText } from "@/components/LogoIcon";
 import { COLOR_MODE } from "@/constants";
 
@@ -22,7 +22,6 @@ export default function SignIn() {
   const [phoneProvider, setPhoneProvider] = useState<any>(null);
   const [passwordProvider, setPasswordProvider] = useState<any>(null);
   const [githubProvider, setGithubProvider] = useState<any>(null);
-  const [wechatProvider, setWechatProvider] = useState<any>(null);
   const [currentProvider, setCurrentProvider] = useState<providersTypes>();
 
   useGetProvidersQuery((data: any) => {
@@ -38,29 +37,35 @@ export default function SignIn() {
       setPhoneProvider(phoneProvider);
       setPasswordProvider(passwordProvider);
       setGithubProvider(githubProvider);
-      setWechatProvider(wechatProvider);
       providers.forEach((provider: any) => {
         if (provider.default) {
           setCurrentProvider(provider.name);
         }
       });
     }
-  }, [providers, wechatProvider]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [providers]);
 
   return (
     <div
       className={clsx(
-        "absolute right-[125px] top-1/2 h-[600px] w-[560px] -translate-y-1/2 rounded-3xl px-16 pt-[78px]",
+        "absolute right-[125px] top-1/2 w-[560px] -translate-y-1/2 rounded-3xl px-16 pb-16 pt-[78px]",
         {
           "bg-lafDark-100": darkMode,
           "bg-[#FCFCFD]": !darkMode,
         },
       )}
     >
-      <div className="mb-9 flex items-center space-x-4">
-        <Logo size="43px" outerColor="#33BABB" innerColor="white" />
-        <LogoText size="51px" color={darkMode ? "#33BABB" : "#363C42"} />
-      </div>
+      {sessionStorage.getItem("githubToken") && sessionStorage.getItem("githubToken") !== "null" ? (
+        <div className="mb-10 text-2xl font-semibold text-grayModern-700">
+          {t("AuthPanel.BindGitHub")}
+        </div>
+      ) : (
+        <div className="mb-9 flex items-center space-x-4">
+          <Logo size="43px" outerColor="#33BABB" innerColor="white" />
+          <LogoText size="51px" color={darkMode ? "#33BABB" : "#363C42"} />
+        </div>
+      )}
 
       {currentProvider === "phone" ? (
         <LoginByPhonePanel
@@ -77,17 +82,31 @@ export default function SignIn() {
         />
       ) : null}
 
-      {(githubProvider || wechatProvider) && (
-        <div className="mt-20">
-          <div className="relative mb-5 w-full text-center before:absolute before:top-1/2 before:block before:h-[1px] before:w-full before:bg-slate-300 before:content-['']">
-            <span className="relative z-10 bg-white pl-5 pr-5">or</span>
+      {!sessionStorage.getItem("githubToken") && githubProvider && (
+        <div className="mt-2">
+          <div className="relative mb-5 w-full text-center before:absolute before:top-1/2 before:block before:h-[1px] before:w-full before:bg-[#E9EEF5] before:content-['']">
+            <span
+              className={clsx(
+                "relative z-10 pl-5 pr-5 text-frostyNightfall-600",
+                !darkMode ? "bg-white" : "bg-lafDark-100",
+              )}
+            >
+              or
+            </span>
           </div>
-          {githubProvider && (
-            <Button type="submit" className="w-full pb-5 pt-5" colorScheme="white" variant="plain">
-              <AiFillGithub className="mr-4" />
-              {t("AuthPanel.LoginWithGithub")}
-            </Button>
-          )}
+          <Button
+            type="submit"
+            className={clsx("w-full pb-5 pt-5", !darkMode && "text-[#495867]")}
+            colorScheme="white"
+            variant="outline"
+            border="1.5px solid #DDE4EF"
+            onClick={() => {
+              window.location.href = `${window.location.origin}/v1/auth/github/jump_login?redirectUri=${window.location.origin}/bind/github`;
+            }}
+          >
+            <GithubIcon className="mr-4" fontSize="18" />
+            {t("AuthPanel.LoginWithGithub")}
+          </Button>
         </div>
       )}
     </div>

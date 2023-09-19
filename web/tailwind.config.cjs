@@ -131,6 +131,7 @@ module.exports = {
         frostyNightfall: {
           200: "#EAEBF0",
           300: "#D5D6E1",
+          600: "#9699B4",
           700: "#787A90",
         },
       },

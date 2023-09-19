@@ -16,7 +16,7 @@ import UsernameEditor from "./Mods/UsernameEditor";
 
 import "react-image-crop/dist/ReactCrop.css";
 
-import { useGetProvidersQuery } from "@/pages/auth/service";
+import { useGetProvidersQuery, useGithubAuthControllerUnbindMutation } from "@/pages/auth/service";
 import useAuthStore from "@/pages/auth/store";
 import useGlobalStore from "@/pages/globalStore";
 import useSiteSettingStore from "@/pages/siteSetting";
@@ -24,12 +24,15 @@ import useSiteSettingStore from "@/pages/siteSetting";
 export default function UserInfo() {
   const [showItem, setShowItem] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const { userInfo, avatarUpdatedAt, showError } = useGlobalStore((state) => state);
+  const { userInfo, updateUserInfo, avatarUpdatedAt, showError, showSuccess } = useGlobalStore(
+    (state) => state,
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
   const { siteSettings } = useSiteSettingStore((state) => state);
   const { providers, setProviders } = useAuthStore((state) => state);
+  const githubAuthControllerUnbindMutation = useGithubAuthControllerUnbindMutation();
 
   useGetProvidersQuery((data: any) => {
     setProviders(data?.data || []);
@@ -209,6 +212,52 @@ export default function UserInfo() {
                 </span>
               </span>
             </div> */}
+            {providers.find((provider: any) => provider.name === "github") && (
+              <div className="flex flex-col pb-4">
+                <span
+                  className={clsx(
+                    "flex items-center justify-between pb-3 text-xl",
+                    !darkMode && "text-grayModern-900",
+                  )}
+                >
+                  <span>{t("SettingPanel.Github")}</span>
+                  {userInfo?.github ? (
+                    <div className="flex  items-center">
+                      <span className="mr-4">
+                        <Avatar
+                          src={`https://avatars.githubusercontent.com/u/${userInfo?.github}`}
+                          size="sm"
+                        />
+                      </span>
+                      <span
+                        className={clsx(
+                          "flex cursor-pointer items-center text-base",
+                          !darkMode && "text-grayModern-900",
+                        )}
+                        onClick={async () => {
+                          const res = await githubAuthControllerUnbindMutation.mutateAsync({});
+                          if (!res.error) {
+                            updateUserInfo();
+                            showSuccess(t("UnBindSuccess"));
+                          }
+                        }}
+                      >
+                        {t("UnBind")} <ChevronRightIcon boxSize={5} />
+                      </span>
+                    </div>
+                  ) : (
+                    <span
+                      className="flex cursor-pointer items-center text-base text-[#0884DD]"
+                      onClick={() => {
+                        window.location.href = `${window.location.origin}/v1/auth/github/jump_login?redirectUri=${window.location.origin}/bind/github`;
+                      }}
+                    >
+                      {t("Bind")} <ChevronRightIcon boxSize={5} />
+                    </span>
+                  )}
+                </span>
+              </div>
+            )}
           </Box>
         </>
       )}

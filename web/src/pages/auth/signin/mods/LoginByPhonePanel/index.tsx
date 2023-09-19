@@ -15,7 +15,11 @@ import { Routes } from "@/constants";
 
 import useInviteCode from "@/hooks/useInviteCode";
 import { useGroupMemberAddMutation } from "@/pages/app/collaboration/service";
-import { useSendSmsCodeMutation, useSigninBySmsCodeMutation } from "@/pages/auth/service";
+import {
+  useGithubAuthControllerBindMutation,
+  useSendSmsCodeMutation,
+  useSigninBySmsCodeMutation,
+} from "@/pages/auth/service";
 import useGlobalStore from "@/pages/globalStore";
 
 type FormData = {
@@ -39,6 +43,7 @@ export default function LoginByPhonePanel({
   const [isSendSmsCode, setIsSendSmsCode] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const joinGroupMutation = useGroupMemberAddMutation();
+  const githubAuthControllerBindMutation = useGithubAuthControllerBindMutation();
 
   const {
     register,
@@ -62,6 +67,13 @@ export default function LoginByPhonePanel({
     });
 
     if (res?.data) {
+      const githubToken = sessionStorage.getItem("githubToken");
+      sessionStorage.removeItem("githubToken");
+      if (githubToken && githubToken !== "null") {
+        githubAuthControllerBindMutation.mutateAsync({
+          token: githubToken,
+        });
+      }
       const sessionData = sessionStorage.getItem("collaborationCode");
       const collaborationCode = JSON.parse(sessionData || "{}");
       sessionStorage.removeItem("collaborationCode");

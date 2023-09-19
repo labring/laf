@@ -215,7 +215,8 @@
     "EditorFont": "编辑器字体",
     "FontSize": "字体大小",
     "FuncListDisplay": "函数列表显示",
-    "ListDisplay": "列表显示"
+    "ListDisplay": "列表显示",
+    "Github": "GitHub"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -369,7 +370,10 @@
     "NewPassword": "新密码",
     "SignUpSuccess": "注册成功",
     "EmailTip": "请输入有效的邮箱",
-    "LoginOrRegister": "登录 / 注册"
+    "LoginOrRegister": "登录 / 注册",
+    "BindGitHub": "绑定 GitHub",
+    "BindSuccess": "绑定成功",
+    "GitHubLogin": "GitHub 登录"
   },
   "Time": "时间",
   "CreateTime": "创建时间",
@@ -575,7 +579,9 @@
     "NoAuth": "未实名",
     "WarnTips": "您尚未实名认证",
     "PleaseBindPhone": "请先绑定手机号",
-    "VerifiedIdentity": "已实名"
+    "VerifiedIdentity": "已实名",
+    "Bind": "绑定",
+    "VerifiedGithub": "已认证"
   },
   "Reset": "重置",
   "SettingModal": {
@@ -647,5 +653,8 @@
   "NextPage": "下一页",
   "LastPage": "最后一页",
   "FirstPage": "第一页",
-  "SavedSuccessfully": "保存成功"
+  "SavedSuccessfully": "保存成功",
+  "Bind": "绑定",
+  "UnBind": "解绑",
+  "UnBindSuccess": "解绑成功"
 }
