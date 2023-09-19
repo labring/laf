@@ -28,13 +28,13 @@ export async function handleInvokeFunction(req: IRequest, res: Response) {
 
   // intercept the request, skip websocket request
   if (false === req.method.startsWith('WebSocket:')) {
-    const passed = await invokeInterceptor(ctx, res)
+    const passed = await invokeInterceptor(ctx)
     if (passed === false) return
   }
 
   // debug mode
   if (req.get('x-laf-develop-token')) {
-    return await handleDebugFunction(ctx, req, res)
+    return await handleDebugFunction(ctx)
   }
 
   // trigger mode
@@ -101,7 +101,7 @@ export async function handleInvokeFunction(req: IRequest, res: Response) {
   }
 }
 
-async function invokeInterceptor(ctx: FunctionContext, res: Response) {
+async function invokeInterceptor(ctx: FunctionContext) {
 
   const func_name = INTERCEPTOR_FUNCTION_NAME
   const requestId = ctx.requestId
@@ -128,7 +128,7 @@ async function invokeInterceptor(ctx: FunctionContext, res: Response) {
         result,
       )
 
-      res.status(400).send({
+      ctx.response.status(400).send({
         error: `invoke ${func_name} function got error, please check the function logs`,
         requestId,
       })
@@ -137,13 +137,13 @@ async function invokeInterceptor(ctx: FunctionContext, res: Response) {
     }
 
     // if response has been ended, return false to stop the request
-    if (res.writableEnded) {
+    if (ctx.response.writableEnded) {
       return false
     }
 
     // reject request if interceptor return false
     if (false === result.data) {
-      res.status(403).send({ error: 'Forbidden', requestId })
+      ctx.response.status(403).send({ error: 'Forbidden', requestId })
       return false
     }
 
@@ -151,7 +151,7 @@ async function invokeInterceptor(ctx: FunctionContext, res: Response) {
     return result.data
   } catch (error) {
     logger.error(requestId, `failed to invoke ${func_name}`, error)
-    return res
+    return ctx.response
       .status(500)
       .send(`Internal Server Error - got error in ${func_name}`)
   }

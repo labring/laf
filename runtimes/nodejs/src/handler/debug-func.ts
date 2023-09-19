@@ -1,29 +1,27 @@
-import { Response } from 'express'
 import { FunctionContext } from '../support/function-engine'
 import { logger } from '../support/logger'
 import { CloudFunction } from '../support/function-engine'
-import { IRequest } from '../support/types'
 import { parseToken } from '../support/token'
 import { ICloudFunctionData } from '@lafjs/cloud'
 
 /**
  * Handler of debugging cloud function
  */
-export async function handleDebugFunction(ctx: FunctionContext, req: IRequest, res: Response) {
+export async function handleDebugFunction(ctx: FunctionContext) {
   // verify the debug token
-  const token = req.get('x-laf-develop-token')
+  const token = ctx.request.get('x-laf-develop-token')
   if (!token) {
-    return res.status(400).send('x-laf-develop-token is required')
+    return ctx.response.status(400).send('x-laf-develop-token is required')
   }
   const auth = parseToken(token) || null
   if (auth?.type !== 'develop') {
-    return res.status(403).send('permission denied: invalid develop token')
+    return ctx.response.status(403).send('permission denied: invalid develop token')
   }
 
   // get func_data from header
-  const func_str = req.get('x-laf-func-data')
+  const func_str = ctx.request.get('x-laf-func-data')
   if (!func_str) {
-    return res.status(400).send('x-laf-func-data is required')
+    return ctx.response.status(400).send('x-laf-func-data is required')
   }
 
   // parse func_data
@@ -32,14 +30,14 @@ export async function handleDebugFunction(ctx: FunctionContext, req: IRequest, r
     const decoded = decodeURIComponent(func_str)
     func_data = JSON.parse(decoded)
   } catch (error) {
-    return res.status(400).send('x-laf-func-data is invalid')
+    return ctx.response.status(400).send('x-laf-func-data is invalid')
   }
 
   const requestId = ctx.requestId
-  const func_name = req.params?.name
+  const func_name = ctx.request.params?.name
 
   if (!func_data) {
-    return res.send({ code: 1, error: 'function data not found', requestId })
+    return ctx.response.send({ code: 1, error: 'function data not found', requestId })
   }
 
   const func = new CloudFunction(func_data)
@@ -51,7 +49,7 @@ export async function handleDebugFunction(ctx: FunctionContext, req: IRequest, r
 
     if (result.error) {
       logger.error(requestId, `debug function ${func_name} error: `, result)
-      return res.send({
+      return ctx.response.send({
         error: 'invoke function got error: ' + result.error.toString(),
         time_usage: result.time_usage,
         requestId,
@@ -60,15 +58,15 @@ export async function handleDebugFunction(ctx: FunctionContext, req: IRequest, r
 
     logger.trace(requestId, `invoke ${func_name} invoke success: `, result)
 
-    if (res.writableEnded === false) {
+    if (ctx.response.writableEnded === false) {
       let data = result.data
       if (typeof result.data === 'number') {
         data = Number(result.data).toString()
       }
-      return res.send(data)
+      return ctx.response.send(data)
     }
   } catch (error) {
     logger.error(requestId, 'failed to invoke error', error)
-    return res.status(500).send('Internal Server Error')
+    return ctx.response.status(500).send('Internal Server Error')
   }
 }

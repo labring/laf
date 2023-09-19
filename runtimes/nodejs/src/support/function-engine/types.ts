@@ -48,9 +48,9 @@ export interface FunctionContext {
   method?: string
   socket?: WebSocket
   request?: Request
-  response?: Response
-  varMap?: Map<string, any>,
+  response?: Response  
   __function_name?: string
+  [key: string]: any
 }
 
 /**
