@@ -581,7 +581,9 @@
   "SettingModal": {
     "Exchange": "兑换",
     "FunctionName": "函数名",
-    "FunctionDesc": "函数描述"
+    "FunctionDesc": "函数描述",
+    "FunctionDesc_Name": "函数描述 - 函数名",
+    "FunctionName_Desc": "函数名 - 函数描述"
   },
   "Expenses": "支出",
   "OrderNumber": "订单号",

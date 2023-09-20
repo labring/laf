@@ -581,7 +581,9 @@
   "SettingModal": {
     "Exchange": "Exchange",
     "FunctionName": "Funciton Name",
-    "FunctionDesc": "Function Description"
+    "FunctionDesc": "Function Description",
+    "FunctionDesc_Name": "Function Description - Name",
+    "FunctionName_Desc": "Function Name - Description"
   },
   "Expenses": "Expenses",
   "OrderNumber": "Order Number",

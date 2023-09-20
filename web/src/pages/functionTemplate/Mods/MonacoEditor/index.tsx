@@ -199,7 +199,7 @@ const MonacoEditor = (props: {
           )}
         </span>
       </div>
-      <div ref={monacoEl} className="mb-2 mt-1 h-[90%]" />
+      <div ref={monacoEl} className="mb-2 mt-1 h-[90%] min-h-[300px]" />
     </div>
   );
 };
