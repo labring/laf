@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "@chakra-ui/react";
 import { t } from "i18next";
 
@@ -13,6 +13,7 @@ import useGlobalStore from "@/pages/globalStore";
 
 export default function BindGitHub() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const githubAuthControllerSigninMutation = useGithubAuthControllerSigninMutation();
   const githubAuthControllerBindMutation = useGithubAuthControllerBindMutation();
@@ -21,8 +22,8 @@ export default function BindGitHub() {
 
   useEffect(() => {
     async function getGithubToken() {
-      const url = new URL(window.location.href);
-      const code = url.searchParams.get("code");
+      const searchParams = new URLSearchParams(location.search);
+      const code = searchParams.get("code");
       if (code) {
         const res = await githubAuthControllerSigninMutation.mutateAsync({
           code,
@@ -41,7 +42,7 @@ export default function BindGitHub() {
           navigate(Routes.dashboard, { replace: true });
         } else if (!localStorage.getItem("token")) {
           navigate(Routes.login, { replace: true });
-          sessionStorage.setItem("githubToken", res.data);
+          res.data && sessionStorage.setItem("githubToken", res.data);
         } else {
           navigate(Routes.dashboard, { replace: true });
         }

@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
-  AuthenticationControllerGetProviders,
   EmailControllerSendCode,
   GithubAuthControllerBind,
   GithubAuthControllerJumpLogin,
@@ -93,18 +92,6 @@ export const useResetPasswordMutation = (config?: { onSuccess: (result: any) => 
       onSuccess: async (result) => {
         config?.onSuccess(result);
       },
-    },
-  );
-};
-
-export const useGetProvidersQuery = (onSuccess: (result: any) => void) => {
-  return useQuery(
-    queryKeys.useGetProvidersQuery,
-    () => {
-      return AuthenticationControllerGetProviders({});
-    },
-    {
-      onSuccess,
     },
   );
 };

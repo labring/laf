@@ -23,7 +23,6 @@ import { COLOR_MODE } from "@/constants";
 import useInviteCode from "@/hooks/useInviteCode";
 import { useGroupMemberAddMutation } from "@/pages/app/collaboration/service";
 import {
-  useGetProvidersQuery,
   useGithubAuthControllerBindMutation,
   useSendSmsCodeMutation,
   useSignupMutation,
@@ -43,23 +42,19 @@ export default function SignUp() {
   const signupMutation = useSignupMutation();
   const sendSmsCodeMutation = useSendSmsCodeMutation();
   const [isNeedPhone, setIsNeedPhone] = useState(false);
-  const { providers, setProviders } = useAuthStore();
+  const { passwordProvider } = useAuthStore();
 
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
 
-  useGetProvidersQuery((data: any) => {
-    setProviders(data?.data || []);
-  });
+  const githubToken = sessionStorage.getItem("githubToken");
+  const sessionData = sessionStorage.getItem("collaborationCode");
 
   useEffect(() => {
-    if (providers.length) {
-      const passwordProvider = providers.find((provider) => provider.name === "user-password");
-      if (passwordProvider) {
-        setIsNeedPhone(passwordProvider.bind?.phone === "required");
-      }
+    if (passwordProvider) {
+      setIsNeedPhone(passwordProvider.bind?.phone === "required");
     }
-  }, [providers]);
+  }, [passwordProvider]);
 
   const { showSuccess, showError } = useGlobalStore();
   const navigate = useNavigate();
@@ -112,7 +107,6 @@ export default function SignUp() {
     const res = await signupMutation.mutateAsync(params);
 
     if (!res?.data) {
-      const githubToken = sessionStorage.getItem("githubToken");
       sessionStorage.removeItem("githubToken");
       if (githubToken && githubToken !== "null") {
         githubAuthControllerBindMutation.mutateAsync({
@@ -120,7 +114,6 @@ export default function SignUp() {
           isRegister: true,
         });
       }
-      const sessionData = sessionStorage.getItem("collaborationCode");
       const collaborationCode = JSON.parse(sessionData || "{}");
       sessionStorage.removeItem("collaborationCode");
       if (sessionData) {
@@ -183,7 +176,7 @@ export default function SignUp() {
         { "bg-white": !darkMode, "bg-lafDark-100": darkMode },
       )}
     >
-      {sessionStorage.getItem("githubToken") && sessionStorage.getItem("githubToken") !== "null" ? (
+      {!!githubToken ? (
         <div className="mb-10 text-2xl font-semibold text-grayModern-700">
           {t("AuthPanel.BindGitHub")}
         </div>
