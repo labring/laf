@@ -8,6 +8,7 @@ import { BucketDomainTaskService } from './bucket-domain-task.service'
 import { RuntimeDomainTaskService } from './runtime-domain-task.service'
 import { CertificateService } from './certificate.service'
 import { RuntimeGatewayService } from './ingress/runtime-ingress.service'
+import { BucketGatewayService } from './ingress/bucket-ingress.service'
 
 @Module({
   imports: [HttpModule],
@@ -20,6 +21,7 @@ import { RuntimeGatewayService } from './ingress/runtime-ingress.service'
     RuntimeDomainTaskService,
     CertificateService,
     RuntimeGatewayService,
+    BucketGatewayService,
   ],
   exports: [RuntimeDomainService, BucketDomainService],
 })

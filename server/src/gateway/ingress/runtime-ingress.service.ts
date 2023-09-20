@@ -11,12 +11,15 @@ export class RuntimeGatewayService {
   private readonly logger = new Logger(RuntimeGatewayService.name)
   constructor(private readonly clusterService: ClusterService) {}
 
-  async getIngress(region: Region, appid: string) {
-    // get ingress
-    const namespace = GetApplicationNamespace(region, appid)
+  getIngressName(domain: RuntimeDomain) {
+    return domain.appid
+  }
 
+  async getIngress(region: Region, domain: RuntimeDomain) {
     // use appid as ingress name of runtime directly
-    const name = `${appid}`
+    const appid = domain.appid
+    const name = this.getIngressName(domain)
+    const namespace = GetApplicationNamespace(region, appid)
 
     const ingress = await this.clusterService.getIngress(
       region,
@@ -89,12 +92,10 @@ export class RuntimeGatewayService {
     return res
   }
 
-  async deleteIngress(region: Region, appid: string) {
-    const ingress = await this.getIngress(region, appid)
-    if (!ingress) return
-
-    const name = ingress.metadata.name
-    const namespace = ingress.metadata.namespace
+  async deleteIngress(region: Region, domain: RuntimeDomain) {
+    const appid = domain.appid
+    const name = this.getIngressName(domain)
+    const namespace = GetApplicationNamespace(region, appid)
 
     // delete ingress
     const res = await this.clusterService.deleteIngress(region, name, namespace)

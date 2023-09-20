@@ -90,7 +90,7 @@ export class RuntimeDomainTaskService {
     assert(region, 'region not found')
 
     // create ingress if not exists
-    const ingress = await this.runtimeGateway.getIngress(region, doc.appid)
+    const ingress = await this.runtimeGateway.getIngress(region, doc)
     if (!ingress) {
       const res = await this.runtimeGateway.createIngress(region, doc)
       this.logger.log('runtime default ingress created: ' + doc.appid)
@@ -162,9 +162,9 @@ export class RuntimeDomainTaskService {
 
     // delete ingress if exists
 
-    const ingress = await this.runtimeGateway.getIngress(region, doc.appid)
+    const ingress = await this.runtimeGateway.getIngress(region, doc)
     if (ingress) {
-      const res = await this.runtimeGateway.deleteIngress(region, doc.appid)
+      const res = await this.runtimeGateway.deleteIngress(region, doc)
       this.logger.log('runtime ingress deleted: ' + doc.appid)
       this.logger.debug(JSON.stringify(res))
     }
