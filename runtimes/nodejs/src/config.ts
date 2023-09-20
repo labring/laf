@@ -93,7 +93,11 @@ export default class Config {
     return (process.env.CHANGE_STREAM_RECONNECT_INTERVAL || 3000) as number
   }
 
-  static get MINIO_INTERNAL_ENDPOINT(): string {
-    return process.env.MINIO_INTERNAL_ENDPOINT || ''
+  static get OSS_INTERNAL_ENDPOINT(): string {
+    return process.env.OSS_INTERNAL_ENDPOINT || ''
+  }
+
+  static get OSS_EXTERNAL_ENDPOINT(): string {
+    return process.env.OSS_EXTERNAL_ENDPOINT
   }
 }

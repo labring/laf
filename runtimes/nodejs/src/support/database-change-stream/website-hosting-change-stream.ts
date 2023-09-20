@@ -8,7 +8,7 @@ export class WebsiteHostingChangeStream {
   static initialize() {
     DatabaseChangeStream.onStreamChange(
       WEBSITE_HOSTING_COLLECTION,
-      this.onStreamChange,
+      this.onStreamChange.bind(this),
     )
   }
 
