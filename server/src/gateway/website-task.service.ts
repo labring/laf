@@ -4,31 +4,28 @@ import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
 import { RegionService } from 'src/region/region.service'
 import * as assert from 'node:assert'
-import { ApisixService } from './apisix.service'
 import { CertificateService } from './certificate.service'
 import { ObjectId } from 'mongodb'
 import { isConditionTrue } from 'src/utils/getter'
 import { WebsiteHosting } from 'src/website/entities/website'
 import { DomainPhase, DomainState } from './entities/runtime-domain'
 import { BucketDomain } from './entities/bucket-domain'
+import { WebsiteHostingGatewayService } from './ingress/website-ingress.service'
 
 @Injectable()
 export class WebsiteTaskService {
   readonly lockTimeout = 30 // in second
-  readonly concurrency = 1 // concurrency count
   private readonly logger = new Logger(WebsiteTaskService.name)
 
   constructor(
     private readonly regionService: RegionService,
-    private readonly apisixService: ApisixService,
+    private readonly websiteGateway: WebsiteHostingGatewayService,
     private readonly certService: CertificateService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
-    if (ServerConfig.DISABLED_GATEWAY_TASK) {
-      return
-    }
+    if (ServerConfig.DISABLED_GATEWAY_TASK) return
 
     // Phase `Creating` -> `Created`
     this.handleCreatingPhase().catch((err) => {
@@ -77,7 +74,6 @@ export class WebsiteTaskService {
 
     if (!res.value) return
 
-    this.logger.debug(res.value)
     // get region by appid
     const site = {
       ...res.value,
@@ -97,15 +93,10 @@ export class WebsiteTaskService {
     assert(bucketDomain, 'bucket domain not found')
 
     // create website route if not exists
-    const route = await this.apisixService.getRoute(region, site._id.toString())
-    if (!route) {
-      const res = await this.apisixService.createWebsiteRoute(
-        region,
-        site,
-        bucketDomain.domain,
-      )
-      this.logger.log(`create website route: ${site._id}`)
-      this.logger.debug(res)
+    const ingress = await this.websiteGateway.getIngress(region, site)
+    if (!ingress) {
+      await this.websiteGateway.createIngress(region, site)
+      this.logger.log(`create website ingress: ${site.domain}`)
     }
 
     // create website custom certificate if custom domain is set
@@ -116,7 +107,7 @@ export class WebsiteTaskService {
       let cert = await this.certService.getWebsiteCertificate(region, site)
       if (!cert) {
         cert = await this.certService.createWebsiteCertificate(region, site)
-        this.logger.log(`create website cert: ${site._id}`)
+        this.logger.log(`create website domain certificate: ${site.domain}`)
         // return to wait for cert to be ready
         return await this.relock(site._id, waitingTime)
       }
@@ -124,7 +115,7 @@ export class WebsiteTaskService {
       // check if cert status is Ready
       const conditions = (cert as any).status?.conditions || []
       if (!isConditionTrue('Ready', conditions)) {
-        this.logger.log(`website cert is not ready: ${site._id}`)
+        this.logger.log(`website certificate is not ready: ${site.domain}`)
         // return to wait for cert to be ready
         return await this.relock(site._id, waitingTime)
       }
@@ -167,20 +158,17 @@ export class WebsiteTaskService {
     if (!res.value) return
 
     // get region by appid
-    const site = {
-      ...res.value,
-      id: res.value._id.toString(),
-    }
+    const site = res.value
     const region = await this.regionService.findByAppId(site.appid)
     assert(region, 'region not found')
 
-    // delete website route if exists
-    const route = await this.apisixService.getRoute(region, site._id.toString())
-    if (route) {
-      const res = await this.apisixService.deleteWebsiteRoute(region, site)
-      this.logger.log(`delete website route: ${res?.key}`)
-      this.logger.debug('delete website route', res)
+    // delete website ingress if exists
+    const ingress = await this.websiteGateway.getIngress(region, site)
+    if (ingress) {
+      await this.websiteGateway.deleteIngress(region, site)
+      this.logger.log(`delete website ingress: ${site.domain}`)
     }
+
     // delete website custom certificate if custom domain is set
     if (site.isCustom) {
       const waitingTime = Date.now() - site.updatedAt.getTime()
@@ -189,7 +177,7 @@ export class WebsiteTaskService {
       const cert = await this.certService.getWebsiteCertificate(region, site)
       if (cert) {
         await this.certService.deleteWebsiteCertificate(region, site)
-        this.logger.log(`delete website cert: ${site._id}`)
+        this.logger.log(`delete website domain certificate: ${site.domain}`)
         // return to wait for cert to be deleted
         return await this.relock(site._id, waitingTime)
       }
