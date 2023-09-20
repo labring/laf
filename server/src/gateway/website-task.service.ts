@@ -5,7 +5,7 @@ import { SystemDatabase } from 'src/system-database'
 import { RegionService } from 'src/region/region.service'
 import * as assert from 'node:assert'
 import { ApisixService } from './apisix.service'
-import { ApisixCustomCertService } from './apisix-custom-cert.service'
+import { CertificateService } from './certificate.service'
 import { ObjectId } from 'mongodb'
 import { isConditionTrue } from 'src/utils/getter'
 import { WebsiteHosting } from 'src/website/entities/website'
@@ -21,7 +21,7 @@ export class WebsiteTaskService {
   constructor(
     private readonly regionService: RegionService,
     private readonly apisixService: ApisixService,
-    private readonly certService: ApisixCustomCertService,
+    private readonly certService: CertificateService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
@@ -113,9 +113,9 @@ export class WebsiteTaskService {
       const waitingTime = Date.now() - site.updatedAt.getTime()
 
       // create custom domain  certificate
-      let cert = await this.certService.readWebsiteDomainCert(region, site)
+      let cert = await this.certService.getWebsiteCertificate(region, site)
       if (!cert) {
-        cert = await this.certService.createWebsiteDomainCert(region, site)
+        cert = await this.certService.createWebsiteCertificate(region, site)
         this.logger.log(`create website cert: ${site._id}`)
         // return to wait for cert to be ready
         return await this.relock(site._id, waitingTime)
@@ -126,23 +126,6 @@ export class WebsiteTaskService {
       if (!isConditionTrue('Ready', conditions)) {
         this.logger.log(`website cert is not ready: ${site._id}`)
         // return to wait for cert to be ready
-        return await this.relock(site._id, waitingTime)
-      }
-
-      // config custom domain certificate to apisix
-      let apisixTls = await this.certService.readWebsiteApisixTls(region, site)
-      if (!apisixTls) {
-        apisixTls = await this.certService.createWebsiteApisixTls(region, site)
-        this.logger.log(`create website apisix tls: ${site._id}`)
-        // return to wait for tls config to be ready
-        return await this.relock(site._id, waitingTime)
-      }
-
-      // check if apisix tls status is Ready
-      const apisixTlsConditions = (apisixTls as any).status?.conditions || []
-      if (!isConditionTrue('ResourcesAvailable', apisixTlsConditions)) {
-        this.logger.log(`website apisix tls is not ready: ${site._id}`)
-        // return to wait for tls config to be ready
         return await this.relock(site._id, waitingTime)
       }
     }
@@ -203,21 +186,12 @@ export class WebsiteTaskService {
       const waitingTime = Date.now() - site.updatedAt.getTime()
 
       // delete custom domain certificate
-      const cert = await this.certService.readWebsiteDomainCert(region, site)
+      const cert = await this.certService.getWebsiteCertificate(region, site)
       if (cert) {
-        await this.certService.deleteWebsiteDomainCert(region, site)
+        await this.certService.deleteWebsiteCertificate(region, site)
         this.logger.log(`delete website cert: ${site._id}`)
         // return to wait for cert to be deleted
         return await this.relock(site._id, waitingTime)
-      }
-
-      // delete custom domain tls config from apisix
-      const tls = await this.certService.readWebsiteApisixTls(region, site)
-      if (tls) {
-        await this.certService.deleteWebsiteApisixTls(region, site)
-        this.logger.log(`delete website apisix tls: ${site._id}`)
-        // return to wait for tls config to be deleted
-        return this.relock(site._id, waitingTime)
       }
     }
 

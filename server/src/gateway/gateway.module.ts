@@ -6,7 +6,8 @@ import { BucketDomainService } from './bucket-domain.service'
 import { WebsiteTaskService } from './website-task.service'
 import { BucketDomainTaskService } from './bucket-domain-task.service'
 import { RuntimeDomainTaskService } from './runtime-domain-task.service'
-import { ApisixCustomCertService } from './apisix-custom-cert.service'
+import { CertificateService } from './certificate.service'
+import { RuntimeGatewayService } from './ingress/runtime-ingress.service'
 
 @Module({
   imports: [HttpModule],
@@ -17,7 +18,8 @@ import { ApisixCustomCertService } from './apisix-custom-cert.service'
     WebsiteTaskService,
     BucketDomainTaskService,
     RuntimeDomainTaskService,
-    ApisixCustomCertService,
+    CertificateService,
+    RuntimeGatewayService,
   ],
   exports: [RuntimeDomainService, BucketDomainService],
 })

@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { RegionService } from '../region/region.service'
-import { ApisixService } from './apisix.service'
 import * as assert from 'node:assert'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from '../constants'
@@ -10,58 +9,64 @@ import {
   DomainState,
   RuntimeDomain,
 } from './entities/runtime-domain'
-import { ApisixCustomCertService } from './apisix-custom-cert.service'
+import { CertificateService } from './certificate.service'
 import { isConditionTrue } from 'src/utils/getter'
+import { RuntimeGatewayService } from './ingress/runtime-ingress.service'
 
 @Injectable()
 export class RuntimeDomainTaskService {
-  readonly lockTimeout = 30 // in second
+  readonly lockTimeout = 10 // in second
   private readonly logger = new Logger(RuntimeDomainTaskService.name)
 
   constructor(
-    private readonly apisixService: ApisixService,
+    private readonly runtimeGateway: RuntimeGatewayService,
     private readonly regionService: RegionService,
-    private readonly certService: ApisixCustomCertService,
+    private readonly certService: CertificateService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
-    if (ServerConfig.DISABLED_GATEWAY_TASK) {
-      return
-    }
+    if (ServerConfig.DISABLED_GATEWAY_TASK) return
 
     // Phase `Creating` -> `Created`
     this.handleCreatingPhase().catch((err) => {
       this.logger.error(err)
+      err.response && this.logger.error(JSON.stringify(err.response))
     })
 
     // Phase `Deleting` -> `Deleted`
     this.handleDeletingPhase().catch((err) => {
       this.logger.error(err)
+      err.response && this.logger.error(JSON.stringify(err.response))
     })
 
     // Phase `Created` -> `Deleting`
     this.handleInactiveState().catch((err) => {
       this.logger.error(err)
+      err.response && this.logger.error(JSON.stringify(err.response))
     })
 
     // Phase `Deleted` -> `Creating`
     this.handleActiveState().catch((err) => {
       this.logger.error(err)
+      err.response && this.logger.error(JSON.stringify(err.response))
     })
 
     // Phase `Deleting` -> `Deleted`
     this.handleDeletedState().catch((err) => {
       this.logger.error(err)
+      err.response && this.logger.error(JSON.stringify(err.response))
     })
   }
 
   /**
-   * Phase `Creating`:
+   * Phase `Creating` -> `Created`:
    * - create route
    * - move phase `Creating` to `Created`
    */
   async handleCreatingPhase() {
+    if (ServerConfig.DISABLED_GATEWAY_TASK) return
+
     const db = SystemDatabase.db
 
     const res = await db
@@ -84,68 +89,34 @@ export class RuntimeDomainTaskService {
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
 
-    // create route if not exists
-    const id = `app-${doc.appid}`
-    const route = await this.apisixService.getRoute(region, id)
-    if (!route) {
-      await this.apisixService.createAppRoute(region, doc.appid, doc.domain)
-      this.logger.log('app route created: ' + doc.appid)
-      this.logger.debug(route)
+    // create ingress if not exists
+    const ingress = await this.runtimeGateway.getIngress(region, doc.appid)
+    if (!ingress) {
+      const res = await this.runtimeGateway.createIngress(region, doc)
+      this.logger.log('runtime default ingress created: ' + doc.appid)
+      this.logger.debug(JSON.stringify(res))
     }
 
-    // custom domain
-    if (doc.customDomain) {
-      const id = `app-custom-${doc.appid}`
-      const route = await this.apisixService.getRoute(region, id)
-      if (!route) {
-        await this.apisixService.createAppCustomRoute(region, doc)
-        this.logger.log('app custom route created: ' + doc.appid)
-        this.logger.debug(route)
+    // issue ssl certificate for custom domain
+    if (region.tls && doc.customDomain) {
+      // create custom certificate if custom domain is set
+      const waitingTime = Date.now() - doc.updatedAt.getTime()
+
+      // create custom domain certificate
+      let cert = await this.certService.getRuntimeCertificate(region, doc)
+      if (!cert) {
+        cert = await this.certService.createRuntimeCertificate(region, doc)
+        this.logger.log(`create runtime domain certificate: ${doc.appid}`)
+        // return to wait for cert to be ready
+        return await this.relock(doc.appid, waitingTime)
       }
 
-      {
-        // create custom certificate if custom domain is set
-        const waitingTime = Date.now() - doc.updatedAt.getTime()
-
-        // create custom domain certificate
-        let cert = await this.certService.readAppCustomDomainCert(region, doc)
-        if (!cert) {
-          cert = await this.certService.createAppCustomDomainCert(region, doc)
-          this.logger.log(`create app custom domain cert: ${doc.appid}`)
-          // return to wait for cert to be ready
-          return await this.relock(doc.appid, waitingTime)
-        }
-
-        // check if cert status is Ready
-        const conditions = (cert as any).status?.conditions || []
-        if (!isConditionTrue('Ready', conditions)) {
-          this.logger.log(`app custom domain cert is not ready: ${doc.appid}`)
-          // return to wait for cert to be ready
-          return await this.relock(doc.appid, waitingTime)
-        }
-
-        // config custom domain certificate to apisix
-        let apisixTls = await this.certService.readAppCustomDomainApisixTls(
-          region,
-          doc,
-        )
-        if (!apisixTls) {
-          apisixTls = await this.certService.createAppCustomDomainApisixTls(
-            region,
-            doc,
-          )
-          this.logger.log(`create app custom domain apisix tls: ${doc.appid}`)
-          // return to wait for tls config to be ready
-          return await this.relock(doc.appid, waitingTime)
-        }
-
-        // check if apisix tls status is Ready
-        const apisixTlsConditions = (apisixTls as any).status?.conditions || []
-        if (!isConditionTrue('ResourcesAvailable', apisixTlsConditions)) {
-          this.logger.log(`website apisix tls is not ready: ${doc.appid}`)
-          // return to wait for tls config to be ready
-          return await this.relock(doc.appid, waitingTime)
-        }
+      // check if cert status is Ready
+      const conditions = (cert as any).status?.conditions || []
+      if (!isConditionTrue('Ready', conditions)) {
+        this.logger.log(`runtime domain certificate is not ready: ${doc.appid}`)
+        // return to wait for cert to be ready
+        return await this.relock(doc.appid, waitingTime)
       }
     }
 
@@ -165,7 +136,7 @@ export class RuntimeDomainTaskService {
   }
 
   /**
-   * Phase `Deleting`:
+   * Phase `Deleting` -> `Deleted`:
    * - delete route
    * - move phase `Deleting` to `Deleted`
    */
@@ -189,48 +160,25 @@ export class RuntimeDomainTaskService {
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
 
-    // delete route first if exists
-    {
-      const id = `app-${doc.appid}`
-      const route = await this.apisixService.getRoute(region, id)
-      if (route) {
-        await this.apisixService.deleteAppRoute(region, doc.appid)
-        this.logger.log('app route deleted: ' + doc.appid)
-        this.logger.debug(route)
-      }
+    // delete ingress if exists
+
+    const ingress = await this.runtimeGateway.getIngress(region, doc.appid)
+    if (ingress) {
+      const res = await this.runtimeGateway.deleteIngress(region, doc.appid)
+      this.logger.log('runtime ingress deleted: ' + doc.appid)
+      this.logger.debug(JSON.stringify(res))
     }
 
     {
-      const id = `app-custom-${doc.appid}`
-      const route = await this.apisixService.getRoute(region, id)
-      if (route) {
-        await this.apisixService.deleteAppCustomRoute(region, doc.appid)
-        this.logger.log('app custom route deleted: ' + doc.appid)
-        this.logger.debug(route)
-      }
-
       // delete app custom certificate if custom domain is set
       const waitingTime = Date.now() - doc.updatedAt.getTime()
 
-      // delete custom domain certificate
-      const cert = await this.certService.readAppCustomDomainCert(region, doc)
+      const cert = await this.certService.getRuntimeCertificate(region, doc)
       if (cert) {
-        await this.certService.deleteAppCustomDomainCert(region, doc)
-        this.logger.log(`delete app custom domain cert: ${doc.appid}`)
+        await this.certService.deleteRuntimeCertificate(region, doc)
+        this.logger.log(`delete runtime custom domain cert: ${doc.appid}`)
         // return to wait for cert to be deleted
         return await this.relock(doc.appid, waitingTime)
-      }
-
-      // delete custom domain tls config from apisix
-      const tls = await this.certService.readAppCustomDomainApisixTls(
-        region,
-        doc,
-      )
-      if (tls) {
-        await this.certService.deleteAppCustomDomainApisixTls(region, doc)
-        this.logger.log(`delete app custom domain tls: ${doc.appid}`)
-        // return to wait for tls config to be deleted
-        return this.relock(doc.appid, waitingTime)
       }
     }
 
@@ -251,7 +199,7 @@ export class RuntimeDomainTaskService {
 
   /**
    * State `Active`:
-   * - move phase `Deleted` to `Creating`
+   * - move phase `Deleted` ->  `Creating`
    */
   async handleActiveState() {
     const db = SystemDatabase.db
@@ -274,7 +222,7 @@ export class RuntimeDomainTaskService {
 
   /**
    * State `Inactive`:
-   * - move `Created` to `Deleting`
+   * - move `Created` ->  `Deleting`
    */
   async handleInactiveState() {
     const db = SystemDatabase.db
