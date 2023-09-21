@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ServerConfig } from '../constants'
+import { LABEL_KEY_NODE_TYPE, NodeType, ServerConfig } from '../constants'
 import { SystemDatabase } from 'src/system-database'
 import { ApplicationNamespaceMode, Region } from 'src/region/entities/region'
 import { Runtime } from 'src/application/entities/runtime'
@@ -55,6 +55,23 @@ export class InitializerService {
         driver: 'kubernetes',
         kubeconfig: null,
         npmInstallFlags: '',
+        runtimeAffinity: {
+          nodeAffinity: {
+            requiredDuringSchedulingIgnoredDuringExecution: {
+              nodeSelectorTerms: [
+                {
+                  matchExpressions: [
+                    {
+                      key: LABEL_KEY_NODE_TYPE,
+                      operator: 'In',
+                      values: [NodeType.Runtime],
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        },
       },
       databaseConf: {
         driver: 'mongodb',

@@ -398,27 +398,14 @@ export class InstanceService {
               },
             },
           ],
-          affinity: {
-            nodeAffinity: {
-              // required to schedule on runtime node
-              requiredDuringSchedulingIgnoredDuringExecution: {
-                nodeSelectorTerms: [
-                  {
-                    matchExpressions: [
-                      {
-                        key: LABEL_KEY_NODE_TYPE,
-                        operator: 'In',
-                        values: [NodeType.Runtime],
-                      },
-                    ],
-                  },
-                ],
-              },
-            }, // end of nodeAffinity {}
-          }, // end of affinity {}
         }, // end of spec {}
       }, // end of template {}
     }
+
+    if (region.clusterConf.runtimeAffinity) {
+      spec.template.spec.affinity = region.clusterConf.runtimeAffinity
+    }
+
     return spec
   }
 
