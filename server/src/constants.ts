@@ -103,10 +103,6 @@ export class ServerConfig {
     return process.env.API_SERVER_URL || 'http://localhost:3000'
   }
 
-  static get CertManagerIssuerName() {
-    return process.env.CERT_MANAGER_ISSUER_NAME || 'laf-issuer'
-  }
-
   /** default region conf */
   static get DEFAULT_REGION_NAMESPACE() {
     return process.env.DEFAULT_REGION_NAMESPACE
@@ -122,22 +118,6 @@ export class ServerConfig {
 
   static get DEFAULT_REGION_WEBSITE_DOMAIN() {
     return process.env.DEFAULT_REGION_WEBSITE_DOMAIN || 'localhost'
-  }
-
-  static get DEFAULT_REGION_TLS(): boolean {
-    return process.env.DEFAULT_REGION_TLS === 'true'
-  }
-
-  static get DEFAULT_REGION_APISIX_PUBLIC_PORT() {
-    return parseInt(process.env.DEFAULT_REGION_APISIX_PUBLIC_PORT || '80')
-  }
-
-  static get DEFAULT_REGION_APISIX_API_URL() {
-    return process.env.DEFAULT_REGION_APISIX_API_URL
-  }
-
-  static get DEFAULT_REGION_APISIX_API_KEY() {
-    return process.env.DEFAULT_REGION_APISIX_API_KEY
   }
 
   static get DEFAULT_REGION_MINIO_DOMAIN() {

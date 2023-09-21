@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { LABEL_KEY_APP_ID, ServerConfig } from 'src/constants'
+import { LABEL_KEY_APP_ID } from 'src/constants'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 import { Region } from 'src/region/entities/region'
 import { GetApplicationNamespace } from 'src/utils/getter'
@@ -7,23 +7,30 @@ import { WebsiteHosting } from 'src/website/entities/website'
 import { RuntimeDomain } from './entities/runtime-domain'
 
 // This class handles the creation and deletion of website domain certificates
-// and ApisixTls resources using Kubernetes Custom Resource Definitions (CRDs).
 @Injectable()
 export class CertificateService {
   private readonly logger = new Logger(CertificateService.name)
   constructor(private readonly clusterService: ClusterService) {}
 
+  getRuntimeCertificateName(domain: RuntimeDomain) {
+    return `${domain.appid}-runtime-custom-domain`
+  }
+
+  getWebsiteCertificateName(website: WebsiteHosting) {
+    return `${website._id.toString()}-website-custom`
+  }
+
   // Read a certificate for a given website using cert-manager.io CRD
   async getWebsiteCertificate(region: Region, website: WebsiteHosting) {
     const namespace = GetApplicationNamespace(region, website.appid)
-    const name = website._id.toString()
+    const name = this.getWebsiteCertificateName(website)
     return await this.read(region, name, namespace)
   }
 
   // Create a certificate for a given website using cert-manager.io CRD
   async createWebsiteCertificate(region: Region, website: WebsiteHosting) {
     const namespace = GetApplicationNamespace(region, website.appid)
-    const name = website._id.toString()
+    const name = this.getWebsiteCertificateName(website)
     return await this.create(region, name, namespace, website.domain, {
       'laf.dev/website': website._id.toString(),
       'laf.dev/website-domain': website.domain,
@@ -34,21 +41,21 @@ export class CertificateService {
   // Delete a certificate for a given website using cert-manager.io CRD
   async deleteWebsiteCertificate(region: Region, website: WebsiteHosting) {
     const namespace = GetApplicationNamespace(region, website.appid)
-    const name = website._id.toString()
+    const name = this.getWebsiteCertificateName(website)
     return await this.remove(region, name, namespace)
   }
 
   // Read a certificate for app custom domain using cert-manager.io CRD
   async getRuntimeCertificate(region: Region, runtimeDomain: RuntimeDomain) {
     const namespace = GetApplicationNamespace(region, runtimeDomain.appid)
-    const name = runtimeDomain.appid
+    const name = this.getRuntimeCertificateName(runtimeDomain)
     return await this.read(region, name, namespace)
   }
 
   // Create a certificate for app custom domain using cert-manager.io CRD
   async createRuntimeCertificate(region: Region, runtimeDomain: RuntimeDomain) {
     const namespace = GetApplicationNamespace(region, runtimeDomain.appid)
-    const name = runtimeDomain.appid
+    const name = this.getRuntimeCertificateName(runtimeDomain)
     return await this.create(
       region,
       name,
@@ -64,7 +71,7 @@ export class CertificateService {
   // Delete a certificate for app custom domain using cert-manager.io CRD
   async deleteRuntimeCertificate(region: Region, runtimeDomain: RuntimeDomain) {
     const namespace = GetApplicationNamespace(region, runtimeDomain.appid)
-    const name = runtimeDomain.appid
+    const name = this.getRuntimeCertificateName(runtimeDomain)
     return await this.remove(region, name, namespace)
   }
 
@@ -109,10 +116,7 @@ export class CertificateService {
       spec: {
         secretName: name,
         dnsNames: [domain],
-        issuerRef: {
-          name: ServerConfig.CertManagerIssuerName,
-          kind: 'ClusterIssuer',
-        },
+        issuerRef: region.gatewayConf.tls.issuerRef,
       },
     })
     return res.body

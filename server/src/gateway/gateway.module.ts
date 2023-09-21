@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common'
 import { RuntimeDomainService } from './runtime-domain.service'
-import { ApisixService } from './apisix.service'
 import { HttpModule } from '@nestjs/axios'
 import { BucketDomainService } from './bucket-domain.service'
 import { WebsiteTaskService } from './website-task.service'
@@ -15,7 +14,6 @@ import { WebsiteHostingGatewayService } from './ingress/website-ingress.service'
   imports: [HttpModule],
   providers: [
     RuntimeDomainService,
-    ApisixService,
     BucketDomainService,
     WebsiteTaskService,
     BucketDomainTaskService,

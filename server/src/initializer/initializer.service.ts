@@ -45,7 +45,6 @@ export class InitializerService {
     const res = await this.db.collection<Region>('Region').insertOne({
       name: 'default',
       displayName: 'Default',
-      tls: ServerConfig.DEFAULT_REGION_TLS,
       namespaceConf: {
         mode: mode,
         prefix: '',
@@ -71,12 +70,15 @@ export class InitializerService {
         controlEndpoint: ServerConfig.DEFAULT_REGION_MINIO_INTERNAL_ENDPOINT,
       },
       gatewayConf: {
-        driver: 'apisix',
+        driver: 'nginx',
         runtimeDomain: ServerConfig.DEFAULT_REGION_RUNTIME_DOMAIN,
         websiteDomain: ServerConfig.DEFAULT_REGION_WEBSITE_DOMAIN,
-        port: ServerConfig.DEFAULT_REGION_APISIX_PUBLIC_PORT,
-        apiUrl: ServerConfig.DEFAULT_REGION_APISIX_API_URL,
-        apiKey: ServerConfig.DEFAULT_REGION_APISIX_API_KEY,
+        port: 80,
+        tls: {
+          enabled: false,
+          issuerRef: { name: 'laf-issuer', kind: 'ClusterIssuer' },
+          wildcardCertificateSecretName: null,
+        },
       },
       logServerConf: {
         apiUrl: ServerConfig.DEFAULT_REGION_LOG_SERVER_URL,

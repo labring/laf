@@ -89,16 +89,11 @@ export class RuntimeDomainTaskService {
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
 
-    // create ingress if not exists
-    const ingress = await this.runtimeGateway.getIngress(region, doc)
-    if (!ingress) {
-      const res = await this.runtimeGateway.createIngress(region, doc)
-      this.logger.log('runtime default ingress created: ' + doc.appid)
-      this.logger.debug(JSON.stringify(res))
-    }
+    // issue ssl certificate
+    // Warning: create certificate before ingress, otherwise apisix ingress will not work
+    const tls = region.gatewayConf.tls
 
-    // issue ssl certificate for custom domain
-    if (region.tls && doc.customDomain) {
+    if (doc.customDomain && tls.enabled) {
       // create custom certificate if custom domain is set
       const waitingTime = Date.now() - doc.updatedAt.getTime()
 
@@ -118,6 +113,14 @@ export class RuntimeDomainTaskService {
         // return to wait for cert to be ready
         return await this.relock(doc.appid, waitingTime)
       }
+    }
+
+    // create ingress if not exists
+    const ingress = await this.runtimeGateway.getIngress(region, doc)
+    if (!ingress) {
+      const res = await this.runtimeGateway.createIngress(region, doc)
+      this.logger.log('runtime default ingress created: ' + doc.appid)
+      this.logger.debug(JSON.stringify(res))
     }
 
     // update phase to `Created`

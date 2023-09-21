@@ -24,13 +24,21 @@ export type RegionDatabaseConf = {
   controlConnectionUri: string
 }
 
+export type TLSConf = {
+  enabled: boolean
+  issuerRef: {
+    name: string
+    kind: 'ClusterIssuer' | 'Issuer'
+  }
+  wildcardCertificateSecretName?: string
+}
+
 export type RegionGatewayConf = {
-  driver: string
+  driver: 'apisix' | 'nginx'
   runtimeDomain: string
   websiteDomain: string
   port: number
-  apiUrl: string
-  apiKey: string
+  tls: TLSConf
 }
 
 export type RegionStorageConf = {
@@ -70,9 +78,6 @@ export class Region {
   storageConf: RegionStorageConf
   logServerConf: LogServerConf
   prometheusConf: PrometheusConf
-
-  @ApiProperty()
-  tls: boolean
 
   @ApiProperty()
   state: 'Active' | 'Inactive'

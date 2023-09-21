@@ -168,8 +168,8 @@ export class ApplicationTaskService {
    * - delete application configuration
    * - delete application bundle
    * - delete website
-   * - delete runtime domain (apisix route)
-   * - delete bucket domain (apisix route)
+   * - delete runtime domain
+   * - delete bucket domains
    * - delete database (mongo db)
    * - delete storage (minio buckets & user)
    * - delete namespace

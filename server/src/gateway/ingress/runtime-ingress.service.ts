@@ -5,11 +5,15 @@ import { ClusterService } from 'src/region/cluster/cluster.service'
 import { Region } from 'src/region/entities/region'
 import { GetApplicationNamespace } from 'src/utils/getter'
 import { RuntimeDomain } from '../entities/runtime-domain'
+import { CertificateService } from '../certificate.service'
 
 @Injectable()
 export class RuntimeGatewayService {
   private readonly logger = new Logger(RuntimeGatewayService.name)
-  constructor(private readonly clusterService: ClusterService) {}
+  constructor(
+    private readonly clusterService: ClusterService,
+    private readonly certificate: CertificateService,
+  ) {}
 
   getIngressName(domain: RuntimeDomain) {
     return domain.appid
@@ -53,7 +57,9 @@ export class RuntimeGatewayService {
     // build tls
     const tls = []
     if (runtimeDomain.customDomain) {
-      tls.push({ secretName: `${appid}`, hosts: [runtimeDomain.customDomain] })
+      const secretName =
+        this.certificate.getRuntimeCertificateName(runtimeDomain)
+      tls.push({ secretName, hosts })
     }
 
     // create ingress
