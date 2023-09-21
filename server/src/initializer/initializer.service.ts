@@ -55,23 +55,7 @@ export class InitializerService {
         driver: 'kubernetes',
         kubeconfig: null,
         npmInstallFlags: '',
-        runtimeAffinity: {
-          nodeAffinity: {
-            requiredDuringSchedulingIgnoredDuringExecution: {
-              nodeSelectorTerms: [
-                {
-                  matchExpressions: [
-                    {
-                      key: LABEL_KEY_NODE_TYPE,
-                      operator: 'In',
-                      values: [NodeType.Runtime],
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        },
+        runtimeAffinity: {},
       },
       databaseConf: {
         driver: 'mongodb',

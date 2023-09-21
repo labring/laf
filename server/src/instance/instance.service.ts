@@ -398,12 +398,9 @@ export class InstanceService {
               },
             },
           ],
+          affinity: region.clusterConf.runtimeAffinity,
         }, // end of spec {}
       }, // end of template {}
-    }
-
-    if (region.clusterConf.runtimeAffinity) {
-      spec.template.spec.affinity = region.clusterConf.runtimeAffinity
     }
 
     return spec
