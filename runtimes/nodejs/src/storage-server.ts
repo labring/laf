@@ -2,7 +2,6 @@ import express from 'express'
 import Config from './config'
 import { logger } from './support/logger'
 import { DatabaseAgent } from './db'
-import xmlparser from 'express-xml-bodyparser'
 import './support/cloud-sdk'
 import { WebsiteHostingChangeStream } from './support/database-change-stream/website-hosting-change-stream'
 import proxy from 'express-http-proxy'
@@ -14,63 +13,57 @@ DatabaseAgent.accessor.ready.then(() => {
   WebsiteHostingChangeStream.initialize()
 })
 
-app.use(
-  express.urlencoded({
-    limit: Config.REQUEST_LIMIT_SIZE,
-    extended: true,
-  }) as any,
-)
-
-app.use(xmlparser())
-
-const tryPath = (path: string) => {
-  return [path, path + '/index.html', path + 'index.html', '/index.html']
+const tryPath = (bucket: string, path: string) => {
+  const testPaths = path.endsWith('/')
+    ? [path + 'index.html', '/index.html']
+    : [path, path + '/index.html', '/index.html']
+  return testPaths.map((v) => `/${bucket}${v}`)
 }
 
 app.use(
-  '/:bucket',
   proxy(Config.OSS_INTERNAL_ENDPOINT, {
-    filter: function (req) {
-      return req.method == 'GET'
+    preserveHostHdr: true,
+    parseReqBody: false,
+    proxyReqOptDecorator: function (proxyReqOpts, srcReq) {
+      // patch for
+      if ('content-length' in srcReq.headers) {
+        proxyReqOpts.headers['content-length'] =
+          srcReq.headers['content-length']
+      }
+      if ('connection' in srcReq.headers) {
+        proxyReqOpts.headers['connection'] = srcReq.headers['connection']
+      }
+      return proxyReqOpts
     },
     proxyReqPathResolver: async function (req) {
-      const minioUrl = new URL(req.baseUrl, Config.OSS_EXTERNAL_ENDPOINT)
-
+      // check if is website hosting
       const websiteHosting = WebsiteHostingChangeStream.websiteHosting.find(
-        (item) => item.bucket === req.params.bucket,
+        (item) => req.hostname === item.domain,
       )
       if (!websiteHosting) {
-        return minioUrl.toString()
+        return req.url
       }
 
-      const paths = tryPath(req.baseUrl)
-      if (paths.length === 0) {
-        return minioUrl.toString()
-      }
+      // req.url doesn't have hostname
+      const minioUrl = new URL(req.url, Config.OSS_INTERNAL_ENDPOINT)
+      const paths = tryPath(websiteHosting.bucketName, req.path)
+      const getUrl = () => minioUrl.pathname + minioUrl.search
 
       for (const [idx, path] of paths.entries()) {
         minioUrl.pathname = path
 
         if (idx === paths.length - 1) {
-          return minioUrl.toString()
+          return getUrl()
         }
 
         try {
-          const res = await axios.head(minioUrl.toString())
-
-          if (res.headers['Content-Type'] === 'folder') {
-            continue
-          }
-          return minioUrl.toString()
+          await axios.head(minioUrl.toString())
+          return getUrl()
         } catch (err) {
-          if (
-            err.response.status === 404 ||
-            err.response.status === 403 ||
-            err.response.status === 400
-          ) {
+          if (err.response.status === 404) {
             continue
           }
-          return minioUrl.toString()
+          return getUrl()
         }
       }
     },
@@ -78,7 +71,9 @@ app.use(
 )
 
 const storageServer = app.listen(Config.STORAGE_PORT, () =>
-  logger.info(`storage server ${process.pid} listened on ${Config.PORT}`),
+  logger.info(
+    `storage server ${process.pid} listened on ${Config.STORAGE_PORT}`,
+  ),
 )
 
 export default storageServer
