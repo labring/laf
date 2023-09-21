@@ -6,12 +6,7 @@ import {
 } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespace } from 'src/utils/getter'
-import {
-  LABEL_KEY_APP_ID,
-  LABEL_KEY_NODE_TYPE,
-  MB,
-  NodeType,
-} from '../constants'
+import { LABEL_KEY_APP_ID, MB } from '../constants'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from 'src/database/database.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
