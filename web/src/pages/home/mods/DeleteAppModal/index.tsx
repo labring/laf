@@ -4,7 +4,6 @@ import { Trans, useTranslation } from "react-i18next";
 import {
   Button,
   FormControl,
-  FormErrorMessage,
   Input,
   Modal,
   ModalBody,
@@ -32,11 +31,7 @@ function DeleteAppModal(props: {
   const { t } = useTranslation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const showError = useGlobalStore((state) => state.showError);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<{
+  const { register, handleSubmit, setValue } = useForm<{
     appid: string;
   }>();
 
@@ -83,23 +78,23 @@ function DeleteAppModal(props: {
             </p>
             <FormControl mt="4" isRequired>
               <Input
-                {...register("appid", {
-                  required: "appid is required",
-                })}
-                id="name"
+                {...register("appid")}
+                id="appid"
                 placeholder={item.appid}
-                variant="filled"
+                onChange={(e) => {
+                  setValue("appid", e.target.value.trim());
+                }}
               />
-              <FormErrorMessage>{errors.appid && errors.appid.message}</FormErrorMessage>
             </FormControl>
           </ModalBody>
 
           <ModalFooter>
             <Button
               isLoading={deleteApplicationMutation.isLoading}
-              colorScheme="red"
               onClick={handleSubmit(async (data) => {
-                if (item.appid === data.appid) {
+                if (item.appid !== data.appid) {
+                  showError(t("NameNotMatch"));
+                } else {
                   await deleteApplicationMutation.mutateAsync({
                     appid: item.appid,
                   });

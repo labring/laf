@@ -68,6 +68,8 @@ export default function CommonSetting() {
           >
             <option value="name">{t("SettingModal.FunctionName")}</option>
             <option value="desc">{t("SettingModal.FunctionDesc")}</option>
+            <option value="desc-name">{t("SettingModal.FunctionDesc_Name")}</option>
+            <option value="name-desc">{t("SettingModal.FunctionName_Desc")}</option>
           </Select>
         </div>
       </div>

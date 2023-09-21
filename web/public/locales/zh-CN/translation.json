@@ -64,6 +64,7 @@
   "Save": "保存",
   "Search": "搜索",
   "ToConfirm": "进行确定",
+  "NameNotMatch": "名称不匹配",
   "Total": "总数",
   "Update": "更新",
   "UpdateSuccess": "更新成功",
@@ -581,7 +582,9 @@
   "SettingModal": {
     "Exchange": "兑换",
     "FunctionName": "函数名",
-    "FunctionDesc": "函数描述"
+    "FunctionDesc": "函数描述",
+    "FunctionDesc_Name": "函数描述 - 函数名",
+    "FunctionName_Desc": "函数名 - 函数描述"
   },
   "Expenses": "支出",
   "OrderNumber": "订单号",
