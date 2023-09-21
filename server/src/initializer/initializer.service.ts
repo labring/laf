@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { LABEL_KEY_NODE_TYPE, NodeType, ServerConfig } from '../constants'
+import { ServerConfig } from '../constants'
 import { SystemDatabase } from 'src/system-database'
 import { ApplicationNamespaceMode, Region } from 'src/region/entities/region'
 import { Runtime } from 'src/application/entities/runtime'
