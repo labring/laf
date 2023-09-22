@@ -11,15 +11,30 @@ import { DEFAULT_FUNCTION_NAME, INTERCEPTOR_FUNCTION_NAME } from '../constants'
  * Handler of invoking cloud function
  */
 export async function handleInvokeFunction(req: IRequest, res: Response) {
+
+  const ctx: FunctionContext = {
+    requestId: req.requestId,
+    query: req.query,
+    files: req.files as any,
+    body: req.body,
+    headers: req.headers,
+    method: req.method,
+    auth: req['auth'],
+    user: req.user,
+    request: req,
+    response: res,
+    varMap: new Map(),
+  }
+
   // intercept the request, skip websocket request
   if (false === req.method.startsWith('WebSocket:')) {
-    const passed = await invokeInterceptor(req, res)
+    const passed = await invokeInterceptor(ctx)
     if (passed === false) return
   }
 
   // debug mode
   if (req.get('x-laf-develop-token')) {
-    return await handleDebugFunction(req, res)
+    return await handleDebugFunction(ctx)
   }
 
   // trigger mode
@@ -50,19 +65,7 @@ export async function handleInvokeFunction(req: IRequest, res: Response) {
 
   try {
     // execute the func
-    const ctx: FunctionContext = {
-      query: req.query,
-      files: req.files as any,
-      body: req.body,
-      headers: req.headers,
-      method: isTrigger ? 'trigger' : req.method,
-      auth: req['auth'],
-      user: req.user,
-      requestId,
-      request: req,
-      response: res,
-      __function_name: func.name,
-    }
+    ctx.__function_name = func.name
     const result = await func.invoke(ctx)
 
     if (result.error) {
@@ -98,9 +101,10 @@ export async function handleInvokeFunction(req: IRequest, res: Response) {
   }
 }
 
-async function invokeInterceptor(req: IRequest, res: Response) {
-  const requestId = req.requestId
+async function invokeInterceptor(ctx: FunctionContext) {
+
   const func_name = INTERCEPTOR_FUNCTION_NAME
+  const requestId = ctx.requestId
 
   // load function data from db
   const funcData = CloudFunction.getFunctionByName(func_name)
@@ -113,19 +117,7 @@ async function invokeInterceptor(req: IRequest, res: Response) {
 
   try {
     // execute the func
-    const ctx: FunctionContext = {
-      query: req.query,
-      files: req.files as any,
-      body: req.body,
-      headers: req.headers,
-      method: req.method,
-      auth: req['auth'],
-      user: req.user,
-      requestId,
-      request: req,
-      response: res,
-      __function_name: func.name,
-    }
+    ctx.__function_name = func.name
     const result = await func.invoke(ctx)
 
     // return false to reject request if interceptor got error
@@ -136,7 +128,7 @@ async function invokeInterceptor(req: IRequest, res: Response) {
         result,
       )
 
-      res.status(400).send({
+      ctx.response.status(400).send({
         error: `invoke ${func_name} function got error, please check the function logs`,
         requestId,
       })
@@ -145,13 +137,13 @@ async function invokeInterceptor(req: IRequest, res: Response) {
     }
 
     // if response has been ended, return false to stop the request
-    if (res.writableEnded) {
+    if (ctx.response.writableEnded) {
       return false
     }
 
     // reject request if interceptor return false
     if (false === result.data) {
-      res.status(403).send({ error: 'Forbidden', requestId })
+      ctx.response.status(403).send({ error: 'Forbidden', requestId })
       return false
     }
 
@@ -159,7 +151,7 @@ async function invokeInterceptor(req: IRequest, res: Response) {
     return result.data
   } catch (error) {
     logger.error(requestId, `failed to invoke ${func_name}`, error)
-    return res
+    return ctx.response
       .status(500)
       .send(`Internal Server Error - got error in ${func_name}`)
   }
