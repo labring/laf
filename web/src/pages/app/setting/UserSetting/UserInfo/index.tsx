@@ -213,7 +213,7 @@ export default function UserInfo() {
                     !darkMode && "text-grayModern-900",
                   )}
                 >
-                  <span>{t("SettingPanel.Github")}</span>
+                  <span>Github</span>
                   {userInfo?.github ? (
                     <div className="flex  items-center">
                       <span className="mr-4">

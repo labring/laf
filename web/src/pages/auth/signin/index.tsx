@@ -84,10 +84,9 @@ export default function SignIn() {
                 variant="outline"
                 border="1.5px solid #DDE4EF"
                 onClick={() => {
-                  window.location.href = encodeURIComponent(
-                    `v1/auth/github/jump_login?redirectUri=${window.location.origin}/bind/github`,
-                  );
-                  // window.location.href = `${window.location.origin}/v1/auth/github/jump_login?redirectUri=${window.location.origin}/bind/github`;
+                  window.location.href = `v1/auth/github/jump_login?redirectUri=${encodeURIComponent(
+                    window.location.origin,
+                  )}/bind/github`;
                 }}
               >
                 <GithubIcon className="mr-4" fontSize="18" />

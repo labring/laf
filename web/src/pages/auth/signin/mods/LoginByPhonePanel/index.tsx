@@ -69,7 +69,7 @@ export default function LoginByPhonePanel({
     if (res?.data) {
       const githubToken = sessionStorage.getItem("githubToken");
       sessionStorage.removeItem("githubToken");
-      if (githubToken && githubToken !== "null") {
+      if (githubToken) {
         githubAuthControllerBindMutation.mutateAsync({
           token: githubToken,
         });

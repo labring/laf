@@ -108,7 +108,7 @@ export default function SignUp() {
 
     if (!res?.data) {
       sessionStorage.removeItem("githubToken");
-      if (githubToken && githubToken !== "null") {
+      if (githubToken) {
         githubAuthControllerBindMutation.mutateAsync({
           token: githubToken,
           isRegister: true,
