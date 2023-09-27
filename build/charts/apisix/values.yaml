@@ -632,6 +632,10 @@ etcd:
 
   replicaCount: 3
 
+  # -- enable auto compact for etcd
+  autoCompactionMode: periodic
+  autoCompactionRetention: 12h
+
 dashboard:
   enabled: false
   config:
