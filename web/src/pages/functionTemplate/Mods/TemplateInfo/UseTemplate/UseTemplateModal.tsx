@@ -87,9 +87,7 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
   return (
     <>
       {React.cloneElement(children, {
-        onClick: () => {
-          onOpen();
-        },
+        onClick: onOpen(),
       })}
 
       <Modal isOpen={isOpen} onClose={onClose} size={!currentApp ? "2xl" : "md"}>
@@ -115,9 +113,7 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
                           headerText={t("Confirm")}
                           confirmButtonText={String(t("Confirm"))}
                           bodyText={t("Template.Confirm")}
-                          onSuccessAction={async () => {
-                            handleUseTemplate(item);
-                          }}
+                          onSuccessAction={() => handleUseTemplate(item)}
                         >
                           <Box className="group mb-3 flex cursor-pointer items-center rounded-xl border-2 px-3 py-5 hover:border-primary-500 lg:px-6">
                             <div className="w-3/12 ">
