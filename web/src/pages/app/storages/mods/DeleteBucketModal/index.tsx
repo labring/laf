@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import {
   Button,
   FormControl,
-  FormErrorMessage,
   Input,
   Modal,
   ModalBody,
@@ -22,19 +21,15 @@ import IconText from "@/components/IconText";
 import { useBucketDeleteMutation } from "../../service";
 
 import { TBucket } from "@/apis/typing";
+import useGlobalStore from "@/pages/globalStore";
 function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => void }) {
   const { storage, onSuccessAction } = props;
+  const { showError } = useGlobalStore();
 
   const bucketDeleteMutation = useBucketDeleteMutation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
-  const {
-    register,
-    handleSubmit,
-    setFocus,
-    reset,
-    formState: { errors },
-  } = useForm<{
+  const { register, handleSubmit, setFocus, reset, setValue } = useForm<{
     name: string;
   }>();
 
@@ -62,23 +57,22 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
             <p className="mb-2">
               {t("StoragePanel.DeleteConfirm")}
               <span className=" mr-1 font-bold text-black">{" " + storage.name}</span>
-              {t("DeleteTip")}。
+              {t("DeleteTip")}
             </p>
             <p className="mb-4">
               {t("StoragePanel.StorageNameTip")}
               <span className="mx-1 font-bold text-red-500">{storage.name}</span>
-              {t("ToConfirm")}。
+              {t("ToConfirm")}
             </p>
             <FormControl>
               <Input
-                {...register("name", {
-                  required: "name is required",
-                })}
+                {...register("name")}
                 id="name"
                 placeholder={storage?.name}
-                variant="filled"
+                onChange={(e) => {
+                  setValue("name", e.target.value.trim());
+                }}
               />
-              <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
             </FormControl>
           </ModalBody>
 
@@ -87,7 +81,9 @@ function DeleteBucketModal(props: { storage: TBucket; onSuccessAction?: () => vo
               isLoading={bucketDeleteMutation.isLoading}
               colorScheme="red"
               onClick={handleSubmit(async (data) => {
-                if (data.name === storage.name) {
+                if (data.name !== storage.name) {
+                  showError(t("NameNotMatch"));
+                } else {
                   const res = await bucketDeleteMutation.mutateAsync({ name: storage.name });
                   if (!res.error) {
                     onSuccessAction && onSuccessAction();

@@ -223,10 +223,34 @@ export default function FunctionList() {
         fileType = FileType.folder;
       }
       const level = item.level || item?.name.split("/").length - 1;
-      const itemDisplay =
-        commonSettings.funcListDisplay === "name"
-          ? item?.name.split("/")[level]
-          : item?.desc || item?.name.split("/")[level];
+      const itemDisplay = (() => {
+        if (
+          item.children?.length ||
+          isFuncList ||
+          commonSettings.funcListDisplay === "name" ||
+          !item.desc
+        ) {
+          return <span>{item.name.split("/")[level]}</span>;
+        } else if (commonSettings.funcListDisplay === "desc") {
+          return <span>{item.desc}</span>;
+        } else if (commonSettings.funcListDisplay === "desc-name") {
+          return (
+            <span className="flex items-center">
+              <span>{item.desc}</span>
+              <div className="ml-1 translate-y-[1px] scale-[.85] opacity-75">{` ${
+                item.name.split("/")[level]
+              }`}</div>
+            </span>
+          );
+        } else {
+          return (
+            <span className="flex items-center">
+              <span>{item.name.split("/")[level]}</span>
+              <div className="ml-1 translate-y-[1px] scale-[.85] opacity-75">{` ${item.desc}`}</div>
+            </span>
+          );
+        }
+      })();
 
       return (
         <React.Fragment key={index}>
@@ -253,13 +277,13 @@ export default function FunctionList() {
           >
             <div
               className={clsx(
-                "overflow-hidden text-ellipsis whitespace-nowrap font-medium",
+                "flex items-center overflow-hidden text-ellipsis whitespace-nowrap font-medium",
                 !isFuncList ? `ml-${2 * level}` : "",
               )}
             >
               <FileTypeIcon type={fileType} width="12px" />
               <span className="ml-2" style={{ fontSize: commonSettings.fontSize - 2 }}>
-                {item.children?.length || isFuncList ? item.name : itemDisplay}
+                {itemDisplay}
               </span>
             </div>
             {!item.children?.length && (
