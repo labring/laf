@@ -60,7 +60,7 @@ sealos pull labring/metrics-server:v0.6.2
 sealos pull lafyun/laf:latest
 sealos pull docker.io/labring/sealos-cloud-resources-metering-controller:latest
 sealos pull docker.io/labring/sealos-cloud-resources-controller:latest
-sealos pull ingress-nginx:v1.8.1
+sealos pull docker.io/labring/ingress-nginx:v1.8.1
 
 # install k8s cluster
 sealos run labring/kubernetes:v1.24.9 labring/flannel:v0.19.0 labring/helm:v3.8.2
