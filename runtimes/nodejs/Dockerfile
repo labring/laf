@@ -5,6 +5,8 @@ RUN apt update && apt-get install build-essential libcairo2-dev libpango1.0-dev 
 # RUN npm install npm -g
 
 EXPOSE 8000
+EXPOSE 9000
+
 WORKDIR /app
 ENV LOG_LEVEL=debug
 COPY . /app
