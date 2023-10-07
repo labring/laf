@@ -29,7 +29,7 @@ export class FunctionRequire {
     const context = {
       ...ctx,
       __function_name: name,
-      __isRequired: true,
+      __is_required: true,
     }
 
     const sandbox = FunctionVm.buildSandbox(

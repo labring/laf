@@ -12,7 +12,7 @@ export class FunctionConsole {
     const doc = {
       request_id: ctx.requestId || '',
       func: ctx.__function_name,
-      is_required: ctx.__isRequired || false,
+      is_required: ctx.__is_required || false,
       data: message,
       created_at: new Date(),
     }
