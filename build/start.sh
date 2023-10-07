@@ -101,11 +101,11 @@ helm install server -n ${NAMESPACE} \
     $( [ "$ENABLE_MONITOR" = "true" ] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}" ) \
     ./charts/laf-server
 
-## 6. install laf-web
+## 6. install metering service
+sealos run docker.io/labring/sealos-cloud-resources-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system
+sealos run docker.io/labring/sealos-cloud-resources-metering-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system
+
+## 7. install laf-web
 helm install web -n ${NAMESPACE} \
     --set domain=${DOMAIN} \
     ./charts/laf-web
-
-## 7. install metering service
-sealos run docker.io/labring/sealos-cloud-resources-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system
-sealos run docker.io/labring/sealos-cloud-resources-metering-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system
