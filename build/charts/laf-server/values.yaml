@@ -17,10 +17,7 @@ default_region:
   minio_internal_endpoint: ""
   minio_root_access_key: ""
   minio_root_secret_key: ""
-  # apisix
-  apisix_api_url: ""
-  apisix_api_key: ""
-  apisix_public_port: 80
+  # gateway conf
   tls: false
   runtime_domain: ""
   website_domain: ""

@@ -1,34 +1,37 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
+import {
+  CN_PUBLISHED_WEBSITE_HOSTING,
+  ServerConfig,
+  TASK_LOCK_INIT_TIME,
+} from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
 import { RegionService } from 'src/region/region.service'
 import * as assert from 'node:assert'
-import { ApisixService } from './apisix.service'
-import { ApisixCustomCertService } from './apisix-custom-cert.service'
+import { CertificateService } from './certificate.service'
 import { ObjectId } from 'mongodb'
 import { isConditionTrue } from 'src/utils/getter'
 import { WebsiteHosting } from 'src/website/entities/website'
 import { DomainPhase, DomainState } from './entities/runtime-domain'
 import { BucketDomain } from './entities/bucket-domain'
+import { WebsiteHostingGatewayService } from './ingress/website-ingress.service'
+import { DatabaseService } from 'src/database/database.service'
 
 @Injectable()
 export class WebsiteTaskService {
   readonly lockTimeout = 30 // in second
-  readonly concurrency = 1 // concurrency count
   private readonly logger = new Logger(WebsiteTaskService.name)
 
   constructor(
     private readonly regionService: RegionService,
-    private readonly apisixService: ApisixService,
-    private readonly certService: ApisixCustomCertService,
+    private readonly websiteGateway: WebsiteHostingGatewayService,
+    private readonly certService: CertificateService,
+    private readonly databaseService: DatabaseService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
-    if (ServerConfig.DISABLED_GATEWAY_TASK) {
-      return
-    }
+    if (ServerConfig.DISABLED_GATEWAY_TASK) return
 
     // Phase `Creating` -> `Created`
     this.handleCreatingPhase().catch((err) => {
@@ -77,7 +80,6 @@ export class WebsiteTaskService {
 
     if (!res.value) return
 
-    this.logger.debug(res.value)
     // get region by appid
     const site = {
       ...res.value,
@@ -96,27 +98,15 @@ export class WebsiteTaskService {
 
     assert(bucketDomain, 'bucket domain not found')
 
-    // create website route if not exists
-    const route = await this.apisixService.getRoute(region, site._id.toString())
-    if (!route) {
-      const res = await this.apisixService.createWebsiteRoute(
-        region,
-        site,
-        bucketDomain.domain,
-      )
-      this.logger.log(`create website route: ${site._id}`)
-      this.logger.debug(res)
-    }
-
     // create website custom certificate if custom domain is set
-    if (site.isCustom) {
+    if (site.isCustom && region.gatewayConf.tls.enabled) {
       const waitingTime = Date.now() - site.updatedAt.getTime()
 
       // create custom domain  certificate
-      let cert = await this.certService.readWebsiteDomainCert(region, site)
+      let cert = await this.certService.getWebsiteCertificate(region, site)
       if (!cert) {
-        cert = await this.certService.createWebsiteDomainCert(region, site)
-        this.logger.log(`create website cert: ${site._id}`)
+        cert = await this.certService.createWebsiteCertificate(region, site)
+        this.logger.log(`create website domain certificate: ${site.domain}`)
         // return to wait for cert to be ready
         return await this.relock(site._id, waitingTime)
       }
@@ -124,27 +114,17 @@ export class WebsiteTaskService {
       // check if cert status is Ready
       const conditions = (cert as any).status?.conditions || []
       if (!isConditionTrue('Ready', conditions)) {
-        this.logger.log(`website cert is not ready: ${site._id}`)
+        this.logger.log(`website certificate is not ready: ${site.domain}`)
         // return to wait for cert to be ready
         return await this.relock(site._id, waitingTime)
       }
+    }
 
-      // config custom domain certificate to apisix
-      let apisixTls = await this.certService.readWebsiteApisixTls(region, site)
-      if (!apisixTls) {
-        apisixTls = await this.certService.createWebsiteApisixTls(region, site)
-        this.logger.log(`create website apisix tls: ${site._id}`)
-        // return to wait for tls config to be ready
-        return await this.relock(site._id, waitingTime)
-      }
-
-      // check if apisix tls status is Ready
-      const apisixTlsConditions = (apisixTls as any).status?.conditions || []
-      if (!isConditionTrue('ResourcesAvailable', apisixTlsConditions)) {
-        this.logger.log(`website apisix tls is not ready: ${site._id}`)
-        // return to wait for tls config to be ready
-        return await this.relock(site._id, waitingTime)
-      }
+    // create website route if not exists
+    const ingress = await this.websiteGateway.getIngress(region, site)
+    if (!ingress) {
+      await this.websiteGateway.createIngress(region, site)
+      this.logger.log(`create website ingress: ${site.domain}`)
     }
 
     // update phase to `Created`
@@ -158,6 +138,8 @@ export class WebsiteTaskService {
         },
       },
     )
+
+    await this.publish(site)
 
     this.logger.log(`update website phase to 'Created': ${site._id}`)
   }
@@ -184,40 +166,28 @@ export class WebsiteTaskService {
     if (!res.value) return
 
     // get region by appid
-    const site = {
-      ...res.value,
-      id: res.value._id.toString(),
-    }
+    const site = res.value
     const region = await this.regionService.findByAppId(site.appid)
     assert(region, 'region not found')
 
-    // delete website route if exists
-    const route = await this.apisixService.getRoute(region, site._id.toString())
-    if (route) {
-      const res = await this.apisixService.deleteWebsiteRoute(region, site)
-      this.logger.log(`delete website route: ${res?.key}`)
-      this.logger.debug('delete website route', res)
+    // delete website ingress if exists
+    const ingress = await this.websiteGateway.getIngress(region, site)
+    if (ingress) {
+      await this.websiteGateway.deleteIngress(region, site)
+      this.logger.log(`delete website ingress: ${site.domain}`)
     }
+
     // delete website custom certificate if custom domain is set
     if (site.isCustom) {
       const waitingTime = Date.now() - site.updatedAt.getTime()
 
       // delete custom domain certificate
-      const cert = await this.certService.readWebsiteDomainCert(region, site)
+      const cert = await this.certService.getWebsiteCertificate(region, site)
       if (cert) {
-        await this.certService.deleteWebsiteDomainCert(region, site)
-        this.logger.log(`delete website cert: ${site._id}`)
+        await this.certService.deleteWebsiteCertificate(region, site)
+        this.logger.log(`delete website domain certificate: ${site.domain}`)
         // return to wait for cert to be deleted
         return await this.relock(site._id, waitingTime)
-      }
-
-      // delete custom domain tls config from apisix
-      const tls = await this.certService.readWebsiteApisixTls(region, site)
-      if (tls) {
-        await this.certService.deleteWebsiteApisixTls(region, site)
-        this.logger.log(`delete website apisix tls: ${site._id}`)
-        // return to wait for tls config to be deleted
-        return this.relock(site._id, waitingTime)
       }
     }
 
@@ -232,6 +202,8 @@ export class WebsiteTaskService {
         },
       },
     )
+
+    await this.unpublish(site)
 
     this.logger.log(`update website phase to 'Deleted': ${site._id}`)
   }
@@ -328,5 +300,37 @@ export class WebsiteTaskService {
     await db
       .collection<WebsiteHosting>('WebsiteHosting')
       .updateOne({ _id: id }, { $set: { lockedAt } })
+  }
+
+  async publish(website: WebsiteHosting) {
+    const { db, client } = await this.databaseService.findAndConnect(
+      website.appid,
+    )
+    const session = client.startSession()
+
+    try {
+      await session.withTransaction(async () => {
+        const coll = db.collection(CN_PUBLISHED_WEBSITE_HOSTING)
+
+        await coll.deleteMany({ bucketName: website.bucketName }, { session })
+        await coll.insertOne(website, { session })
+      })
+    } finally {
+      await session.endSession()
+      await client.close()
+    }
+  }
+
+  async unpublish(website: WebsiteHosting) {
+    const { db, client } = await this.databaseService.findAndConnect(
+      website.appid,
+    )
+
+    try {
+      const coll = db.collection(CN_PUBLISHED_WEBSITE_HOSTING)
+      await coll.deleteMany({ bucketName: website.bucketName })
+    } finally {
+      await client.close()
+    }
   }
 }

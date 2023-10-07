@@ -4,10 +4,7 @@ kind: Ingress
 metadata:
   name: laf-server-ingress
 spec:
-  # apisix-ingress-controller is only interested in Ingress
-  # resources with the matched ingressClass name, in our case,
-  # it's apisix.
-  ingressClassName: apisix
+  ingressClassName: nginx
   rules:
   - host: {{ .Values.apiServerHost }}
     http:

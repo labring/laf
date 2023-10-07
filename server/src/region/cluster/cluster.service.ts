@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { KubernetesObject } from '@kubernetes/client-node'
+import { KubernetesObject, V1Ingress } from '@kubernetes/client-node'
 import * as k8s from '@kubernetes/client-node'
 import { GetApplicationNamespace } from 'src/utils/getter'
 import { compare } from 'fast-json-patch'
@@ -142,6 +142,38 @@ export class ClusterService {
     return response.body
   }
 
+  async getIngress(region: Region, name: string, namespace: string) {
+    const api = this.makeNetworkingApi(region)
+
+    try {
+      const res = await api.readNamespacedIngress(name, namespace)
+      return res.body
+    } catch (err) {
+      // if ingress not found, return null
+      if (err?.response?.statusCode === 404) {
+        return null
+      }
+
+      this.logger.error(err)
+      this.logger.error(err?.response?.body)
+      throw err
+    }
+  }
+
+  async createIngress(region: Region, body: V1Ingress) {
+    body.apiVersion = 'networking.k8s.io/v1'
+    body.kind = 'Ingress'
+    const api = this.makeNetworkingApi(region)
+    const res = await api.createNamespacedIngress(body.metadata.namespace, body)
+    return res.body
+  }
+
+  async deleteIngress(region: Region, name: string, namespace: string) {
+    const api = this.makeNetworkingApi(region)
+    const res = await api.deleteNamespacedIngress(name, namespace)
+    return res.body
+  }
+
   makeCoreV1Api(region: Region) {
     const kc = this.loadKubeConfig(region)
     return kc.makeApiClient(k8s.CoreV1Api)
@@ -170,5 +202,10 @@ export class ClusterService {
   makeHorizontalPodAutoscalingV2Api(region: Region) {
     const kc = this.loadKubeConfig(region)
     return kc.makeApiClient(k8s.AutoscalingV2Api)
+  }
+
+  makeNetworkingApi(region: Region) {
+    const kc = this.loadKubeConfig(region)
+    return kc.makeApiClient(k8s.NetworkingV1Api)
   }
 }

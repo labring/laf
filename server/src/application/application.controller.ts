@@ -212,7 +212,7 @@ export class ApplicationController {
       develop_token: develop_token,
 
       /** This is the redundant field of Region */
-      tls: region.tls,
+      tls: region.gatewayConf.tls.enabled,
     }
 
     return ResponseUtil.ok(res)
