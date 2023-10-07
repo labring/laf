@@ -9,9 +9,10 @@ import { CertificateService } from './certificate.service'
 import { RuntimeGatewayService } from './ingress/runtime-ingress.service'
 import { BucketGatewayService } from './ingress/bucket-ingress.service'
 import { WebsiteHostingGatewayService } from './ingress/website-ingress.service'
+import { DatabaseModule } from 'src/database/database.module'
 
 @Module({
-  imports: [HttpModule],
+  imports: [HttpModule, DatabaseModule],
   providers: [
     RuntimeDomainService,
     BucketDomainService,
