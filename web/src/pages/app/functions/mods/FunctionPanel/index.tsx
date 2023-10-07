@@ -2,7 +2,7 @@
  * cloud functions list sidebar
  ***************************/
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import { Badge, HStack, Input, InputGroup, InputLeftElement, useColorMode } from "@chakra-ui/react";
@@ -33,22 +33,15 @@ import CreateModal from "./CreateModal";
 
 import "./index.css";
 
-import { TFunction } from "@/apis/typing";
+import { TFunction, TFunctionNode } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
 import RecycleBinModal from "@/pages/app/functions/mods/RecycleBinModal";
+import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
 
 type TagItem = {
   tagName: string;
   selected: boolean;
-};
-
-export type TreeNode = {
-  _id: string;
-  name: string;
-  level?: number;
-  isExpanded?: boolean;
-  children: (TreeNode | TFunction)[];
 };
 
 export default function FunctionList() {
@@ -62,7 +55,7 @@ export default function FunctionList() {
   } = useFunctionStore((store) => store);
 
   const functionCache = useFunctionCache();
-  const [functionRoot, setFunctionRoot] = useState<TreeNode>({
+  const [functionRoot, setFunctionRoot] = useState<TFunctionNode>({
     _id: "",
     name: "",
     level: 0,
@@ -76,6 +69,7 @@ export default function FunctionList() {
   const darkMode = colorMode === COLOR_MODE.dark;
 
   const { currentApp, showSuccess } = useGlobalStore();
+  const { commonSettings } = useCustomSettingStore();
 
   const { id: functionName } = useParams();
   const navigate = useNavigate();
@@ -83,28 +77,34 @@ export default function FunctionList() {
 
   const [currentTag, setCurrentTag] = useState<TagItem | null>(null);
 
-  const filterFunctions = allFunctionList.filter((item: TFunction) => {
-    let flag = item?.name.includes(keywords);
-    if (tagsList.length > 0 && currentTag) {
-      flag = flag && item.tags.includes(currentTag?.tagName);
-    }
-    return flag;
-  });
+  const filterFunctions = useMemo(() => {
+    return allFunctionList.filter((item: any) => {
+      let flag = item?.name.includes(keywords);
 
-  function generateRoot(data: TFunction[]) {
+      if (tagsList.length > 0 && currentTag) {
+        flag = flag && item.tags.includes(currentTag?.tagName);
+      }
+
+      return flag;
+    });
+  }, [allFunctionList, keywords, tagsList, currentTag]);
+
+  function generateRoot(data: TFunctionNode[]) {
     const root = functionRoot;
     data.forEach((item) => {
       const nameParts = item.name.split("/");
-      let currentNode: TreeNode = root;
+      let currentNode = root;
       nameParts.forEach((part, index) => {
         if (currentNode.children.find((node) => node.name === item.name)) {
+          const index = currentNode.children.findIndex((node) => node.name === item.name);
+          currentNode.children[index] = item;
           return;
         } else if (index === nameParts.length - 1) {
           currentNode.children.push(item);
           return;
         }
         let existingNode = currentNode.children.find(
-          (node) => node.name === part && (node as TreeNode).level === index,
+          (node) => node.name === part && node.level === index,
         );
         if (!existingNode) {
           const newNode = {
@@ -117,22 +117,22 @@ export default function FunctionList() {
           currentNode.children.push(newNode);
           existingNode = newNode;
         }
-        currentNode = existingNode as TreeNode;
+        currentNode = existingNode;
       });
     });
     pruneTree(root, data);
     return root;
   }
 
-  function pruneTree(node: TreeNode, data: TFunction[]): void {
+  function pruneTree(node: TFunctionNode, data: TFunctionNode[]): void {
     node.children = node.children.filter((child) => pruneChildTree(child, data));
   }
 
-  function pruneChildTree(node: any, data: TFunction[]): boolean {
+  function pruneChildTree(node: TFunctionNode, data: TFunctionNode[]): boolean {
     if (!node.children || node.children.length === 0) {
       return data.some((item) => item.name === node.name);
     }
-    node.children = node.children.filter((child: TreeNode) => pruneChildTree(child, data));
+    node.children = node.children.filter((child) => pruneChildTree(child, data));
     return node.children.length > 0 || data.some((item) => item.name === node.name);
   }
 
@@ -205,8 +205,8 @@ export default function FunctionList() {
     ) : null;
   };
 
-  function renderSectionItems(items: TreeNode[], isFuncList = false) {
-    const sortedItems = [...items].sort((a: TreeNode, b: TreeNode) => {
+  function renderSectionItems(items: TFunctionNode[], isFuncList = false) {
+    const sortedItems = [...items].sort((a, b) => {
       const isFolderA = a.children && a.children.length > 0;
       const isFolderB = b.children && b.children.length > 0;
       if (isFolderA && !isFolderB) {
@@ -223,6 +223,34 @@ export default function FunctionList() {
         fileType = FileType.folder;
       }
       const level = item.level || item?.name.split("/").length - 1;
+      const itemDisplay = (() => {
+        if (
+          item.children?.length ||
+          isFuncList ||
+          commonSettings.funcListDisplay === "name" ||
+          !item.desc
+        ) {
+          return <span>{item.name.split("/")[level]}</span>;
+        } else if (commonSettings.funcListDisplay === "desc") {
+          return <span>{item.desc}</span>;
+        } else if (commonSettings.funcListDisplay === "desc-name") {
+          return (
+            <span className="flex items-center">
+              <span>{item.desc}</span>
+              <div className="ml-1 translate-y-[1px] scale-[.85] opacity-75">{` ${
+                item.name.split("/")[level]
+              }`}</div>
+            </span>
+          );
+        } else {
+          return (
+            <span className="flex items-center">
+              <span>{item.name.split("/")[level]}</span>
+              <div className="ml-1 translate-y-[1px] scale-[.85] opacity-75">{` ${item.desc}`}</div>
+            </span>
+          );
+        }
+      })();
 
       return (
         <React.Fragment key={index}>
@@ -249,13 +277,13 @@ export default function FunctionList() {
           >
             <div
               className={clsx(
-                "overflow-hidden text-ellipsis whitespace-nowrap font-medium",
+                "flex items-center overflow-hidden text-ellipsis whitespace-nowrap font-medium",
                 !isFuncList ? `ml-${2 * level}` : "",
               )}
             >
               <FileTypeIcon type={fileType} width="12px" />
-              <span className="ml-2">
-                {item.children?.length || isFuncList ? item?.name : item?.name.split("/")[level]}
+              <span className="ml-2" style={{ fontSize: commonSettings.fontSize - 2 }}>
+                {itemDisplay}
               </span>
             </div>
             {!item.children?.length && (
@@ -297,9 +325,7 @@ export default function FunctionList() {
               </HStack>
             )}
           </SectionList.Item>
-          {item.isExpanded &&
-            item?.children?.length &&
-            renderSectionItems(item.children as TreeNode[])}
+          {item.isExpanded && item?.children?.length && renderSectionItems(item.children)}
         </React.Fragment>
       );
     });
@@ -358,11 +384,9 @@ export default function FunctionList() {
 
       <div className="funcList flex-grow" style={{ overflowY: "auto" }}>
         {keywords || currentTag ? (
-          <SectionList>
-            {renderSectionItems(filterFunctions as unknown as TreeNode[], true)}
-          </SectionList>
+          <SectionList>{renderSectionItems(filterFunctions, true)}</SectionList>
         ) : functionRoot.children?.length ? (
-          <SectionList>{renderSectionItems(functionRoot.children as TreeNode[])}</SectionList>
+          <SectionList>{renderSectionItems(functionRoot.children)}</SectionList>
         ) : (
           <EmptyBox hideIcon>
             <p>{t("FunctionPanel.EmptyFunctionTip")}</p>

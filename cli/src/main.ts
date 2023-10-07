@@ -10,6 +10,7 @@ import { command as policyCommand } from './command/policy'
 import { command as websiteCommand } from './command/website'
 import { command as deployCommand } from './command/deploy'
 import { command as triggerCommand } from './command/trigger'
+import { command as databaseCommand } from './command/database'
 
 const program = new Command()
 program.option('-v, --version', 'output version').action((options) => {
@@ -32,5 +33,6 @@ program.addCommand(policyCommand())
 program.addCommand(websiteCommand())
 program.addCommand(deployCommand())
 program.addCommand(triggerCommand())
+program.addCommand(databaseCommand())
 
 program.parse(process.argv)

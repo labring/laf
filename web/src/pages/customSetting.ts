@@ -46,6 +46,11 @@ type State = {
     position: { width: number; height: number },
   ) => void;
   togglePanel: (pageId: page, panelId: panel) => void;
+  commonSettings: {
+    fontSize: number;
+    funcListDisplay: string;
+  };
+  setCommonSettings: (settings: { fontSize: number; funcListDisplay: String }) => void;
 };
 
 const useCustomSettingStore = create<State>()(
@@ -162,6 +167,17 @@ const useCustomSettingStore = create<State>()(
             } else {
               state.layoutInfo[pageId][panelId].style.height = position.height;
             }
+          });
+        },
+
+        commonSettings: {
+          fontSize: 14,
+          funcListDisplay: "name",
+        },
+
+        setCommonSettings: (settings) => {
+          set((state: any) => {
+            state.commonSettings = settings;
           });
         },
       })),

@@ -113,6 +113,7 @@ function FunctionEditor(props: {
   height?: string;
   colorMode?: string;
   readOnly?: boolean;
+  fontSize?: number;
 }) {
   const {
     value,
@@ -123,6 +124,7 @@ function FunctionEditor(props: {
     style = {},
     colorMode = COLOR_MODE.light,
     readOnly = false,
+    fontSize = 14,
   } = props;
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
@@ -159,7 +161,7 @@ function FunctionEditor(props: {
         formatOnPaste: true,
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
-        fontSize: 13,
+        fontSize: fontSize,
         theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
         scrollBeyondLastLine: false,
       });
@@ -172,7 +174,7 @@ function FunctionEditor(props: {
     }
 
     return () => {};
-  }, [colorMode, path, readOnly, value]);
+  }, [colorMode, path, readOnly, value, fontSize]);
 
   useEffect(() => {
     if (monacoEl && editorRef.current) {
@@ -188,10 +190,11 @@ function FunctionEditor(props: {
   useEffect(() => {
     if (monacoEl && editorRef.current) {
       editorRef.current.updateOptions({
+        fontSize: fontSize,
         theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
       });
     }
-  }, [colorMode]);
+  }, [colorMode, fontSize]);
 
   // onChange
   useEffect(() => {

@@ -140,6 +140,7 @@ async function push(funcName: string, isCreate: boolean) {
     await functionControllerCreate(appSchema.appid, createDto)
   } else {
     const updateDto: UpdateFunctionDto = {
+      newName: funcName,
       description: funcSchema.description || '',
       methods: funcSchema.methods as any,
       code,

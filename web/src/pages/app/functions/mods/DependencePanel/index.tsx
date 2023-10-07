@@ -73,6 +73,7 @@ export default function DependenceList() {
           <TabPanel px={0} py={1}>
             {customPackage.length > 0 ? (
               <SectionList
+                className="pr-2"
                 style={{ height: SECTION_HEIGHT, overflowY: "auto", overflowX: "hidden" }}
               >
                 {customPackage.map((packageItem: TPackage) => {
@@ -122,7 +123,10 @@ export default function DependenceList() {
           </TabPanel>
           <TabPanel px={0} py={1}>
             {/* build in packages */}
-            <SectionList style={{ height: SECTION_HEIGHT, overflowY: "auto", overflowX: "hidden" }}>
+            <SectionList
+              className="pr-2"
+              style={{ height: SECTION_HEIGHT, overflowY: "auto", overflowX: "hidden" }}
+            >
               {builtinPackage.map((packageItem: TPackage) => {
                 return (
                   <SectionList.Item

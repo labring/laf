@@ -81,7 +81,7 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
             />
             <span
               className={clsx(
-                "text-2xl font-semibold",
+                "flex w-full justify-center text-2xl font-semibold",
                 darkMode ? "text-white" : "text-grayModern-900",
               )}
             >

@@ -3,7 +3,6 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
-  Center,
   Checkbox,
   CheckboxGroup,
   Divider,
@@ -17,7 +16,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spinner,
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
@@ -87,20 +85,6 @@ const CreateModal = (props: {
 
   const createFunctionMutation = useCreateFunctionMutation();
   const updateFunctionMutation = useUpdateFunctionMutation();
-
-  const { isLoading, data: TemplateList } = useGetRecommendFunctionTemplatesQuery(
-    {
-      page: 1,
-      pageSize: 3,
-      keyword: searchKey,
-      type: "default",
-      asc: 1,
-      sort: null,
-    },
-    {
-      enabled: isOpen && !isEdit,
-    },
-  );
 
   const InitialTemplateList = useGetRecommendFunctionTemplatesQuery(
     {
@@ -258,28 +242,17 @@ const CreateModal = (props: {
                     {t("Template.Recommended")}
                   </div>
                   <div className="mb-11 flex w-full">
-                    {!isLoading ? (
-                      (TemplateList?.data.list.length > 0
-                        ? TemplateList?.data.list
-                        : InitialTemplateList.data?.data.list
-                      ).map((item: TFunctionTemplate) => (
-                        <section
-                          className="h-28 w-1/3 px-1.5 py-1"
-                          key={item._id}
-                          onClick={() => {
-                            setTemplateOpen(true);
-                          }}
-                        >
-                          <TemplateCard template={item} isModal={true} />
-                        </section>
-                      ))
-                    ) : (
-                      <Center className="h-28 w-full">
-                        <span>
-                          <Spinner />
-                        </span>
-                      </Center>
-                    )}
+                    {InitialTemplateList.data?.data.list.map((item: TFunctionTemplate) => (
+                      <section
+                        className="h-28 w-1/3 px-1.5 py-1"
+                        key={item._id}
+                        onClick={() => {
+                          setTemplateOpen(true);
+                        }}
+                      >
+                        <TemplateCard template={item} isModal={true} />
+                      </section>
+                    ))}
                   </div>
                   <div>
                     <button

@@ -6,12 +6,7 @@ import {
 } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespace } from 'src/utils/getter'
-import {
-  LABEL_KEY_APP_ID,
-  LABEL_KEY_NODE_TYPE,
-  MB,
-  NodeType,
-} from '../constants'
+import { LABEL_KEY_APP_ID, MB } from '../constants'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from 'src/database/database.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
@@ -398,27 +393,14 @@ export class InstanceService {
               },
             },
           ],
-          affinity: {
-            nodeAffinity: {
-              // required to schedule on runtime node
-              requiredDuringSchedulingIgnoredDuringExecution: {
-                nodeSelectorTerms: [
-                  {
-                    matchExpressions: [
-                      {
-                        key: LABEL_KEY_NODE_TYPE,
-                        operator: 'In',
-                        values: [NodeType.Runtime],
-                      },
-                    ],
-                  },
-                ],
-              },
-            }, // end of nodeAffinity {}
-          }, // end of affinity {}
         }, // end of spec {}
       }, // end of template {}
     }
+
+    if (region.clusterConf.runtimeAffinity) {
+      spec.template.spec.affinity = region.clusterConf.runtimeAffinity
+    }
+
     return spec
   }
 
