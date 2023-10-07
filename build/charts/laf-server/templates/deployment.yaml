@@ -49,6 +49,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: DEFAULT_REGION_NAMESPACE
+              value: {{ .Values.default_region.fixed_namespace | quote}}
             - name: DATABASE_URL
               value: {{ .Values.databaseUrl | quote}}
             - name: METERING_DATABASE_URL

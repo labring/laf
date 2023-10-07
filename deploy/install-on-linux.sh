@@ -77,6 +77,8 @@ kubectl label node $NODENAME laf.dev/node.type=runtime
 sealos run labring/openebs:v1.9.0
 sealos run labring/cert-manager:v1.8.0
 sealos run labring/metrics-server:v0.6.2
-sealos run ingress-nginx:v1.8.1
+sealos run docker.io/labring/ingress-nginx:v1.8.1 \
+  -e HELM_OPTS="--set controller.hostNetwork=true --set controller.kind=DaemonSet --set controller.service.enabled=false"
+
 
 sealos run --env DOMAIN=$DOMAIN --env DB_PV_SIZE=5Gi --env OSS_PV_SIZE=5Gi --env EXTERNAL_HTTP_SCHEMA=http lafyun/laf:latest

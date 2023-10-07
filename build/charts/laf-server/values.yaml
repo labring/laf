@@ -9,6 +9,7 @@ apiServerUrl: ""
 siteName: "laf"
 # init default region conf
 default_region:
+  fixed_namespace: ""
   # db conf
   database_url: ""
   # minio conf
