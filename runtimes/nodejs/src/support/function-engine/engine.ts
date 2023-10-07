@@ -68,7 +68,7 @@ export class FunctionEngine {
     const wrapped = `
       const require = (module) => {
         fromModules.push(__filename)
-        return requireFunc(module, fromModules)
+        return requireFunc(module, fromModules, __context__)
       }
       ${code}; 
       const __main__ = exports.main || exports.default

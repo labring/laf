@@ -19,14 +19,15 @@ import xmlparser from 'express-xml-bodyparser'
 
 // init static method of class
 import './support/cloud-sdk'
+import storageServer from './storage-server'
+import { DatabaseChangeStream } from './support/database-change-stream'
 import { FunctionCache } from './support/function-engine/cache'
-import { DatabaseChangeStream } from './support/db-change-stream'
 
 const app = express()
 
 DatabaseAgent.accessor.ready.then(() => {
-  FunctionCache.initialize()
   DatabaseChangeStream.initialize()
+  FunctionCache.initialize()
 })
 
 if (process.env.NODE_ENV === 'development') {
@@ -69,7 +70,8 @@ app.use(function (req, res, next) {
   if (req.url !== '/_/healthz') {
     logger.info(
       requestId,
-      `${req.method} "${req.url}" - referer: ${req.get('referer') || '-'
+      `${req.method} "${req.url}" - referer: ${
+        req.get('referer') || '-'
       } ${req.get('user-agent')}`,
     )
     logger.trace(requestId, `${req.method} ${req.url}`, {
@@ -102,8 +104,9 @@ process.on('SIGINT', gracefullyExit)
 
 async function gracefullyExit() {
   await DatabaseAgent.accessor.close()
-  server.close(async () => {
-    logger.info('process gracefully exited!')
-    process.exit(0)
-  })
+  await server.close()
+  await storageServer.close()
+
+  logger.info('process gracefully exited!')
+  process.exit(0)
 }

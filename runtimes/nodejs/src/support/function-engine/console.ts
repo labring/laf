@@ -10,20 +10,25 @@ export class FunctionConsole {
     if (!Config.LOG_SERVER_URL || !Config.LOG_SERVER_TOKEN) return
 
     const doc = {
-      request_id: ctx.requestId,
+      request_id: ctx.requestId || '',
       func: ctx.__function_name,
+      is_required: ctx.__is_required || false,
       data: message,
       created_at: new Date(),
     }
 
-    axios.post(`${Config.LOG_SERVER_URL}/function/log`, {
-      appid: Config.APPID,
-      log: doc,
-    }, {
-      headers: {
-        'x-token': Config.LOG_SERVER_TOKEN
-      }
-    })
+    axios.post(
+      `${Config.LOG_SERVER_URL}/function/log`,
+      {
+        appid: Config.APPID,
+        log: doc,
+      },
+      {
+        headers: {
+          'x-token': Config.LOG_SERVER_TOKEN,
+        },
+      },
+    )
   }
 
   constructor(ctx: FunctionContext) {
