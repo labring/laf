@@ -1,5 +1,10 @@
 import { request, RequestParams } from "../../util/request";
-import { BillingControllerFindAllParams, CalculatePriceDto } from "./data-contracts";
+import {
+  BillingControllerFindAllParams,
+  BillingControllerGetExpenseByDayParams,
+  BillingControllerGetExpenseParams,
+  CalculatePriceDto,
+} from "./data-contracts";
 
 /**
  * No description
@@ -16,6 +21,46 @@ export async function billingControllerFindAll(
 ): Promise<any> {
   return request({
     url: `/v1/billings`,
+    method: "GET",
+    params: query,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Billing
+ * @name BillingControllerGetExpense
+ * @summary Get my total amount
+ * @request GET:/v1/billings/amount
+ * @secure
+ */
+export async function billingControllerGetExpense(
+  query: BillingControllerGetExpenseParams,
+  configParams: RequestParams = {},
+): Promise<any> {
+  return request({
+    url: `/v1/billings/amount`,
+    method: "GET",
+    params: query,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Billing
+ * @name BillingControllerGetExpenseByDay
+ * @summary Get my total amount by day
+ * @request GET:/v1/billings/amounts
+ * @secure
+ */
+export async function billingControllerGetExpenseByDay(
+  query: BillingControllerGetExpenseByDayParams,
+  configParams: RequestParams = {},
+): Promise<any> {
+  return request({
+    url: `/v1/billings/amounts`,
     method: "GET",
     params: query,
     ...configParams,

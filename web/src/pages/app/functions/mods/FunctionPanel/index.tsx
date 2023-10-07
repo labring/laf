@@ -36,6 +36,7 @@ import "./index.css";
 import { TFunction, TFunctionNode } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
 import RecycleBinModal from "@/pages/app/functions/mods/RecycleBinModal";
+import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
 
 type TagItem = {
@@ -68,6 +69,7 @@ export default function FunctionList() {
   const darkMode = colorMode === COLOR_MODE.dark;
 
   const { currentApp, showSuccess } = useGlobalStore();
+  const { commonSettings } = useCustomSettingStore();
 
   const { id: functionName } = useParams();
   const navigate = useNavigate();
@@ -220,7 +222,36 @@ export default function FunctionList() {
       if (item.children?.length) {
         fileType = FileType.folder;
       }
-      const level = item.level || item?.name.split("/").length - 1;
+      const nameParts = item.name.split("/");
+      const level = item.level || nameParts.length - 1;
+      const itemDisplay = (() => {
+        if (
+          item.children?.length ||
+          isFuncList ||
+          commonSettings.funcListDisplay === "name" ||
+          !item.desc
+        ) {
+          return <span>{nameParts[nameParts.length - 1]}</span>;
+        } else if (commonSettings.funcListDisplay === "desc") {
+          return <span>{item.desc}</span>;
+        } else if (commonSettings.funcListDisplay === "desc-name") {
+          return (
+            <span className="flex items-center">
+              <span>{item.desc}</span>
+              <div className="ml-1 translate-y-[1px] scale-[.85] opacity-75">{` ${
+                nameParts[nameParts.length - 1]
+              }`}</div>
+            </span>
+          );
+        } else {
+          return (
+            <span className="flex items-center">
+              <span>{nameParts[nameParts.length - 1]}</span>
+              <div className="ml-1 translate-y-[1px] scale-[.85] opacity-75">{` ${item.desc}`}</div>
+            </span>
+          );
+        }
+      })();
 
       return (
         <React.Fragment key={index}>
@@ -247,13 +278,13 @@ export default function FunctionList() {
           >
             <div
               className={clsx(
-                "overflow-hidden text-ellipsis whitespace-nowrap font-medium",
+                "flex items-center overflow-hidden text-ellipsis whitespace-nowrap font-medium",
                 !isFuncList ? `ml-${2 * level}` : "",
               )}
             >
               <FileTypeIcon type={fileType} width="12px" />
-              <span className="ml-2">
-                {item.children?.length || isFuncList ? item?.name : item?.name.split("/")[level]}
+              <span className="ml-2" style={{ fontSize: commonSettings.fontSize - 2 }}>
+                {itemDisplay}
               </span>
             </div>
             {!item.children?.length && (

@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ErrorIcon } from "@/components/CommonIcon";
 
-import { MonitorDataType } from "../../mods/StatusBar/MonitorBar";
+import { MonitorDataType } from "../../../mods/StatusBar/MonitorBar";
 
 import AreaCard from "./AreaCard";
 import PieCard from "./PieCard";

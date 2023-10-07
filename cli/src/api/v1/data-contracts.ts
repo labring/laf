@@ -1,3 +1,26 @@
+export interface ResponseUtil {
+  error?: string;
+  data?: object;
+}
+
+export interface RuntimeImageGroup {
+  main: string;
+  init: string;
+  sidecar?: string;
+}
+
+export interface Runtime {
+  _id: string;
+  name: string;
+  type: string;
+  image: RuntimeImageGroup;
+  state: string;
+  version: string;
+  latest: boolean;
+}
+
+export type CloudFunction = object;
+
 export interface CreateFunctionDto {
   /** Function name is unique in the application */
   name: string;
@@ -8,23 +31,36 @@ export interface CreateFunctionDto {
   tags?: string[];
 }
 
-export interface ResponseUtil {
-  error?: string;
-  data?: object;
+export interface UpdateFunctionDebugDto {
+  params: object;
 }
 
 export interface UpdateFunctionDto {
+  /** Function name is unique in the application */
+  newName: string;
   description?: string;
   methods: ("GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD")[];
   /** The source code of the function */
   code: string;
   tags?: string[];
-  params?: object;
 }
 
 export interface CompileFunctionDto {
   /** The source code of the function */
   code: string;
+}
+
+export interface CloudFunctionHistorySource {
+  code: string;
+}
+
+export interface CloudFunctionHistory {
+  _id: string;
+  appid: string;
+  functionId: string;
+  source: CloudFunctionHistorySource;
+  /** @format date-time */
+  createdAt: string;
 }
 
 export interface Region {
@@ -61,31 +97,24 @@ export interface ApplicationBundleResource {
   reservedTimeAfterExpired: number;
 }
 
+export interface Autoscaling {
+  enable: boolean;
+  minReplicas: number;
+  maxReplicas: number;
+  targetCPUUtilizationPercentage: number;
+  targetMemoryUtilizationPercentage: number;
+}
+
 export interface ApplicationBundle {
   _id: string;
   appid: string;
   resource: ApplicationBundleResource;
+  autoscaling: Autoscaling;
   isTrialTier?: boolean;
   /** @format date-time */
   createdAt: string;
   /** @format date-time */
   updatedAt: string;
-}
-
-export interface RuntimeImageGroup {
-  main: string;
-  init: string;
-  sidecar?: string;
-}
-
-export interface Runtime {
-  _id: string;
-  name: string;
-  type: string;
-  image: RuntimeImageGroup;
-  state: string;
-  version: string;
-  latest: boolean;
 }
 
 export interface EnvironmentVariable {
@@ -108,6 +137,7 @@ export interface RuntimeDomain {
   _id: string;
   appid: string;
   domain: string;
+  customDomain?: string;
   state: "Active" | "Inactive" | "Deleted";
   phase: "Creating" | "Created" | "Deleting" | "Deleted";
   /** @format date-time */
@@ -137,6 +167,19 @@ export interface ApplicationWithRelations {
   domain?: RuntimeDomain;
 }
 
+export interface CreateAutoscalingDto {
+  /** @default false */
+  enable: boolean;
+  /** @default 1 */
+  minReplicas: number;
+  /** @default 5 */
+  maxReplicas: number;
+  /** @default 50 */
+  targetCPUUtilizationPercentage?: number;
+  /** @default 50 */
+  targetMemoryUtilizationPercentage?: number;
+}
+
 export interface CreateApplicationDto {
   /** @example 200 */
   cpu: number;
@@ -146,6 +189,7 @@ export interface CreateApplicationDto {
   databaseCapacity: number;
   /** @example 4096 */
   storageCapacity: number;
+  autoscaling: CreateAutoscalingDto;
   name: string;
   /** @default "Running" */
   state: "Running";
@@ -186,6 +230,11 @@ export interface UpdateApplicationBundleDto {
   databaseCapacity: number;
   /** @example 4096 */
   storageCapacity: number;
+  autoscaling: CreateAutoscalingDto;
+}
+
+export interface BindCustomDomainDto {
+  domain: string;
 }
 
 export interface CreateEnvironmentDto {
@@ -283,7 +332,25 @@ export interface Account {
   createdBy: string;
 }
 
+export type Number = object;
+
 export interface AccountChargeOrder {
+  _id: string;
+  accountId: string;
+  amount: number;
+  currency: "CNY" | "USD";
+  phase: "Pending" | "Paid" | "Failed";
+  channel: "Manual" | "Alipay" | "WeChat" | "Stripe" | "Paypal" | "Google" | "GiftCode" | "InviteCode";
+  result: object;
+  message: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  createdBy: string;
+}
+
+export interface GetAccountChargeOrdersDto {
   _id: string;
   accountId: string;
   amount: number;
@@ -297,6 +364,7 @@ export interface AccountChargeOrder {
   /** @format date-time */
   updatedAt: string;
   createdBy: string;
+  reward: number;
 }
 
 export interface WeChatPaymentCreateOrderResult {
@@ -317,45 +385,49 @@ export interface CreateChargeOrderDto {
   currency: string;
 }
 
+export interface AccountChargeReward {
+  _id: string;
+  amount: number;
+  reward: number;
+  message?: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface UseGiftCodeDto {
+  /** gift code */
+  code: string;
+}
+
+export interface InviteCode {
+  _id: string;
+  uid: string;
+  code: string;
+  state: "Active" | "Inactive";
+  name: string;
+  description: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface InviteCodeProfit {
+  _id: string;
+  uid: string;
+  invitedBy: string;
+  codeId: string;
+  /** @format date-time */
+  createdAt: string;
+  profit: number;
+  username: string;
+}
+
 export interface CreateWebsiteDto {
   bucketName: string;
   state: string;
-}
-
-export interface BindCustomDomainDto {
-  domain: string;
-}
-
-export interface Pat2TokenDto {
-  /**
-   * PAT
-   * @example "laf_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-   */
-  pat: string;
-}
-
-export interface UserProfile {
-  _id: string;
-  uid: string;
-  openData?: object;
-  avatar?: string;
-  name?: string;
-  /** @format date-time */
-  createdAt: string;
-  /** @format date-time */
-  updatedAt: string;
-}
-
-export interface UserWithProfile {
-  _id: string;
-  username: string;
-  email?: string;
-  phone?: string;
-  /** @format date-time */
-  createdAt: string;
-  /** @format date-time */
-  updatedAt: string;
-  profile?: UserProfile;
 }
 
 export interface PasswdSignupDto {
@@ -472,14 +544,84 @@ export interface PhoneSigninDto {
   inviteCode?: string;
 }
 
+export interface Pat2TokenDto {
+  /**
+   * PAT
+   * @example "laf_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+   */
+  pat: string;
+}
+
+export interface SendEmailCodeDto {
+  email: string;
+  /** verify code type */
+  type: "bind" | "Unbind";
+}
+
+export interface CreatePATDto {
+  name: string;
+  /** @min 60 */
+  expiresIn: number;
+}
+
+export interface IdVerified {
+  isVerified: boolean;
+  idVerifyFailedTimes: number;
+}
+
+export interface UserProfile {
+  _id: string;
+  uid: string;
+  openData?: object;
+  avatar?: string;
+  name?: string;
+  idVerified: IdVerified;
+  idCard: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface UserWithProfile {
+  _id: string;
+  username: string;
+  email?: string;
+  phone?: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  profile?: UserProfile;
+}
+
 export interface BindPhoneDto {
   /**
-   * phone number
+   * old phone number
    * @example "13805718888"
    */
-  phone: string;
+  oldPhoneNumber: string;
   /**
-   * sms verify code
+   * new phone number
+   * @example "13805718888"
+   */
+  newPhoneNumber: string;
+  /**
+   * sms verify code for old phone number
+   * @example "032476"
+   */
+  oldSmsCode: string;
+  /**
+   * sms verify code for new phone number
+   * @example "032476"
+   */
+  newSmsCode: string;
+}
+
+export interface BindEmailDto {
+  email: string;
+  /**
+   * verify code
    * @example "032476"
    */
   code: string;
@@ -491,22 +633,6 @@ export interface BindUsernameDto {
    * @example "laf-user"
    */
   username: string;
-  /**
-   * phone
-   * @example "13805718888"
-   */
-  phone: string;
-  /**
-   * sms verify code
-   * @example "032476"
-   */
-  code: string;
-}
-
-export interface CreatePATDto {
-  name: string;
-  /** @min 60 */
-  expiresIn: number;
 }
 
 export interface CreateTriggerDto {
@@ -568,6 +694,12 @@ export interface ApplicationBilling {
   updatedAt: string;
 }
 
+export interface BillingsByDayDto {
+  totalAmount: string;
+  /** @format date-time */
+  day: string;
+}
+
 export interface CalculatePriceResultDto {
   /** @example 0.072 */
   cpu: number;
@@ -590,6 +722,7 @@ export interface CalculatePriceDto {
   databaseCapacity: number;
   /** @example 4096 */
   storageCapacity: number;
+  autoscaling: CreateAutoscalingDto;
   regionId: string;
 }
 
@@ -633,13 +766,236 @@ export interface ResourceBundle {
   updatedAt: string;
 }
 
-export type AppControllerGetRuntimesData = any;
+export interface FunctionTemplateItemSource {
+  /** The source code of the function */
+  code: string;
+}
+
+export interface FunctionTemplateItems {
+  _id: string;
+  templateId: string;
+  name: string;
+  desc: string;
+  source: FunctionTemplateItemSource;
+  methods: ("GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD")[];
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface UserInfo {
+  username?: string;
+  email?: string;
+}
+
+export interface FunctionTemplatesDto {
+  _id: string;
+  uid: string;
+  name: string;
+  dependencies: string[];
+  environments: EnvironmentVariable[];
+  private: boolean;
+  isRecommended: boolean;
+  description: string;
+  star: number;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  items?: FunctionTemplateItems[];
+  user?: UserInfo;
+  author: string;
+  stared: boolean;
+}
+
+export interface FunctionTemplateItemDto {
+  /** FunctionTemplate item name */
+  name: string;
+  description?: string;
+  methods: ("GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD")[];
+  /** The source code of the function */
+  code: string;
+}
+
+export interface CreateFunctionTemplateDto {
+  /** function template name */
+  name: string;
+  /** Dependencies */
+  dependencies: CreateDependencyDto[];
+  /** environments */
+  environments: CreateEnvironmentDto[];
+  /** Private flag */
+  private: boolean;
+  /** function template description */
+  description?: string;
+  /** items of the function template */
+  items: FunctionTemplateItemDto[];
+}
+
+export type ObjectId = object;
+
+export interface UpdateFunctionTemplateDto {
+  /** Function template id */
+  functionTemplateId: ObjectId;
+  /** Template name */
+  name: string;
+  /** Dependencies */
+  dependencies: CreateDependencyDto[];
+  /** Environments */
+  environments: CreateEnvironmentDto[];
+  /** Private flag */
+  private: boolean;
+  /** function template description */
+  description?: string;
+  /** items of the function template */
+  items?: FunctionTemplateItemDto[];
+}
+
+export interface GetFunctionTemplateUsedByDto {
+  uid: string;
+}
+
+export interface DeleteRecycleBinItemsDto {
+  /** The list of item ids */
+  ids: string[];
+}
+
+export interface RestoreRecycleBinItemsDto {
+  /** The list of item ids */
+  ids: string[];
+}
+
+export interface CloudFunctionSourceDto {
+  code: string;
+  compiled: string;
+  uri?: string;
+  version: number;
+  hash?: string;
+  lang?: string;
+}
+
+export interface FunctionRecycleBinItemsDto {
+  _id: string;
+  appid: string;
+  /** Function name is unique in the application */
+  name: string;
+  source: CloudFunctionSourceDto;
+  description?: string;
+  tags?: string[];
+  methods: ("GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD")[];
+  params?: object;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+}
+
+export interface Group {
+  _id: string;
+  name: string;
+  appid: string;
+  createdBy: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface User {
+  _id: string;
+  username: string;
+  email?: string;
+  phone?: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface GetGroupInviteCodeDetailDto {
+  group: Group;
+  invitedBy: User;
+}
+
+export interface CreateGroupDto {
+  name: string;
+}
+
+export interface UpdateGroupDto {
+  name: string;
+}
+
+export interface FindGroupInviteCodeDto {
+  usedBy: User;
+}
+
+export interface GroupInviteCode {
+  _id: string;
+  usedBy?: string;
+  code: string;
+  role: string;
+  groupId: string;
+  createdBy: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface GenerateGroupInviteCodeDto {
+  role: "owner" | "admin" | "developer";
+}
+
+export interface FindGroupMemberDto {
+  username: string;
+}
+
+export interface GroupMember {
+  _id: string;
+  uid: string;
+  groupId: string;
+  role: "owner" | "admin" | "developer";
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface UpdateGroupMemberRoleDto {
+  role: "owner" | "admin" | "developer";
+}
 
 export type ApplicationControllerFindOneData = any;
 
 export type DatabaseControllerProxyData = any;
 
+export type DatabaseControllerExportDatabaseData = any;
+
+export type DatabaseControllerImportDatabaseData = any;
+
+export interface AccountControllerGetChargeOrderAmountParams {
+  startTime: number;
+  endTime: number;
+}
+
+export interface AccountControllerGetChargeRecordsParams {
+  id: string;
+  channel: string;
+  startTime: string;
+  endTime: string;
+  state: string;
+  page: number;
+  pageSize: number;
+}
+
 export type AccountControllerWechatNotifyData = any;
+
+export interface AccountControllerInviteCodeProfitParams {
+  page: number;
+  pageSize: number;
+}
+
+export type UserControllerGetAvatarData = any;
 
 export interface LogControllerGetLogsParams {
   /** The request id. Optional */
@@ -661,7 +1017,9 @@ export type SettingControllerGetSettingByKeyData = any;
 
 export interface BillingControllerFindAllParams {
   /** appid */
-  appid?: string;
+  appid?: string[];
+  /** billing state */
+  state?: string;
   /**
    * pagination start time
    * @example "2021-01-01T00:00:00.000Z"
@@ -682,4 +1040,72 @@ export interface BillingControllerFindAllParams {
    * @example 10
    */
   pageSize?: number;
+}
+
+export interface BillingControllerGetExpenseParams {
+  startTime: number;
+  endTime: number;
+  appid: string[];
+  state: string;
+}
+
+export interface BillingControllerGetExpenseByDayParams {
+  startTime: number;
+  endTime: number;
+  appid: string[];
+  state: string;
+}
+
+export interface FunctionTemplateControllerGetAllFunctionTemplateParams {
+  asc: number;
+  page: number;
+  pageSize: number;
+  keyword: string;
+  sort: string;
+}
+
+export interface FunctionTemplateControllerGetFunctionTemplateUsedByParams {
+  asc: number;
+  page: number;
+  pageSize: number;
+  id: string;
+}
+
+export interface FunctionTemplateControllerGetMyFunctionTemplateParams {
+  page: number;
+  pageSize: number;
+  keyword: string;
+  asc: number;
+  sort: string;
+  type: string;
+}
+
+export interface FunctionTemplateControllerGetRecommendFunctionTemplateParams {
+  asc: number;
+  page: number;
+  pageSize: number;
+  keyword: string;
+  sort: string;
+}
+
+export interface FunctionRecycleBinControllerGetRecycleBinParams {
+  keyword: string;
+  page: number;
+  pageSize: number;
+  startTime: number;
+  endTime: number;
+  appid: string;
+}
+
+export interface MonitorControllerGetDataParams {
+  q: ("cpuUsage" | "memoryUsage" | "networkReceive" | "networkTransmit" | "databaseUsage" | "storageUsage")[];
+  /**
+   * Query step in seconds
+   * @min 60
+   * @max 3600
+   */
+  step: number;
+  /** Query type */
+  type: "range" | "instant";
+  appid: string;
 }

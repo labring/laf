@@ -16,7 +16,7 @@ import {
 import ChargeButton from "@/components/ChargeButton";
 import { CostIcon, ExpendIcon, RechargeIcon } from "@/components/CommonIcon";
 import DateRangePicker from "@/components/DateRangePicker";
-import { formatDate, formatOriginalPrice, formatPrice, hidePhoneNumber } from "@/utils/format";
+import { formatDate, formatOriginalPrice, formatPrice } from "@/utils/format";
 import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
 import { AccountControllerGetChargeOrderAmount } from "@/apis/v1/accounts";
@@ -103,10 +103,9 @@ export default function Usage() {
         <div className="flex flex-col pr-4">
           <span>{t("SettingPanel.MyAccount")}</span>
           <div className="mt-3 flex h-36 w-[306px] flex-col justify-between rounded-lg bg-primary-500 px-6 text-white">
-            <div className="flex items-center justify-between pt-3 text-lg">
-              <span>{hidePhoneNumber(userInfo?.phone || "")}</span>
+            <div className="flex items-center justify-end pt-3 text-lg">
               <span className="flex items-center">
-                {userInfo?.username}
+                <span className="flex w-16 justify-end truncate">{userInfo?.username}</span>
                 <Avatar
                   className="ml-2"
                   boxShadow="base"

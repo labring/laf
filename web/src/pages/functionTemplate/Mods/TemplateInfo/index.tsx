@@ -36,7 +36,9 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any 
               backgroundColor={"primary.500"}
             />
             <div className="ml-3 flex flex-col">
-              <span className="text-lg font-semibold">{functionTemplate.user?.username}</span>
+              <span className="w-40 truncate text-lg font-semibold">
+                {functionTemplate.user?.username}
+              </span>
               <Tooltip label={t("Developing")}>
                 <span className="space-x-1 text-grayModern-400">
                   <WechatIcon />

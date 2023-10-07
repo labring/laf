@@ -296,6 +296,7 @@ export type TFunctionNode = {
   name: string;
   level?: number;
   isExpanded?: boolean;
+  desc?: string;
   children: TreeNode[];
 };
 

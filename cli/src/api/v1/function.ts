@@ -1,5 +1,11 @@
 import { request, RequestParams } from "../../util/request";
-import { CompileFunctionDto, CreateFunctionDto, LogControllerGetLogsParams, UpdateFunctionDto } from "./data-contracts";
+import {
+  CompileFunctionDto,
+  CreateFunctionDto,
+  LogControllerGetLogsParams,
+  UpdateFunctionDebugDto,
+  UpdateFunctionDto,
+} from "./data-contracts";
 
 /**
  * No description
@@ -104,6 +110,28 @@ export async function functionControllerRemove(
  * No description
  *
  * @tags Function
+ * @name FunctionControllerUpdateDebug
+ * @summary Update function debug info
+ * @request PATCH:/v1/apps/{appid}/functions/{name}/debug/params
+ * @secure
+ */
+export async function functionControllerUpdateDebug(
+  appid: string,
+  name: string,
+  data: UpdateFunctionDebugDto,
+  configParams: RequestParams = {},
+): Promise<any> {
+  return request({
+    url: `/v1/apps/${appid}/functions/${name}/debug/params`,
+    method: "PATCH",
+    data: data,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Function
  * @name FunctionControllerCompile
  * @summary Compile a function
  * @request POST:/v1/apps/{appid}/functions/{name}/compile
@@ -119,6 +147,26 @@ export async function functionControllerCompile(
     url: `/v1/apps/${appid}/functions/${name}/compile`,
     method: "POST",
     data: data,
+    ...configParams,
+  });
+}
+/**
+ * No description
+ *
+ * @tags Function
+ * @name FunctionControllerGetHistory
+ * @summary Get cloud function history
+ * @request GET:/v1/apps/{appid}/functions/{name}/history
+ * @secure
+ */
+export async function functionControllerGetHistory(
+  appid: string,
+  name: string,
+  configParams: RequestParams = {},
+): Promise<any> {
+  return request({
+    url: `/v1/apps/${appid}/functions/${name}/history`,
+    method: "GET",
     ...configParams,
   });
 }

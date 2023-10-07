@@ -3,6 +3,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    k8s.apisix.apache.org/enable-websocket: "true"
   name: minio-console-ingress
 spec:
   # apisix-ingress-controller is only interested in Ingress

@@ -16,6 +16,7 @@ export type RegionClusterConf = {
   driver: string
   kubeconfig: string
   npmInstallFlags: string
+  runtimeAffinity: any
 }
 
 export type RegionDatabaseConf = {

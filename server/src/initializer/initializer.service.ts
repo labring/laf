@@ -55,6 +55,7 @@ export class InitializerService {
         driver: 'kubernetes',
         kubeconfig: null,
         npmInstallFlags: '',
+        runtimeAffinity: {},
       },
       databaseConf: {
         driver: 'mongodb',
