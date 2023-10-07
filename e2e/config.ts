@@ -17,20 +17,6 @@ export class Config {
     return process.env.MONGO_URI
   }
 
-  static get APISIX_ADMIN_URL() {
-    if (!process.env.APISIX_ADMIN_URL)
-      throw new Error('APISIX_ADMIN_URL is not set')
-    return (
-      process.env.APISIX_ADMIN_URL ||
-      `http://${Config.DOMAIN}:9180/apisix/admin`
-    )
-  }
-
-  static get APISIX_ADMIN_KEY() {
-    if (!process.env.APISIX_ADMIN_KEY)
-      throw new Error('APISIX_ADMIN_KEY is not set')
-    return process.env.APISIX_ADMIN_KEY
-  }
 
   static get TEST_USERNAME() {
     return process.env.TEST_USERNAME || 'testing-e2e-user'

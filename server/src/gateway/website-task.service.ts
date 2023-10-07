@@ -92,15 +92,8 @@ export class WebsiteTaskService {
 
     assert(bucketDomain, 'bucket domain not found')
 
-    // create website route if not exists
-    const ingress = await this.websiteGateway.getIngress(region, site)
-    if (!ingress) {
-      await this.websiteGateway.createIngress(region, site)
-      this.logger.log(`create website ingress: ${site.domain}`)
-    }
-
     // create website custom certificate if custom domain is set
-    if (site.isCustom) {
+    if (site.isCustom && region.gatewayConf.tls.enabled) {
       const waitingTime = Date.now() - site.updatedAt.getTime()
 
       // create custom domain  certificate
@@ -119,6 +112,13 @@ export class WebsiteTaskService {
         // return to wait for cert to be ready
         return await this.relock(site._id, waitingTime)
       }
+    }
+
+    // create website route if not exists
+    const ingress = await this.websiteGateway.getIngress(region, site)
+    if (!ingress) {
+      await this.websiteGateway.createIngress(region, site)
+      this.logger.log(`create website ingress: ${site.domain}`)
     }
 
     // update phase to `Created`

@@ -15,7 +15,7 @@ import { RuntimeGatewayService } from './ingress/runtime-ingress.service'
 
 @Injectable()
 export class RuntimeDomainTaskService {
-  readonly lockTimeout = 10 // in second
+  readonly lockTimeout = 30 // in second
   private readonly logger = new Logger(RuntimeDomainTaskService.name)
 
   constructor(
@@ -91,9 +91,7 @@ export class RuntimeDomainTaskService {
 
     // issue ssl certificate
     // Warning: create certificate before ingress, otherwise apisix ingress will not work
-    const tls = region.gatewayConf.tls
-
-    if (doc.customDomain && tls.enabled) {
+    if (doc.customDomain && region.gatewayConf.tls) {
       // create custom certificate if custom domain is set
       const waitingTime = Date.now() - doc.updatedAt.getTime()
 
