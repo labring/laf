@@ -10,8 +10,9 @@ export class FunctionConsole {
     if (!Config.LOG_SERVER_URL || !Config.LOG_SERVER_TOKEN) return
 
     const doc = {
-      request_id: ctx.requestId,
+      request_id: ctx.requestId || '',
       func: ctx.__function_name,
+      is_required: ctx.__isRequired || false,
       data: message,
       created_at: new Date(),
     }

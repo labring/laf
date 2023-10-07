@@ -4,7 +4,11 @@ import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import WebSocket = require('ws')
 
-export type RequireFuncType = (module: string, fromModules?: string[]) => any
+export type RequireFuncType = (
+  module: string,
+  fromModules: string[],
+  ctx: FunctionContext,
+) => any
 
 /**
  * vm run context (global)
@@ -50,6 +54,7 @@ export interface FunctionContext {
   request?: Request
   response?: Response
   __function_name?: string
+  __isRequired: boolean
 }
 
 /**

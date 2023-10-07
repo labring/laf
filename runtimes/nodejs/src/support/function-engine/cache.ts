@@ -1,6 +1,6 @@
 import { CLOUD_FUNCTION_COLLECTION } from '../../constants'
 import { DatabaseAgent } from '../../db'
-import { ICloudFunctionData, RequireFuncType } from './types'
+import { FunctionContext, ICloudFunctionData, RequireFuncType } from './types'
 import { FunctionRequire } from './require'
 import { logger } from '../logger'
 import assert from 'assert'
@@ -36,7 +36,11 @@ export class FunctionCache {
    * @param module
    * @returns
    */
-  static requireCloudFunction(moduleName: string, fromModules?: string[]): any {
+  static requireCloudFunction(
+    moduleName: string,
+    fromModules: string[],
+    ctx: FunctionContext,
+  ): any {
     const func = FunctionCache.cache.get(moduleName)
     assert(
       func,
@@ -47,6 +51,7 @@ export class FunctionCache {
       func.name,
       func.source.compiled,
       fromModules,
+      ctx,
     )
     return module
   }
@@ -82,7 +87,8 @@ export class FunctionCache {
    */
   static requireFunc: RequireFuncType = (
     module: string,
-    fromModules?: string[],
+    fromModules: string[],
+    ctx: FunctionContext,
   ): any => {
     if (module === '@/cloud-sdk') {
       return require('@lafjs/cloud')
@@ -100,7 +106,7 @@ export class FunctionCache {
         )
       }
 
-      return FunctionCache.requireCloudFunction(cloudModule, fromModules)
+      return FunctionCache.requireCloudFunction(cloudModule, fromModules, ctx)
     }
     return require(module) as any
   }

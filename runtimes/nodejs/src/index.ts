@@ -21,11 +21,13 @@ import xmlparser from 'express-xml-bodyparser'
 import './support/cloud-sdk'
 import storageServer from './storage-server'
 import { DatabaseChangeStream } from './support/database-change-stream'
+import { FunctionCache } from './support/function-engine/cache'
 
 const app = express()
 
 DatabaseAgent.accessor.ready.then(() => {
   DatabaseChangeStream.initialize()
+  FunctionCache.initialize()
 })
 
 if (process.env.NODE_ENV === 'development') {
