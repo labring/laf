@@ -54,7 +54,7 @@ export interface FunctionContext {
   request?: Request
   response?: Response  
   __function_name?: string
-  __is_required: boolean
+  __is_required?: boolean
   [key: string]: any
 }
 
