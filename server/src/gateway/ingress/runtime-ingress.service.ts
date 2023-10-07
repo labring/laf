@@ -86,9 +86,12 @@ export class RuntimeGatewayService {
           'nginx.ingress.kubernetes.io/enable-cors': 'true',
           'nginx.ingress.kubernetes.io/cors-allow-credentials': 'true',
           'nginx.ingress.kubernetes.io/cors-allow-methods': '*',
-          'nginx.ingress.kubernetes.io/cors-allow-headers': '*',
+          'nginx.ingress.kubernetes.io/cors-allow-headers':
+            'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,x-laf-develop-token,x-laf-func-data',
           'nginx.ingress.kubernetes.io/cors-expose-headers': '*',
           'nginx.ingress.kubernetes.io/cors-allow-origin': '*',
+          'nginx.ingress.kubernetes.io/server-snippet':
+            'client_header_buffer_size 4096k;\nlarge_client_header_buffers 8 512k;\n',
         },
       },
       spec: { ingressClassName, rules, tls },
