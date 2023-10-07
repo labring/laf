@@ -222,7 +222,8 @@ export default function FunctionList() {
       if (item.children?.length) {
         fileType = FileType.folder;
       }
-      const level = item.level || item?.name.split("/").length - 1;
+      const nameParts = item.name.split("/");
+      const level = item.level || nameParts.length - 1;
       const itemDisplay = (() => {
         if (
           item.children?.length ||
@@ -230,7 +231,7 @@ export default function FunctionList() {
           commonSettings.funcListDisplay === "name" ||
           !item.desc
         ) {
-          return <span>{item.name.split("/")[level]}</span>;
+          return <span>{nameParts[nameParts.length - 1]}</span>;
         } else if (commonSettings.funcListDisplay === "desc") {
           return <span>{item.desc}</span>;
         } else if (commonSettings.funcListDisplay === "desc-name") {
@@ -238,14 +239,14 @@ export default function FunctionList() {
             <span className="flex items-center">
               <span>{item.desc}</span>
               <div className="ml-1 translate-y-[1px] scale-[.85] opacity-75">{` ${
-                item.name.split("/")[level]
+                nameParts[nameParts.length - 1]
               }`}</div>
             </span>
           );
         } else {
           return (
             <span className="flex items-center">
-              <span>{item.name.split("/")[level]}</span>
+              <span>{nameParts[nameParts.length - 1]}</span>
               <div className="ml-1 translate-y-[1px] scale-[.85] opacity-75">{` ${item.desc}`}</div>
             </span>
           );
