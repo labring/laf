@@ -11,4 +11,4 @@ spec:
     solvers:
       - http01:
           ingress:
-            class: apisix
+            class: nginx

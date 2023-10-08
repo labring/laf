@@ -1,29 +1,26 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { RegionService } from 'src/region/region.service'
-import { ApisixService } from './apisix.service'
 import * as assert from 'node:assert'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
 import { BucketDomain } from './entities/bucket-domain'
 import { DomainPhase, DomainState } from './entities/runtime-domain'
+import { BucketGatewayService } from './ingress/bucket-ingress.service'
 
 @Injectable()
 export class BucketDomainTaskService {
   readonly lockTimeout = 30 // in second
-  readonly concurrency = 1 // concurrency count
   private readonly logger = new Logger(BucketDomainTaskService.name)
 
   constructor(
-    private readonly apisixService: ApisixService,
+    private readonly bucketGateway: BucketGatewayService,
     private readonly regionService: RegionService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
-    if (ServerConfig.DISABLED_GATEWAY_TASK) {
-      return
-    }
+    if (ServerConfig.DISABLED_GATEWAY_TASK) return
 
     // Phase `Creating` -> `Created`
     this.handleCreatingPhase().catch((err) => {
@@ -76,16 +73,11 @@ export class BucketDomainTaskService {
     const region = await this.regionService.findByAppId(doc.appid)
     assert(region, 'region not found')
 
-    // create route if not exists
-    const id = `bucket-${doc.bucketName}`
-    const route = await this.apisixService.getRoute(region, id)
-    if (!route) {
-      await await this.apisixService.createBucketRoute(
-        region,
-        doc.bucketName,
-        doc.domain,
-      )
-      this.logger.log('bucket route created:' + doc.domain)
+    // create ingress if not exists
+    const ingress = await this.bucketGateway.getIngress(region, doc)
+    if (!ingress) {
+      await this.bucketGateway.createIngress(region, doc)
+      this.logger.log('bucket ingress created:' + doc.domain)
     }
 
     // update phase to `Created`
@@ -125,11 +117,10 @@ export class BucketDomainTaskService {
     assert(region, 'region not found')
 
     // delete route if exists
-    const id = `bucket-${doc.bucketName}`
-    const route = await this.apisixService.getRoute(region, id)
-    if (route) {
-      await this.apisixService.deleteBucketRoute(region, doc.bucketName)
-      this.logger.log('bucket route deleted: ' + doc.bucketName)
+    const ingress = await this.bucketGateway.getIngress(region, doc)
+    if (ingress) {
+      await this.bucketGateway.deleteIngress(region, doc)
+      this.logger.log('bucket ingress deleted: ' + doc.bucketName)
     }
 
     // update phase to `Deleted`

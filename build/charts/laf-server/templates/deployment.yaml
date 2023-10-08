@@ -49,6 +49,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: DEFAULT_REGION_NAMESPACE
+              value: {{ .Values.default_region.fixed_namespace | quote}}
             - name: DATABASE_URL
               value: {{ .Values.databaseUrl | quote}}
             - name: METERING_DATABASE_URL
@@ -75,14 +77,6 @@ spec:
               value: {{ .Values.default_region.runtime_domain }}
             - name: DEFAULT_REGION_WEBSITE_DOMAIN
               value: {{ .Values.default_region.website_domain }}
-            - name: DEFAULT_REGION_TLS
-              value: {{ .Values.default_region.tls | quote}}
-            - name: DEFAULT_REGION_APISIX_PUBLIC_PORT
-              value: {{ .Values.default_region.apisix_public_port | quote }}
-            - name: DEFAULT_REGION_APISIX_API_URL
-              value: {{ .Values.default_region.apisix_api_url }}
-            - name: DEFAULT_REGION_APISIX_API_KEY
-              value: {{ .Values.default_region.apisix_api_key }}
             - name: DEFAULT_REGION_LOG_SERVER_URL
               value: {{ .Values.default_region.log_server_url }}
             - name: DEFAULT_REGION_LOG_SERVER_SECRET

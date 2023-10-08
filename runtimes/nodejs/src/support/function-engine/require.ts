@@ -1,4 +1,4 @@
-import { RequireFuncType } from './types'
+import { FunctionContext, RequireFuncType } from './types'
 import { FunctionVm } from './vm'
 
 const defaultRequireFunction: RequireFuncType = (module): any => {
@@ -20,13 +20,23 @@ export class FunctionRequire {
    * @param code
    * @returns
    */
-  load(name: string, code: string, fromModules: string[]): any {
+  load(
+    name: string,
+    code: string,
+    fromModules: string[],
+    ctx: FunctionContext,
+  ): any {
     const context = {
+      ...ctx,
       __function_name: name,
-      requestId: '',
+      __is_required: true,
     }
 
-    const sandbox = FunctionVm.buildSandbox(context, this.requireFunc, fromModules)
+    const sandbox = FunctionVm.buildSandbox(
+      context,
+      this.requireFunc,
+      fromModules,
+    )
     const wrapped = this.warp(code)
     const script = FunctionVm.createVM(wrapped, {})
     return script.runInNewContext(sandbox, {})
@@ -41,7 +51,7 @@ export class FunctionRequire {
     return `
     const require = (module) => {
       fromModules.push(__filename)
-      return requireFunc(module, fromModules)
+      return requireFunc(module, fromModules, __context__)
     }
     const exports = {};
     ${code}

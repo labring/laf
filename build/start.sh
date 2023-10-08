@@ -13,7 +13,6 @@ fi
 EXTERNAL_HTTP_SCHEMA=${EXTERNAL_HTTP_SCHEMA:-https}
 INTERNAL_HTTP_SCHEMA=${INTERNAL_HTTP_SCHEMA:-http}
 
-ENABLE_APISIX_HOST_NETWORK=${ENABLE_APISIX_HOST_NETWORK:-true}
 
 NAMESPACE=${NAMESPACE:-laf-system}
 PASSWD_OR_SECRET=$(tr -cd 'a-z0-9' </dev/urandom |head -c32)
@@ -37,26 +36,6 @@ helm install mongodb -n ${NAMESPACE} \
     --set storage.size=${DB_PV_SIZE:-5Gi} \
     ./charts/mongodb
 
-
-# 2. deploy apisix
-APISIX_API_URL="http://apisix-admin.${NAMESPACE}.svc.cluster.local:9180/apisix/admin"
-APISIX_API_KEY=$PASSWD_OR_SECRET
-helm install apisix -n ${NAMESPACE} \
-    --set apisix.kind=DaemonSet \
-    --set apisix.securityContext.runAsUser=0 \
-    --set apisix.hostNetwork="${ENABLE_APISIX_HOST_NETWORK}" \
-    --set admin.credentials.admin=${APISIX_API_KEY} \
-    --set etcd.enabled=true \
-    --set etcd.host[0]="http://apisix-etcd:2379" \
-    --set dashboard.enabled=true    \
-    --set ingress-controller.enabled=true   \
-    --set ingress-controller.config.apisix.adminKey="${APISIX_API_KEY}" \
-    --set ingress-controller.config.apisix.serviceNamespace=${NAMESPACE} \
-    --set gateway.http.containerPort=80 \
-   	--set gateway.stream.enabled=true \
-  	--set gateway.tls.enabled=true \
-    --set gateway.tls.containerPort=443 \
-    ./charts/apisix
 
 ## 3. install prometheus
 PROMETHEUS_URL=http://prometheus-prometheus.${NAMESPACE}.svc.cluster.local:9090
@@ -101,6 +80,7 @@ LOG_SERVER_URL="http://log-server.${NAMESPACE}.svc.cluster.local:5060"
 LOG_SERVER_DATABASE_URL="mongodb://${DB_USERNAME:-admin}:${PASSWD_OR_SECRET}@mongodb-0.mongo.${NAMESPACE}.svc.cluster.local:27017/function-logs?authSource=admin&replicaSet=rs0&w=majority"
 LOG_SERVER_SECRET=$PASSWD_OR_SECRET
 helm install server -n ${NAMESPACE} \
+    --set fixed_namespace=${NAMESPACE} \
     --set databaseUrl=${DATABASE_URL} \
     --set meteringDatabaseUrl=${METERING_DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
@@ -116,20 +96,17 @@ helm install server -n ${NAMESPACE} \
     --set default_region.runtime_domain=${DOMAIN} \
     --set default_region.website_domain=site.${DOMAIN} \
     --set default_region.tls=false \
-    --set default_region.apisix_api_url=${APISIX_API_URL} \
-    --set default_region.apisix_api_key=${APISIX_API_KEY} \
-    --set default_region.apisix_public_port=80 \
     --set default_region.log_server_url=${LOG_SERVER_URL} \
     --set default_region.log_server_secret=${LOG_SERVER_SECRET} \
     --set default_region.log_server_database_url=${LOG_SERVER_DATABASE_URL} \
     $( [ "$ENABLE_MONITOR" = "true" ] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}" ) \
     ./charts/laf-server
 
-## 6. install laf-web
+## 6. install metering service
+sealos run docker.io/labring/sealos-cloud-resources-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system
+sealos run docker.io/labring/sealos-cloud-resources-metering-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system
+
+## 7. install laf-web
 helm install web -n ${NAMESPACE} \
     --set domain=${DOMAIN} \
     ./charts/laf-web
-
-## 7. install metering service
-sealos run docker.io/labring/sealos-cloud-resources-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system
-sealos run docker.io/labring/sealos-cloud-resources-metering-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system

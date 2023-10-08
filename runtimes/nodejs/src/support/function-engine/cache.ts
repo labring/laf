@@ -1,11 +1,11 @@
 import { CLOUD_FUNCTION_COLLECTION } from '../../constants'
 import { DatabaseAgent } from '../../db'
-import { ICloudFunctionData, RequireFuncType } from './types'
+import { FunctionContext, ICloudFunctionData, RequireFuncType } from './types'
 import { FunctionRequire } from './require'
 import { logger } from '../logger'
 import assert from 'assert'
 import { InitHook } from '../init-hook'
-import Config from '../../config'
+import { DatabaseChangeStream } from '../database-change-stream'
 
 export class FunctionCache {
   private static cache: Map<string, ICloudFunctionData> = new Map()
@@ -21,7 +21,10 @@ export class FunctionCache {
       FunctionCache.cache.set(func.name, func)
     }
 
-    FunctionCache.streamChange()
+    DatabaseChangeStream.onStreamChange(
+      CLOUD_FUNCTION_COLLECTION,
+      this.streamChange.bind(this),
+    )
     logger.info('Function cache initialized.')
 
     // invoke init function
@@ -33,7 +36,11 @@ export class FunctionCache {
    * @param module
    * @returns
    */
-  static requireCloudFunction(moduleName: string, fromModules?: string[]): any {
+  static requireCloudFunction(
+    moduleName: string,
+    fromModules: string[],
+    ctx: FunctionContext,
+  ): any {
     const func = FunctionCache.cache.get(moduleName)
     assert(
       func,
@@ -44,6 +51,7 @@ export class FunctionCache {
       func.name,
       func.source.compiled,
       fromModules,
+      ctx,
     )
     return module
   }
@@ -53,41 +61,22 @@ export class FunctionCache {
    * @param
    * @returns
    */
-  static async streamChange() {
-    logger.info('Listening for changes in cloud function collection...')
-    const stream = DatabaseAgent.db
-      .collection(CLOUD_FUNCTION_COLLECTION)
-      .watch()
+  static async streamChange(change) {
+    if (change.operationType === 'insert') {
+      const func = await DatabaseAgent.db
+        .collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
+        .findOne({ _id: change.documentKey._id })
 
-    const changeEvent = async (change) => {
-      if (change.operationType === 'insert') {
-        const func = await DatabaseAgent.db
-          .collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
-          .findOne({ _id: change.documentKey._id })
-
-        // add func in map
-        FunctionCache.cache.set(func.name, func)
-      } else if (change.operationType == 'delete') {
-        // remove this func
-        for (const [funcName, func] of this.cache) {
-          if (change.documentKey._id.equals(func._id)) {
-            this.cache.delete(funcName)
-          }
+      // add func in map
+      FunctionCache.cache.set(func.name, func)
+    } else if (change.operationType == 'delete') {
+      // remove this func
+      for (const [funcName, func] of this.cache) {
+        if (change.documentKey._id.equals(func._id)) {
+          this.cache.delete(funcName)
         }
       }
     }
-
-    stream.on('change', changeEvent)
-
-    stream.once('close', () => {
-      logger.error('Cloud function change stream closed...')
-      stream.off('change', changeEvent)
-
-      setTimeout(() => {
-        logger.info('Reconnecting cloud function change stream......')
-        FunctionCache.streamChange()
-      }, Config.CHANGE_STREAM_RECONNECT_INTERVAL)
-    })
   }
 
   /**
@@ -98,7 +87,8 @@ export class FunctionCache {
    */
   static requireFunc: RequireFuncType = (
     module: string,
-    fromModules?: string[],
+    fromModules: string[],
+    ctx: FunctionContext,
   ): any => {
     if (module === '@/cloud-sdk') {
       return require('@lafjs/cloud')
@@ -116,7 +106,7 @@ export class FunctionCache {
         )
       }
 
-      return FunctionCache.requireCloudFunction(cloudModule, fromModules)
+      return FunctionCache.requireCloudFunction(cloudModule, fromModules, ctx)
     }
     return require(module) as any
   }

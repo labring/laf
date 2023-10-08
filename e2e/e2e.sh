@@ -47,36 +47,6 @@ export MONGO_URI="mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@mongodb-0.mongo.
 echo "mongodb user is ${MONGODB_USER}"
 echo "mongodb passwd is ${MONGODB_PASSWORD}"
 
-export APISIX_ADMIN_KEY=$(kubectl get configmap apisix-configmap -n laf-system -o jsonpath='{.data.config\.yaml}' | grep "default_cluster_admin_key" | awk -F': ' '{print $2}' | tr -d '"')
-echo "APISIX_ADMIN_KEY is ${APISIX_ADMIN_KEY}"
-
-############## Wait for Apisix api route ready ##############
-
-echo "================= Wait for Apisix api route ready ================="
-
-export LAF_API_DOMAIN=api.$DOMAIN
-export APISIX_ADMIN_URL=http://$DOMAIN:9180/apisix/admin
-
-get_api_roytes_retry_count=0
-
-while [ $get_api_roytes_retry_count -lt $GET_LAF_API_ROUTE_MAX_RETRY_COUNT ]
-do
-    response=$(curl -s $APISIX_ADMIN_URL/routes -H "X-API-KEY: $APISIX_ADMIN_KEY")
-    laf_api_route_exists=$(echo $response | jq '.list[].value.host' | grep -c $LAF_API_DOMAIN)
-    if [ $laf_api_route_exists -gt 0 ]
-    then
-        echo "Find route for $LAF_API_DOMAIN"
-        break
-    fi
-    echo "Can not Find route for $LAF_API_DOMAIN. Retrying in 1 second..."
-    sleep 1
-    get_api_roytes_retry_count=$((get_api_roytes_retry_count+1))
-done
-if [ $laf_api_route_exists -eq 0 ]
-then
-    echo "Can not Find route for $LAF_API_DOMAIN. Exit"
-    exit 1
-fi
 
 echo "================= Get Laf region ================="
 

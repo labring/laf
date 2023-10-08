@@ -1,66 +1,25 @@
-apiVersion: apisix.apache.org/v2
-kind: ApisixRoute
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: laf-web-ingress
 spec:
-  http:
-    - name: laf-web
-      match:
-        hosts:
-          - {{ .Values.domain }}
-        paths:
-          - /*
-      backends:
-        - serviceName: laf-web
-          servicePort: 80
-      websocket: true
-      plugins:
-        - name: gzip
-          enable: true
-          config:
-            comp_level: 6
-            min_length: 100
-            types:
-              - text/plain
-              - text/css
-              - text/html
-              - text/xml
-              - text/javascript
-              - application/json
-              - application/x-javascript
-              - application/javascript
-              - image/bmp
-              - image/png
-              - font/ttf
-              - font/otf
-              - font/eot
-    - name: laf-web-api
-      match:
-        hosts:
-          - {{ .Values.domain }}
-        paths:
-          - /v1/*
-      backends:
-        - serviceName: laf-server
-          servicePort: 3000
-      websocket: true
-      plugins:
-        - name: gzip
-          enable: true
-          config:
-            comp_level: 6
-            min_length: 100
-            types:
-              - text/plain
-              - text/css
-              - text/html
-              - text/xml
-              - text/javascript
-              - application/json
-              - application/x-javascript
-              - application/javascript
-              - image/bmp
-              - image/png
-              - font/ttf
-              - font/otf
-              - font/eot
+  ingressClassName: nginx
+  rules:
+  - host: {{ .Values.domain }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: laf-web
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+      - backend:
+          service:
+            name: laf-server
+            port:
+              number: 3000
+        path: /v1/
+        pathType: Prefix
