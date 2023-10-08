@@ -80,13 +80,13 @@ LOG_SERVER_URL="http://log-server.${NAMESPACE}.svc.cluster.local:5060"
 LOG_SERVER_DATABASE_URL="mongodb://${DB_USERNAME:-admin}:${PASSWD_OR_SECRET}@mongodb-0.mongo.${NAMESPACE}.svc.cluster.local:27017/function-logs?authSource=admin&replicaSet=rs0&w=majority"
 LOG_SERVER_SECRET=$PASSWD_OR_SECRET
 helm install server -n ${NAMESPACE} \
-    --set fixed_namespace=${NAMESPACE} \
     --set databaseUrl=${DATABASE_URL} \
     --set meteringDatabaseUrl=${METERING_DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
     --set apiServerHost=api.${DOMAIN} \
     --set apiServerUrl=${EXTERNAL_HTTP_SCHEMA}://api.${DOMAIN} \
     --set siteName=${DOMAIN} \
+    --set default_region.fixed_namespace=${NAMESPACE} \
     --set default_region.database_url=${DATABASE_URL} \
     --set default_region.minio_domain=${MINIO_DOMAIN} \
     --set default_region.minio_external_endpoint=${MINIO_EXTERNAL_ENDPOINT} \
