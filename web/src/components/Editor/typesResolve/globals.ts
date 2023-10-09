@@ -31,6 +31,8 @@ interface File {
  * The input parameters of cloud function calls
  */
 interface FunctionContext {
+  __function_name: string;
+  
   /**
    * This object is parsed from JWT Token Payload
    * @deprecated use user instead 

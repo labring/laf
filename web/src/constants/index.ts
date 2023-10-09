@@ -81,7 +81,7 @@ export const COLOR_MODE = {
   dark: "dark",
 };
 
-export const DEFAULT_CODE = `import cloud, { FunctionContext } from '@lafjs/cloud'
+export const DEFAULT_CODE = `import cloud from '@lafjs/cloud'
 
 export default async function (ctx: FunctionContext) {
   console.log('Hello World')
