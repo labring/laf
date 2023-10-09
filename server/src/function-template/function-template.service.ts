@@ -687,6 +687,7 @@ export class FunctionTemplateService {
         {
           $sort: {
             star: asc === 0 ? 1 : -1,
+            _id: 1,
           },
         },
         { $skip: (page - 1) * pageSize },
@@ -1175,6 +1176,7 @@ export class FunctionTemplateService {
         {
           $sort: {
             star: asc === 0 ? 1 : -1,
+            _id: 1,
           },
         },
         { $skip: (page - 1) * pageSize },
@@ -1339,6 +1341,7 @@ export class FunctionTemplateService {
         {
           $sort: {
             star: asc === 0 ? 1 : -1,
+            _id: 1,
           },
         },
         { $skip: (page - 1) * pageSize },
@@ -1504,6 +1507,7 @@ export class FunctionTemplateService {
         {
           $sort: {
             'functionTemplate.star': asc === 0 ? 1 : -1,
+            'functionTemplate._id': 1,
           },
         },
         { $skip: (page - 1) * pageSize },
