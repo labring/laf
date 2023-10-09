@@ -168,7 +168,10 @@ export class InstanceService {
       spec: {
         selector: labels,
         type: 'ClusterIP',
-        ports: [{ port: 8000, targetPort: 8000, protocol: 'TCP' }],
+        ports: [
+          { port: 8000, targetPort: 8000, protocol: 'TCP', name: 'http' },
+          { port: 9000, targetPort: 9000, protocol: 'TCP', name: 'storage' },
+        ],
       },
     })
     this.logger.log(`create k8s service ${res.body?.metadata?.name}`)
@@ -305,7 +308,10 @@ export class InstanceService {
               command: ['sh', '/app/start.sh'],
               name: appid,
               env,
-              ports: [{ containerPort: 8000, name: 'http' }],
+              ports: [
+                { containerPort: 8000, name: 'http' },
+                { containerPort: 9000, name: 'storage' },
+              ],
               resources: {
                 limits: {
                   cpu: `${limitCpu}m`,
