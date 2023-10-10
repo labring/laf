@@ -11,6 +11,7 @@ import { ClickToComponent } from "click-to-react-component";
 import "@/utils/i18n";
 
 import useAuthStore from "./pages/auth/store";
+import { performInit } from "./components/Editor/LanguageClient";
 import useSiteSettingStore from "./pages/siteSetting";
 import theme from "./chakraTheme";
 import darkTheme from "./chakraThemeDark";
@@ -67,6 +68,10 @@ function APP() {
     getSiteSettings();
     initProviders();
   }, [getSiteSettings, i18n.language, initProviders]);
+
+  useEffect(() => {
+    performInit(true);
+  }, []);
 
   return (
     <Sentry.ErrorBoundary>
