@@ -1,4 +1,4 @@
-import { V1Ingress } from '@kubernetes/client-node'
+import { V1Ingress, V1IngressTLS } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { LABEL_KEY_APP_ID } from 'src/constants'
 import { ClusterService } from 'src/region/cluster/cluster.service'
@@ -55,11 +55,20 @@ export class RuntimeGatewayService {
     })
 
     // build tls
-    const tls = []
-    if (runtimeDomain.customDomain) {
-      const secretName =
-        this.certificate.getRuntimeCertificateName(runtimeDomain)
-      tls.push({ secretName, hosts })
+    const tls: Array<V1IngressTLS> = []
+    if (region.gatewayConf.tls.enabled) {
+      // add wildcardDomain tls
+      if (region.gatewayConf.tls.wildcardCertificateSecretName) {
+        const secretName = region.gatewayConf.tls.wildcardCertificateSecretName
+        tls.push({ secretName, hosts: [runtimeDomain.domain] })
+      }
+
+      // add customDomain tls
+      if (runtimeDomain.customDomain) {
+        const secretName =
+          this.certificate.getRuntimeCertificateName(runtimeDomain)
+        tls.push({ secretName, hosts: [runtimeDomain.customDomain] })
+      }
     }
 
     // create ingress

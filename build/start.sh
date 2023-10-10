@@ -95,7 +95,7 @@ helm install server -n ${NAMESPACE} \
     --set default_region.minio_root_secret_key=${MINIO_ROOT_SECRET_KEY} \
     --set default_region.runtime_domain=${DOMAIN} \
     --set default_region.website_domain=site.${DOMAIN} \
-    --set default_region.tls=false \
+    --set default_region.tls.enabled=false \
     --set default_region.log_server_url=${LOG_SERVER_URL} \
     --set default_region.log_server_secret=${LOG_SERVER_SECRET} \
     --set default_region.log_server_database_url=${LOG_SERVER_DATABASE_URL} \

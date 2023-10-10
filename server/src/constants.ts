@@ -113,11 +113,25 @@ export class ServerConfig {
   }
 
   static get DEFAULT_REGION_RUNTIME_DOMAIN() {
-    return process.env.DEFAULT_REGION_RUNTIME_DOMAIN || 'localhost'
+    if (!process.env.DEFAULT_REGION_RUNTIME_DOMAIN) {
+      throw new Error('DEFAULT_REGION_RUNTIME_DOMAIN is not defined')
+    }
+    return process.env.DEFAULT_REGION_RUNTIME_DOMAIN
   }
 
   static get DEFAULT_REGION_WEBSITE_DOMAIN() {
-    return process.env.DEFAULT_REGION_WEBSITE_DOMAIN || 'localhost'
+    if (!process.env.DEFAULT_REGION_WEBSITE_DOMAIN) {
+      throw new Error('DEFAULT_REGION_WEBSITE_DOMAIN is not defined')
+    }
+    return process.env.DEFAULT_REGION_WEBSITE_DOMAIN
+  }
+
+  static get DEFAULT_REGION_TLS_ENABLED() {
+    return process.env.DEFAULT_REGION_TLS_ENABLED === 'true'
+  }
+
+  static get DEFAULT_REGION_TLS_WILDCARD_CERTIFICATE_SECRET_NAME() {
+    return process.env.DEFAULT_REGION_TLS_WILDCARD_CERTIFICATE_SECRET_NAME
   }
 
   static get DEFAULT_REGION_MINIO_DOMAIN() {

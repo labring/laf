@@ -76,9 +76,10 @@ export class InitializerService {
         websiteDomain: ServerConfig.DEFAULT_REGION_WEBSITE_DOMAIN,
         port: 80,
         tls: {
-          enabled: false,
-          issuerRef: { name: 'laf-issuer', kind: 'ClusterIssuer' },
-          wildcardCertificateSecretName: null,
+          enabled: ServerConfig.DEFAULT_REGION_TLS_ENABLED,
+          issuerRef: { name: 'laf-issuer', kind: 'Issuer' },
+          wildcardCertificateSecretName:
+            ServerConfig.DEFAULT_REGION_TLS_WILDCARD_CERTIFICATE_SECRET_NAME,
         },
       },
       logServerConf: {
