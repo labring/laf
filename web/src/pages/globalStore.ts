@@ -1,4 +1,5 @@
 import { createStandaloneToast } from "@chakra-ui/react";
+import * as Sentry from "@sentry/react";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -69,6 +70,10 @@ const useGlobalStore = create<State>()(
 
         const runtimesRes = await AppControllerGetRuntimes({});
         const regionsRes = await RegionControllerGetRegions({});
+
+        Sentry.setUser({
+          username: userInfoRes.data.username,
+        });
 
         set((state) => {
           state.userInfo = userInfoRes.data;

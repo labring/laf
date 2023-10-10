@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 import { css, Global } from "@emotion/react";
+import { wrapUseRoutes } from "@sentry/react";
+import * as Sentry from "@sentry/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ClickToComponent } from "click-to-react-component";
 
@@ -23,8 +25,10 @@ const GlobalStyles = css`
   }
 `;
 
+const useSentryRoutes = wrapUseRoutes(useRoutes);
+
 function RouteElement() {
-  const element = useRoutes(routes as any);
+  const element = useSentryRoutes(routes as any);
   return element;
 }
 
@@ -62,7 +66,7 @@ function APP() {
   }, [getSiteSettings, i18n.language]);
 
   return (
-    <>
+    <Sentry.ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         {process.env.NODE_ENV === "development" ? <ClickToComponent /> : null}
         <ChakraProvider theme={colorMode === "light" ? theme : darkTheme}>
@@ -72,7 +76,7 @@ function APP() {
           </BrowserRouter>
         </ChakraProvider>
       </QueryClientProvider>
-    </>
+    </Sentry.ErrorBoundary>
   );
 }
 

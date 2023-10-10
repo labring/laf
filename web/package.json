@@ -4,7 +4,7 @@
   "version": "1.0.0-beta.11",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && node --max_old_space_size=32768 ./node_modules/vite/bin/vite.js build",
     "tsc": "tsc",
     "preview": "vite preview",
     "lint": "eslint src --fix",
@@ -20,6 +20,8 @@
     "@chakra-ui/react": "^2.6.1",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "@sentry/integrations": "^7.73.0",
+    "@sentry/react": "^7.73.0",
     "@tanstack/react-query": "^4.29.7",
     "axios": "^1.4.0",
     "clsx": "^1.2.1",
