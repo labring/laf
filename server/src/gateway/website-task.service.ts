@@ -99,6 +99,7 @@ export class WebsiteTaskService {
     assert(bucketDomain, 'bucket domain not found')
 
     // create website custom certificate if custom domain is set
+    // Warning: create certificate before ingress, otherwise apisix ingress will not work
     if (site.isCustom && region.gatewayConf.tls.enabled) {
       const waitingTime = Date.now() - site.updatedAt.getTime()
 

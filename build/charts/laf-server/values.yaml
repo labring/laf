@@ -19,7 +19,9 @@ default_region:
   minio_root_access_key: ""
   minio_root_secret_key: ""
   # gateway conf
-  tls: false
+  tls:
+    enabled: false
+    wildcard_certificate_secret_name: ""
   runtime_domain: ""
   website_domain: ""
   # log-server

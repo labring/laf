@@ -42,9 +42,7 @@ export class RuntimeDomainService {
   async checkResolved(appid: string, customDomain: string) {
     const runtimeDomain = await this.db
       .collection<RuntimeDomain>('RuntimeDomain')
-      .findOne({
-        appid,
-      })
+      .findOne({ appid })
 
     const cnameTarget = runtimeDomain.domain
 
