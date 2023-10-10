@@ -6,10 +6,10 @@ on:
     branches:
       - main
     paths:
-      - "web/**"
-      - ".github/workflows/dockerize-web.yml"
-      - "!**/*.md"
-      - "!web/package-lock.json"
+      - 'web/**'
+      - '.github/workflows/dockerize-web.yml'
+      - '!**/*.md'
+      - '!web/package-lock.json'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,18 +24,44 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Cache node modules
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: web/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('web/package-lock.json') }}
+
       - name: Use Node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
 
       - name: Install Package
-        working-directory: web 
-        run: npm cache clean --force && npm install
+        working-directory: web
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm ci
 
       - name: Build web
         working-directory: web
+        env:
+          VITE_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          VITE_GITHUB_SHA: ${{ github.sha }}
         run: npm run build
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        if: ${{ !github.event.repository.fork }}
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          sourcemaps: web/dist/assets
+          url_prefix: '~/assets/'
+          version: ${{ format('laf@{0}', github.sha) }}
+
+      - run: |
+          rm -rf web/dist/assets/*.map
 
       - name: Docker meta
         id: meta
