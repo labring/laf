@@ -10,6 +10,7 @@ import { ClickToComponent } from "click-to-react-component";
 
 import "@/utils/i18n";
 
+import useAuthStore from "./pages/auth/store";
 import useSiteSettingStore from "./pages/siteSetting";
 import theme from "./chakraTheme";
 import darkTheme from "./chakraThemeDark";
@@ -47,6 +48,7 @@ function APP() {
   const { i18n } = useTranslation();
 
   const getSiteSettings = useSiteSettingStore((state) => state.getSiteSettings);
+  const { initProviders } = useAuthStore();
 
   const [colorMode, setColorMode] = useState(localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY));
   useEffect(() => {
@@ -63,7 +65,8 @@ function APP() {
   useEffect(() => {
     document.documentElement.lang = i18n.language;
     getSiteSettings();
-  }, [getSiteSettings, i18n.language]);
+    initProviders();
+  }, [getSiteSettings, i18n.language, initProviders]);
 
   return (
     <Sentry.ErrorBoundary>

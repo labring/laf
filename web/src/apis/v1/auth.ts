@@ -173,3 +173,79 @@ export async function EmailControllerSendCode(params: Definitions.SendEmailCodeD
     data: params,
   });
 }
+
+/**
+ * Redirect to the login page of github
+ */
+export async function GithubAuthControllerJumpLogin(
+  params: Paths.GithubAuthControllerJumpLogin.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.GithubAuthControllerJumpLogin.Responses;
+}> {
+  // /v1/auth/github/jump_login
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/auth/github/jump_login`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Signin by github
+ */
+export async function GithubAuthControllerSignin(params: Definitions.GithubSigninDto): Promise<{
+  error: string;
+  data: Paths.GithubAuthControllerSignin.Responses;
+}> {
+  // /v1/auth/github/signin
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/auth/github/signin`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * Bind github
+ */
+export async function GithubAuthControllerBind(params: Definitions.GithubBind): Promise<{
+  error: string;
+  data: Definitions.UserWithProfile;
+}> {
+  // /v1/auth/github/bind
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/auth/github/bind`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * Unbind github
+ */
+export async function GithubAuthControllerUnbind(
+  params: Paths.GithubAuthControllerUnbind.BodyParameters,
+): Promise<{
+  error: string;
+  data: Definitions.UserWithProfile;
+}> {
+  // /v1/auth/github/unbind
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/auth/github/unbind`, {
+    method: "POST",
+    data: params,
+  });
+}

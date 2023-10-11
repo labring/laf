@@ -15,7 +15,10 @@ import { OutlineViewOffIcon, OutlineViewOnIcon } from "@/components/CommonIcon";
 import { Routes } from "@/constants";
 
 import { useGroupMemberAddMutation } from "@/pages/app/collaboration/service";
-import { useSigninByPasswordMutation } from "@/pages/auth/service";
+import {
+  useGithubAuthControllerBindMutation,
+  useSigninByPasswordMutation,
+} from "@/pages/auth/service";
 import useGlobalStore from "@/pages/globalStore";
 
 type FormData = {
@@ -35,6 +38,7 @@ export default function LoginByPasswordPanel({
   isDarkMode: boolean;
 }) {
   const signinByPasswordMutation = useSigninByPasswordMutation();
+  const githubAuthControllerBindMutation = useGithubAuthControllerBindMutation();
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
   const joinGroupMutation = useGroupMemberAddMutation();
@@ -53,6 +57,13 @@ export default function LoginByPasswordPanel({
     });
 
     if (res?.data) {
+      const githubToken = sessionStorage.getItem("githubToken");
+      sessionStorage.removeItem("githubToken");
+      if (githubToken) {
+        githubAuthControllerBindMutation.mutateAsync({
+          token: githubToken,
+        });
+      }
       const sessionData = sessionStorage.getItem("collaborationCode");
       const collaborationCode = JSON.parse(sessionData || "{}");
       sessionStorage.removeItem("collaborationCode");

@@ -64,6 +64,7 @@ export enum CURRENCY {
 }
 
 export const Routes = {
+  login: "/login",
   dashboard: "/dashboard",
   templates: "/market/templates",
 };

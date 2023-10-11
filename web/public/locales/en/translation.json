@@ -370,7 +370,10 @@
     "NewPassword": "New Password",
     "SignUpSuccess": "Sign up successfully",
     "EmailTip": "Please input a valid Email",
-    "LoginOrRegister": "Login / Register"
+    "LoginOrRegister": "Login / Register",
+    "BindGitHub": "Bind GitHub",
+    "BindSuccess": "Bind Successfully",
+    "GitHubLogin": "GitHub Login"
   },
   "Time": "Time",
   "CreateTime": "Created",
@@ -576,7 +579,9 @@
     "NoAuth": "Not Real-name Verified",
     "WarnTips": "You have not yet completed real-name authentication.",
     "PleaseBindPhone": "Please bind your mobile number first",
-    "VerifiedIdentity": "Verified Identity"
+    "VerifiedIdentity": "Verified Identity",
+    "Bind": "Bind",
+    "VerifiedGithub": "Verified"
   },
   "Reset": "Reset",
   "SettingModal": {
@@ -650,5 +655,9 @@
   "NextPage": "Next Page",
   "LastPage": "Last Page",
   "FirstPage": "First Page",
+  "SavedSuccessfully": "Saved Successfully",
+  "Bind": "Bind",
+  "UnBind": "Unbind",
+  "UnBindSuccess": "Unbind Successfully",
   "SavedSuccessfully": "Saved Successfully"
 }
