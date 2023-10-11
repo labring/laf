@@ -56,9 +56,10 @@ jobs:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
-          sourcemaps: web/dist/assets
+          sourcemaps: dist/assets
           url_prefix: '~/assets/'
           version: ${{ format('laf@{0}', github.sha) }}
+          working_directory: web
 
       - run: |
           rm -rf web/dist/assets/*.map
