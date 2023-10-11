@@ -59,6 +59,10 @@ await s3Client.putObject({
   - application/octet-stream:二进制流文件
   - 等等
 
+:::tip
+当前应用的 appid 可用 `cloud.appid` 或 `process.env.APPID` 获取
+:::
+
 ## 删除云存储对象
 
 可删除云存储文件或者文件夹
@@ -375,7 +379,7 @@ const bucketName = 'bucketName' // 不带 Laf 应用 appid
 
 //拼接文件桶名字
 function getInternalBucketName() {
-  const appid = process.env.APP_ID;
+  const appid = process.env.APPID;
   return `${appid}-${bucketName}`;
 }
 
