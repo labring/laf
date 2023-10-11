@@ -9,7 +9,6 @@ import { createConfiguredEditor, IReference, ITextFileEditorModel } from "vscode
 import { CloseAction, ErrorAction, MessageTransports } from "vscode-languageclient";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
-import "@codingame/monaco-vscode-theme-defaults-default-extension";
 import "@codingame/monaco-vscode-typescript-basics-default-extension";
 
 export const createLanguageClient = (transports: MessageTransports): MonacoLanguageClient => {
