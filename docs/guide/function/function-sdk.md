@@ -20,6 +20,23 @@ title: 云函数 SDK
 import cloud from "@lafjs/cloud";
 ```
 
+## SDK 属性
+
+`cloud` 具有下面的一些参数：
+
+| 属性            | 介绍                                                                                |
+| --------------- | ----------------------------------------------------------------------------------- |
+| `cloud.appid` | 当前 Laf 应用的 appid                                                                  |
+| `cloud.database()`    | 当前应用的数据库对象                                                     |
+| `cloud.env`   | 当前应用的环境变量，也可用 `process.env`                                                                 |
+| `cloud.fetch`      | 可在云函数中发起 HTTP 请求，基于`axios`封装                                    |
+| `cloud.getToken`     |  生成 JWT Token                                                               |
+| `cloud.parseToken`      |  解密 JWT Token                                                                |
+| `cloud.invoke`  | 请求其他云函数                                      |
+| `cloud.shared`  |  当前应用的全局缓存                                      |
+| `cloud.mongo`    | 当前应用的原生 MongoDB 实例      |
+| `cloud.sockets`     | 当前应用的socket实例|
+
 ## 发送网络请求
 
 使用 `cloud.fetch()` 可发起 HTTP 请求，调用三方接口，可完成如支付接口、短信验证码等等三方接口操作。
