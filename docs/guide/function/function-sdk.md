@@ -79,7 +79,7 @@ export async function main(ctx: FunctionContext) {
 通过`cloud.invoke()` 调用本应用内的其他云函数。
 
 ::: info
-该方法已不推荐使用，现可直接[引入云函数](#云函数引入)
+该方法已不推荐使用，现可直接[引入云函数](/guide/function/use-function.html#云函数引入))
 :::
 
 ```typescript
