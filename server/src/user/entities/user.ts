@@ -15,6 +15,9 @@ export class User {
   @ApiPropertyOptional()
   phone?: string
 
+  @ApiPropertyOptional()
+  github?: number
+
   @ApiProperty()
   createdAt: Date
 
