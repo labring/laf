@@ -45,7 +45,6 @@ export function main(ctx: FunctionContext) {
 | `ctx.response`  | HTTP 响应，和`express`的`Response`实例保持一致                                      |
 | `ctx.socket`    | [WebSocket](https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket) 实例，[Laf WebSocket 使用文档](/guide/function/websocket.html)      |
 | `ctx.files`     | 上传的文件 ([File](https://developer.mozilla.org/zh-CN/docs/Web/API/File) 对象数组) |
-| `ctx.env`       | 本应用自定义的环境变量 ([env](env.md))                                                    |
 
 ## 云函数返回值
 
