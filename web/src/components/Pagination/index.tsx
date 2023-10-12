@@ -10,8 +10,8 @@ import {
 } from "@/components/CommonIcon";
 
 export type PageValues = {
-  page?: number;
-  pageSize?: number;
+  page: number;
+  pageSize: number;
   limit?: number;
   total?: number;
 };
@@ -82,7 +82,7 @@ export default function Pagination(props: {
             onClick={() =>
               onChange({
                 pageSize: values.pageSize,
-                page: page! - 1,
+                page: page - 1,
               })
             }
           >
@@ -104,7 +104,7 @@ export default function Pagination(props: {
             onClick={() => {
               onChange({
                 pageSize: values.pageSize,
-                page: page! + 1,
+                page: page + 1,
               });
             }}
           >

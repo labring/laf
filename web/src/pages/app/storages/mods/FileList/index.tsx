@@ -47,7 +47,6 @@ export default function FileList() {
     useStorageStore();
   const [pageSize, setPageSize] = useState(20);
   const bucketName = currentStorage?.name;
-  console.log(currentStorage);
   const bucketType = currentStorage?.policy;
 
   const { colorMode } = useColorMode();

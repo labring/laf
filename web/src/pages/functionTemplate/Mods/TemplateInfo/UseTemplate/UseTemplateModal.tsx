@@ -37,7 +37,7 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
   const { t } = useTranslation();
   const useTemplateMutation = useFunctionTemplateUseMutation();
 
-  const appList: any = useQuery(
+  const { data: appList, isLoading } = useQuery(
     APP_LIST_QUERY_KEY,
     () => {
       return ApplicationControllerFindAll({});
@@ -47,7 +47,7 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
     },
   );
 
-  const dependencies = useQuery(
+  const { data: dependencies } = useQuery(
     ["dependencies"],
     () => {
       return DependencyControllerGetDependencies({});
@@ -69,7 +69,7 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
 
     const isAnyPackageNotInDependencyList = packageList.some((packageItem: string) => {
       const packageName = packageItem.split("@")[0];
-      return !dependencies.data?.data.some((dep: any) => dep.name === packageName);
+      return !dependencies?.data.some((dep: any) => dep.name === packageName);
     });
 
     if (isAnyPackageNotInDependencyList && packageList.length > 0) {
@@ -80,14 +80,14 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
     }
 
     if (!res.error) {
-      window.location.href = `/app/${appItem?.appid}/function`;
+      window.location.href = `/app/${appItem.appid}/function`;
     }
   };
 
   return (
     <>
       {React.cloneElement(children, {
-        onClick: onOpen(),
+        onClick: onOpen,
       })}
 
       <Modal isOpen={isOpen} onClose={onClose} size={!currentApp ? "2xl" : "md"}>
@@ -98,7 +98,7 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
           </ModalHeader>
           <ModalCloseButton />
 
-          {appList.isLoading && !currentApp ? (
+          {isLoading && !currentApp ? (
             <ModalBody className="flex justify-center">
               <Spinner className="text-grayModern-700" />
             </ModalBody>
@@ -106,7 +106,7 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
             <ModalBody>
               {!currentApp ? (
                 <div className="flex flex-col">
-                  {appList.data?.data.map((item: any) => {
+                  {appList?.data.map((item: any) => {
                     return (
                       <Box key={item?.appid}>
                         <ConfirmButton
