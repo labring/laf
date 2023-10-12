@@ -114,12 +114,7 @@ export class InstanceService {
     const app = await this.applicationService.findOneUnsafe(appid)
     const region = app.region
     const { deployment, hpa, service } = await this.get(appid)
-    if (!deployment) {
-      await this.create(appid)
-      return
-    }
-
-    if (!service) {
+    if (!deployment || !service) {
       await this.create(appid)
       return
     }
