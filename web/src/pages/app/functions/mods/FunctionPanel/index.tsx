@@ -219,7 +219,9 @@ export default function FunctionList() {
 
     return sortedItems.map((item, index) => {
       let fileType = FileType.ts;
-      if (item.children?.length) {
+      if (item.isExpanded) {
+        fileType = FileType.folderOpen;
+      } else if (item.children?.length) {
         fileType = FileType.folder;
       }
       const nameParts = item.name.split("/");
