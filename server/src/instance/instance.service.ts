@@ -31,7 +31,7 @@ export class InstanceService {
 
   public async create(appid: string) {
     const app = await this.applicationService.findOneUnsafe(appid)
-    const labels = { [LABEL_KEY_APP_ID]: appid }
+    const labels = this.getRuntimeLabel(appid)
     // const region = app.region
 
     // // Although a namespace has already been created during application creation,
@@ -557,10 +557,21 @@ export class InstanceService {
           hpa,
         )
       } else {
-        const labels = { [LABEL_KEY_APP_ID]: appid }
+        const labels = this.getRuntimeLabel(appid)
         await this.createHorizontalPodAutoscaler(app, labels)
       }
       this.logger.log(`reapply k8s hpa ${app.appid}`)
     }
+  }
+
+  private getRuntimeLabel(appid: string) {
+    const SEALOS = 'cloud.sealos.io/app-deploy-manager'
+    const labels = {
+      [LABEL_KEY_APP_ID]: appid,
+      [SEALOS]: appid,
+      app: appid,
+    }
+
+    return labels
   }
 }
