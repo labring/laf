@@ -60,7 +60,7 @@ function CreateWebsiteModal() {
             className="mr-2 cursor-pointer"
             href={
               currentStorage?.websiteHosting?.isCustom
-                ? "https://" + currentStorage?.websiteHosting?.domain
+                ? `${window.location.protocol}//${currentStorage?.websiteHosting?.domain}`
                 : getOrigin(currentStorage?.websiteHosting?.domain)
             }
             isExternal
