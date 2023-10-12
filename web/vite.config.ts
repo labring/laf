@@ -24,6 +24,13 @@ export default defineConfig(({ command, mode }) => {
       VitePWA({
         registerType: "autoUpdate",
         includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.png"],
+        devOptions: {
+          enabled: false,
+        },
+        workbox: {
+          globPatterns: ["**/*.{js,css,html,png,svg,json}"],
+          navigateFallbackDenylist: [/^\/v1/],
+        },
         manifest: {
           name: "laf",
           short_name: "Laf",
