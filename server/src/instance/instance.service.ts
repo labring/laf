@@ -111,6 +111,7 @@ export class InstanceService {
   }
 
   public async restart(appid: string) {
+    const labels = this.getRuntimeLabel(appid)
     const app = await this.applicationService.findOneUnsafe(appid)
     const region = app.region
     const { deployment, hpa, service } = await this.get(appid)
@@ -119,10 +120,7 @@ export class InstanceService {
       return
     }
 
-    deployment.spec = await this.makeDeploymentSpec(
-      app,
-      deployment.spec.template.metadata.labels,
-    )
+    deployment.spec = await this.makeDeploymentSpec(app, labels)
     const appsV1Api = this.cluster.makeAppsV1Api(region)
     const namespace = GetApplicationNamespace(region, appid)
     const deploymentResult = await appsV1Api.replaceNamespacedDeployment(
@@ -136,7 +134,7 @@ export class InstanceService {
     )
 
     // reapply service
-    service.spec = this.makeServiceSpec(service.metadata.labels)
+    service.spec = this.makeServiceSpec(labels)
     const coreV1Api = this.cluster.makeCoreV1Api(region)
     const serviceResult = await coreV1Api.replaceNamespacedService(
       service.metadata.name,
