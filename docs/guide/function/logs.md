@@ -5,12 +5,14 @@ title: 云函数历史日志
 # {{ $frontmatter.title }}
 
 :::warning
-只有在云函数中加 `console` 打印才会保存日志！
+只有在云函数中加 `consol` 打印才会保存日志！
 :::
 
-云函数的全部历史日志，全部都自动保存到了日志板块中，日志会保留 3 天
+云函数的会在日志板块中查看
 
 可根据请求 ID `requestId` 和云函数名筛选
+
+目前的保存策略是保留最新的 10000 条日志，不支持手动删除
 
 ![function-log](/doc-images/function-log.png)
 
