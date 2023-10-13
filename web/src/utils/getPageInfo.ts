@@ -1,6 +1,6 @@
 import { PageValues } from "@/components/Pagination";
 
-export default function getPageInfo(data?: {
+export default function getPageInfo(data: {
   pageSize: number;
   page: number;
   total: number;

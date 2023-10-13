@@ -76,7 +76,7 @@ export default function DataPanel() {
 
   useEffect(() => {
     if (entryDataQuery.isFetched && isAdd.status) {
-      const { total, page, pageSize } = getPageInfo(entryDataQuery.data);
+      const { total, page, pageSize } = getPageInfo(entryDataQuery.data as any);
       const newTotal = (total || 0) + isAdd.count;
       const maxPage = pageSize ? Math.ceil(newTotal / pageSize) : -1;
       // Calculate and jump to the maxPage after adding
