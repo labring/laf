@@ -120,7 +120,10 @@ export class InstanceService {
       return
     }
 
-    deployment.spec = await this.makeDeploymentSpec(app, labels)
+    deployment.spec = await this.makeDeploymentSpec(
+      app,
+      deployment.spec.template.metadata.labels,
+    )
     const appsV1Api = this.cluster.makeAppsV1Api(region)
     const namespace = GetApplicationNamespace(region, appid)
     const deploymentResult = await appsV1Api.replaceNamespacedDeployment(
@@ -134,7 +137,9 @@ export class InstanceService {
     )
 
     // reapply service
-    service.spec = this.makeServiceSpec(labels)
+    service.spec = this.makeServiceSpec(
+      deployment.spec.template.metadata.labels,
+    )
     const coreV1Api = this.cluster.makeCoreV1Api(region)
     const serviceResult = await coreV1Api.replaceNamespacedService(
       service.metadata.name,
