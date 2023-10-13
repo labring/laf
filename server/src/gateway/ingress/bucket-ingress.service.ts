@@ -78,7 +78,7 @@ export class BucketGatewayService {
           // k8s nginx ingress annotations
           // websocket is enabled by default in k8s nginx ingress
           'nginx.ingress.kubernetes.io/enable-cors': 'true',
-          'nginx.ingress.kubernetes.io/cors-allow-credentials': 'true',
+          'nginx.ingress.kubernetes.io/cors-allow-credentials': 'false',
           'nginx.ingress.kubernetes.io/cors-allow-methods': '*',
           'nginx.ingress.kubernetes.io/cors-allow-headers':
             'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,x-laf-develop-token,x-laf-func-data,x-amz-content-sha256,x-amz-security-token,x-amz-user-agent,x-amz-date',

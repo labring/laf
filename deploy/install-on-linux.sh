@@ -70,9 +70,6 @@ NODENAME=$(kubectl get nodes -ojsonpath='{.items[0].metadata.name}')
 kubectl taint node $NODENAME node-role.kubernetes.io/master- || true
 kubectl taint node $NODENAME node-role.kubernetes.io/control-plane- || true
 
-# label master node as a app node
-kubectl label node $NODENAME laf.dev/node.type=runtime
-
 # install required components
 sealos run labring/openebs:v1.9.0
 sealos run labring/cert-manager:v1.8.0
