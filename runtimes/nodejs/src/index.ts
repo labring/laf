@@ -21,7 +21,7 @@ import xmlparser from 'express-xml-bodyparser'
 import './support/cloud-sdk'
 import storageServer from './storage-server'
 import { DatabaseChangeStream } from './support/database-change-stream'
-import { FunctionCache } from './support/function-engine/cache'
+import { FunctionCache } from './support/engine/cache'
 
 const app = express()
 

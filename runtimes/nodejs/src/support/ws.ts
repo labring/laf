@@ -5,7 +5,7 @@ import {
   WEBSOCKET_FUNCTION_NAME,
 } from '../constants'
 import { DatabaseAgent } from '../db'
-import { CloudFunction, ICloudFunctionData } from './function-engine'
+import { CloudFunction, ICloudFunctionData } from './engine'
 import { logger } from './logger'
 import { generateUUID } from './utils'
 
@@ -86,7 +86,7 @@ async function handleWebSocketEvent(
   }
 
   const cf = new CloudFunction(func)
-  await cf.invoke(param)
+  await cf.execute(param)
 }
 
 /**
