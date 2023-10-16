@@ -18,6 +18,11 @@ title: 在云函数中使用环境变量
  `cloud.env` 已废弃
 :::
 
+:::tip
+ `APPID` 是系统环境变量的保留字，不可覆盖。
+:::
+
+
 ```typescript
 import cloud from '@lafjs/cloud'
 
