@@ -15,7 +15,9 @@ export async function handleDebugFunction(ctx: FunctionContext) {
   }
   const auth = parseToken(token) || null
   if (auth?.type !== 'develop') {
-    return ctx.response.status(403).send('permission denied: invalid develop token')
+    return ctx.response
+      .status(403)
+      .send('permission denied: invalid develop token')
   }
 
   // get func_data from header
@@ -37,7 +39,11 @@ export async function handleDebugFunction(ctx: FunctionContext) {
   const func_name = ctx.request.params?.name
 
   if (!func_data) {
-    return ctx.response.send({ code: 1, error: 'function data not found', requestId })
+    return ctx.response.send({
+      code: 1,
+      error: 'function data not found',
+      requestId,
+    })
   }
 
   const func = new CloudFunction(func_data)
