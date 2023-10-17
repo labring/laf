@@ -20,11 +20,19 @@ interface File {
  * 云函数调用入参
  */
 interface FunctionContext {
-  /**
+   /**
    * auth 对象解析自 JWT Token Payload
+   * @deprecated 用 user 替代
    */
   auth?: {
     uid?: string
+  }
+
+  /**
+   * user 对象解析自 JWT Token Payload
+   */
+  user?: {
+    [key: string]: any
   }
 
   /**
