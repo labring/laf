@@ -1,17 +1,12 @@
 import express from 'express'
 import Config from './config'
 import { logger } from './support/logger'
-import { DatabaseAgent } from './db'
 import './support/cloud-sdk'
 import { WebsiteHostingChangeStream } from './support/database-change-stream/website-hosting-change-stream'
 import proxy from 'express-http-proxy'
 import axios from 'axios'
 
 const app = express()
-
-DatabaseAgent.accessor.ready.then(() => {
-  WebsiteHostingChangeStream.initialize()
-})
 
 const tryPath = (bucket: string, path: string) => {
   const testPaths = path.endsWith('/')
