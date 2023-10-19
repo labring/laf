@@ -81,9 +81,10 @@ export class BucketGatewayService {
           'nginx.ingress.kubernetes.io/cors-allow-credentials': 'false',
           'nginx.ingress.kubernetes.io/cors-allow-methods': '*',
           'nginx.ingress.kubernetes.io/cors-allow-headers':
-            'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,x-laf-develop-token,x-laf-func-data,x-amz-content-sha256,x-amz-security-token,x-amz-user-agent,x-amz-date',
+            'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,x-laf-develop-token,x-laf-func-data,x-amz-content-sha256,x-amz-security-token,x-amz-user-agent,x-amz-date,content-md5',
           'nginx.ingress.kubernetes.io/cors-expose-headers': '*',
           'nginx.ingress.kubernetes.io/cors-allow-origin': '*',
+          'nginx.ingress.kubernetes.io/proxy-body-size': '0',
         },
       },
       spec: { ingressClassName, rules: [minioRule, bucketRule] },
