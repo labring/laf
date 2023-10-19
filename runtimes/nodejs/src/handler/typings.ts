@@ -11,7 +11,7 @@ import path = require('path')
 import { logger } from '../support/logger'
 import { IRequest } from '../support/types'
 import { parseToken } from '../support/token'
-import { FunctionCache } from '../support/engine/cache'
+import { FunctionCache } from '../support/engine'
 
 const nodeModulesRoot = path.resolve(__dirname, '../../node_modules')
 

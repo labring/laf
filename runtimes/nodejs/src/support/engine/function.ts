@@ -45,7 +45,6 @@ export class CloudFunction {
    * @returns
    */
   async execute(param: FunctionContext, useInterceptor: boolean = false): Promise<FunctionResult> {
-    useInterceptor = true
     const sandbox = buildSandbox(param, [])
     let code = ``
     if (useInterceptor) {

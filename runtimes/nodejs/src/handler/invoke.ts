@@ -1,10 +1,9 @@
 import { Response } from "express";
-import { FunctionContext, ICloudFunctionData } from "../support/engine/types";
 import { IRequest } from "../support/types";
 import { INTERCEPTOR_FUNCTION_NAME } from "../constants";
 import { parseToken } from "../support/token";
 import { logger } from "../support/logger";
-import { CloudFunction, FunctionCache } from "../support/engine";
+import { CloudFunction, FunctionCache, FunctionContext, ICloudFunctionData } from "../support/engine";
 
 export async function handleInvokeFunction(req: IRequest, res: Response) {
 
