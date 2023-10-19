@@ -1,6 +1,7 @@
 import {
   V1Deployment,
   V1DeploymentSpec,
+  V1ServiceSpec,
   V2HorizontalPodAutoscaler,
   V2HorizontalPodAutoscalerSpec,
 } from '@kubernetes/client-node'
@@ -31,7 +32,7 @@ export class InstanceService {
 
   public async create(appid: string) {
     const app = await this.applicationService.findOneUnsafe(appid)
-    const labels = { [LABEL_KEY_APP_ID]: appid }
+    const labels: Record<string, string> = this.getRuntimeLabel(appid)
     // const region = app.region
 
     // // Although a namespace has already been created during application creation,
@@ -110,10 +111,11 @@ export class InstanceService {
   }
 
   public async restart(appid: string) {
+    const labels = this.getRuntimeLabel(appid)
     const app = await this.applicationService.findOneUnsafe(appid)
     const region = app.region
-    const { deployment, hpa } = await this.get(appid)
-    if (!deployment) {
+    const { deployment, hpa, service } = await this.get(appid)
+    if (!deployment || !service) {
       await this.create(appid)
       return
     }
@@ -124,19 +126,37 @@ export class InstanceService {
     )
     const appsV1Api = this.cluster.makeAppsV1Api(region)
     const namespace = GetApplicationNamespace(region, appid)
-    const res = await appsV1Api.replaceNamespacedDeployment(
+    const deploymentResult = await appsV1Api.replaceNamespacedDeployment(
       app.appid,
       namespace,
       deployment,
     )
 
-    this.logger.log(`restart k8s deployment ${res.body?.metadata?.name}`)
+    this.logger.log(
+      `restart k8s deployment ${deploymentResult.body?.metadata?.name}`,
+    )
+
+    // reapply service
+    service.spec = this.makeServiceSpec(
+      deployment.spec.template.metadata.labels,
+    )
+    const coreV1Api = this.cluster.makeCoreV1Api(region)
+    const serviceResult = await coreV1Api.replaceNamespacedService(
+      service.metadata.name,
+      namespace,
+      service,
+    )
+
+    this.logger.log(`restart k8s service ${serviceResult.body?.metadata?.name}`)
 
     // reapply hpa when application is restarted
     await this.reapplyHorizontalPodAutoscaler(app, hpa)
   }
 
-  private async createDeployment(app: ApplicationWithRelations, labels: any) {
+  private async createDeployment(
+    app: ApplicationWithRelations,
+    labels: Record<string, string>,
+  ) {
     const appid = app.appid
     const region = app.region
     assert(region, 'region is required')
@@ -156,23 +176,20 @@ export class InstanceService {
     return res.body
   }
 
-  private async createService(app: ApplicationWithRelations, labels: any) {
+  private async createService(
+    app: ApplicationWithRelations,
+    labels: Record<string, string>,
+  ) {
     const region = app.region
     assert(region, 'region is required')
 
     const namespace = GetApplicationNamespace(region, app.appid)
     const serviceName = app.appid
     const coreV1Api = this.cluster.makeCoreV1Api(region)
+    const spec = this.makeServiceSpec(labels)
     const res = await coreV1Api.createNamespacedService(namespace, {
       metadata: { name: serviceName, labels },
-      spec: {
-        selector: labels,
-        type: 'ClusterIP',
-        ports: [
-          { port: 8000, targetPort: 8000, protocol: 'TCP', name: 'http' },
-          { port: 9000, targetPort: 9000, protocol: 'TCP', name: 'storage' },
-        ],
-      },
+      spec: spec,
     })
     this.logger.log(`create k8s service ${res.body?.metadata?.name}`)
     return res.body
@@ -211,9 +228,21 @@ export class InstanceService {
     }
   }
 
+  private makeServiceSpec(labels: Record<string, string>) {
+    const spec: V1ServiceSpec = {
+      selector: labels,
+      type: 'ClusterIP',
+      ports: [
+        { port: 8000, targetPort: 8000, protocol: 'TCP', name: 'http' },
+        { port: 9000, targetPort: 9000, protocol: 'TCP', name: 'storage' },
+      ],
+    }
+    return spec
+  }
+
   private async makeDeploymentSpec(
     app: ApplicationWithRelations,
-    labels: any,
+    labels: Record<string, string>,
   ): Promise<V1DeploymentSpec> {
     const appid = app.appid
     const region = app.region
@@ -412,7 +441,7 @@ export class InstanceService {
 
   private async createHorizontalPodAutoscaler(
     app: ApplicationWithRelations,
-    labels: any,
+    labels: Record<string, string>,
   ) {
     if (!app.bundle.autoscaling.enable) return null
 
@@ -557,10 +586,21 @@ export class InstanceService {
           hpa,
         )
       } else {
-        const labels = { [LABEL_KEY_APP_ID]: appid }
+        const labels = this.getRuntimeLabel(appid)
         await this.createHorizontalPodAutoscaler(app, labels)
       }
       this.logger.log(`reapply k8s hpa ${app.appid}`)
     }
+  }
+
+  private getRuntimeLabel(appid: string) {
+    const SEALOS = 'cloud.sealos.io/app-deploy-manager'
+    const labels: Record<string, string> = {
+      [LABEL_KEY_APP_ID]: appid,
+      [SEALOS]: appid,
+      app: appid,
+    }
+
+    return labels
   }
 }

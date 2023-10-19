@@ -4,6 +4,8 @@ import { DatabaseChangeStream } from '.'
 
 export class ConfChangeStream {
   static initialize() {
+    this.updateEnvironments()
+
     DatabaseChangeStream.onStreamChange(
       CONFIG_COLLECTION,
       this.updateEnvironments,

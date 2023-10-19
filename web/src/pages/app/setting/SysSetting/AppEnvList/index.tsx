@@ -4,7 +4,6 @@ import clsx from "clsx";
 import dotenv from "dotenv";
 import { t } from "i18next";
 
-import ConfirmButton from "@/components/ConfirmButton";
 import ENVEditor from "@/components/Editor/ENVEditor";
 import { COLOR_MODE } from "@/constants";
 
@@ -42,8 +41,9 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
             }}
           />
         </div>
-        <ConfirmButton
-          onSuccessAction={async () => {
+        <Button
+          className="mt-4 h-8 w-28 self-end"
+          onClick={async () => {
             const obj = dotenv.parse(envValue.current || "");
             // convert obj to [{ name: '', value: ''}]
             const arr = Object.keys(obj).map((key) => {
@@ -54,12 +54,9 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
               props.onClose && props.onClose();
             }
           }}
-          headerText={String(t("Update"))}
-          bodyText={String(t("SettingPanel.UpdateConfirm"))}
-          confirmButtonText={String(t("Confirm"))}
         >
-          <Button className="mt-4 h-8 w-28 self-end">{t("Update")}</Button>
-        </ConfirmButton>
+          {t("Update")}
+        </Button>
       </div>
     </>
   );

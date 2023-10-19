@@ -45,6 +45,17 @@ const routes = [
     ],
   },
   {
+    path: "/bind",
+    // element: <AuthLayout />,
+    auth: false,
+    children: [
+      {
+        path: "/bind/github",
+        element: () => import("@/pages/auth/bind/BindGitHub"),
+      },
+    ],
+  },
+  {
     path: "/",
     children: [
       {

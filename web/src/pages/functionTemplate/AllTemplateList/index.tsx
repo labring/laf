@@ -19,6 +19,7 @@ import getPageInfo from "@/utils/getPageInfo";
 
 import TemplateCard from "../Mods/TemplateCard";
 import { useGetFunctionTemplatesQuery } from "../service";
+import useTemplateStore from "../store";
 
 import { TFunctionTemplate } from "@/apis/typing";
 
@@ -31,21 +32,19 @@ type TemplateList = {
 
 export default function AllTemplateList() {
   const { t } = useTranslation();
-  const [searchKey, setSearchKey] = useState("");
+  const { currentPage, setCurrentPage, currentSearchKey, setCurrentSearchKey } = useTemplateStore();
+  const [searchKey, setSearchKey] = useState(currentSearchKey);
   const [templateList, setTemplateList] = useState<TemplateList>();
   const darkMode = useColorMode().colorMode === "dark";
-  const [queryData, setQueryData] = useState({
-    page: 1,
-    pageSize: 12,
-    keyword: "",
-    type: "",
-    asc: 1,
-    sort: "hot",
-  });
 
   const { isLoading } = useGetFunctionTemplatesQuery(
     {
-      ...queryData,
+      pageSize: 12,
+      type: "",
+      asc: 1,
+      sort: "hot",
+      page: currentPage,
+      keyword: currentSearchKey,
     },
     {
       onSuccess: (data: any) => {
@@ -66,10 +65,11 @@ export default function AllTemplateList() {
             )}
             placeholder={String(t("Search"))}
             onChange={(e) => setSearchKey(e.target.value)}
-            value={searchKey || ""}
+            value={searchKey}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                setQueryData({ ...queryData, keyword: searchKey });
+                setCurrentSearchKey(searchKey);
+                setCurrentPage(1);
               }
             }}
           />
@@ -77,7 +77,8 @@ export default function AllTemplateList() {
             <Button
               className="mr-[3px] !h-9 w-full !bg-primary-600"
               onClick={() => {
-                setQueryData({ ...queryData, keyword: searchKey });
+                setCurrentSearchKey(searchKey);
+                setCurrentPage(1);
               }}
             >
               {t("Search")}
@@ -105,7 +106,7 @@ export default function AllTemplateList() {
               <Pagination
                 values={getPageInfo(templateList)}
                 onChange={(values) => {
-                  setQueryData({ ...queryData, ...values });
+                  setCurrentPage(values.page || 1);
                 }}
                 notShowSelect
               />

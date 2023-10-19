@@ -47,7 +47,6 @@ export default function FileList() {
     useStorageStore();
   const [pageSize, setPageSize] = useState(20);
   const bucketName = currentStorage?.name;
-  console.log(currentStorage);
   const bucketType = currentStorage?.policy;
 
   const { colorMode } = useColorMode();
@@ -216,7 +215,7 @@ export default function FileList() {
                   </Thead>
                   <Tbody className="text-grayModern-500">
                     {queryData.data
-                      .filter((file: any) => file.Key !== prefix)
+                      .filter((file: any) => `/${file.Key}` !== prefix && file.Key !== prefix)
                       .map((file: TFile) => {
                         const fileName = file.Key?.split("/");
                         const dirName = file.Prefix?.split("/") || [];

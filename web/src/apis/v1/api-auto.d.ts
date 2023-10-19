@@ -291,9 +291,14 @@ declare namespace Definitions {
     type?: string /* verify code type */;
   };
 
-  export type CreatePATDto = {
-    name?: string;
-    expiresIn?: number;
+  export type GithubSigninDto = {
+    code?: string;
+    state?: string;
+  };
+
+  export type GithubBind = {
+    token?: string /* temporary token signed for github bindings */;
+    register?: boolean /* Is a newly registered use */;
   };
 
   export type UserWithProfile = {
@@ -301,9 +306,15 @@ declare namespace Definitions {
     username?: string;
     email?: string;
     phone?: string;
+    github?: number;
     createdAt?: string;
     updatedAt?: string;
     profile?: Definitions.UserProfile;
+  };
+
+  export type CreatePATDto = {
+    name?: string;
+    expiresIn?: number;
   };
 
   export type BindPhoneDto = {
@@ -533,6 +544,7 @@ declare namespace Definitions {
     username?: string;
     email?: string;
     phone?: string;
+    github?: number;
     createdAt?: string;
     updatedAt?: string;
   };
@@ -1087,6 +1099,38 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.SendEmailCodeDto;
+
+    export type Responses = any;
+  }
+
+  namespace GithubAuthControllerJumpLogin {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace GithubAuthControllerSignin {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.GithubSigninDto;
+
+    export type Responses = any;
+  }
+
+  namespace GithubAuthControllerBind {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.GithubBind;
+
+    export type Responses = any;
+  }
+
+  namespace GithubAuthControllerUnbind {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
 
     export type Responses = any;
   }

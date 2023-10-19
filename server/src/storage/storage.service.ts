@@ -1,10 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { GenerateAlphaNumericPassword } from 'src/utils/random'
 import { MinioService } from './minio/minio.service'
-import { AssumeRoleCommand, STSClient } from '@aws-sdk/client-sts'
 import { RegionService } from 'src/region/region.service'
 import { TASK_LOCK_INIT_TIME } from 'src/constants'
-import { Region } from 'src/region/entities/region'
 import { SystemDatabase } from 'src/system-database'
 import {
   StoragePhase,
@@ -104,61 +102,5 @@ export class StorageService {
       .findOneAndDelete({ appid })
 
     return res.value
-  }
-
-  /**
-   * Create s3 client of application
-   * @param app
-   * @returns
-   */
-  private getSTSClient(region: Region, user: StorageUser) {
-    return new STSClient({
-      endpoint: region.storageConf.externalEndpoint,
-      credentials: {
-        accessKeyId: user.accessKey,
-        secretAccessKey: user.secretKey,
-      },
-      region: region.name,
-    })
-  }
-
-  /**
-   * Generate application full-granted OSS STS
-   * @param bucket
-   * @param duration_seconds
-   * @returns
-   */
-  public async getOssSTS(
-    region: Region,
-    appid: string,
-    user: StorageUser,
-    duration_seconds?: number,
-  ) {
-    const exp = duration_seconds || 3600 * 24 * 7
-    const s3 = this.getSTSClient(region, user)
-    const policy = await this.getSTSPolicy()
-    const cmd = new AssumeRoleCommand({
-      DurationSeconds: exp,
-      Policy: policy,
-      RoleArn: 'arn:xxx:xxx:xxx:xxxx',
-      RoleSessionName: appid,
-    })
-
-    return await s3.send(cmd)
-  }
-
-  async getSTSPolicy() {
-    const policy = {
-      Version: '2012-10-17',
-      Statement: [
-        {
-          Sid: `app-sts-full-grant`,
-          Effect: 'Allow',
-          Action: 's3:*',
-          Resource: 'arn:aws:s3:::*',
-        },
-      ],
-    }
-    return JSON.stringify(policy)
   }
 }

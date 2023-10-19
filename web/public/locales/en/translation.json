@@ -272,7 +272,8 @@
     "parsing": "parsing",
     "DomainUpdateSuccess": "Domain Update Success",
     "DomainDeleteSuccess": "Domain Delete Success",
-    "CustomApplicationDomain": "Custom Application Domain"
+    "CustomApplicationDomain": "Custom Application Domain",
+    "BucketNameisRequired": "Bucket name is required"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -370,7 +371,10 @@
     "NewPassword": "New Password",
     "SignUpSuccess": "Sign up successfully",
     "EmailTip": "Please input a valid Email",
-    "LoginOrRegister": "Login / Register"
+    "LoginOrRegister": "Login / Register",
+    "BindGitHub": "Bind GitHub",
+    "BindSuccess": "Bind Successfully",
+    "GitHubLogin": "GitHub Login"
   },
   "Time": "Time",
   "CreateTime": "Created",
@@ -576,12 +580,14 @@
     "NoAuth": "Not Real-name Verified",
     "WarnTips": "You have not yet completed real-name authentication.",
     "PleaseBindPhone": "Please bind your mobile number first",
-    "VerifiedIdentity": "Verified Identity"
+    "VerifiedIdentity": "Verified Identity",
+    "Bind": "Bind",
+    "VerifiedGithub": "Verified"
   },
   "Reset": "Reset",
   "SettingModal": {
     "Exchange": "Exchange",
-    "FunctionName": "Funciton Name",
+    "FunctionName": "Function Name",
     "FunctionDesc": "Function Description",
     "FunctionDesc_Name": "Function Description - Name",
     "FunctionName_Desc": "Function Name - Description"
@@ -634,7 +640,7 @@
     "Quit": "Quit"
   },
   "Collaborative": "Collaborative",
-  "CreateFunction": "Create Funtion",
+  "CreateFunction": "Create Function",
   "CreateApp": "New Application",
   "Used": "Used",
   "Remaining": "Remaining",
@@ -650,5 +656,8 @@
   "NextPage": "Next Page",
   "LastPage": "Last Page",
   "FirstPage": "First Page",
-  "SavedSuccessfully": "Saved Successfully"
+  "SavedSuccessfully": "Saved Successfully",
+  "Bind": "Bind",
+  "UnBind": "Unbind",
+  "UnBindSuccess": "Unbind Successfully"
 }

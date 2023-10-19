@@ -18,6 +18,8 @@ import { AccountService } from 'src/account/account.service'
 import { EmailService } from './email/email.service'
 import { EmailController } from './email/email.controller'
 import { MailerService } from './email/mailer.service'
+import { GithubAuthController } from './github/github.controller'
+import { GithubService } from './github/github.service'
 
 @Global()
 @Module({
@@ -41,6 +43,7 @@ import { MailerService } from './email/mailer.service'
     AuthenticationService,
     AccountService,
     MailerService,
+    GithubService,
   ],
   exports: [SmsService, EmailService],
   controllers: [
@@ -48,6 +51,7 @@ import { MailerService } from './email/mailer.service'
     PhoneController,
     AuthenticationController,
     EmailController,
+    GithubAuthController,
   ],
 })
 export class AuthenticationModule {}

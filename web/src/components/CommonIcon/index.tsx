@@ -605,8 +605,8 @@ export const OutlineCopyIcon = (props: any) => {
         fill={props.color}
       />
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M2.75203 4.27581C2.20803 4.27581 1.76703 4.71681 1.76703 5.26081V11.1501C1.76703 11.6941 2.20803 12.1351 2.75203 12.1351H8.65247C9.19647 12.1351 9.63747 11.6941 9.63747 11.1501V5.26081C9.63747 4.71681 9.19647 4.27581 8.65247 4.27581H2.75203ZM2.93703 10.9651V5.44581H8.46747V10.9651H2.93703Z"
         fill={props.color}
       />

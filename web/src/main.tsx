@@ -12,10 +12,7 @@ import "focus-visible/dist/focus-visible";
 
 import App from "./App";
 
-if (
-  window.location.hostname.endsWith(".laf.run") ||
-  window.location.hostname.endsWith(".laf.dev")
-) {
+if (["laf.run", "laf.dev"].includes(window.location.hostname)) {
   const commitId = import.meta.env.VITE_GITHUB_SHA;
 
   Sentry.init({
