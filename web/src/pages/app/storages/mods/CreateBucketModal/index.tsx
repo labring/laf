@@ -114,7 +114,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
                   </InputAddon>
                   <Input
                     {...register("name", {
-                      required: true,
+                      required: t("StoragePanel.BucketNameisRequired").toString(),
                       pattern: {
                         value: /^[a-z0-9][a-z0-9-]{1,30}[a-z0-9]$/,
                         message: t("StoragePanel.BucketNameRule"),
