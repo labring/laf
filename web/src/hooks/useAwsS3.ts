@@ -5,9 +5,9 @@ function useAwsS3() {
   const storage = currentApp?.storage;
 
   const s3 = new (window as any).AWS.S3({
-    accessKeyId: storage.accessKeyId,
+    accessKeyId: storage.accessKey,
     secretAccessKey: storage.secretKey,
-    endpoint: storage.credentials.endpoint,
+    endpoint: storage.endpoint,
     s3ForcePathStyle: true,
     signatureVersion: "v4",
   });
