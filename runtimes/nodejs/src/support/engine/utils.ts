@@ -1,37 +1,41 @@
-import { FunctionConsole } from "./console"
-import { FunctionModule } from "./module"
-import { FunctionContext, RuntimeContext } from "./types"
+import { FunctionConsole } from './console'
+import { FunctionModule } from './module'
+import { FunctionContext, RuntimeContext } from './types'
 import * as vm from 'vm'
 
+/**
+ * create vm.Script
+ * @param code
+ * @param options
+ * @returns
+ */
 
-  /**
-   * create vm.Script
-   * @param code
-   * @param options
-   * @returns
-   */
-
-  export function createScript(code: string, options: vm.RunningScriptOptions): vm.Script {
-    const script = new vm.Script(code, {
-      ...options,
-      importModuleDynamically: async (
-        specifier: string,
-        _: vm.Script,
-        _importAssertions: any,
-      ) => {
-        return await import(specifier)
-      },
-    } as any)
-    return script
-  }
+export function createScript(
+  code: string,
+  options: vm.RunningScriptOptions,
+): vm.Script {
+  const script = new vm.Script(code, {
+    ...options,
+    importModuleDynamically: async (
+      specifier: string,
+      _: vm.Script,
+      _importAssertions: any,
+    ) => {
+      return await import(specifier)
+    },
+  } as any)
+  return script
+}
 
 /**
  * build sandbox
  * @param param
  * @returns
  */
-export function buildSandbox(functionContext: FunctionContext, fromModule: string[]): RuntimeContext {
-
+export function buildSandbox(
+  functionContext: FunctionContext,
+  fromModule: string[],
+): RuntimeContext {
   const fconsole = new FunctionConsole(functionContext)
 
   const _module = {

@@ -9,7 +9,7 @@ import {
 } from '../../constants'
 import { ConfChangeStream } from './conf-change-stream'
 import { WebsiteHostingChangeStream } from './website-hosting-change-stream'
-import { FunctionCache } from '../function-engine/cache'
+import { FunctionCache } from '../engine'
 
 const collectionsToWatch = [
   {

@@ -51,7 +51,6 @@ function createCloudSdk() {
  * @returns
  */
 async function invokeInFunction(name: string, param?: FunctionContext) {
-
   const func = FunctionCache.getEngine(name)
 
   if (!func) {

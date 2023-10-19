@@ -1,12 +1,16 @@
-import { Response } from "express";
-import { IRequest } from "../support/types";
-import { INTERCEPTOR_FUNCTION_NAME } from "../constants";
-import { parseToken } from "../support/token";
-import { logger } from "../support/logger";
-import { CloudFunction, FunctionCache, FunctionContext, ICloudFunctionData } from "../support/engine";
+import { Response } from 'express'
+import { IRequest } from '../support/types'
+import { INTERCEPTOR_FUNCTION_NAME } from '../constants'
+import { parseToken } from '../support/token'
+import { logger } from '../support/logger'
+import {
+  CloudFunction,
+  FunctionCache,
+  FunctionContext,
+  ICloudFunctionData,
+} from '../support/engine'
 
 export async function handleInvokeFunction(req: IRequest, res: Response) {
-
   const ctx: FunctionContext = {
     requestId: req.requestId,
     query: req.query,
@@ -19,7 +23,7 @@ export async function handleInvokeFunction(req: IRequest, res: Response) {
     request: req,
     response: res,
   }
-  
+
   let useInterceptor = true
 
   // intercept the request, skip websocket request
@@ -40,8 +44,10 @@ export async function handleInvokeFunction(req: IRequest, res: Response) {
 }
 
 // invoke cloud function
-async function invokeFunction(ctx: FunctionContext, useInterceptor: boolean): Promise<any> {
-
+async function invokeFunction(
+  ctx: FunctionContext,
+  useInterceptor: boolean,
+): Promise<any> {
   const requestId = ctx.requestId
 
   // trigger mode
@@ -55,7 +61,10 @@ async function invokeFunction(ctx: FunctionContext, useInterceptor: boolean): Pr
     return ctx.response.status(404).send('Function Not Found')
   }
   // reject while no HTTP enabled
-  if (!func.data.methods.includes(ctx.request.method.toUpperCase()) && !isTrigger) {
+  if (
+    !func.data.methods.includes(ctx.request.method.toUpperCase()) &&
+    !isTrigger
+  ) {
     return ctx.response.status(405).send('Method Not Allowed')
   }
 
@@ -66,18 +75,33 @@ async function invokeFunction(ctx: FunctionContext, useInterceptor: boolean): Pr
 
     // return false to reject request if interceptor got error
     if (result.error) {
-      logger.error(requestId, `invoke function ${ctx.__function_name} invoke error: `, result)
-
-      ctx.response.status(400).send({error: `invoke ${ctx.__function_name} function got error, please check the function logs`,
+      logger.error(
         requestId,
-      })
+        `invoke function ${ctx.__function_name} invoke error: `,
+        result,
+      )
+
+      ctx.response
+        .status(400)
+        .send({
+          error: `invoke ${ctx.__function_name} function got error, please check the function logs`,
+          requestId,
+        })
       return false
     }
 
-    logger.trace(requestId, `invoke function ${ctx.__function_name} invoke success: `, result)
+    logger.trace(
+      requestId,
+      `invoke function ${ctx.__function_name} invoke success: `,
+      result,
+    )
 
     // return false to reject request if interceptor return false
-    if (typeof result.data === 'object' && result.data.__type__ === '__interceptor__' && result.data.__res__ == false) {
+    if (
+      typeof result.data === 'object' &&
+      result.data.__type__ === '__interceptor__' &&
+      result.data.__res__ == false
+    ) {
       ctx.response.status(403).send({ error: 'Forbidden', requestId })
       return false
     }
@@ -89,7 +113,6 @@ async function invokeFunction(ctx: FunctionContext, useInterceptor: boolean): Pr
       }
       return ctx.response.send(data)
     }
-
   } catch (error) {
     logger.error(requestId, 'failed to invoke error', error)
     return ctx.response.status(500).send('Internal Server Error')
@@ -97,7 +120,10 @@ async function invokeFunction(ctx: FunctionContext, useInterceptor: boolean): Pr
 }
 
 // invoke debug function
-async function invokeDebug(ctx: FunctionContext, useInterceptor: boolean): Promise<any> {
+async function invokeDebug(
+  ctx: FunctionContext,
+  useInterceptor: boolean,
+): Promise<any> {
   // verify the debug token
   const token = ctx.request.get('x-laf-develop-token')
   if (!token) {
@@ -106,7 +132,9 @@ async function invokeDebug(ctx: FunctionContext, useInterceptor: boolean): Promi
 
   const auth = parseToken(token) || null
   if (auth?.type !== 'develop') {
-    return ctx.response.status(403).send('permission denied: invalid develop token')
+    return ctx.response
+      .status(403)
+      .send('permission denied: invalid develop token')
   }
 
   // get func_data from header
@@ -128,7 +156,11 @@ async function invokeDebug(ctx: FunctionContext, useInterceptor: boolean): Promi
   const funcName = ctx.request.params?.name
 
   if (!funcData) {
-    return ctx.response.send({ code: 1, error: 'function data not found', requestId })
+    return ctx.response.send({
+      code: 1,
+      error: 'function data not found',
+      requestId,
+    })
   }
 
   const func = new CloudFunction(funcData)
@@ -150,7 +182,11 @@ async function invokeDebug(ctx: FunctionContext, useInterceptor: boolean): Promi
     logger.trace(requestId, `invoke ${funcName} invoke success: `, result)
 
     // return false to reject request if interceptor return false
-    if (typeof result.data === 'object' && result.data.__type__ === '__interceptor__' && result.data.__res__ == false) {
+    if (
+      typeof result.data === 'object' &&
+      result.data.__type__ === '__interceptor__' &&
+      result.data.__res__ == false
+    ) {
       ctx.response.status(403).send({ error: 'Forbidden', requestId })
       return false
     }
@@ -166,5 +202,4 @@ async function invokeDebug(ctx: FunctionContext, useInterceptor: boolean): Promi
     logger.error(requestId, 'failed to invoke error', error)
     return ctx.response.status(500).send('Internal Server Error')
   }
-
 }

@@ -1,14 +1,12 @@
-import { RunningScriptOptions } from "vm"
-import { FunctionContext, FunctionResult, ICloudFunctionData } from "./types"
-import { buildSandbox, createScript } from "./utils"
-import { nanosecond2ms } from "../utils"
-import { FunctionCache } from "./cache"
-import _ from "lodash"
-import { INTERCEPTOR_FUNCTION_NAME } from "../../constants"
-
+import { RunningScriptOptions } from 'vm'
+import { FunctionContext, FunctionResult, ICloudFunctionData } from './types'
+import { buildSandbox, createScript } from './utils'
+import { nanosecond2ms } from '../utils'
+import { FunctionCache } from './cache'
+import _ from 'lodash'
+import { INTERCEPTOR_FUNCTION_NAME } from '../../constants'
 
 export class CloudFunction {
-
   /**
    * object shared cross all functions & requests
    */
@@ -18,7 +16,7 @@ export class CloudFunction {
    * execution timeout
    */
   timeout = 60 * 1000
-  
+
   /**
    * function data struct
    */
@@ -28,7 +26,7 @@ export class CloudFunction {
    * function context
    */
   param: FunctionContext
-  
+
   /**
    * execution result
    */
@@ -38,19 +36,24 @@ export class CloudFunction {
     this.data = data
   }
 
-
   /**
    * execute function
    * @param param
    * @returns
    */
-  async execute(param: FunctionContext, useInterceptor: boolean = false): Promise<FunctionResult> {
+  async execute(
+    param: FunctionContext,
+    useInterceptor: boolean = false,
+  ): Promise<FunctionResult> {
     const sandbox = buildSandbox(param, [])
     let code = ``
     if (useInterceptor) {
       const interceptorFunc = FunctionCache.get(INTERCEPTOR_FUNCTION_NAME)
-      code = this.warpWithInterceptor(this.data.source.compiled, interceptorFunc.source.compiled)
-    } else { 
+      code = this.warpWithInterceptor(
+        this.data.source.compiled,
+        interceptorFunc.source.compiled,
+      )
+    } else {
       code = this.wrap(this.data.source.compiled)
     }
     const script = createScript(code, {})
@@ -63,7 +66,7 @@ export class CloudFunction {
         strings: false,
       },
     } as any
-    
+
     const _start_time = process.hrtime.bigint()
     try {
       const result = script.runInNewContext(sandbox, options)
@@ -94,7 +97,7 @@ export class CloudFunction {
   /**
    * create vm.Script
    * @param code
-  */
+   */
   wrap(code: string): string {
     const wrapped = `
       const require = (module) => {
