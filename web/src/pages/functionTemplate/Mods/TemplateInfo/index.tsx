@@ -26,7 +26,7 @@ const TemplateInfo = (props: { functionTemplate: TFunctionTemplate; usedBy: any 
       {functionTemplate.user?.username && (
         <Box className="border-b-[1px]">
           <span className="text-xl font-semibold">{t("Template.DeveloperInfo")}</span>
-          <Box className="my-5 flex max-h-32 overflow-auto">
+          <Box className="my-5 flex max-h-32 overflow-hidden">
             <Avatar
               width={12}
               height={12}

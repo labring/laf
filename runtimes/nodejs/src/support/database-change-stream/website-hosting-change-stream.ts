@@ -6,6 +6,8 @@ export class WebsiteHostingChangeStream {
   static websiteHosting = []
 
   static initialize() {
+    this.onStreamChange()
+
     DatabaseChangeStream.onStreamChange(
       WEBSITE_HOSTING_COLLECTION,
       this.onStreamChange.bind(this),

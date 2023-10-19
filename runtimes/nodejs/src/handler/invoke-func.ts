@@ -11,7 +11,6 @@ import { DEFAULT_FUNCTION_NAME, INTERCEPTOR_FUNCTION_NAME } from '../constants'
  * Handler of invoking cloud function
  */
 export async function handleInvokeFunction(req: IRequest, res: Response) {
-
   const ctx: FunctionContext = {
     requestId: req.requestId,
     query: req.query,
@@ -23,7 +22,6 @@ export async function handleInvokeFunction(req: IRequest, res: Response) {
     user: req.user,
     request: req,
     response: res,
-    varMap: new Map(),
   }
 
   // intercept the request, skip websocket request
@@ -102,7 +100,6 @@ export async function handleInvokeFunction(req: IRequest, res: Response) {
 }
 
 async function invokeInterceptor(ctx: FunctionContext) {
-
   const func_name = INTERCEPTOR_FUNCTION_NAME
   const requestId = ctx.requestId
 

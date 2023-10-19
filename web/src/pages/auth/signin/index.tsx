@@ -38,7 +38,7 @@ export default function SignIn() {
       )}
     >
       {isBindGithub ? (
-        <div className="mb-10 text-2xl font-semibold text-grayModern-700">
+        <div className="mb-10 text-[22px] font-semibold text-grayModern-700">
           {t("AuthPanel.BindGitHub")}
         </div>
       ) : (

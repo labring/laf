@@ -106,7 +106,7 @@ export default function SignUp() {
 
     const res = await signupMutation.mutateAsync(params);
 
-    if (!res?.data) {
+    if (res?.data) {
       sessionStorage.removeItem("githubToken");
       if (githubToken) {
         githubAuthControllerBindMutation.mutateAsync({

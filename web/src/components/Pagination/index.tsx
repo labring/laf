@@ -1,4 +1,5 @@
-import { Button, HStack, Select, Text, useColorMode } from "@chakra-ui/react";
+import { Button, HStack, Select, Text, Tooltip, useColorMode } from "@chakra-ui/react";
+import clsx from "clsx";
 import { t } from "i18next";
 
 import {
@@ -8,11 +9,9 @@ import {
   ChevronRightIcon,
 } from "@/components/CommonIcon";
 
-import IconWrap from "../IconWrap";
-
 export type PageValues = {
-  page?: number;
-  pageSize?: number;
+  page: number;
+  pageSize: number;
   limit?: number;
   total?: number;
 };
@@ -52,85 +51,85 @@ export default function Pagination(props: {
         <Text as="div" className="mr-4">
           {t("Total")}: {total}
         </Text>
-        <IconWrap
-          showBg
-          tooltip={t("FirstPage").toString()}
-          size={24}
-          onClick={() => {
-            onChange({
-              pageSize: values.pageSize,
-              page: 1,
-            });
-          }}
-        >
+        <Tooltip label={t("FirstPage").toString()}>
           <Button
             variant="link"
-            className={darkMode ? "" : "!text-[#262A32]"}
+            className={clsx(
+              "!h-6 !w-6 !rounded-full bg-lafWhite-600 !p-0",
+              darkMode ? "" : "!text-[#262A32]",
+            )}
+            style={{ minWidth: "24px" }}
             isDisabled={page === 1 || maxPage === -1}
+            onClick={() => {
+              onChange({
+                pageSize: values.pageSize,
+                page: 1,
+              });
+            }}
           >
             <ArrowLeftIcon fontSize="12px" />
           </Button>
-        </IconWrap>
-        <IconWrap
-          showBg
-          tooltip={t("PreviousPage").toString()}
-          size={24}
-          onClick={() =>
-            onChange({
-              pageSize: values.pageSize,
-              page: page! - 1,
-            })
-          }
-        >
+        </Tooltip>
+        <Tooltip label={t("PreviousPage").toString()}>
           <Button
             variant="link"
-            className={darkMode ? "" : "!text-[#262A32]"}
+            className={clsx(
+              "!h-6 !w-6 !rounded-full bg-lafWhite-600 !p-0",
+              darkMode ? "" : "!text-[#262A32]",
+            )}
+            style={{ minWidth: "24px" }}
             isDisabled={page === 1 || maxPage === -1}
+            onClick={() =>
+              onChange({
+                pageSize: values.pageSize,
+                page: page - 1,
+              })
+            }
           >
             <ChevronLeftIcon fontSize="12px" />
           </Button>
-        </IconWrap>
+        </Tooltip>
         <Text className="min-w-[10px] text-center font-medium text-[#828289]">{page}</Text>
         <Text>/</Text>
         <Text className="min-w-[10px] text-center font-medium">{maxPage < 0 ? "-" : maxPage}</Text>
-        <IconWrap
-          showBg
-          tooltip={t("NextPage").toString()}
-          size={24}
-          onClick={() => {
-            onChange({
-              pageSize: values.pageSize,
-              page: page! + 1,
-            });
-          }}
-        >
+        <Tooltip label={t("NextPage").toString()}>
           <Button
             variant="link"
             isDisabled={maxPage === page || maxPage === -1}
-            className={darkMode ? "" : "!text-[#262A32]"}
+            className={clsx(
+              "!h-6 !w-6 !rounded-full bg-lafWhite-600 !p-0",
+              darkMode ? "" : "!text-[#262A32]",
+            )}
+            style={{ minWidth: "24px" }}
+            onClick={() => {
+              onChange({
+                pageSize: values.pageSize,
+                page: page + 1,
+              });
+            }}
           >
             <ChevronRightIcon fontSize="12px" />
           </Button>
-        </IconWrap>
-        <IconWrap
-          showBg
-          tooltip={t("LastPage").toString()}
-          onClick={() => {
-            onChange({
-              pageSize: values.pageSize,
-              page: maxPage,
-            });
-          }}
-          size={24}
-        >
+        </Tooltip>
+        <Tooltip label={t("LastPage").toString()}>
           <Button
             variant="link"
-            className={darkMode ? "" : "!text-[#262A32]"}
+            className={clsx(
+              "!h-6 !w-6 !rounded-full bg-lafWhite-600 !p-0",
+              darkMode ? "" : "!text-[#262A32]",
+            )}
+            style={{ minWidth: "24px" }}
             isDisabled={maxPage === page || maxPage === -1}
+            onClick={() => {
+              onChange({
+                pageSize: values.pageSize,
+                page: maxPage,
+              });
+            }}
           >
             <ArrowRightIcon fontSize="12px" />
           </Button>
-        </IconWrap>
+        </Tooltip>
       </HStack>
       {!notShowSelect && (
         <Select

@@ -586,7 +586,7 @@
   "Reset": "Reset",
   "SettingModal": {
     "Exchange": "Exchange",
-    "FunctionName": "Funciton Name",
+    "FunctionName": "Function Name",
     "FunctionDesc": "Function Description",
     "FunctionDesc_Name": "Function Description - Name",
     "FunctionName_Desc": "Function Name - Description"
@@ -639,7 +639,7 @@
     "Quit": "Quit"
   },
   "Collaborative": "Collaborative",
-  "CreateFunction": "Create Funtion",
+  "CreateFunction": "Create Function",
   "CreateApp": "New Application",
   "Used": "Used",
   "Remaining": "Remaining",

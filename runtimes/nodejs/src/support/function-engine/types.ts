@@ -52,7 +52,7 @@ export interface FunctionContext {
   method?: string
   socket?: WebSocket
   request?: Request
-  response?: Response  
+  response?: Response
   __function_name?: string
   __is_required?: boolean
   [key: string]: any
