@@ -1,4 +1,6 @@
 import getConfigurationServiceOverride from "@codingame/monaco-vscode-configuration-service-override";
+// import getEditorServiceOverride from "@codingame/monaco-vscode-editor-service-override"
+// import getModelServiceOverride from '@codingame/monaco-vscode-model-service-override'
 import getTextmateServiceOverride from "@codingame/monaco-vscode-textmate-service-override";
 // import getKeybindingsServiceOverride from '@codingame/monaco-vscode-keybindings-service-override';
 import getThemeServiceOverride from "@codingame/monaco-vscode-theme-service-override";
@@ -6,10 +8,14 @@ import { editor, languages } from "monaco-editor";
 import { initServices, MonacoLanguageClient } from "monaco-languageclient";
 import { Uri } from "vscode";
 import { createConfiguredEditor, IReference, ITextFileEditorModel } from "vscode/monaco";
+// import { ITextModelService, SyncDescriptor } from "vscode/services";
 import { CloseAction, ErrorAction, MessageTransports } from "vscode-languageclient";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
 import "@codingame/monaco-vscode-typescript-basics-default-extension";
+import "./TextModel";
+
+// import { TextModelService } from "./TextModel";
 
 export const createLanguageClient = (transports: MessageTransports): MonacoLanguageClient => {
   return new MonacoLanguageClient({
@@ -21,7 +27,7 @@ export const createLanguageClient = (transports: MessageTransports): MonacoLangu
         closed: () => ({ action: CloseAction.DoNotRestart }),
       },
       workspaceFolder: {
-        uri: Uri.file("C:/Users/heheer/github/laf/web/"),
+        uri: Uri.file("/root/laf/runtimes/nodejs/functions"),
         name: "Sample Workspace",
         index: 0,
       },
@@ -39,7 +45,6 @@ export const createUrl = (
   hostname: string,
   port: number,
   path: string,
-  searchParams?: Record<string, any>,
   secure?: boolean,
 ): string => {
   const protocol = secure ? "wss" : "ws";
@@ -70,14 +75,17 @@ export type ExampleJsonEditor = {
   uri: Uri;
   modelRef: IReference<ITextFileEditorModel>;
 };
-
 export const performInit = async (vscodeApiInit: boolean) => {
   if (vscodeApiInit === true) {
     await initServices({
       userServices: {
         ...getThemeServiceOverride(),
         ...getTextmateServiceOverride(),
-        ...getConfigurationServiceOverride(Uri.file("C:/Users/heheer/github/laf/web/")),
+        ...getConfigurationServiceOverride(Uri.file("/root/laf/runtimes/nodejs/functions/")),
+        // ...getEditorServiceOverride(async (modelRef, options, sideBySide) => {
+        //   console.log('Received open editor call with parameters: ', modelRef, options, sideBySide);
+        //   return undefined;
+        // })
         // ...getKeybindingsServiceOverride()
       },
       debugLogging: true,
