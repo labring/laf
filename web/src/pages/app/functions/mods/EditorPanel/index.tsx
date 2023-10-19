@@ -43,8 +43,7 @@ function EditorPanel() {
             marginLeft: -14,
             marginRight: -14,
           }}
-          path={`C:/Users/heheer/github/laf/web/${currentFunction?.name}.ts`}
-          // path={currentFunction?._id || ""}
+          path={`/root/laf/runtimes/nodejs/functions/${currentFunction?.name}.ts`}
           value={functionCache.getCache(currentFunction!._id, currentFunction!.source?.code)}
           onChange={(value) => {
             updateFunctionCode(currentFunction, value || "");

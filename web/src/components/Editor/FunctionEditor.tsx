@@ -1,6 +1,12 @@
-import { CSSProperties, useEffect, useMemo, useRef } from "react";
+import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
+import { debounce } from "lodash";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import { buildWorkerDefinition } from "monaco-editor-workers";
+import {
+  RegisteredFileSystemProvider,
+  RegisteredMemoryFile,
+  registerFileSystemOverlay,
+} from "vscode/service-override/files";
 
 import { COLOR_MODE, Pages } from "@/constants";
 
@@ -8,8 +14,10 @@ import "./userWorker";
 import "./theme";
 
 import { createUrl, createWebSocketAndStartClient } from "./LanguageClient";
+import { AutoImportTypings } from "./typesResolve";
 
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
+import useFunctionStore from "@/pages/app/functions/store";
 import useGlobalStore from "@/pages/globalStore";
 
 buildWorkerDefinition(
@@ -18,15 +26,18 @@ buildWorkerDefinition(
   false,
 );
 
+const autoImportTypings = new AutoImportTypings();
+const parseImports = debounce(autoImportTypings.parse.bind(autoImportTypings), 1500);
 const updateModel = (path: string, value: string, editorRef: any) => {
   const newModel =
     monaco.editor.getModel(monaco.Uri.file(path)) ||
     monaco.editor.createModel(value, "typescript", monaco.Uri.file(path));
 
-  console.log(editorRef.current?.getModel() !== newModel);
   if (editorRef.current?.getModel() !== newModel) {
     editorRef.current?.setModel(newModel);
   }
+  console.log(value);
+  autoImportTypings.parse(editorRef.current?.getValue() || "");
 };
 
 function FunctionEditor(props: {
@@ -55,12 +66,19 @@ function FunctionEditor(props: {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
-  const hostname = "localhost";
-  const path1 = "";
-  const port = 30000;
+  const hostname = "scm3dt.100.66.76.85.nip.io";
+  const path1 = "/_/lsp";
+  const port = 80;
   const url = useMemo(() => createUrl(hostname, port, path1), [hostname, port, path1]);
   // let lspWebSocket: WebSocket;
   const globalStore = useGlobalStore((state) => state);
+  const { allFunctionList } = useFunctionStore((state) => state);
+
+  const [fileSystemProvider] = useState<RegisteredFileSystemProvider>(() => {
+    const provider = new RegisteredFileSystemProvider(false);
+    registerFileSystemOverlay(1, provider);
+    return provider;
+  });
 
   useHotKey(
     DEFAULT_SHORTCUTS.send_request,
@@ -95,6 +113,9 @@ function FunctionEditor(props: {
           scrollBeyondLastLine: false,
         });
         updateModel(path, value, editorRef);
+        setTimeout(() => {
+          autoImportTypings.loadDefaults();
+        });
 
         // lspWebSocket = createWebSocketAndStartClient(url);
         createWebSocketAndStartClient(url);
@@ -103,6 +124,27 @@ function FunctionEditor(props: {
     } else if (monacoEl && editorRef.current) {
       updateModel(path, value, editorRef);
     }
+
+    allFunctionList.forEach(async (item: any) => {
+      if (
+        !monaco.editor.getModel(
+          monaco.Uri.file(`/root/laf/runtimes/nodejs/functions/${item.name}.ts`),
+        )
+      ) {
+        fileSystemProvider.registerFile(
+          new RegisteredMemoryFile(
+            monaco.Uri.file(`/root/laf/runtimes/nodejs/functions/${item.name}.ts`),
+            item.source.code,
+          ),
+        );
+        monaco.editor.createModel(
+          item.source.code,
+          "typescript",
+          monaco.Uri.file(`/root/laf/runtimes/nodejs/functions/${item.name}.ts`),
+        );
+        // editorRef.current?.setModel(model);
+      }
+    });
 
     // window.onbeforeunload = () => {
     //   // On page reload/exit, close web socket connection
@@ -114,7 +156,7 @@ function FunctionEditor(props: {
     // };
 
     return () => {};
-  }, [colorMode, path, readOnly, value, fontSize, url]);
+  }, [colorMode, path, readOnly, value, fontSize, url, allFunctionList]);
 
   // onChange
   useEffect(() => {
@@ -122,6 +164,7 @@ function FunctionEditor(props: {
     if (onChange) {
       subscriptionRef.current = editorRef.current?.onDidChangeModelContent((event) => {
         onChange(editorRef.current?.getValue());
+        parseImports(editorRef.current?.getValue() || "");
       });
     }
   }, [onChange]);
