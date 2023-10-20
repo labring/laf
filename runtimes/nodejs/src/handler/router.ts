@@ -11,7 +11,7 @@ import * as path from 'path'
 import { handleDatabaseProxy } from './db-proxy'
 import { handlePackageTypings } from './typings'
 import { generateUUID } from '../support/utils'
-import { handleInvokeFunction } from './invoke-func'
+import { handleInvokeFunction } from './invoke'
 
 /**
  * multer uploader config

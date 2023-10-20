@@ -10,8 +10,8 @@ import { PackageDeclaration, NodePackageDeclarations } from 'node-modules-utils'
 import path = require('path')
 import { logger } from '../support/logger'
 import { IRequest } from '../support/types'
-import { FunctionCache } from '../support/function-engine/cache'
 import { parseToken } from '../support/token'
+import { FunctionCache } from '../support/engine'
 
 const nodeModulesRoot = path.resolve(__dirname, '../../node_modules')
 
@@ -64,7 +64,7 @@ export async function handlePackageTypings(req: IRequest, res: Response) {
 
   // get cloud function types
   if (packageName.startsWith('@/')) {
-    const func = FunctionCache.getFunctionByName(packageName.replace('@/', ''))
+    const func = FunctionCache.get(packageName.replace('@/', ''))
     const r = {
       packageName: packageName,
       content: func.source.code,
