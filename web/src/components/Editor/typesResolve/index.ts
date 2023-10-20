@@ -1,5 +1,8 @@
 import axios from "axios";
 import * as monaco from "monaco-editor";
+import { RegisteredMemoryFile } from "vscode/service-override/files";
+
+import { fileSystemProvider } from "../FunctionEditor";
 
 import { globalDeclare } from "./globals";
 
@@ -70,7 +73,6 @@ export class AutoImportTypings {
    */
   async parse(source: string) {
     const rets = this._parser.parseDependencies(source);
-    console.log("rets", rets);
     if (!rets || !rets.length) return;
 
     const newImports = rets.filter((pkg) => !this.isLoaded(pkg));
@@ -84,9 +86,9 @@ export class AutoImportTypings {
    */
   loadDefaults() {
     this.addExtraLib({ path: "globals.d.ts", content: globalDeclare });
-    // if (!this.isLoaded("@lafjs/cloud")) {
-    //   this.loadDeclaration("@lafjs/cloud");
-    // }
+    if (!this.isLoaded("@lafjs/cloud")) {
+      this.loadDeclaration("@lafjs/cloud");
+    }
     if (!this.isLoaded("globals")) {
       this.loadDeclaration("globals");
     }
@@ -136,7 +138,7 @@ export class AutoImportTypings {
       const rets = r.data || [];
       for (const lib of rets) {
         // 修复包的类型入口文件不为 index.d.ts 的情况
-        console.log("lib", lib, "packageName", packageName);
+        // console.log("lib", lib, "packageName", packageName);
         if (packageName === lib.packageName && lib.path !== `${packageName}/index.d.ts`) {
           const _lib = { ...lib };
           _lib.path = `${packageName}/index.d.ts`;
@@ -156,30 +158,16 @@ export class AutoImportTypings {
    * @param {path: string, content: string} param0
    * @returns
    */
-  // addExtraLib({ path, content }: { path: string; content: string }) {
-  //   const fullpath = `file:///node_modules/${path}`;
-  //   const defaults = monaco.languages.typescript.typescriptDefaults;
-
-  //   const loaded = defaults.getExtraLibs();
-  //   const keys = Object.keys(loaded);
-
-  //   if (keys.includes(fullpath)) {
-  //     console.log(`${path} already exists in ts extralib`);
-  //     return;
-  //   }
-  //   try {
-  //     defaults.addExtraLib(content, fullpath);
-  //   } catch (error) {
-  //     console.log(error, fullpath, keys);
-  //     throw error;
-  //   }
-  // }
-
   addExtraLib({ path, content }: { path: string; content: string }) {
-    const fullPath = `/root/laf/runtimes/nodejs/node_modules/${path}`;
-    console.log("fullPath", fullPath);
+    let fullPath = "";
+    if (path === "@lafjs/cloud/index.d.ts") {
+      fullPath = `/root/laf/runtimes/nodejs/node_modules/@lafjs/cloud/dist/index.d.ts`;
+    } else {
+      fullPath = `/root/laf/runtimes/nodejs/node_modules/${path}`;
+    }
 
     try {
+      fileSystemProvider.registerFile(new RegisteredMemoryFile(monaco.Uri.file(fullPath), content));
       if (!monaco.editor.getModel(monaco.Uri.file(fullPath))) {
         monaco.editor.createModel(content, "typescript", monaco.Uri.file(fullPath));
       }

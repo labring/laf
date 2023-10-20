@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, useEffect, useMemo, useRef } from "react";
 import { debounce } from "lodash";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import { buildWorkerDefinition } from "monaco-editor-workers";
@@ -26,6 +26,8 @@ buildWorkerDefinition(
   false,
 );
 
+export const fileSystemProvider = new RegisteredFileSystemProvider(false);
+registerFileSystemOverlay(1, fileSystemProvider);
 const autoImportTypings = new AutoImportTypings();
 const parseImports = debounce(autoImportTypings.parse.bind(autoImportTypings), 1500);
 const updateModel = (path: string, value: string, editorRef: any) => {
@@ -36,7 +38,6 @@ const updateModel = (path: string, value: string, editorRef: any) => {
   if (editorRef.current?.getModel() !== newModel) {
     editorRef.current?.setModel(newModel);
   }
-  console.log(value);
   autoImportTypings.parse(editorRef.current?.getValue() || "");
 };
 
@@ -74,12 +75,6 @@ function FunctionEditor(props: {
   const globalStore = useGlobalStore((state) => state);
   const { allFunctionList } = useFunctionStore((state) => state);
 
-  const [fileSystemProvider] = useState<RegisteredFileSystemProvider>(() => {
-    const provider = new RegisteredFileSystemProvider(false);
-    registerFileSystemOverlay(1, provider);
-    return provider;
-  });
-
   useHotKey(
     DEFAULT_SHORTCUTS.send_request,
     () => {
@@ -110,6 +105,8 @@ function FunctionEditor(props: {
           lineNumbersMinChars: 4,
           fontSize: fontSize,
           theme: "lafEditorTheme",
+          fontFamily: "Fira Code",
+          fontWeight: "450",
           scrollBeyondLastLine: false,
         });
         updateModel(path, value, editorRef);
@@ -126,17 +123,17 @@ function FunctionEditor(props: {
     }
 
     allFunctionList.forEach(async (item: any) => {
+      fileSystemProvider.registerFile(
+        new RegisteredMemoryFile(
+          monaco.Uri.file(`/root/laf/runtimes/nodejs/functions/${item.name}.ts`),
+          item.source.code,
+        ),
+      );
       if (
         !monaco.editor.getModel(
           monaco.Uri.file(`/root/laf/runtimes/nodejs/functions/${item.name}.ts`),
         )
       ) {
-        fileSystemProvider.registerFile(
-          new RegisteredMemoryFile(
-            monaco.Uri.file(`/root/laf/runtimes/nodejs/functions/${item.name}.ts`),
-            item.source.code,
-          ),
-        );
         monaco.editor.createModel(
           item.source.code,
           "typescript",

@@ -7,7 +7,7 @@ import getThemeServiceOverride from "@codingame/monaco-vscode-theme-service-over
 import { editor, languages } from "monaco-editor";
 import { initServices, MonacoLanguageClient } from "monaco-languageclient";
 import { Uri } from "vscode";
-import { createConfiguredEditor, IReference, ITextFileEditorModel } from "vscode/monaco";
+import { IReference, ITextFileEditorModel } from "vscode/monaco";
 // import { ITextModelService, SyncDescriptor } from "vscode/services";
 import { CloseAction, ErrorAction, MessageTransports } from "vscode-languageclient";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
@@ -99,28 +99,4 @@ export const performInit = async (vscodeApiInit: boolean) => {
       mimetypes: ["text/typescript", "text/javascript"],
     });
   }
-};
-
-export const createJsonEditor = async (config: { htmlElement: HTMLElement; content: string }) => {
-  // create monaco editor
-  const editor = createConfiguredEditor(config.htmlElement, {
-    minimap: {
-      enabled: false,
-    },
-    readOnly: false,
-    language: "typescript",
-    automaticLayout: true,
-    scrollbar: {
-      verticalScrollbarSize: 4,
-      horizontalScrollbarSize: 8,
-    },
-    formatOnPaste: true,
-    overviewRulerLanes: 0,
-    lineNumbersMinChars: 4,
-    fontSize: 14,
-    theme: "vs",
-    scrollBeyondLastLine: false,
-  });
-
-  return Promise.resolve(editor);
 };
