@@ -5,6 +5,7 @@ import { DatabaseAgent } from '../../db'
 import { CLOUD_FUNCTION_COLLECTION } from '../../constants'
 import { InitHook } from '../init-hook'
 import { DatabaseChangeStream } from '../database-change-stream'
+import { FunctionModule } from './module'
 
 export class FunctionCache {
   private static cache: Map<string, ICloudFunctionData> = new Map()
@@ -48,6 +49,7 @@ export class FunctionCache {
       for (const [funcName, func] of this.cache) {
         if (change.documentKey._id.equals(func._id)) {
           FunctionCache.cache.delete(funcName)
+          FunctionModule.deleteCache(funcName)
         }
       }
     }

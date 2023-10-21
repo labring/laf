@@ -60,6 +60,10 @@ export class FunctionModule {
     return script.runInNewContext(sandbox, {})
   }
 
+  static deleteCache(name: string): void {
+    FunctionModule.cache.delete(name)
+  }
+
   private static wrap(code: string): string {
     return `
     const require = (name) => {
