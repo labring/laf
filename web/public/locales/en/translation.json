@@ -659,5 +659,10 @@
   "Bind": "Bind",
   "UnBind": "Unbind",
   "UnBindSuccess": "Unbind Successfully",
-  "SavedSuccessfully": "Saved Successfully"
+  "banner": "10.24 & 11.11 comes! The recharge discount is opened in a limited time!",
+  "Details": "view details",
+  "Activity_Modal1": "10.24 & 11.11 comes!",
+  "Activity_Modal2": "The recharge discount is opened in a limited time!",
+  "ThinkMore": "let me think again",
+  "Activity_Modal3": "Charge more, get more!"
 }

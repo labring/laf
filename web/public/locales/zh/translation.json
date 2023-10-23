@@ -658,5 +658,11 @@
   "Bind": "绑定",
   "UnBind": "解绑",
   "UnBindSuccess": "解绑成功",
-  "SavedSuccessfully": "保存成功"
+  "SavedSuccessfully": "保存成功",
+  "banner": "10.24 双十一双节降临！充值优惠限时开启，多充多送还有精美周边！",
+  "Details": "活动详情",
+  "Activity_Modal1": "10.24 双十一双节降临！",
+  "Activity_Modal2": "充值优惠限时开启",
+  "ThinkMore": "我再想想",
+  "Activity_Modal3": "多充多送还有精美周边！"
 }

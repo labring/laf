@@ -3,6 +3,8 @@ import { AiFillHeart } from "react-icons/ai";
 import { Outlet } from "react-router-dom";
 import { Center, Spinner } from "@chakra-ui/react";
 
+import Banner from "@/components/Banner";
+
 import Warn from "./RealNameWarn";
 
 import Header from "@/layouts/Header";
@@ -23,6 +25,7 @@ export default function BasicLayout() {
 
   return (
     <div>
+      <Banner />
       <Header className="m-auto max-w-screen-xl" />
       <div className="pb-10">
         {loading ? (

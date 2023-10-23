@@ -5,14 +5,18 @@ import { useColorMode } from "@chakra-ui/react";
 import axios from "axios";
 import clsx from "clsx";
 
+import Banner from "@/components/Banner";
 import { GithubIcon, MenuIcon } from "@/components/CommonIcon";
 import { COLOR_MODE, Routes, site_url } from "@/constants";
 
 import LanguageSwitch from "../../components/LanguageSwitch";
 import useSiteSettingStore from "../siteSetting";
 
+import ActivityModal from "./modal";
+
 const Navbar = () => {
-  const [showBanner, setShowBanner] = useState(false);
+  // const [showBanner, setShowBanner] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [toggleSidebar, setToggleSidebar] = useState(false);
   const [stars, setStars] = useState<string | null>(null);
   const { t } = useTranslation();
@@ -34,17 +38,28 @@ const Navbar = () => {
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
 
+  // useEffect(() => {
+  //   const expirationTime = 24 * 60 * 60 * 1000;
+  //   const lastCanceledTime: string | null = localStorage.getItem("lastCanceledTime");
+  //   const now = new Date().getTime();
+  //   // console.log("now:",now,"last",lastCanceledTime);
+  //   //如果本地已经存有上次的删除时间，且小于24h，则不显示banner
+  //   if (lastCanceledTime && now - Number(lastCanceledTime) < expirationTime) {
+  //     setShowBanner(false);
+  //   } else {
+  //     //没有本地的删除时间，或者已经大于24h，显示banner
+  //     setShowBanner(true);
+  //   }
+  // }, []);
+
   useEffect(() => {
     const expirationTime = 24 * 60 * 60 * 1000;
-    const lastCanceledTime: string | null = localStorage.getItem("lastCanceledTime");
+    const lastCanceledTime: string | null = localStorage.getItem("modal_lastCanceledTime");
     const now = new Date().getTime();
-    // console.log("now:",now,"last",lastCanceledTime);
-    //如果本地已经存有上次的删除时间，且小于24h，则不显示banner
     if (lastCanceledTime && now - Number(lastCanceledTime) < expirationTime) {
-      setShowBanner(false);
+      setShowModal(false);
     } else {
-      //没有本地的删除时间，或者已经大于24h，显示banner
-      setShowBanner(true);
+      setShowModal(true);
     }
   }, []);
 
@@ -70,7 +85,7 @@ const Navbar = () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className={showBanner ? "fixed top-0  z-40 block" : "hidden"}>
+      {/* <div className={showBanner ? "fixed top-0  z-40 block" : "hidden"}>
         <div className="flex h-12 w-screen items-center justify-center bg-[url('/homepage/banner.png')] bg-center lg:px-32">
           <a
             className="whitespace-nowrap text-[6px] text-white lg:text-xl"
@@ -90,15 +105,19 @@ const Navbar = () => {
             localStorage.setItem("lastCanceledTime", new Date().getTime().toString());
           }}
         />
-      </div>
+      </div> */}
+
+      <Banner className="fixed left-0 top-0 z-40 block" />
+      <ActivityModal showModal={showModal} setShowModal={setShowModal} />
+
       <div
         className={
-          showBanner
-            ? clsx("fixed top-12 z-40  hidden w-full justify-center px-28 py-4 lg:flex", {
+          true
+            ? clsx("fixed top-12 z-40 hidden w-full justify-center px-28 py-4 lg:flex", {
                 "bg-lafDark-100": darkMode,
                 "bg-lafWhite-600": !darkMode,
               })
-            : clsx("fixed top-0 z-40  hidden w-full justify-center px-28 py-4 lg:flex", {
+            : clsx("fixed top-0 z-40 hidden w-full justify-center px-28 py-4 lg:flex", {
                 "bg-lafDark-100": darkMode,
                 "bg-lafWhite-600": !darkMode,
               })
@@ -157,7 +176,7 @@ const Navbar = () => {
 
       <div
         className={
-          showBanner
+          true
             ? clsx("fixed top-12 z-40 flex w-full justify-between px-8 py-4 lg:hidden", {
                 "bg-lafDark-100": darkMode,
                 "bg-lafWhite-600": !darkMode,
@@ -180,7 +199,7 @@ const Navbar = () => {
         <div
           id="dropdown"
           className={
-            showBanner
+            true
               ? clsx(
                   "fixed right-4 top-28 z-40 block w-28 divide-y divide-gray-100 rounded-lg shadow lg:hidden",
                   {
