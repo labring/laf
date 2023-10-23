@@ -1,6 +1,6 @@
 import { Response } from 'express'
 import { IRequest } from '../support/types'
-import { INTERCEPTOR_FUNCTION_NAME } from '../constants'
+import { DEFAULT_FUNCTION_NAME, INTERCEPTOR_FUNCTION_NAME } from '../constants'
 import { parseToken } from '../support/token'
 import { logger } from '../support/logger'
 import {
@@ -56,9 +56,13 @@ async function invokeFunction(
     isTrigger = true
   }
 
-  const func = FunctionCache.getEngine(ctx.request.params?.name)
+  let func = FunctionCache.getEngine(ctx.request.params?.name)
   if (!func) {
-    return ctx.response.status(404).send('Function Not Found')
+    console.log('not found')
+    func = FunctionCache.getEngine(DEFAULT_FUNCTION_NAME)
+    if (!func) {
+      return ctx.response.status(404).send('Function Not Found')
+    }
   }
   // reject while no HTTP enabled
   if (
