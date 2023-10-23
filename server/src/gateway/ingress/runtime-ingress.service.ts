@@ -82,23 +82,11 @@ export class RuntimeGatewayService {
           'laf.dev/ingress.type': 'runtime',
           // apisix ingress annotations
           'k8s.apisix.apache.org/enable-websocket': 'true',
-          'k8s.apisix.apache.org/enable-cors': 'true',
-          'k8s.apisix.apache.org/cors-allow-credential': 'false',
-          'k8s.apisix.apache.org/cors-allow-headers': '*',
-          'k8s.apisix.apache.org/cors-allow-methods': '*',
-          'k8s.apisix.apache.org/cors-allow-origin': '*',
-          'k8s.apisix.apache.org/cors-expose-headers': '*',
           'k8s.apisix.apache.org/svc-namespace': namespace,
 
           // k8s nginx ingress annotations
           // websocket is enabled by default in k8s nginx ingress
-          'nginx.ingress.kubernetes.io/enable-cors': 'true',
-          'nginx.ingress.kubernetes.io/cors-allow-credentials': 'false',
-          'nginx.ingress.kubernetes.io/cors-allow-methods': '*',
-          'nginx.ingress.kubernetes.io/cors-allow-headers':
-            'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,x-laf-develop-token,x-laf-func-data',
-          'nginx.ingress.kubernetes.io/cors-expose-headers': '*',
-          'nginx.ingress.kubernetes.io/cors-allow-origin': '*',
+          'nginx.ingress.kubernetes.io/proxy-body-size': '0',
           'nginx.ingress.kubernetes.io/server-snippet':
             'client_header_buffer_size 4096k;\nlarge_client_header_buffers 8 512k;\n',
         },
