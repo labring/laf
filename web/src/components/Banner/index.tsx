@@ -33,32 +33,32 @@ export default function Banner(props: { className?: string }) {
         </div>
         <div>
           <img
-            className="absolute -top-[2px] z-30 hover:cursor-pointer lg:left-[188px] "
+            className="absolute -top-[2px] left-2 z-30 hover:cursor-pointer lg:left-[188px] "
             src="/banner/Star 1.png"
             alt="star1"
           />
           <img
-            className="absolute top-[24px] z-30 hover:cursor-pointer lg:left-[232px] "
+            className="absolute left-8 top-[24px] z-30 hover:cursor-pointer lg:left-[232px] "
             src="/banner/Group 20649.png"
             alt="star2"
           />
           <img
-            className="absolute top-[5px] z-30 hover:cursor-pointer lg:left-[338px] "
+            className="absolute left-16 top-[5px] z-30 hover:cursor-pointer lg:left-[338px] "
             src="/banner/Ellipse 160.png"
             alt="star3"
           />
           <img
-            className="absolute top-[14px] z-30 hover:cursor-pointer lg:right-[301px] "
+            className="absolute right-1 top-[14px] z-30 hover:cursor-pointer lg:right-[301px] "
             src="/banner/Star 4.png"
             alt="star4"
           />
           <img
-            className="absolute top-[33px] z-30 hover:cursor-pointer lg:right-[236px] "
+            className="absolute right-5 top-[33px] z-30 hover:cursor-pointer lg:right-[236px] "
             src="/banner/Ellipse 161.png"
             alt="star5"
           />
           <img
-            className="absolute -top-[1px] z-30 hover:cursor-pointer lg:right-[136px] "
+            className="absolute -top-[1px] right-12 z-30 hover:cursor-pointer lg:right-[136px] "
             src="/banner/Ellipse 158.png"
             alt="star6"
           />

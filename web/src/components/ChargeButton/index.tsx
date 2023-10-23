@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Button,
   Input,
@@ -29,7 +29,7 @@ import {
 } from "@/apis/v1/accounts";
 import { useAccountQuery } from "@/pages/home/service";
 
-export default function ChargeButton(props: { amount?: number; children: React.ReactElement }) {
+export default function ChargeButton(props: { children: React.ReactElement }) {
   const { children } = props;
   const darkMode = useColorMode().colorMode === "dark";
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -47,6 +47,14 @@ export default function ChargeButton(props: { amount?: number; children: React.R
   );
 
   const { data: accountRes, refetch: accountRefetch } = useAccountQuery();
+
+  useEffect(() => {
+    if (localStorage.getItem("charge")) {
+      onOpen();
+      localStorage.removeItem("charge");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useQuery(
     ["AccountControllerGetChargeOrder"],
