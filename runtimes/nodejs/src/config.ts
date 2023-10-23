@@ -47,11 +47,11 @@ export default class Config {
    * the serving port, default is 8000
    */
   static get PORT(): number {
-    return (process.env.PORT ?? 8000) as number
+    return (process.env.__PORT ?? 8000) as number
   }
 
   static get STORAGE_PORT(): number {
-    return (process.env.STORAGE_PORT ?? 9000) as number
+    return (process.env.__STORAGE_PORT ?? 9000) as number
   }
 
   /**
