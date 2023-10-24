@@ -58,7 +58,6 @@ async function invokeFunction(
 
   let func = FunctionCache.getEngine(ctx.request.params?.name)
   if (!func) {
-    console.log('not found')
     func = FunctionCache.getEngine(DEFAULT_FUNCTION_NAME)
     if (!func) {
       return ctx.response.status(404).send('Function Not Found')
