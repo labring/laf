@@ -15,7 +15,7 @@ import useSiteSettingStore from "../siteSetting";
 import ActivityModal from "./modal";
 
 const Navbar = () => {
-  // const [showBanner, setShowBanner] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [toggleSidebar, setToggleSidebar] = useState(false);
   const [stars, setStars] = useState<string | null>(null);
@@ -38,19 +38,19 @@ const Navbar = () => {
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
 
-  // useEffect(() => {
-  //   const expirationTime = 24 * 60 * 60 * 1000;
-  //   const lastCanceledTime: string | null = localStorage.getItem("lastCanceledTime");
-  //   const now = new Date().getTime();
-  //   // console.log("now:",now,"last",lastCanceledTime);
-  //   //如果本地已经存有上次的删除时间，且小于24h，则不显示banner
-  //   if (lastCanceledTime && now - Number(lastCanceledTime) < expirationTime) {
-  //     setShowBanner(false);
-  //   } else {
-  //     //没有本地的删除时间，或者已经大于24h，显示banner
-  //     setShowBanner(true);
-  //   }
-  // }, []);
+  useEffect(() => {
+    const expirationTime = 24 * 60 * 60 * 1000;
+    const lastCanceledTime: string | null = localStorage.getItem("lastCanceledTime");
+    const now = new Date().getTime();
+    // console.log("now:",now,"last",lastCanceledTime);
+    //如果本地已经存有上次的删除时间，且小于24h，则不显示banner
+    if (lastCanceledTime && now - Number(lastCanceledTime) < expirationTime) {
+      setShowBanner(false);
+    } else {
+      //没有本地的删除时间，或者已经大于24h，显示banner
+      setShowBanner(true);
+    }
+  }, []);
 
   useEffect(() => {
     const expirationTime = 24 * 60 * 60 * 1000;
@@ -85,7 +85,7 @@ const Navbar = () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      {/* <div className={showBanner ? "fixed top-0  z-40 block" : "hidden"}>
+      <div className={showBanner ? "fixed top-0 z-50 block" : "hidden"}>
         <div className="flex h-12 w-screen items-center justify-center bg-[url('/homepage/banner.png')] bg-center lg:px-32">
           <a
             className="whitespace-nowrap text-[6px] text-white lg:text-xl"
@@ -105,14 +105,14 @@ const Navbar = () => {
             localStorage.setItem("lastCanceledTime", new Date().getTime().toString());
           }}
         />
-      </div> */}
+      </div>
 
       <Banner className="fixed left-0 top-0 z-40 block" />
       <ActivityModal showModal={showModal} setShowModal={setShowModal} />
 
       <div
         className={
-          true
+          showBanner
             ? clsx("fixed top-12 z-40 hidden w-full justify-center px-28 py-4 lg:flex", {
                 "bg-lafDark-100": darkMode,
                 "bg-lafWhite-600": !darkMode,
