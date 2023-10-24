@@ -1,3 +1,4 @@
+import Config from '../../config'
 import { FunctionCache } from './cache'
 import { FunctionContext } from './types'
 import { buildSandbox, createScript } from './utils'
@@ -36,7 +37,9 @@ export class FunctionModule {
       )
 
       // cache module
-      FunctionModule.cache.set(name, functionModule)
+      if (Config.ENABLE_MODULE_CACHE) {
+        FunctionModule.cache.set(name, functionModule)
+      }
       return functionModule
     }
     return require(name)
