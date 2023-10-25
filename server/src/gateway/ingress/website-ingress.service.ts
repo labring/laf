@@ -73,11 +73,9 @@ export class WebsiteHostingGatewayService {
           'laf.dev/bucket.name': website.bucketName,
           'laf.dev/ingress.type': 'website',
           // apisix ingress annotations
-          'k8s.apisix.apache.org/enable-cors': 'true',
           'k8s.apisix.apache.org/svc-namespace': namespace,
 
           // k8s nginx ingress annotations
-          'nginx.ingress.kubernetes.io/enable-cors': 'true',
         },
       },
       spec: { ingressClassName, rules: [rule], tls },

@@ -5,8 +5,16 @@ import './support/cloud-sdk'
 import { WebsiteHostingChangeStream } from './support/database-change-stream/website-hosting-change-stream'
 import proxy from 'express-http-proxy'
 import axios from 'axios'
+import cors from 'cors'
 
 const app = express()
+
+app.use(cors({
+  origin: true,
+  methods: '*',
+  exposedHeaders: '*',
+  credentials: true,
+}))
 
 const tryPath = (bucket: string, path: string) => {
   const testPaths = path.endsWith('/')

@@ -35,7 +35,7 @@ helm install mongodb -n ${NAMESPACE} \
     ./charts/mongodb
 
 ## 3. install prometheus
-PROMETHEUS_URL=http://prometheus-prometheus.${NAMESPACE}.svc.cluster.local:9090
+PROMETHEUS_URL=http://prometheus-operated.${NAMESPACE}.svc.cluster.local:9090
 if [ "$ENABLE_MONITOR" = "true" ]; then
     sed -e "s/\$NAMESPACE/$NAMESPACE/g" \
         -e "s/\$PROMETHEUS_PV_SIZE/${PROMETHEUS_PV_SIZE:-20Gi}/g" \
