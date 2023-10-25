@@ -9,22 +9,8 @@
     "scrollbarSlider.background": "#E8EAEC",
     "editorIndentGuide.activeBackground1": "#fff",
     "editorIndentGuide.background1": "#eee",
-    "activityBar.activeBorder": "#005FB8",
-    "activityBar.background": "#F8F8F8",
-    "activityBar.border": "#E5E5E5",
-    "activityBar.foreground": "#1F1F1F",
-    "activityBar.inactiveForeground": "#616161",
-    "activityBarBadge.background": "#005FB8",
-    "activityBarBadge.foreground": "#FFFFFF",
     "badge.background": "#CCCCCC",
     "badge.foreground": "#3B3B3B",
-    "button.background": "#005FB8",
-    "button.border": "#0000001a",
-    "button.foreground": "#FFFFFF",
-    "button.hoverBackground": "#0258A8",
-    "button.secondaryBackground": "#E5E5E5",
-    "button.secondaryForeground": "#3B3B3B",
-    "button.secondaryHoverBackground": "#CCCCCC",
     "chat.slashCommandBackground": "#D2ECFF",
     "chat.slashCommandForeground": "#306CA2",
     "checkbox.background": "#F8F8F8",
@@ -37,6 +23,7 @@
     "editor.background": "#FFFFFF",
     "editor.foreground": "#3B3B3B",
     "editor.inactiveSelectionBackground": "#E5EBF1",
+    "editor.selectionBackground": "#bed9f5",
     "editor.selectionHighlightBackground": "#ADD6FF80",
     "editorGroup.border": "#E5E5E5",
     "editorGroupHeader.tabsBackground": "#F8F8F8",
@@ -64,7 +51,6 @@
     "list.activeSelectionIconForeground": "#000000",
     "list.hoverBackground": "#F2F2F2",
     "list.focusAndSelectionOutline": "#005FB8",
-    "menu.border": "#CECECE",
     "notebook.cellBorderColor": "#E5E5E5",
     "notebook.selectedCellBackground": "#C8DDF150",
     "notificationCenterHeader.background": "#FFFFFF",
@@ -125,10 +111,6 @@
     "tab.unfocusedActiveBorder": "#F8F8F8",
     "tab.unfocusedActiveBorderTop": "#E5E5E5",
     "tab.unfocusedHoverBackground": "#F8F8F8",
-    "terminalCursor.foreground": "#005FB8",
-    "terminal.foreground": "#3B3B3B",
-    "terminal.inactiveSelectionBackground": "#E5EBF1",
-    "terminal.tab.activeBorder": "#005FB8",
     "textBlockQuote.background": "#F8F8F8",
     "textBlockQuote.border": "#E5E5E5",
     "textCodeBlock.background": "#F8F8F8",
@@ -143,6 +125,7 @@
     "welcomePage.tileBackground": "#F3F3F3",
     "widget.border": "#E5E5E5",
     "actionBar.toggledBackground": "#dddddd",
+    "scrollbar.shadow": "#2731360A",
     "editorBracketHighlight.foreground1": "#B93A67",
     "editorBracketHighlight.foreground2": "#0178CE",
     // "editorBracketHighlight.foreground3": "#ffed72",
@@ -711,17 +694,6 @@
       "scope": "constant.sha.git-rebase",
       "settings": {
         "foreground": "#098658"
-      }
-    },
-    {
-      "name": "coloring of the Java import and package identifiers",
-      "scope": [
-        "storage.modifier.import.java",
-        "variable.language.wildcard.java",
-        "storage.modifier.package.java"
-      ],
-      "settings": {
-        "foreground": "#000000"
       }
     },
     {

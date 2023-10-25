@@ -8,6 +8,7 @@ import Panel from "@/components/Panel";
 
 import Icons from "../SideBar/Icons";
 
+import LSPBar from "./LSPBar";
 import MonitorBar from "./MonitorBar";
 
 import SysSetting from "@/pages/app/setting/SysSetting";
@@ -44,6 +45,7 @@ function StatusBar() {
           statusConditions={currentApp?.phase}
           state={currentApp?.state}
         />
+        <LSPBar />
       </HStack>
       <HStack spacing={4}>
         <MonitorBar />

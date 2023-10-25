@@ -16,6 +16,12 @@ var manifest = {
         label: "lafEditorTheme",
         uiTheme: "lafEditorTheme",
         path: "./themes/laf_editor_theme.json",
+      },
+      {
+        id: "lafEditorDarkTheme",
+        label: "lafEditorDarkTheme",
+        uiTheme: "lafEditorDarkTheme",
+        path: "./themes/laf_editor_dark_theme.json",
       }
     ],
   },
@@ -28,6 +34,11 @@ const { registerFileUrl, whenReady } = registerExtension(manifest);
 registerFileUrl(
   "./themes/laf_editor_theme.json",
   new URL("./laf_editor_theme.json", import.meta.url).toString(),
+  "application/json",
+);
+registerFileUrl(
+  "./themes/laf_editor_dark_theme.json",
+  new URL("./laf_editor_dark_theme.json", import.meta.url).toString(),
   "application/json",
 );
 export { whenReady };

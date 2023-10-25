@@ -44,7 +44,6 @@ function EditorPanel() {
             marginRight: -14,
           }}
           path={`/root/laf/runtimes/nodejs/functions/${currentFunction?.name}.ts`}
-          value={functionCache.getCache(currentFunction!._id, currentFunction!.source?.code)}
           onChange={(value) => {
             updateFunctionCode(currentFunction, value || "");
             functionCache.setCache(currentFunction!._id, value || "");
