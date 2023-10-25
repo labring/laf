@@ -30,7 +30,7 @@ WORKDIR /app
 COPY --from=build /app/dist ./dist
 
 # 安装生产依赖并清理缓存
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci --production && npm cache clean --force
 
 # 复制生产依赖信息
 COPY --chown=node:node package*.json ./
