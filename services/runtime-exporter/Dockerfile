@@ -1,39 +1,39 @@
-# 第一阶段：构建应用
+# 第一阶段：编译
 FROM node:18-slim AS build
 
 WORKDIR /app
 
-# 安装应用依赖
-# 使用通配符确保 package.json 和 package-lock.json（如果有的话）都被复制
+# 利用缓存机制，只在依赖文件变化时执行 npm install
 COPY package*.json ./
+RUN npm install
 
-RUN npm ci
-
-# 打包应用源代码
+# 复制其他文件和目录
 COPY . .
 
+# 构建应用
 RUN npm run build
 
-# 第二阶段：以最小设置构建生产环境
+# 第二阶段：设置生产环境
 FROM node:18-slim AS production
 
-# 设置非 root 用户并公开端口
-USER node
-EXPOSE 2342
-
-ENV NODE_ENV=production \
-  LOG_LEVEL=debug
+# 设置环境变量
+ENV LOG_LEVEL=debug
+ENV NODE_ENV=production
 
 WORKDIR /app
 
-# 从前一阶段复制构建的代码
+# 从构建阶段复制构建产物
 COPY --from=build /app/dist ./dist
+# 复制生产依赖，忽略开发依赖
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package*.json ./
 
-# 安装生产依赖并清理缓存
-RUN npm ci --production && npm cache clean
+# 设置非 root 用户，提高安全性
+RUN chown -R node:node /app/
+USER node
 
-# 复制生产依赖信息
-COPY --chown=node:node package*.json ./
+# 暴露应用端口
+EXPOSE 2342
 
-# 使用 CMD 定义运行时，设置运行应用的命令
+# 启动应用
 CMD [ "npm", "run", "start" ]
