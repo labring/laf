@@ -63,7 +63,9 @@ function HeadPanel() {
                         : "px-[14px]",
                     )}
                     onClick={() => {
-                      navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`);
+                      navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`, {
+                        replace: true,
+                      });
                       setCurrentFunction(item);
                     }}
                   >
@@ -81,22 +83,25 @@ function HeadPanel() {
                       <span className="ml-2 inline-block h-1 w-1 flex-none rounded-full bg-none group-hover:hidden"></span>
                     )}
                     <span className="-mr-1 hidden group-hover:flex">
-                      <IconWrap size={16}>
-                        <CloseIcon
-                          boxSize="2"
-                          className="!text-grayModern-600"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setRecentFunctionList(
-                              recentFunctionList.filter((i) => i._id !== item._id),
+                      <IconWrap
+                        size={16}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRecentFunctionList(
+                            recentFunctionList.filter((i) => i._id !== item._id),
+                          );
+                          if (currentFunction?._id === item._id) {
+                            const nextFunction =
+                              recentFunctionList[index + 1] || recentFunctionList[0] || {};
+                            setCurrentFunction(nextFunction);
+                            navigate(
+                              `/app/${currentApp?.appid}/${Pages.function}/${nextFunction.name}`,
+                              { replace: true },
                             );
-                            if (currentFunction?._id === item._id) {
-                              setCurrentFunction(
-                                recentFunctionList[index + 1] || recentFunctionList[0] || {},
-                              );
-                            }
-                          }}
-                        />
+                          }
+                        }}
+                      >
+                        <CloseIcon boxSize="2" className="!text-grayModern-600" />
                       </IconWrap>
                     </span>
                   </div>
