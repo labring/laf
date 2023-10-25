@@ -69,7 +69,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
       res = await bucketUpdateMutation.mutateAsync(values);
       if (!res.error) {
         store.setCurrentStorage(res.data);
-        showSuccess("update success.");
+        showSuccess(t("UpdateSuccess"));
         onClose();
       }
     } else {
@@ -79,7 +79,7 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
       });
       if (!res.error) {
         store.setCurrentStorage(res.data);
-        showSuccess("create success.");
+        showSuccess(t("CreateSuccess"));
         onClose();
       }
     }
@@ -109,9 +109,11 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
               <FormControl isInvalid={!!errors?.name}>
                 <FormLabel htmlFor="name"> {t("StoragePanel.BucketName")}</FormLabel>
                 <InputGroup>
-                  <InputAddon className="!mr-0 !rounded-r-none !pr-0">
-                    {currentApp.appid + "-"}
-                  </InputAddon>
+                  {!isEdit && (
+                    <InputAddon className="!mr-0 !rounded-r-none !pr-0">
+                      {currentApp.appid + "-"}
+                    </InputAddon>
+                  )}
                   <Input
                     {...register("name", {
                       required: t("StoragePanel.BucketNameisRequired").toString(),
@@ -124,8 +126,9 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
                     placeholder={String(t("StoragePanel.BucketNamePlaceholder"))}
                     disabled={isEdit}
                     className={clsx(
-                      "!ml-0 !rounded-l-none !border-none !pl-0",
+                      "!rounded-l-none !border-none",
                       darkMode ? "!bg-[#FFFFFF0A]" : "!bg-lafWhite-600",
+                      isEdit ? "" : "!ml-0 !pl-0",
                     )}
                   />
                 </InputGroup>

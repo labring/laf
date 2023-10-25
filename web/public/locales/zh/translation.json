@@ -252,7 +252,7 @@
     "CreateBucket": "创建 Bucket",
     "EditBucket": "编辑 Bucket",
     "DeleteBucket": "删除 Bucket",
-    "BucketNamePlaceholder": "bucket-name",
+    "BucketNamePlaceholder": "bucket 名称",
     "EmptyStorageTip": "您还没有创建 Bucket",
     "UploadFile": "上传文件",
     "UploadFolder": "上传文件夹",
@@ -666,5 +666,6 @@
   "Activity_Modal2": "充值优惠限时开启",
   "ThinkMore": "我再想想",
   "Activity_Modal3": "多充多送还有精美周边！",
-  "RechargeNow": "立即参加"
+  "RechargeNow": "立即参加",
+  "CreateSuccess": "创建成功"
 }

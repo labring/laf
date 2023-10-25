@@ -251,7 +251,7 @@
     "EditBucket": "Edit Bucket",
     "DeleteBucket": "Delete Buckets",
     "BucketNameRule": "The bucket name must consist of lowercase letters, numbers and hyphens (-), with a length between 3 and 32 characters, and cannot start or end with a hyphen (-).",
-    "BucketNamePlaceholder": "bucket-name",
+    "BucketNamePlaceholder": "bucket name",
     "StorageList": "Storages",
     "EmptyStorageTip": "You have not created a Bucket",
     "UploadFile": "Upload File",
@@ -666,5 +666,6 @@
   "Activity_Modal2": "The recharge discount is opened in a limited time!",
   "ThinkMore": "let me think again",
   "Activity_Modal3": "Charge more, get more!",
-  "RechargeNow": "Recharge Now"
+  "RechargeNow": "Recharge Now",
+  "CreateSuccess": "create success"
 }
