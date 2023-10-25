@@ -182,17 +182,8 @@ export class ApplicationController {
     let storage = {}
     const storageUser = await this.storage.findOne(appid)
     if (storageUser) {
-      const sts = await this.storage.getOssSTS(region, appid, storageUser)
-      const credentials = {
-        endpoint: region.storageConf.externalEndpoint,
-        accessKeyId: sts.Credentials?.AccessKeyId,
-        secretAccessKey: sts.Credentials?.SecretAccessKey,
-        sessionToken: sts.Credentials?.SessionToken,
-        expiration: sts.Credentials?.Expiration,
-      }
-
       storage = {
-        credentials,
+        endpoint: region.storageConf.externalEndpoint,
         ...storageUser,
       }
     }

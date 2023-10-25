@@ -1,6 +1,6 @@
 import { CLOUD_FUNCTION_COLLECTION, INIT_FUNCTION_NAME } from '../constants'
 import { DatabaseAgent } from '../db'
-import { CloudFunction, ICloudFunctionData } from './function-engine'
+import { CloudFunction, ICloudFunctionData } from './engine'
 import { logger } from './logger'
 import { generateUUID } from './utils'
 
@@ -15,7 +15,7 @@ export class InitHook {
     }
 
     const cf = new CloudFunction(func)
-    await cf.invoke({
+    await cf.execute({
       method: 'INIT',
       requestId: generateUUID(),
       __function_name: func.name,

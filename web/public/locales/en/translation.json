@@ -272,7 +272,8 @@
     "parsing": "parsing",
     "DomainUpdateSuccess": "Domain Update Success",
     "DomainDeleteSuccess": "Domain Delete Success",
-    "CustomApplicationDomain": "Custom Application Domain"
+    "CustomApplicationDomain": "Custom Application Domain",
+    "BucketNameisRequired": "Bucket name is required"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",

@@ -1,10 +1,10 @@
 import { CloudSdkInterface, Cloud } from '@lafjs/cloud'
 import { getDb } from 'database-proxy'
-import { CloudFunction, FunctionContext } from './function-engine'
 import { DatabaseAgent } from '../db'
 import { getToken, parseToken } from './token'
 import { WebSocketAgent } from './ws'
 import Config from '../config'
+import { CloudFunction, FunctionCache, FunctionContext } from './engine'
 
 Cloud.create = createCloudSdk
 
@@ -51,8 +51,7 @@ function createCloudSdk() {
  * @returns
  */
 async function invokeInFunction(name: string, param?: FunctionContext) {
-  const data = CloudFunction.getFunctionByName(name)
-  const func = new CloudFunction(data)
+  const func = FunctionCache.getEngine(name)
 
   if (!func) {
     throw new Error(`invoke() failed to get function: ${name}`)
@@ -65,7 +64,7 @@ async function invokeInFunction(name: string, param?: FunctionContext) {
 
   param.method = param.method ?? 'call'
 
-  const result = await func.invoke(param)
+  const result = await func.execute(param)
 
   if (result.error) {
     throw result.error

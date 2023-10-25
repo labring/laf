@@ -1,8 +1,8 @@
-import { FunctionConsole } from './console'
 import { IncomingHttpHeaders } from 'http'
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import WebSocket = require('ws')
+import { FunctionConsole } from './console'
 
 export type RequireFuncType = (
   module: string,
@@ -31,7 +31,7 @@ export interface RuntimeContext {
     env: { [key: string]: string }
   }
   global: RuntimeContext
-  fromModules: string[]
+  fromModule: string[]
 }
 
 /**
@@ -52,7 +52,7 @@ export interface FunctionContext {
   method?: string
   socket?: WebSocket
   request?: Request
-  response?: Response  
+  response?: Response
   __function_name?: string
   __is_required?: boolean
   [key: string]: any

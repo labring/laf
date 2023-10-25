@@ -52,7 +52,7 @@ fi
 
 echo "Creating VM..."
 echo "\tmultipass launch --name $NAME --cpus 2 --memory 4G --disk 40G"
-multipass launch --name "$NAME" --cpus 2 --memory 4G --disk 50G
+multipass launch --name "$NAME" --cpus 2 --memory 4G --disk 50G 22.04
 # shellcheck disable=SC2181
 if [ $? -eq 0 ]; then
     echo "vm is created"

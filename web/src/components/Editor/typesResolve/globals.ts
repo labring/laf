@@ -97,6 +97,8 @@ interface FunctionContext {
    * WebSocket object
    */
   socket?: WebSocket
+
+  [key: string]: any
 }
 
 interface IModule {
@@ -110,10 +112,18 @@ interface IExports {
   main: (ctx: FunctionContext) => any
 }
 
+interface IProcess {
+  /**
+   * Environment
+   */
+  env: any
+}
+
 declare const module: IModule
 declare const exports: IExports
 declare const console: FunctionConsole
 declare const global: typeof globalThis
+declare const process: IProcess
 
 /**
  *  The main function, entry of the cloud function

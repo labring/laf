@@ -178,18 +178,6 @@ export class MinioService {
       await this.updateBucketPolicy(region, bucket, policy)
     }
 
-    const version_res = await s3.send(
-      new PutBucketVersioningCommand({
-        Bucket: bucket,
-        VersioningConfiguration: {
-          Status: 'Enabled',
-        },
-      }),
-    )
-    if (version_res?.$metadata?.httpStatusCode === 200) {
-      this.logger.debug(`bucket ${bucket} versioning enabled`)
-    }
-
     return res
   }
 
