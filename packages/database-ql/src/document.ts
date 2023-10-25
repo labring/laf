@@ -3,7 +3,7 @@ import { Db } from './index'
 import { serialize } from './serializer/datatype'
 import { UpdateCommand } from './commands/update'
 import { ActionType } from './constant'
-import { AddRes, GetOneRes, RemoveRes, UpdateRes } from './result-types'
+import { AddRes, CreateIndexRes, DropIndexRes, GetOneRes, ListIndexesRes, RemoveRes, UpdateRes } from './result-types'
 import { ProjectionType } from './interface'
 import { Query } from './query'
 
@@ -164,5 +164,97 @@ export class DocumentReference {
    */
   field(projection: string[] | ProjectionType): DocumentReference {
     return new DocumentReference(this._db, this._coll, this.id, this._query.field(projection))
+  }
+
+
+  /**
+   * 创建索引
+   *
+   * @param data - document data
+   */
+  async createIndex(keys: object, options?: object): Promise<CreateIndexRes> {
+    if (typeof keys  !== 'object' || Object.keys(keys)?.length === 0) {
+      throw new Error('keys cannot be empty object')
+    }
+
+    const data = {
+      keys,
+      options
+    }
+
+    const params = {
+      collectionName: this._coll,
+      data: serialize(data),
+    }
+
+    const res = await this._query
+      .send(ActionType.createIndex, params)
+
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        error: res.error,
+        ok: false,
+        code: res.code,
+        indexName: null,
+      }
+    }
+
+    return {
+      requestId: res.requestId,
+      ok: true,
+      indexName: res.data.indexName,
+    }
+  }
+
+  async dropIndex(index: string | object): Promise<DropIndexRes> {
+    const params = {
+      collectionName: this._coll,
+      data: serialize(index),
+    }
+
+    const res = await this._query
+      .send(ActionType.dropIndex, params)
+
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        error: res.error,
+        ok: false,
+        code: res.code,
+        result: res.data.result,
+      }
+    }
+
+    return {
+      requestId: res.requestId,
+      ok: true,
+      result: res.data.result,
+    }
+  }
+
+  async listIndexes(): Promise<ListIndexesRes> {
+    const params = {
+      collectionName: this._coll,
+    }
+
+    const res = await this._query
+      .send(ActionType.listIndexes, params)
+
+    if (res.error) {
+      return {
+        requestId: res.requestId,
+        error: res.error,
+        ok: false,
+        code: res.code,
+        list: res.data.list
+      }
+    }
+
+    return {
+      requestId: res.requestId,
+      ok: true,
+      list: res.data.list,
+    }
   }
 }
