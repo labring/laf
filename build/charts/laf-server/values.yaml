@@ -28,6 +28,8 @@ default_region:
   log_server_url: ""
   log_server_secret: ""
   log_server_database_url: ""
+  # runtime-exporter
+  runtime_exporter_secret: ""
   # prometheus
   prometheus_url: ""
 jwt:
