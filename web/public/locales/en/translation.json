@@ -251,7 +251,7 @@
     "EditBucket": "Edit Bucket",
     "DeleteBucket": "Delete Buckets",
     "BucketNameRule": "The bucket name must consist of lowercase letters, numbers and hyphens (-), with a length between 3 and 32 characters, and cannot start or end with a hyphen (-).",
-    "BucketNamePlaceholder": "bucket-name",
+    "BucketNamePlaceholder": "bucket name",
     "StorageList": "Storages",
     "EmptyStorageTip": "You have not created a Bucket",
     "UploadFile": "Upload File",
@@ -659,5 +659,6 @@
   "SavedSuccessfully": "Saved Successfully",
   "Bind": "Bind",
   "UnBind": "Unbind",
-  "UnBindSuccess": "Unbind Successfully"
+  "UnBindSuccess": "Unbind Successfully",
+  "CreateSuccess": "create success"
 }
