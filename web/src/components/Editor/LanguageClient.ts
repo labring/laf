@@ -1,21 +1,15 @@
 import getConfigurationServiceOverride from "@codingame/monaco-vscode-configuration-service-override";
-// import getEditorServiceOverride from "@codingame/monaco-vscode-editor-service-override"
-// import getModelServiceOverride from '@codingame/monaco-vscode-model-service-override'
 import getTextmateServiceOverride from "@codingame/monaco-vscode-textmate-service-override";
-// import getKeybindingsServiceOverride from '@codingame/monaco-vscode-keybindings-service-override';
 import getThemeServiceOverride from "@codingame/monaco-vscode-theme-service-override";
 import { editor, languages } from "monaco-editor";
 import { initServices, MonacoLanguageClient } from "monaco-languageclient";
 import { Uri } from "vscode";
 import { IReference, ITextFileEditorModel } from "vscode/monaco";
-// import { ITextModelService, SyncDescriptor } from "vscode/services";
 import { CloseAction, ErrorAction, MessageTransports } from "vscode-languageclient";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
 import "@codingame/monaco-vscode-typescript-basics-default-extension";
 import "./TextModel";
-
-// import { TextModelService } from "./TextModel";
 
 export const createLanguageClient = (transports: MessageTransports): MonacoLanguageClient => {
   return new MonacoLanguageClient({
@@ -28,7 +22,7 @@ export const createLanguageClient = (transports: MessageTransports): MonacoLangu
       },
       workspaceFolder: {
         uri: Uri.file("/root/laf/runtimes/nodejs/functions"),
-        name: "Sample Workspace",
+        name: "Laf Workspace",
         index: 0,
       },
     },
@@ -53,9 +47,9 @@ export const createUrl = (
   return url.toString();
 };
 
-export const createWebSocketAndStartClient = (url: string): WebSocket => {
+export const createWebSocketAndStartClient = (url: string) => {
   const webSocket = new WebSocket(url);
-  webSocket.onopen = () => {
+  webSocket.onopen = async () => {
     const socket = toSocket(webSocket);
     const reader = new WebSocketMessageReader(socket);
     const writer = new WebSocketMessageWriter(socket);
@@ -63,8 +57,8 @@ export const createWebSocketAndStartClient = (url: string): WebSocket => {
       reader,
       writer,
     });
-    languageClient.start();
-    reader.onClose(() => languageClient.stop());
+    await languageClient.start();
+    reader.onClose(() => languageClient?.stop());
   };
   return webSocket;
 };
@@ -81,17 +75,11 @@ export const performInit = async (vscodeApiInit: boolean) => {
       userServices: {
         ...getThemeServiceOverride(),
         ...getTextmateServiceOverride(),
-        ...getConfigurationServiceOverride(Uri.file("/root/laf/runtimes/nodejs/functions/")),
-        // ...getEditorServiceOverride(async (modelRef, options, sideBySide) => {
-        //   console.log('Received open editor call with parameters: ', modelRef, options, sideBySide);
-        //   return undefined;
-        // })
-        // ...getKeybindingsServiceOverride()
+        ...getConfigurationServiceOverride(Uri.file("/root/laf/runtimes/nodejs/functions")),
       },
-      debugLogging: true,
+      // debugLogging: true,
     });
 
-    // register the TS language with Monaco
     languages.register({
       id: "typescript",
       extensions: [".ts", ".tsx"],

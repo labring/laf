@@ -10,12 +10,12 @@ import {
 
 import { COLOR_MODE, Pages } from "@/constants";
 
-import "./userWorker";
 import "./theme";
 
 import { createUrl, createWebSocketAndStartClient } from "./LanguageClient";
 import { AutoImportTypings } from "./typesResolve";
 
+import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useFunctionStore from "@/pages/app/functions/store";
 import useGlobalStore from "@/pages/globalStore";
@@ -30,10 +30,8 @@ export const fileSystemProvider = new RegisteredFileSystemProvider(false);
 registerFileSystemOverlay(1, fileSystemProvider);
 const autoImportTypings = new AutoImportTypings();
 const parseImports = debounce(autoImportTypings.parse.bind(autoImportTypings), 1500);
-const updateModel = (path: string, value: string, editorRef: any) => {
-  const newModel =
-    monaco.editor.getModel(monaco.Uri.file(path)) ||
-    monaco.editor.createModel(value, "typescript", monaco.Uri.file(path));
+const updateModel = (path: string, editorRef: any) => {
+  const newModel = monaco.editor.getModel(monaco.Uri.file(path));
 
   if (editorRef.current?.getModel() !== newModel) {
     editorRef.current?.setModel(newModel);
@@ -42,7 +40,6 @@ const updateModel = (path: string, value: string, editorRef: any) => {
 };
 
 function FunctionEditor(props: {
-  value: string;
   className?: string;
   style?: CSSProperties;
   onChange?: (value: string | undefined) => void;
@@ -53,7 +50,6 @@ function FunctionEditor(props: {
   fontSize?: number;
 }) {
   const {
-    value,
     onChange,
     path,
     height = "100%",
@@ -68,23 +64,51 @@ function FunctionEditor(props: {
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
   const hostname = "scm3dt.100.66.76.85.nip.io";
-  const path1 = "/_/lsp";
+  const lspPath = "/_/lsp";
   const port = 80;
-  const url = useMemo(() => createUrl(hostname, port, path1), [hostname, port, path1]);
-  // let lspWebSocket: WebSocket;
+  const url = useMemo(() => createUrl(hostname, port, lspPath), [hostname, port, lspPath]);
   const globalStore = useGlobalStore((state) => state);
-  const { allFunctionList } = useFunctionStore((state) => state);
+  const { allFunctionList, setLSPStatus } = useFunctionStore((state) => state);
+  const functionCache = useFunctionCache();
 
   useHotKey(
     DEFAULT_SHORTCUTS.send_request,
     () => {
-      // format
       editorRef.current?.trigger("keyboard", "editor.action.formatDocument", {});
     },
     {
       enabled: globalStore.currentPageId === Pages.function,
     },
   );
+
+  useEffect(() => {
+    const lspWebSocket = createWebSocketAndStartClient(url);
+    setLSPStatus("initializing");
+
+    lspWebSocket.addEventListener("message", (event) => {
+      const message = JSON.parse(event.data);
+      if (message.method === "textDocument/publishDiagnostics") {
+        setLSPStatus("ready");
+        return;
+      }
+    });
+
+    lspWebSocket.addEventListener("error", (event) => {
+      setLSPStatus("error");
+    });
+
+    window.onbeforeunload = () => {
+      // On page reload/exit, close web socket connection
+      lspWebSocket?.close();
+      setLSPStatus("closed");
+    };
+    return () => {
+      // On component unmount, close web socket connection
+      lspWebSocket?.close();
+      setLSPStatus("closed");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (monacoEl && !editorRef.current) {
@@ -104,56 +128,33 @@ function FunctionEditor(props: {
           overviewRulerLanes: 0,
           lineNumbersMinChars: 4,
           fontSize: fontSize,
-          theme: "lafEditorTheme",
+          theme: colorMode === COLOR_MODE.dark ? "lafEditorDarkTheme" : "lafEditorTheme",
           fontFamily: "Fira Code",
           fontWeight: "450",
           scrollBeyondLastLine: false,
         });
-        updateModel(path, value, editorRef);
         setTimeout(() => {
           autoImportTypings.loadDefaults();
         });
-
-        // lspWebSocket = createWebSocketAndStartClient(url);
-        createWebSocketAndStartClient(url);
       };
       start();
-    } else if (monacoEl && editorRef.current) {
-      updateModel(path, value, editorRef);
     }
-
     allFunctionList.forEach(async (item: any) => {
-      fileSystemProvider.registerFile(
-        new RegisteredMemoryFile(
-          monaco.Uri.file(`/root/laf/runtimes/nodejs/functions/${item.name}.ts`),
-          item.source.code,
-        ),
-      );
-      if (
-        !monaco.editor.getModel(
-          monaco.Uri.file(`/root/laf/runtimes/nodejs/functions/${item.name}.ts`),
-        )
-      ) {
+      const uri = monaco.Uri.file(`/root/laf/runtimes/nodejs/functions/${item.name}.ts`);
+
+      fileSystemProvider.registerFile(new RegisteredMemoryFile(uri, item.source.code));
+      if (!monaco.editor.getModel(uri)) {
         monaco.editor.createModel(
-          item.source.code,
+          functionCache.getCache(item._id, item.source?.code),
           "typescript",
-          monaco.Uri.file(`/root/laf/runtimes/nodejs/functions/${item.name}.ts`),
+          uri,
         );
-        // editorRef.current?.setModel(model);
       }
     });
 
-    // window.onbeforeunload = () => {
-    //   // On page reload/exit, close web socket connection
-    //   lspWebSocket?.close();
-    // };
-    // return () => {
-    //     // On component unmount, close web socket connection
-    //     lspWebSocket?.close();
-    // };
-
-    return () => {};
-  }, [colorMode, path, readOnly, value, fontSize, url, allFunctionList]);
+    updateModel(path, editorRef);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allFunctionList]);
 
   // onChange
   useEffect(() => {
@@ -167,10 +168,14 @@ function FunctionEditor(props: {
   }, [onChange]);
 
   useEffect(() => {
+    updateModel(path, editorRef);
+  }, [path]);
+
+  useEffect(() => {
     if (monacoEl && editorRef.current) {
       editorRef.current.updateOptions({
         fontSize: fontSize,
-        theme: "lafEditorTheme",
+        theme: colorMode === COLOR_MODE.dark ? "lafEditorDarkTheme" : "lafEditorTheme",
       });
     }
   }, [colorMode, fontSize]);

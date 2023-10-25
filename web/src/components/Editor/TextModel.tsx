@@ -2,13 +2,15 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 // @ts-ignore
 import { StandaloneCodeEditorService } from "monaco-editor/esm/vs/editor/standalone/browser/standaloneCodeEditorService.js";
 
+import useFunctionStore from "@/pages/app/functions/store";
+import useGlobalStore from "@/pages/globalStore";
+
 StandaloneCodeEditorService.prototype.findModel = function (
   editor: monaco.editor.IStandaloneCodeEditor,
   resource: monaco.Uri,
 ) {
   var model = null;
   if (resource !== null) model = monaco.editor.getModel(resource);
-  console.log("model", model);
   if (model === null) {
     model = editor.getModel();
   }
@@ -24,27 +26,42 @@ StandaloneCodeEditorService.prototype.doOpenEditor = function (
     return null;
   }
 
-  console.log(editor, input, model.uri.toString());
-  // 阻止打开.d.ts文件
   if (model.uri.toString().includes(".d.ts")) {
     return editor;
   }
   editor.setModel(model);
-  // todo
-  // window.location
+
+  const functionName = model.uri.path.match(/\/functions\/([^\.]+)\.ts/)[1];
+  const allFunctionList = useFunctionStore.getState().allFunctionList;
+  const recentFunctionList = useFunctionStore.getState().recentFunctionList;
+  const currentFunction = allFunctionList.find((item) => item.name === functionName);
+  let newRecentFunctionList = [];
+  if (recentFunctionList.find((item) => item.name === functionName)) {
+    newRecentFunctionList = recentFunctionList;
+  } else {
+    newRecentFunctionList = [...recentFunctionList, currentFunction!];
+  }
+  useFunctionStore.setState({
+    recentFunctionList: newRecentFunctionList as any,
+    currentFunction: currentFunction,
+  });
+  const newUrl = `${window.location.origin}/app/${
+    useGlobalStore.getState().currentApp.appid
+  }/function/${functionName}`;
+  window.history.replaceState({}, "", newUrl);
 
   let selection = input.options ? input.options.selection : null;
   if (selection) {
     if (typeof selection.endLineNumber === "number" && typeof selection.endColumn === "number") {
       editor.setSelection(selection);
-      editor.revealRangeInCenter(selection, 1 /* Immediate */);
+      editor.revealRangeInCenter(selection, 1);
     } else {
       var pos = {
         lineNumber: selection.startLineNumber,
         column: selection.startColumn,
       };
       editor.setPosition(pos);
-      editor.revealPositionInCenter(pos, 1 /* Immediate */);
+      editor.revealPositionInCenter(pos, 1);
     }
   }
   return editor;

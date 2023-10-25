@@ -86,9 +86,9 @@ export class AutoImportTypings {
    */
   loadDefaults() {
     this.addExtraLib({ path: "globals.d.ts", content: globalDeclare });
-    if (!this.isLoaded("@lafjs/cloud")) {
-      this.loadDeclaration("@lafjs/cloud");
-    }
+    // if (!this.isLoaded("@lafjs/cloud")) {
+    //   this.loadDeclaration("@lafjs/cloud");
+    // }
     if (!this.isLoaded("globals")) {
       this.loadDeclaration("globals");
     }
@@ -138,7 +138,6 @@ export class AutoImportTypings {
       const rets = r.data || [];
       for (const lib of rets) {
         // 修复包的类型入口文件不为 index.d.ts 的情况
-        // console.log("lib", lib, "packageName", packageName);
         if (packageName === lib.packageName && lib.path !== `${packageName}/index.d.ts`) {
           const _lib = { ...lib };
           _lib.path = `${packageName}/index.d.ts`;
