@@ -7,8 +7,9 @@ import {
   RegisteredMemoryFile,
   registerFileSystemOverlay,
 } from "vscode/service-override/files";
+import { Position } from "vscode/vscode/src/vs/editor/common/core/position";
 
-import { COLOR_MODE, Pages } from "@/constants";
+import { COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
 
 import "./theme";
 
@@ -42,7 +43,7 @@ const updateModel = (path: string, editorRef: any) => {
 function FunctionEditor(props: {
   className?: string;
   style?: CSSProperties;
-  onChange?: (value: string | undefined) => void;
+  onChange?: (code: string | undefined, pos: Position | undefined) => void;
   path: string;
   height?: string;
   colorMode?: string;
@@ -93,7 +94,7 @@ function FunctionEditor(props: {
       }
     });
 
-    lspWebSocket.addEventListener("error", (event) => {
+    lspWebSocket.addEventListener("error", () => {
       setLSPStatus("error");
     });
 
@@ -140,10 +141,9 @@ function FunctionEditor(props: {
       start();
     }
     allFunctionList.forEach(async (item: any) => {
-      const uri = monaco.Uri.file(`/root/laf/runtimes/nodejs/functions/${item.name}.ts`);
-
-      fileSystemProvider.registerFile(new RegisteredMemoryFile(uri, item.source.code));
+      const uri = monaco.Uri.file(`${RUNTIMES_PATH}/${item.name}.ts`);
       if (!monaco.editor.getModel(uri)) {
+        fileSystemProvider.registerFile(new RegisteredMemoryFile(uri, item.source.code));
         monaco.editor.createModel(
           functionCache.getCache(item._id, item.source?.code),
           "typescript",
@@ -161,7 +161,7 @@ function FunctionEditor(props: {
     subscriptionRef.current?.dispose();
     if (onChange) {
       subscriptionRef.current = editorRef.current?.onDidChangeModelContent((event) => {
-        onChange(editorRef.current?.getValue());
+        onChange(editorRef.current?.getValue(), editorRef.current?.getPosition() || undefined);
         parseImports(editorRef.current?.getValue() || "");
       });
     }
@@ -169,6 +169,12 @@ function FunctionEditor(props: {
 
   useEffect(() => {
     updateModel(path, editorRef);
+    const pos = JSON.parse(functionCache.getPositionCache(path) || "{}");
+    if (pos.lineNumber && pos.column) {
+      editorRef.current?.setPosition(pos);
+      editorRef.current?.revealPositionInCenter(pos);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path]);
 
   useEffect(() => {

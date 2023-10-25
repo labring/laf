@@ -271,7 +271,9 @@ export default function FunctionList() {
                 if (!recentFunctionList.map((item) => item._id).includes(item._id)) {
                   setRecentFunctionList([item as unknown as TFunction, ...recentFunctionList]);
                 }
-                navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`);
+                navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`, {
+                  replace: true,
+                });
               } else {
                 item.isExpanded = !item.isExpanded;
                 setFunctionRoot({ ...functionRoot });
@@ -312,6 +314,12 @@ export default function FunctionList() {
                         const res = await deleteFunctionMutation.mutateAsync(item);
                         if (!res.error) {
                           showSuccess(t("DeleteSuccess"));
+
+                          // const nextFunction = recentFunctionList[0].name === currentFunction?.name ? recentFunctionList[1] : recentFunctionList[0] || allFunctionList[0] || {};
+                          // setCurrentFunction(nextFunction);
+                          // if (nextFunction.name) {
+                          //   navigate(`/app/${currentApp?.appid}/${Pages.function}/${nextFunction?.name}`, {replace: true})
+                          // }
                         }
                       }}
                       headerText={String(t("Delete"))}

@@ -4,6 +4,7 @@ import { useColorMode } from "@chakra-ui/react";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
 import EmptyBox from "@/components/EmptyBox";
 import Panel from "@/components/Panel";
+import { RUNTIMES_PATH } from "@/constants";
 
 import { useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
@@ -43,10 +44,11 @@ function EditorPanel() {
             marginLeft: -14,
             marginRight: -14,
           }}
-          path={`/root/laf/runtimes/nodejs/functions/${currentFunction?.name}.ts`}
-          onChange={(value) => {
-            updateFunctionCode(currentFunction, value || "");
-            functionCache.setCache(currentFunction!._id, value || "");
+          path={`${RUNTIMES_PATH}/${currentFunction?.name}.ts`}
+          onChange={(code, pos) => {
+            updateFunctionCode(currentFunction, code || "");
+            functionCache.setCache(currentFunction!._id, code || "");
+            functionCache.setPositionCache(currentFunction!.name, JSON.stringify(pos));
           }}
           fontSize={commonSettings.fontSize}
         />

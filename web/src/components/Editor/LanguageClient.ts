@@ -8,6 +8,8 @@ import { IReference, ITextFileEditorModel } from "vscode/monaco";
 import { CloseAction, ErrorAction, MessageTransports } from "vscode-languageclient";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
+import { RUNTIMES_PATH } from "@/constants";
+
 import "@codingame/monaco-vscode-typescript-basics-default-extension";
 import "./TextModel";
 
@@ -21,7 +23,7 @@ export const createLanguageClient = (transports: MessageTransports): MonacoLangu
         closed: () => ({ action: CloseAction.DoNotRestart }),
       },
       workspaceFolder: {
-        uri: Uri.file("/root/laf/runtimes/nodejs/functions"),
+        uri: Uri.file(RUNTIMES_PATH),
         name: "Laf Workspace",
         index: 0,
       },
@@ -75,7 +77,7 @@ export const performInit = async (vscodeApiInit: boolean) => {
       userServices: {
         ...getThemeServiceOverride(),
         ...getTextmateServiceOverride(),
-        ...getConfigurationServiceOverride(Uri.file("/root/laf/runtimes/nodejs/functions")),
+        ...getConfigurationServiceOverride(Uri.file(RUNTIMES_PATH)),
       },
       // debugLogging: true,
     });
