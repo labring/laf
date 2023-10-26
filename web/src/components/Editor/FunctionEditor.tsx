@@ -1,7 +1,6 @@
 import { CSSProperties, useEffect, useMemo, useRef } from "react";
 import { debounce } from "lodash";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
-import { buildWorkerDefinition } from "monaco-editor-workers";
 import {
   RegisteredFileSystemProvider,
   RegisteredMemoryFile,
@@ -11,8 +10,6 @@ import { Position } from "vscode/vscode/src/vs/editor/common/core/position";
 
 import { COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
 
-import "./theme";
-
 import { createUrl, createWebSocketAndStartClient } from "./LanguageClient";
 import { AutoImportTypings } from "./typesResolve";
 
@@ -20,12 +17,6 @@ import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useFunctionStore from "@/pages/app/functions/store";
 import useGlobalStore from "@/pages/globalStore";
-
-buildWorkerDefinition(
-  "../../../../node_modules/monaco-editor-workers/dist/workers/",
-  new URL("", window.location.href).href,
-  false,
-);
 
 export const fileSystemProvider = new RegisteredFileSystemProvider(false);
 registerFileSystemOverlay(1, fileSystemProvider);

@@ -4,8 +4,6 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 import { COLOR_MODE } from "@/constants";
 
-import "./userWorker";
-
 function CommonDiffEditor(props: { original: string; modified: string }) {
   const { original, modified } = props;
 

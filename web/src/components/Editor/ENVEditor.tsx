@@ -3,55 +3,23 @@ import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 import { COLOR_MODE } from "@/constants";
 
-import "./userWorker";
-
 const languageId = "dotenv";
 
-// monaco.languages.register({
-//   id: languageId,
-// });
+monaco.languages.register({
+  id: languageId,
+});
 
-// monaco.languages.setMonarchTokensProvider(languageId, {
-//   tokenizer: {
-//     root: [
-//       [/^\w+(?==)/, "key"],
-//       [/(=)([^=]*)$/, ["operator", "value"]],
-//       [/^#.*/, "comment"],
-//       // new lines
-//       [/.*/, "value"],
-//     ],
-//   },
-// });
-
-// monaco.editor.defineTheme("dotenvTheme", {
-//   base: "vs",
-//   inherit: true,
-//   colors: {
-//     "editor.background": "#ffffff00",
-//     "editorLineNumber.foreground": "#aaa",
-//     "editorOverviewRuler.border": "#ffffff00",
-//     "editor.lineHighlightBackground": "#F7F8FA",
-//     "scrollbarSlider.background": "#E8EAEC",
-//     "editorIndentGuide.activeBackground": "#ddd",
-//     "editorIndentGuide.background": "#eee",
-//   },
-//   rules: [
-//     { token: "key", foreground: "953800" },
-//     { token: "value", foreground: "2E4C7E" },
-//     { token: "operator", foreground: "CF212E" },
-//     { token: "comment", foreground: "0A3069" },
-//   ],
-// });
-
-// monaco?.editor.defineTheme("dotenvDarkTheme", {
-//   base: "vs-dark",
-//   inherit: true,
-//   rules: [],
-//   colors: {
-//     "editor.foreground": "#ffffff",
-//     "editor.background": "#202631",
-//   },
-// });
+monaco.languages.setMonarchTokensProvider(languageId, {
+  tokenizer: {
+    root: [
+      [/^\w+(?==)/, "key"],
+      [/(=)([^=]*)$/, ["operator", "value"]],
+      [/^#.*/, "comment"],
+      // new lines
+      [/.*/, "value"],
+    ],
+  },
+});
 
 function ENVEditor(props: {
   value: string;
@@ -70,7 +38,7 @@ function ENVEditor(props: {
     if (monacoEl && !editorRef.current) {
       editorRef.current = monaco.editor.create(monacoEl.current!, {
         language: languageId,
-        theme: colorMode === COLOR_MODE.dark ? "dotenvDarkTheme" : "dotenvTheme",
+        theme: "dotenvTheme",
         lineNumbers: "off",
         guides: {
           indentation: false,
@@ -115,13 +83,13 @@ function ENVEditor(props: {
     }
   }, [value]);
 
-  // useEffect(() => {
-  //   if (monacoEl && editorRef.current) {
-  //     editorRef.current.updateOptions({
-  //       theme: colorMode === COLOR_MODE.dark ? "JSONEditorThemeDark" : "JSONEditorTheme",
-  //     });
-  //   }
-  // }, [colorMode]);
+  useEffect(() => {
+    if (monacoEl && editorRef.current) {
+      editorRef.current.updateOptions({
+        theme: colorMode === COLOR_MODE.dark ? "dotenvTheme" : "dotenvTheme",
+      });
+    }
+  }, [colorMode]);
 
   return (
     <div
