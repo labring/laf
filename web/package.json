@@ -30,6 +30,7 @@
     "@patternfly/react-log-viewer": "^5.0.0",
     "@sentry/integrations": "^7.73.0",
     "@sentry/react": "^7.73.0",
+    "@monaco-editor/react": "^4.6.0",
     "@tanstack/react-query": "^4.29.7",
     "ansi_up": "^6.0.2",
     "axios": "^1.4.0",
