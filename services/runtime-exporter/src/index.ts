@@ -26,8 +26,15 @@ const server = app.listen(Config.PORT, () =>
   logger.info(`server ${process.pid} listened on ${Config.PORT}`),
 )
 
-process.on('SIGTERM', gracefullyExit)
-process.on('SIGINT', gracefullyExit)
+// process.on('SIGTERM', gracefullyExit)
+// process.on('SIGINT', gracefullyExit)
+
+process.on('SIGTERM', exit)
+process.on('SIGINT', exit)
+
+function exit() {
+  process.exit(0)
+}
 
 async function gracefullyExit() {
   server.close(async () => {
