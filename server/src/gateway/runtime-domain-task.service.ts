@@ -170,7 +170,7 @@ export class RuntimeDomainTaskService {
       this.logger.debug(JSON.stringify(res))
     }
 
-    {
+    if (doc.state === DomainState.Deleted) {
       // delete app custom certificate if custom domain is set
       const waitingTime = Date.now() - doc.updatedAt.getTime()
 

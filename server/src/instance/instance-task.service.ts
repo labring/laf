@@ -10,6 +10,9 @@ import {
   ApplicationPhase,
   ApplicationState,
 } from 'src/application/entities/application'
+import { DomainState, RuntimeDomain } from 'src/gateway/entities/runtime-domain'
+import { BucketDomain } from 'src/gateway/entities/bucket-domain'
+import { WebsiteHosting } from 'src/website/entities/website'
 
 @Injectable()
 export class InstanceTaskService {
@@ -148,6 +151,30 @@ export class InstanceTaskService {
       return
     }
 
+    // active runtime domain
+    await db
+      .collection<RuntimeDomain>('RuntimeDomain')
+      .updateOne(
+        { appid, state: DomainState.Inactive },
+        { $set: { state: DomainState.Active, updatedAt: new Date() } },
+      )
+
+    // active website domain
+    await db
+      .collection<WebsiteHosting>('WebsiteHosting')
+      .updateMany(
+        { appid, state: DomainState.Inactive },
+        { $set: { state: DomainState.Active, updatedAt: new Date() } },
+      )
+
+    // active bucket domain
+    await db
+      .collection<BucketDomain>('BucketDomain')
+      .updateMany(
+        { appid, state: DomainState.Inactive },
+        { $set: { state: DomainState.Active, updatedAt: new Date() } },
+      )
+
     // resume cronjobs if any
     await this.cronService.resumeAll(app.appid)
 
@@ -220,6 +247,30 @@ export class InstanceTaskService {
     const appid = app.appid
 
     const waitingTime = Date.now() - app.updatedAt.getTime()
+
+    // inactive runtime domain
+    await db
+      .collection<RuntimeDomain>('RuntimeDomain')
+      .updateOne(
+        { appid, state: DomainState.Active },
+        { $set: { state: DomainState.Inactive, updatedAt: new Date() } },
+      )
+
+    // inactive website domain
+    await db
+      .collection<WebsiteHosting>('WebsiteHosting')
+      .updateMany(
+        { appid, state: DomainState.Active },
+        { $set: { state: DomainState.Inactive, updatedAt: new Date() } },
+      )
+
+    // inactive bucket domain
+    await db
+      .collection<BucketDomain>('BucketDomain')
+      .updateMany(
+        { appid, state: DomainState.Active },
+        { $set: { state: DomainState.Inactive, updatedAt: new Date() } },
+      )
 
     // check if the instance is removed
     const instance = await this.instanceService.get(app.appid)
