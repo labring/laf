@@ -37,7 +37,6 @@ export interface UpdateFunctionDebugDto {
 
 export interface UpdateFunctionDto {
   /** Function name is unique in the application */
-  newName: string;
   description?: string;
   methods: ("GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD")[];
   /** The source code of the function */
