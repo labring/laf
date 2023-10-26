@@ -15,7 +15,7 @@
     "EditPolicy": "Edit Access Policy",
     "EmptyCollectionText": "No collection information yet,",
     "EmptyPolicyText": "No strategy information yet,",
-    "IndexName": "Index Name",
+    "IndexName": "Index name",
     "InputName": "Please enter a collection name",
     "Policy": "Access Policy",
     "PolicyAddress": "Entry Address",
@@ -32,7 +32,21 @@
     "Query": "Please enter the ID or Mongo where statement, press Enter to query. For example: {_id: {$eq: 'document id'}}.",
     "Search": "Please enter ID to search",
     "CreateTagTip": "Press \"Enter\" to separate tags, each tag can be up to 16 characters",
-    "CollectionNameRule": "The collection name can only start with a letter and consist of 3 to 32 characters including letters, _ or -"
+    "CollectionNameRule": "The collection name can only start with a letter and consist of 3 to 32 characters including letters, _ or -",
+    "IndexManage": "Index manage",
+    "ConfirmDeleteIndex": "Are you sure to delete the index?",
+    "IndexKey": "Index key",
+    "SelectIndexType": "Select a type",
+    "AddIndexKey": "Add key",
+    "AdvancedOptions": "Advanced options",
+    "CreateIndex": "Create index",
+    "CapacityLimit": "Capacity",
+    "CreateTTL": "Create TTL",
+    "CreateUniqueIndex": "Create unique index",
+    "UniqueIndexDescription": "A unique index ensures that the indexed keys do not store duplicate values. If there is already duplicate data in the field, an error is reported when creating a unique index.",
+    "TTLDescription": "TTL indexes are special single-field indexes that MongoDB can use to automatically remove documents from a collection after a certain amount of time or at a specific clock time.",
+    "CapacityLimitDescription": "Use a \"fixed collection\" to limit the size of a collection.A fixed collection has a fixed size, and when it is full, new documents replace the oldest ones.",
+    "DocumentNum": "doc"
   },
   "Add": "Add ",
   "AddData": "Add data",
@@ -660,5 +674,10 @@
   "Bind": "Bind",
   "UnBind": "Unbind",
   "UnBindSuccess": "Unbind Successfully",
-  "CreateSuccess": "create success"
+  "CreateSuccess": "create success",
+  "Properties": "Properties",
+  "Action": "Action",
+  "Byte": "byte",
+  "Second": "second",
+  "Optional": "optional"
 }

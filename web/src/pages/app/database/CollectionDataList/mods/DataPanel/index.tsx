@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { AddIcon, Search2Icon } from "@chakra-ui/icons";
+import { AddIcon, LinkIcon, Search2Icon } from "@chakra-ui/icons";
 import {
   Button,
   HStack,
@@ -23,6 +23,7 @@ import { COLOR_MODE } from "@/constants";
 import getPageInfo from "@/utils/getPageInfo";
 
 import AddDataModal from "../../../mods/AddDataModal/index";
+import IndexModal from "../../../mods/IndexModal";
 import RightPanelEditBox from "../../../RightComponent/EditBox";
 import RightPanelList from "../../../RightComponent/List";
 import { useDeleteDataMutation, useEntryDataQuery, useUpdateDataMutation } from "../../../service";
@@ -167,7 +168,7 @@ export default function DataPanel() {
               size="xs"
               variant="textGhost"
               leftIcon={<AddIcon fontSize={10} className="text-grayModern-500" />}
-              disabled={store.currentDB === undefined}
+              disabled={!store.currentDB}
               isLoading={entryDataQuery.isFetching}
               className="mr-2 font-bold"
             >
@@ -178,7 +179,7 @@ export default function DataPanel() {
           <Button
             size="xs"
             variant="textGhost"
-            disabled={store.currentDB === undefined}
+            disabled={!store.currentDB}
             className="mr-2"
             isLoading={entryDataQuery.isFetching}
             leftIcon={<RefreshIcon fontSize={16} />}
@@ -186,6 +187,18 @@ export default function DataPanel() {
           >
             {t("RefreshData")}
           </Button>
+          <IndexModal>
+            <Button
+              size="xs"
+              variant="textGhost"
+              disabled={!store.currentDB}
+              className="mr-2"
+              isLoading={entryDataQuery.isFetching}
+              leftIcon={<LinkIcon fontSize={10} />}
+            >
+              {t("CollectionPanel.IndexManage")}
+            </Button>
+          </IndexModal>
           <form
             className="flex flex-1"
             onSubmit={(event) => {
