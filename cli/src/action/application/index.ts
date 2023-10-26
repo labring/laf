@@ -80,8 +80,8 @@ export async function init(appid: string, options: { sync: boolean, basicMode: b
     },
     storage: {
       endpoint: app.storage.credentials.endpoint,
-      accessKeyId: app.storage.credentials.accessKeyId,
-      accessKeySecret: app.storage.credentials.secretAccessKey,
+      accessKeyId: app.storage.accessKey,
+      accessKeySecret: app.storage.secretKey,
       sessionToken: app.storage.credentials.sessionToken,
       expire: timestamp + STORAGE_TOKEN_EXPIRE,
     },
