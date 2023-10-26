@@ -366,9 +366,7 @@ export const useCreateIndexMutation = (config?: { onSuccess: (data: any) => void
 
   return useMutation(
     async (values: any) => {
-      const result = await db
-        .collection(currentDB?.name!)
-        .createIndex(values.fields, values.options);
+      const result = await db.collection(currentDB?.name!).createIndex(values.keys, values.options);
       return result;
     },
     {

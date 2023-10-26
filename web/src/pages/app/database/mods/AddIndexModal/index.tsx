@@ -53,7 +53,7 @@ const AddIndexModal = (props: { children: React.ReactElement }) => {
   const createIndexMutation = useCreateIndexMutation();
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
 
-  const { register, control, handleSubmit } = useForm<FormData>({
+  const { register, control, handleSubmit, reset } = useForm<FormData>({
     defaultValues: {
       name: "",
       capped: false,
@@ -85,7 +85,7 @@ const AddIndexModal = (props: { children: React.ReactElement }) => {
   const onSubmit: SubmitHandler<FormData> = useCallback(
     async (value) => {
       const keys = value.keys.reduce<Record<string, number | string>>((acc, cur) => {
-        acc[cur.name] = cur.type;
+        acc[cur.name] = Number(cur.type) || cur.type;
         return acc;
       }, {});
 
@@ -118,6 +118,7 @@ const AddIndexModal = (props: { children: React.ReactElement }) => {
     <>
       {React.cloneElement(children, {
         onClick: () => {
+          reset();
           onOpen();
         },
       })}
