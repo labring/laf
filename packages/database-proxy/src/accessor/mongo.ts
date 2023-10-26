@@ -1,4 +1,4 @@
-import { AccessorInterface, ReadResult, UpdateResult, AddResult, RemoveResult, CountResult, ListIndexesResult, DropIndexesResult, DropIndexResult, CreateIndexResult, CreateIndexesResult } from "./accessor"
+import { AccessorInterface, ReadResult, UpdateResult, AddResult, RemoveResult, CountResult, ListIndexesResult, DropIndexResult, CreateIndexResult } from "./accessor"
 import { Params, ActionType, Order, Direction } from '../types'
 import { MongoClient, ObjectId, MongoClientOptions, Db, UpdateOptions, Filter } from 'mongodb'
 import * as mongodb from 'mongodb'
@@ -141,7 +141,7 @@ export class MongoAccessor implements AccessorInterface {
      * @param params 数据请求参数
      * @returns 
      */
-    async execute(params: Params): Promise<ReadResult | UpdateResult | AddResult | RemoveResult | CountResult | CreateIndexResult | CreateIndexesResult | DropIndexResult | DropIndexesResult | ListIndexesResult|never> {
+    async execute(params: Params): Promise<ReadResult | UpdateResult | AddResult | RemoveResult | CountResult | CreateIndexResult | DropIndexResult | ListIndexesResult | never> {
         const { collection, action } = params
 
         this.logger.info(`mongo start executing {${collection}}: ` + JSON.stringify(params))
@@ -163,12 +163,8 @@ export class MongoAccessor implements AccessorInterface {
                 return await this.createIndex(collection, params)
             case ActionType.CREATE_INDEX:
                 return await this.createIndex(collection, params)
-            case ActionType.CREATE_INDEXES:
-                return await this.createIndexes(collection, params)
             case ActionType.DROP_INDEX:
                 return await this.dropIndex(collection, params)
-            case ActionType.DROP_INDEXES:
-                return await this.dropIndexes(collection, params)
             case ActionType.LIST_INDEXES:
                 return await this.listIndexes(collection, params)
         }
@@ -461,9 +457,14 @@ export class MongoAccessor implements AccessorInterface {
         let { data } = params
         data = this.deserializedEjson(data || {})
 
+        const { keys, options } = data;
+
         this.logger.debug(`mongo before creating index {${collection}}: `, { data })
 
-        const result = await coll.createIndex(data)
+        const result = await coll.createIndex(
+            keys as mongodb.IndexSpecification,
+            options as mongodb.CreateIndexesOptions
+        )
 
         const ret: CreateIndexResult = {
             indexName: result
@@ -471,30 +472,6 @@ export class MongoAccessor implements AccessorInterface {
 
         this.emitResult(params, ret)
         this.logger.debug(`mongo end of creating index {${collection}}: `, { data, result: ret })
-        return ret
-    }
-
-    /**
-     * Execute create indexes query
-     * @param collection Collection name
-     * @param params 
-     * @returns 
-     */
-    protected async createIndexes(collection: string, params: Params): Promise<CreateIndexesResult> {
-        const coll = this.db.collection(collection)
-        let { data } = params
-        data = this.deserializedEjson(data || {})
-
-        this.logger.debug(`mongo before create indexes {${collection}}: `, { data })
-
-        const result = await coll.createIndexes(data)
-
-        const ret: CreateIndexesResult = {
-            indexName: result
-        }
-
-        this.emitResult(params, ret)
-        this.logger.debug(`mongo end of create indexes {${collection}}: `, { data, result: ret })
         return ret
     }
 
@@ -519,30 +496,6 @@ export class MongoAccessor implements AccessorInterface {
 
         this.emitResult(params, ret)
         this.logger.debug(`mongo end of drop index {${collection}}: `, { data, result: ret })
-        return ret
-    }
-
-    /**
-     * Execute drop indexes query
-     * @param collection Collection name
-     * @param params 
-     * @returns 
-     */
-    protected async dropIndexes(collection: string, params: Params): Promise<DropIndexesResult> {
-        const coll = this.db.collection(collection)
-        let { data } = params
-        data = this.deserializedEjson(data || {})
-
-        this.logger.debug(`mongo before dropping indexes {${collection}}: `, { data })
-
-        const result = await coll.dropIndexes(data)
-
-        const ret: DropIndexesResult = {
-            result
-        }
-
-        this.emitResult(params, ret)
-        this.logger.debug(`mongo end of dropping indexes {${collection}}: `, { data, result: ret })
         return ret
     }
 

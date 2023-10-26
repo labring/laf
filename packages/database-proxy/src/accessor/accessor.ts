@@ -30,15 +30,7 @@ export interface CreateIndexResult {
     indexName: string
 }
 
-export interface CreateIndexesResult {
-    indexName: string[]
-}
-
 export interface DropIndexResult { 
-    result: any
-}
-
-export interface DropIndexesResult {
     result: any
 }
 
@@ -48,7 +40,7 @@ export interface ListIndexesResult {
 
 export interface AccessorInterface {
     type: string,
-    execute(params: Params): Promise<ReadResult | UpdateResult | AddResult | RemoveResult | CountResult | CreateIndexResult | CreateIndexesResult | DropIndexResult | DropIndexesResult | ListIndexesResult>
+    execute(params: Params): Promise<ReadResult | UpdateResult | AddResult | RemoveResult | CountResult | CreateIndexResult | DropIndexResult | ListIndexesResult>
     get(collection: string, query: any): Promise<any>
     close(): void
     on(event: string | symbol, listener: (...args: any[]) => void): void

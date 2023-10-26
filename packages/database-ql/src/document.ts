@@ -233,9 +233,10 @@ export class DocumentReference {
     }
   }
 
-  async listIndexes(): Promise<ListIndexesRes> {
+  async listIndexes(options?: object): Promise<ListIndexesRes> {
     const params = {
       collectionName: this._coll,
+      data: serialize(options),
     }
 
     const res = await this._query

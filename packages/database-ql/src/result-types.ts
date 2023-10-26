@@ -40,15 +40,7 @@ export interface CreateIndexRes extends BaseResult{
     indexName: string
 }
 
-export interface CreateIndexesRes extends BaseResult{
-    indexName: string[]
-}
-
 export interface DropIndexRes extends BaseResult{ 
-    result: any
-}
-
-export interface DropIndexesRes extends BaseResult{
     result: any
 }
 
