@@ -222,7 +222,7 @@ export class DocumentReference {
         error: res.error,
         ok: false,
         code: res.code,
-        result: res.data.result,
+        result: null,
       }
     }
 

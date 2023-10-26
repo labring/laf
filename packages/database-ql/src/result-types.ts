@@ -2,7 +2,7 @@
 interface BaseResult {
   requestId?: string
   code?: string | number
-  error?: string
+  error?: any
   ok?: boolean
 }
 

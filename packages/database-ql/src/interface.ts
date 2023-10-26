@@ -3,7 +3,7 @@ import { ActionType, OrderByDirection } from "./constant"
 export interface ResponseStruct {
   code: number
   data: any
-  error: string
+  error: any
   requestId: string
   [extra: string]: any
 }
