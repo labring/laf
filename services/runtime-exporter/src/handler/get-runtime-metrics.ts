@@ -56,11 +56,10 @@ function updateMetrics(
 
 const getRuntimeMetrics: RequestHandler = async (req, res) => {
   const token = req.query.token
-  console.log(token)
 
-  // if (!token || Config.JWT_SECRET !== token) {
-  //   return res.status(403).send('forbidden')
-  // }
+  if (!token || Config.JWT_SECRET !== token) {
+    return res.status(403).send('forbidden')
+  }
 
   const LABEL_KEY_APP_ID = 'laf.dev/appid'
 
