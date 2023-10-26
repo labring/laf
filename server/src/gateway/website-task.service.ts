@@ -179,7 +179,7 @@ export class WebsiteTaskService {
     }
 
     // delete website custom certificate if custom domain is set
-    if (site.isCustom) {
+    if (site.state === DomainState.Deleted && site.isCustom) {
       const waitingTime = Date.now() - site.updatedAt.getTime()
 
       // delete custom domain certificate

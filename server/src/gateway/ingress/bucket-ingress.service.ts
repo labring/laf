@@ -3,7 +3,7 @@ import { ClusterService } from 'src/region/cluster/cluster.service'
 import { Region } from 'src/region/entities/region'
 import { BucketDomain } from '../entities/bucket-domain'
 import { GetApplicationNamespace } from 'src/utils/getter'
-import { V1Ingress, V1IngressRule } from '@kubernetes/client-node'
+import { V1Ingress, V1IngressRule, V1IngressTLS } from '@kubernetes/client-node'
 import { LABEL_KEY_APP_ID } from 'src/constants'
 
 @Injectable()
@@ -56,6 +56,15 @@ export class BucketGatewayService {
       },
     }
 
+    // build tls
+    const tls: Array<V1IngressTLS> = []
+    const tlsConf = region.gatewayConf.tls
+    if (tlsConf.enabled && tlsConf.wildcardCertificateSecretName) {
+      // add wildcardDomain tls
+      const secretName = region.gatewayConf.tls.wildcardCertificateSecretName
+      tls.push({ secretName, hosts: [minioEndpointHost, bucketHost] })
+    }
+
     // create ingress
     const ingressClassName = region.gatewayConf.driver
     const ingressBody: V1Ingress = {
@@ -75,7 +84,7 @@ export class BucketGatewayService {
           'nginx.ingress.kubernetes.io/proxy-body-size': '0',
         },
       },
-      spec: { ingressClassName, rules: [minioRule, bucketRule] },
+      spec: { ingressClassName, rules: [minioRule, bucketRule], tls },
     }
 
     const res = await this.clusterService.createIngress(region, ingressBody)
