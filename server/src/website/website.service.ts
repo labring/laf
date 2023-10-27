@@ -143,7 +143,13 @@ export class WebsiteService {
       .collection<WebsiteHosting>('WebsiteHosting')
       .updateMany(
         { appid },
-        { $set: { state: DomainState.Deleted, updatedAt: new Date() } },
+        {
+          $set: {
+            state: DomainState.Deleted,
+            phase: DomainPhase.Deleting,
+            updatedAt: new Date(),
+          },
+        },
       )
 
     return res
