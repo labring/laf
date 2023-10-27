@@ -21,6 +21,9 @@ import xmlparser from 'express-xml-bodyparser'
 import './support/cloud-sdk'
 import storageServer from './storage-server'
 import { DatabaseChangeStream } from './support/database-change-stream'
+import url from 'url'
+
+import { LspWebSocket } from './support/lsp'
 
 const app = express()
 
@@ -28,13 +31,15 @@ DatabaseAgent.accessor.ready.then(() => {
   DatabaseChangeStream.initialize()
 })
 
-app.use(cors({
-  origin: true,
-  methods: '*',
-  exposedHeaders: '*',
-  credentials: true,
-  maxAge: 86400,
-}))
+app.use(
+  cors({
+    origin: true,
+    methods: '*',
+    exposedHeaders: '*',
+    credentials: true,
+    maxAge: 86400,
+  }),
+)
 
 app.use(express.json({ limit: Config.REQUEST_LIMIT_SIZE }) as any)
 app.use(
@@ -50,13 +55,13 @@ app.use(
 )
 
 app.use(xmlparser())
-
+// @ts-ignore
 process.on('unhandledRejection', (reason, promise) => {
-  logger.error(`Caught unhandledRejection:`, reason, promise)
+  // logger.error(`Caught unhandledRejection:`, reason, promise)
 })
-
+// @ts-ignore
 process.on('uncaughtException', (err) => {
-  logger.error(`Caught uncaughtException:`, err)
+  // logger.error(`Caught uncaughtException:`, err)
 })
 
 /**
@@ -96,6 +101,12 @@ const server = app.listen(Config.PORT, () =>
  * WebSocket upgrade & connect
  */
 server.on('upgrade', (req, socket, head) => {
+  const pathname = req.url ? url.parse(req.url).pathname : undefined
+  if (pathname === '/_/lsp') {
+    LspWebSocket.handleUpgrade(req, socket, head)
+    return
+  }
+
   WebSocketAgent.server.handleUpgrade(req, socket as any, head, (client) => {
     WebSocketAgent.server.emit('connection', client, req)
   })

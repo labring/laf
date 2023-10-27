@@ -84,12 +84,10 @@ async function invokeFunction(
         result,
       )
 
-      ctx.response
-        .status(400)
-        .send({
-          error: `invoke ${ctx.__function_name} function got error, please check the function logs`,
-          requestId,
-        })
+      ctx.response.status(400).send({
+        error: `invoke ${ctx.__function_name} function got error, please check the function logs`,
+        requestId,
+      })
       return false
     }
 
