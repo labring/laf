@@ -9,3 +9,5 @@ tmp
 
 ecosystem.config.js
 .DS_Store
+
+functions/src
