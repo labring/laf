@@ -1,102 +1,77 @@
-import { useEffect, useRef } from "react";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import { useTranslation } from "react-i18next";
+import { Center, Spinner } from "@chakra-ui/react";
 
-import { COLOR_MODE } from "@/constants";
+import EditableTable from "../EditableTable";
 
-const languageId = "dotenv";
-
-monaco.languages.register({
-  id: languageId,
-});
-
-monaco.languages.setMonarchTokensProvider(languageId, {
-  tokenizer: {
-    root: [
-      [/^\w+(?==)/, "key"],
-      [/(=)([^=]*)$/, ["operator", "value"]],
-      [/^#.*/, "comment"],
-      // new lines
-      [/.*/, "value"],
-    ],
-  },
-});
-
-function ENVEditor(props: {
-  value: string;
-  height?: string;
-  style?: any;
-  colorMode?: string;
-  onChange?: (value: string | undefined) => void;
+export default function ENVEditor(props: {
+  env: Array<{ name: string; value: string }>;
+  setEnv: any;
 }) {
-  const { value, style = {}, onChange, height = "95%", colorMode = COLOR_MODE.light } = props;
-
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
-  const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
-  const monacoEl = useRef(null);
-
-  useEffect(() => {
-    if (monacoEl && !editorRef.current) {
-      editorRef.current = monaco.editor.create(monacoEl.current!, {
-        language: languageId,
-        theme: "dotenvTheme",
-        lineNumbers: "off",
-        guides: {
-          indentation: false,
-        },
-        automaticLayout: true,
-        minimap: {
-          enabled: false,
-        },
-        scrollbar: {
-          verticalScrollbarSize: 4,
-          horizontalScrollbarSize: 8,
-          alwaysConsumeMouseWheel: false,
-        },
-        lineNumbersMinChars: 0,
-        fontSize: 13,
-        lineHeight: 22,
-        scrollBeyondLastLine: false,
-        folding: false,
-        overviewRulerBorder: false,
-        tabSize: 2, // tab 缩进长度
-      });
-    }
-
-    return () => {};
-  }, [colorMode, value]);
-
-  // onChange
-  useEffect(() => {
-    subscriptionRef.current?.dispose();
-
-    if (onChange) {
-      subscriptionRef.current = editorRef.current?.onDidChangeModelContent((event) => {
-        onChange(editorRef.current?.getValue());
-      });
-    }
-  }, [onChange]);
-
-  useEffect(() => {
-    if (monacoEl && editorRef.current && value !== editorRef.current?.getValue()) {
-      editorRef.current?.getModel()?.setValue(value);
-      editorRef.current?.layout();
-    }
-  }, [value]);
-
-  useEffect(() => {
-    if (monacoEl && editorRef.current) {
-      editorRef.current.updateOptions({
-        theme: colorMode === COLOR_MODE.dark ? "dotenvTheme" : "dotenvTheme",
-      });
-    }
-  }, [colorMode]);
+  const { t } = useTranslation();
+  const { env, setEnv } = props;
 
   return (
-    <div
-      style={{ height: height, width: "99%", padding: "12px 2px", ...style }}
-      ref={monacoEl}
-    ></div>
+    <div>
+      {env && env.length > 0 ? (
+        <EditableTable
+          column={[
+            {
+              name: "Key",
+              key: "name",
+              width: "130px",
+              validate: [
+                (data: any) => {
+                  return {
+                    isValidate: data !== "",
+                    errorInfo: t("KeyCannotBeEmpty").toString(),
+                  };
+                },
+              ],
+            },
+            {
+              name: "Value",
+              key: "value",
+              width: "290px",
+              validate: [
+                (data: any) => {
+                  return {
+                    isValidate: data !== "",
+                    errorInfo: t("ValueCannotBeEmpty").toString(),
+                  };
+                },
+              ],
+            },
+          ]}
+          configuration={{
+            key: "name",
+            tableHeight: "310px",
+            hiddenEditButton: false,
+            addButtonText: String(t("AddENV")),
+            saveButtonText: String(t("Confirm")),
+          }}
+          tableData={env}
+          onEdit={async (data) => {
+            setEnv(
+              env.map((item) => {
+                if (item.name === data.item.name) {
+                  return data.newData;
+                }
+                return item;
+              }),
+            );
+          }}
+          onDelete={async (data) => {
+            setEnv(env.filter((item) => item.name !== data));
+          }}
+          onCreate={async (data) => {
+            setEnv([...env, data]);
+          }}
+        />
+      ) : (
+        <Center className="h-[360px]">
+          <Spinner />
+        </Center>
+      )}
+    </div>
   );
 }
-
-export default ENVEditor;

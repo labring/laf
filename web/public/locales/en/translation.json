@@ -687,5 +687,8 @@
     "PodLogs": "App Instance Logs",
     "Export": "Export",
     "logs": "Logs"
-  }
+  },
+  "KeyCannotBeEmpty": "Key can't be empty",
+  "ValueCannotBeEmpty": "Value can't be empty",
+  "AddENV": "Add ENV"
 }

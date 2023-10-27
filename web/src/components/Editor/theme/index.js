@@ -22,12 +22,6 @@ var manifest = {
         label: "lafEditorDarkTheme",
         uiTheme: "lafEditorDarkTheme",
         path: "./themes/laf_editor_dark_theme.json",
-      // },
-      // {
-      //   id: "dotenvTheme",
-      //   label: "dotenvTheme",
-      //   uiTheme: "dotenvTheme",
-      //   path: "./themes/dotenv_theme.json",
       }
     ],
   },
@@ -47,9 +41,4 @@ registerFileUrl(
   new URL("./laf_editor_dark_theme.json", import.meta.url).toString(),
   "application/json",
 );
-// registerFileUrl(
-//   "./themes/dotenv_theme.json",
-//   new URL("./dotenv_theme.json", import.meta.url).toString(),
-//   "application/json",
-// );
 export { whenReady };

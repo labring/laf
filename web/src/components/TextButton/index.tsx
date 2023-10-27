@@ -14,8 +14,7 @@ const TextButton = function (
     <Button
       variant={"link"}
       size="xs"
-      colorScheme={"primary"}
-      className={className}
+      className={className + " !text-[#219BF4]"}
       type={type}
       onClick={() => {
         onClick && onClick();
