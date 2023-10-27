@@ -679,5 +679,8 @@
   "Action": "操作",
   "Byte": "字节",
   "Second": "秒",
-  "Optional": "可选"
+  "Optional": "可选",
+  "KeyCannotBeEmpty": "Key 不能为空",
+  "ValueCannotBeEmpty": "Value 不能为空",
+  "AddENV": "新增环境变量"
 }

@@ -10,6 +10,8 @@ import { Position } from "vscode/vscode/src/vs/editor/common/core/position";
 
 import { COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
 
+import "./userWorker";
+
 import { createUrl, createWebSocketAndStartClient } from "./LanguageClient";
 import { AutoImportTypings } from "./typesResolve";
 
