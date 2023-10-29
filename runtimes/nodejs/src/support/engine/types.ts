@@ -2,7 +2,6 @@ import { IncomingHttpHeaders } from 'http'
 import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import WebSocket = require('ws')
-import { FunctionConsole } from './console'
 
 export type RequireFuncType = (
   module: string,
@@ -17,7 +16,7 @@ export interface RuntimeContext {
   __context__: FunctionContext
   module: { exports: Object }
   exports: Object
-  console: FunctionConsole
+  console: any,
   requireFunc: RequireFuncType
   Buffer: typeof Buffer
   setTimeout: typeof setTimeout

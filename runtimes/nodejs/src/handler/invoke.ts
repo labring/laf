@@ -5,6 +5,7 @@ import { parseToken } from '../support/token'
 import { logger } from '../support/logger'
 import {
   CloudFunction,
+  DebugConsole,
   FunctionCache,
   FunctionContext,
   ICloudFunctionData,
@@ -168,10 +169,15 @@ async function invokeDebug(
 
   const func = new CloudFunction(funcData)
 
+  const debugConsole = new DebugConsole()
+
   try {
     // execute the func
     ctx.__function_name = funcName
-    const result = await func.execute(ctx, useInterceptor)
+    const result = await func.execute(ctx, useInterceptor, debugConsole)
+
+    // set logs to response header
+    ctx.response.set('x-laf-func-logs', debugConsole.getLogs())
 
     if (result.error) {
       logger.error(requestId, `debug function ${funcName} error: `, result)

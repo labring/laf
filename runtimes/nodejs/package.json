@@ -44,6 +44,7 @@
     "lodash": "^4.17.21",
     "log4js": "^6.7.1",
     "minio": "^7.0.32",
+    "moment": "^2.29.4",
     "mongodb": "^4.12.1",
     "mongodb-uri": "^0.9.7",
     "multer": "^1.4.5-lts.1",

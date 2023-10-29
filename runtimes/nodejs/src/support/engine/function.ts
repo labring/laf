@@ -44,8 +44,9 @@ export class CloudFunction {
   async execute(
     param: FunctionContext,
     useInterceptor: boolean = false,
+    debugConsole: any = null,
   ): Promise<FunctionResult> {
-    const sandbox = buildSandbox(param, [])
+    const sandbox = buildSandbox(param, [], debugConsole)
     let code = ``
     if (useInterceptor) {
       const interceptorFunc = FunctionCache.get(INTERCEPTOR_FUNCTION_NAME)
