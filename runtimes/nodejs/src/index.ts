@@ -55,13 +55,13 @@ app.use(
 )
 
 app.use(xmlparser())
-// @ts-ignore
+
 process.on('unhandledRejection', (reason, promise) => {
-  // logger.error(`Caught unhandledRejection:`, reason, promise)
+  logger.error(`Caught unhandledRejection:`, reason, promise)
 })
-// @ts-ignore
+
 process.on('uncaughtException', (err) => {
-  // logger.error(`Caught uncaughtException:`, err)
+  logger.error(`Caught uncaughtException:`, err)
 })
 
 /**

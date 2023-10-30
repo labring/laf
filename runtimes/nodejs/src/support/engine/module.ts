@@ -14,8 +14,21 @@ export class FunctionModule {
   static require(name: string, fromModule: string[]): any {
     if (name === '@/cloud-sdk') {
       return require('@lafjs/cloud')
-    } else if (name.startsWith('@/')) {
-      name = name.replace('@/', '')
+    } else if (
+      name.startsWith('@/') ||
+      name.startsWith('./') ||
+      name.startsWith('../')
+    ) {
+      if (!name.startsWith('@/')) {
+        const dirname = '/'
+        const filePath = path.join(
+          path.dirname(dirname + functionContext.__function_name),
+          name,
+        )
+        name = filePath.slice(dirname.length)
+      } else {
+        name = name.replace('@/', '')
+      }
 
       // check cache
       if (FunctionModule.cache.has(name)) {
@@ -47,38 +60,6 @@ export class FunctionModule {
       if (!Config.DISABLE_MODULE_CACHE) {
         FunctionModule.cache.set(name, functionModule)
       }
-      return functionModule
-    } else if (name.startsWith('./') || name.startsWith('../')) {
-      const dirname = '/'
-      const filePath = path.join(
-        path.dirname(dirname + functionContext.__function_name),
-        name,
-      )
-      name = filePath.slice(dirname.length)
-      console.log('testname', name)
-      // check cache
-      if (FunctionModule.cache.has(name)) {
-        console.log('cache', FunctionModule.cache.get(name))
-        return FunctionModule.cache.get(name)
-      }
-
-      // check circular dependency
-      if (fromModule?.indexOf(name) !== -1) {
-        throw new Error(
-          `circular dependency detected: ${fromModule.join(' -> ')} -> ${name}`,
-        )
-      }
-
-      // build function module
-      const data = FunctionCache.get(name)
-      const functionModule = FunctionModule.build(
-        data.source.compiled,
-        functionContext,
-        fromModule,
-      )
-
-      // cache module
-      FunctionModule.cache.set(name, functionModule)
       return functionModule
     }
     return require(name)

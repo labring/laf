@@ -25,7 +25,7 @@ export class LspWebSocket {
   ) {
     // verify the debug token
     {
-      const token = request.headers['x-laf-develop-token'] as string
+      const token = request.headers['sec-websocket-protocol'] as string
       if (!token) {
         request.destroy(new Error('x-laf-develop-token is needed'))
         return
@@ -55,7 +55,7 @@ export class LspWebSocket {
       if (webSocket.readyState === webSocket.OPEN) {
         const uid = uniqueId()
         this.launchLsp(socket, uid)
-        logger.info(`Launched ts lsp server ${uid}}`)
+        logger.info(`Launched ts lsp server ${uid}`)
       }
     })
   }
@@ -141,29 +141,26 @@ export class LspWebSocket {
             }
           }
 
-          if (lsp.Message.isNotification(message)) {
-            if (
-              message.method ===
-              lsp.DidCloseTextDocumentNotification.type.method
-            ) {
-              const params = message.params as lsp.DidCloseTextDocumentParams
-              const [, fullPath] = params.textDocument.uri.split('//')
+          if (
+            message.method === lsp.DidCloseTextDocumentNotification.type.method
+          ) {
+            const params = message.params as lsp.DidCloseTextDocumentParams
+            const [, fullPath] = params.textDocument.uri.split('//')
 
-              if (!fullPath.includes('node_modules')) {
-                // delete file is exists
-                if (fs.existsSync(fullPath)) {
-                  fs.unlinkSync(fullPath)
-                }
+            if (!fullPath.includes('node_modules')) {
+              // delete file if exists
+              if (fs.existsSync(fullPath)) {
+                fs.unlinkSync(fullPath)
+              }
 
-                let dir = path.dirname(fullPath)
+              let dir = path.dirname(fullPath)
 
-                // remove empty dir
-                if (dir.startsWith(WORKSPACE_PATH)) {
-                  while (dir !== WORKSPACE_PATH) {
-                    if (fs.readdirSync(dir).length === 0) {
-                      fs.rmdirSync(dir)
-                      dir = path.dirname(dir)
-                    }
+              // remove empty dir
+              if (dir.startsWith(WORKSPACE_PATH)) {
+                while (dir !== WORKSPACE_PATH) {
+                  if (fs.readdirSync(dir).length === 0) {
+                    fs.rmdirSync(dir)
+                    dir = path.dirname(dir)
                   }
                 }
               }
