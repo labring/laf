@@ -102,6 +102,6 @@ export default class Config {
   }
 
   static get ENABLE_MODULE_CACHE(): boolean {
-    return process.env.ENABLE_MODULE_CACHE === 'true' || false
+    return process.env.ENABLE_MODULE_CACHE === 'true' || true
   }
 }
