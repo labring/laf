@@ -45,11 +45,11 @@ export class FunctionCache {
       // add func in map
       FunctionCache.cache.set(func.name, func)
     } else if (change.operationType == 'delete') {
+      FunctionModule.deleteAllCache()
       // remove this func
       for (const [funcName, func] of this.cache) {
         if (change.documentKey._id.equals(func._id)) {
           FunctionCache.cache.delete(funcName)
-          FunctionModule.deleteAllCache()
         }
       }
     }
