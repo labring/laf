@@ -4,7 +4,7 @@ import * as moment from 'moment'
 
 export class Console {
 
-  private _log(...params: any[]) {
+  _log(...params: any[]): void {
     const now = moment?.default().format('YYYY-MM-DD HH:mm:ss.SSS Z')
     const content = params
       .map((param) => {
@@ -33,11 +33,11 @@ export class Console {
 
 
 
-export class DebugConsole { 
+export class DebugConsole extends Console { 
 
   private _logs: string[] = []
 
-  private _log(...params: any[]) {
+  _log(...params: any[]): void {
     const now = moment?.default().format('YYYY-MM-DD HH:mm:ss.SSS Z')
     const content = params
       .map((param) => {
@@ -47,23 +47,7 @@ export class DebugConsole {
 
     this._logs.push(now + ' ' + content)
   }
-
-  debug(...params: any[]) {
-    this._log(...params)
-  }
-
-  info(...params: any[]) {
-    this._log(...params)
-  }
-
-  log(...params: any[]) {
-    this._log(...params)
-  }
-
-  warn(...params: any[]) {
-    this._log(...params)
-  }
-
+  
   getLogs() {
     return JSON.stringify(this._logs)
   }
