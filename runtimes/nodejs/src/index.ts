@@ -33,6 +33,7 @@ app.use(cors({
   methods: '*',
   exposedHeaders: '*',
   credentials: true,
+  maxAge: 86400,
 }))
 
 app.use(express.json({ limit: Config.REQUEST_LIMIT_SIZE }) as any)
