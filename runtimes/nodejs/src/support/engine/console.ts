@@ -1,11 +1,11 @@
 import * as util from 'util'
-import * as moment from 'moment'
+import dayjs from 'dayjs'
 
 
 export class Console {
 
   _log(...params: any[]): void {
-    const now = moment?.default().format('YYYY-MM-DD HH:mm:ss.SSS Z')
+    const now = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS Z')
     const content = params
       .map((param) => {
         return util.inspect(param, { depth: 30 })
@@ -38,7 +38,7 @@ export class DebugConsole extends Console {
   private _logs: string[] = []
 
   _log(...params: any[]): void {
-    const now = moment?.default().format('YYYY-MM-DD HH:mm:ss.SSS Z')
+    const now = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS Z')
     const content = params
       .map((param) => {
         return util.inspect(param, { depth: 30 })
@@ -46,6 +46,7 @@ export class DebugConsole extends Console {
       .join(' ')
 
     this._logs.push(now + ' ' + content)
+    console.log(now + ' ' + content)
   }
   
   getLogs() {

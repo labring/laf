@@ -1,6 +1,5 @@
+import { FunctionCache, FunctionContext } from '.'
 import Config from '../../config'
-import { FunctionCache } from './cache'
-import { FunctionContext } from './types'
 import { buildSandbox, createScript } from './utils'
 
 export class FunctionModule {
@@ -9,7 +8,6 @@ export class FunctionModule {
   static require(
     name: string,
     fromModule: string[],
-    functionContext: FunctionContext,
   ): any {
     if (name === '@/cloud-sdk') {
       return require('@lafjs/cloud')
@@ -26,6 +24,12 @@ export class FunctionModule {
         throw new Error(
           `circular dependency detected: ${fromModule.join(' -> ')} -> ${name}`,
         )
+      }
+
+      // build function context
+      const functionContext: FunctionContext = {
+        requestId: '',
+        __function_name: name,
       }
 
       // build function module
@@ -67,11 +71,15 @@ export class FunctionModule {
     FunctionModule.cache.delete(name)
   }
 
+  static deleteAllCache(): void {
+    FunctionModule.cache.clear()
+  }
+
   private static wrap(code: string): string {
     return `
     const require = (name) => {
       fromModule.push(__filename)
-      return requireFunc(name, fromModule, __context__)
+      return requireFunc(name, fromModule)
     }
     const exports = {};
     ${code}
