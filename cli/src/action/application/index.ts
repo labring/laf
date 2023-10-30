@@ -79,10 +79,10 @@ export async function init(appid: string, options: { sync: boolean, basicMode: b
       developTokenExpire: timestamp + DEBUG_TOKEN_EXPIRE,
     },
     storage: {
-      endpoint: app.storage.credentials.endpoint,
-      accessKeyId: app.storage.credentials.accessKeyId,
-      accessKeySecret: app.storage.credentials.secretAccessKey,
-      sessionToken: app.storage.credentials.sessionToken,
+      endpoint: app.storage.endpoint,
+      accessKeyId: app.storage.accessKey,
+      accessKeySecret: app.storage.secretKey,
+      sessionToken: app.storage.sessionToken,
       expire: timestamp + STORAGE_TOKEN_EXPIRE,
     },
   }
