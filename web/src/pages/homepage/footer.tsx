@@ -148,6 +148,12 @@ const Footer = (props: Props) => {
                       {t("HomePage.Footer.item3_2")}
                     </a>
                   </li>
+
+                  <li>
+                    <a href={site_url.laf_about_us} target="_blank" rel="noreferrer">
+                      {t("HomePage.Footer.item3_3")}
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -268,6 +274,12 @@ const Footer = (props: Props) => {
                   <li>
                     <a href={siteSettings.laf_forum_url?.value} target="_blank" rel="noreferrer">
                       {t("HomePage.Footer.item3_2")}
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href={site_url.laf_about_us} target="_blank" rel="noreferrer">
+                      {t("HomePage.Footer.item3_3")}
                     </a>
                   </li>
                 </ul>
