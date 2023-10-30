@@ -1,8 +1,12 @@
 import * as util from 'util'
 import dayjs from 'dayjs'
 
-
 export class Console {
+  functionName: string
+
+  constructor(functionName: string) {
+    this.functionName = functionName
+  }
 
   _log(...params: any[]): void {
     const now = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS Z')
@@ -11,7 +15,7 @@ export class Console {
         return util.inspect(param, { depth: 30 })
       })
       .join(' ')
-    console.log(now + ' ' + content)
+    console.log(now + ' ' + this.functionName + ' ' + content)
   }
 
   debug(...params: any[]) {
@@ -31,9 +35,10 @@ export class Console {
   }
 }
 
-
-
-export class DebugConsole extends Console { 
+export class DebugConsole extends Console {
+  constructor(functionName: string) {
+    super(functionName)
+  }
 
   private _logs: string[] = []
 
@@ -45,13 +50,11 @@ export class DebugConsole extends Console {
       })
       .join(' ')
 
-    this._logs.push(now + ' ' + content)
-    console.log(now + ' ' + content)
+    this._logs.push(now + ' ' + this.functionName + ' ' + content)
+    console.log(now + ' ' + this.functionName + ' ' + content)
   }
-  
+
   getLogs() {
     return JSON.stringify(this._logs)
   }
-
 }
-

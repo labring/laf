@@ -37,7 +37,6 @@ export function buildSandbox(
   fromModule: string[],
   debugConsole: any = null,
 ): RuntimeContext {
-
   const _module = {
     exports: {},
   }
@@ -50,7 +49,7 @@ export function buildSandbox(
   if (debugConsole) {
     fConsole = debugConsole
   } else {
-    fConsole = new Console()
+    fConsole = new Console(functionContext.__function_name)
   }
 
   const sandbox = {

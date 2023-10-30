@@ -5,10 +5,7 @@ import { buildSandbox, createScript } from './utils'
 export class FunctionModule {
   private static cache: Map<string, any> = new Map()
 
-  static require(
-    name: string,
-    fromModule: string[],
-  ): any {
+  static require(name: string, fromModule: string[]): any {
     if (name === '@/cloud-sdk') {
       return require('@lafjs/cloud')
     } else if (name.startsWith('@/')) {

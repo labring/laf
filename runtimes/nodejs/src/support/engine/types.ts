@@ -16,7 +16,7 @@ export interface RuntimeContext {
   __context__: FunctionContext
   module: { exports: Object }
   exports: Object
-  console: any,
+  console: any
   requireFunc: RequireFuncType
   Buffer: typeof Buffer
   setTimeout: typeof setTimeout
