@@ -35,9 +35,9 @@ export default class Config {
   }
 
   static get API_SECRET(): string {
-    if (!process.env.JWT_SECRET) {
-      throw new Error('JWT_SECRET is not defined')
+    if (!process.env.API_SECRET) {
+      throw new Error('API_SECRET is not defined')
     }
-    return process.env.JWT_SECRET
+    return process.env.API_SECRET
   }
 }

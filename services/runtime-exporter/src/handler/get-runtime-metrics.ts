@@ -1,57 +1,58 @@
 import { RequestHandler } from 'express'
-import { ClusterService } from '../helper/cluster.service'
+import { ClusterService, Metric } from '../helper/cluster.service'
 import Config from '../config'
 import * as prom from 'prom-client'
-import { ContainerStatus, PodStatus } from '@kubernetes/client-node/dist/top'
 
 const register = new prom.Registry()
 
 const RUNTIME_CPU = new prom.Gauge({
   name: 'laf_runtime_cpu',
-  help: 'the cpu of the runtime container',
+  help: 'the cpu of the runtime',
   registers: [register],
   labelNames: ['containerName', 'podName', 'appid'],
 })
 
 const RUNTIME_MEMORY = new prom.Gauge({
   name: 'laf_runtime_memory',
-  help: 'the memory of the runtime container',
+  help: 'the memory of the runtime',
   registers: [register],
   labelNames: ['containerName', 'podName', 'appid'],
 })
 
 const RUNTIME_CPU_LIMIT = new prom.Gauge({
   name: 'laf_runtime_cpu_limit',
-  help: 'the cpu of the runtime container limit',
+  help: 'the cpu of the runtime limit',
   registers: [register],
   labelNames: ['containerName', 'podName', 'appid'],
 })
 
 const RUNTIME_MEMORY_LIMIT = new prom.Gauge({
   name: 'laf_runtime_memory_limit',
-  help: 'the memory of the runtime container limit',
+  help: 'the memory of the runtime limit',
   registers: [register],
   labelNames: ['containerName', 'podName', 'appid'],
 })
 
-function updateMetrics(
-  container: ContainerStatus,
-  containerName: string,
-  podName: string,
-  appid: string,
-) {
-  RUNTIME_CPU.labels(containerName, podName, appid).set(
-    Number(container.CPUUsage.CurrentUsage),
+function updateMetrics(metric: Metric) {
+  RUNTIME_CPU.labels(metric.containerName, metric.podName, metric.appid).set(
+    metric.cpu,
   )
-  RUNTIME_MEMORY.labels(containerName, podName, appid).set(
-    Number(container.MemoryUsage.CurrentUsage),
+  RUNTIME_MEMORY.labels(metric.containerName, metric.podName, metric.appid).set(
+    metric.memory,
   )
-  RUNTIME_CPU_LIMIT.labels(containerName, podName, appid).set(
-    Number(container.CPUUsage.LimitTotal),
-  )
-  RUNTIME_MEMORY_LIMIT.labels(containerName, podName, appid).set(
-    Number(container.MemoryUsage.LimitTotal),
-  )
+}
+
+function updateLimitMetrics(metric: Metric) {
+  RUNTIME_CPU_LIMIT.labels(
+    metric.containerName,
+    metric.podName,
+    metric.appid,
+  ).set(metric.cpu)
+  RUNTIME_MEMORY_LIMIT.labels(
+    metric.containerName,
+    metric.podName,
+    metric.appid,
+  ).set(metric.memory)
 }
 
 const getRuntimeMetrics: RequestHandler = async (req, res) => {
@@ -61,22 +62,21 @@ const getRuntimeMetrics: RequestHandler = async (req, res) => {
     return res.status(403).send('forbidden')
   }
 
-  const LABEL_KEY_APP_ID = 'laf.dev/appid'
+  const runtimeMetrics =
+    await ClusterService.getRuntimePodsMetricsForAllNameSpaces()
 
-  const pods: PodStatus[] = await ClusterService.getPodForAllNameSpaces()
-
-  for (const pod of pods) {
-    const labels = pod.Pod.metadata.labels
-    const appid = labels ? labels[LABEL_KEY_APP_ID] : undefined
-    if (appid) {
-      for (const container of pod.Containers) {
-        const containerName = container.Container
-        const podName = pod.Pod.metadata.name
-        updateMetrics(container, containerName, podName, appid)
-      }
-    }
+  for (const metric of runtimeMetrics) {
+    updateMetrics(metric)
   }
-  res.set('Content-Type', 'text/plain;')
+
+  const runtimeLimitMetrics =
+    await ClusterService.getRuntimePodsLimitForAllNameSpaces()
+
+  for (const metric of runtimeLimitMetrics) {
+    updateLimitMetrics(metric)
+  }
+
+  res.set('Content-Type', 'text/plain')
   res.send(await register.metrics())
 }
 
