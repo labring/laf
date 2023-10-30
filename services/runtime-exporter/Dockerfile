@@ -1,39 +1,39 @@
-# 第一阶段：编译
+# Stage 1: Build
 FROM node:18-slim AS build
 
 WORKDIR /app
 
-# 利用缓存机制，只在依赖文件变化时执行 npm install
+# Utilize cache mechanism, only execute npm install when dependency files change
 COPY package*.json ./
 RUN npm install
 
-# 复制其他文件和目录
+# Copy other files and directories
 COPY . .
 
-# 构建应用
+# Build the application
 RUN npm run build
 
-# 第二阶段：设置生产环境
+# Stage 2: Set up production environment
 FROM node:18-slim AS production
 
-# 设置环境变量
+# Set environment variables
 ENV LOG_LEVEL=debug
 ENV NODE_ENV=production
 
 WORKDIR /app
 
-# 从构建阶段复制构建产物
+# Copy build artifacts from build stage
 COPY --from=build /app/dist ./dist
-# 复制生产依赖，忽略开发依赖
+# Copy production dependencies, omitting development dependencies
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/package*.json ./
 
-# 设置非 root 用户，提高安全性
+# Set non-root user for better security
 RUN chown -R node:node /app/
 USER node
 
-# 暴露应用端口
+# Expose application port
 EXPOSE 2342
 
-# 启动应用
+# Start the application
 CMD [ "npm", "run", "start" ]

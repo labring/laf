@@ -2,7 +2,7 @@
   "name": "runtime-exporter",
   "version": "1.0.0-beta.11",
   "description": "the runtime metrics exporter of laf",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "private": true,
   "scripts": {
     "dev": "NODE_ENV=development node ./dist/index.js",
@@ -10,12 +10,6 @@
     "watch": "tsc -p tsconfig.json -w",
     "start": "NODE_ENV=production node ./dist/index.js",
     "prettier": "npx prettier --write ./src"
-  },
-  "nodemonConfig": {
-    "ignore": [
-      "src/*"
-    ],
-    "delay": 1000
   },
   "devDependencies": {
     "@types/express": "^4.17.20",

@@ -24,7 +24,7 @@ export default class Config {
   }
 
   /**
-   * the serving port, default is 5060
+   * the serving port, default is 2342
    */
   static get PORT(): number {
     return (process.env.PORT ?? 2342) as number
@@ -34,7 +34,7 @@ export default class Config {
     return process.env.KUBECONF || ''
   }
 
-  static get JWT_SECRET(): string {
+  static get API_SECRET(): string {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET is not defined')
     }

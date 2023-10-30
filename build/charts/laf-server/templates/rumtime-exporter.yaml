@@ -35,7 +35,7 @@ spec:
               path: /healthz
               port: http 
           env:
-            - name: JWT_SECRET
+            - name: API_SECRET
               value: {{ .Values.default_region.runtime_exporter_secret | quote }}
 --- 
 apiVersion: v1
