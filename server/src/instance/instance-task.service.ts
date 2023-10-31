@@ -4,7 +4,6 @@ import { isConditionTrue } from '../utils/getter'
 import { InstanceService } from './instance.service'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
-import { CronJobService } from 'src/trigger/cron-job.service'
 import {
   Application,
   ApplicationPhase,
@@ -13,16 +12,14 @@ import {
 import { DomainState, RuntimeDomain } from 'src/gateway/entities/runtime-domain'
 import { BucketDomain } from 'src/gateway/entities/bucket-domain'
 import { WebsiteHosting } from 'src/website/entities/website'
+import { CronTrigger, TriggerState } from 'src/trigger/entities/cron-trigger'
 
 @Injectable()
 export class InstanceTaskService {
   readonly lockTimeout = 15 // in second
   private readonly logger = new Logger(InstanceTaskService.name)
 
-  constructor(
-    private readonly instanceService: InstanceService,
-    private readonly cronService: CronJobService,
-  ) {}
+  constructor(private readonly instanceService: InstanceService) {}
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
@@ -175,8 +172,13 @@ export class InstanceTaskService {
         { $set: { state: DomainState.Active, updatedAt: new Date() } },
       )
 
-    // resume cronjobs if any
-    await this.cronService.resumeAll(app.appid)
+    // active triggers if any
+    await db
+      .collection<CronTrigger>('CronTrigger')
+      .updateMany(
+        { appid, state: TriggerState.Inactive },
+        { $set: { state: TriggerState.Active, updatedAt: new Date() } },
+      )
 
     // if state is `Restarting`, update state to `Running` with phase `Started`
     let toState = app.state
@@ -272,6 +274,14 @@ export class InstanceTaskService {
         { $set: { state: DomainState.Inactive, updatedAt: new Date() } },
       )
 
+    // inactive triggers if any
+    await db
+      .collection<CronTrigger>('CronTrigger')
+      .updateMany(
+        { appid, state: TriggerState.Active },
+        { $set: { state: TriggerState.Inactive, updatedAt: new Date() } },
+      )
+
     // check if the instance is removed
     const instance = await this.instanceService.get(app.appid)
     if (instance.deployment) {
@@ -286,9 +296,6 @@ export class InstanceTaskService {
       await this.relock(appid, waitingTime)
       return
     }
-
-    // suspend cronjobs if any
-    await this.cronService.suspendAll(app.appid)
 
     // update application phase to `Stopped`
     await db.collection<Application>('Application').updateOne(

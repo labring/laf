@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { TASK_LOCK_INIT_TIME } from 'src/constants'
+import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
 import { CronJobService } from './cron-job.service'
 import {
@@ -19,6 +19,8 @@ export class TriggerTaskService {
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
+    if (ServerConfig.DISABLED_TRIGGER_TASK) return
+
     // Phase `Creating` -> `Created`
     this.handleCreatingPhase().catch((err) => {
       this.logger.error('handleCreatingPhase error: ' + err)
