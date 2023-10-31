@@ -1,0 +1,96 @@
+.mtk11 {
+  color: #0178ce !important;
+}
+
+.mtk3 {
+  color: #006674 !important;
+}
+
+.mtk19 {
+  color: #b934c5 !important;
+}
+
+.mtk4 {
+  color: #267f99 !important;
+}
+
+.mtk9 {
+  color: #006674 !important;
+}
+
+.mtk1 {
+  color: #3b3b3b !important;
+}
+
+.mtk14 {
+  color: #646893 !important;
+}
+
+.mtk15 {
+  color: #098658 !important;
+}
+
+[data-theme="dark"] .mtk11 {
+  color: #36ADEF !important;
+}
+
+[data-theme="dark"] .mtk14 {
+  color: #9699B4 !important;
+}
+
+[data-theme="dark"] .mtk3 {
+  color: #47C8BF !important;
+}
+
+[data-theme="dark"] .mtk4 {
+  color: #00A9A6 !important;
+}
+
+[data-theme="dark"] .mtk19 {
+  color: #A558C9 !important;
+}
+
+[data-theme="dark"] .mtk1 {
+  color: #7c7c7c !important;
+}
+
+.bracket-highlighting-0 {
+  color: #b93a67 !important;
+}
+
+.bracket-highlighting-1 {
+  color: #b93a67 !important;
+}
+
+.unexpected-closing-bracket {
+  color: #b93a67 !important;
+}
+
+.bracket-highlighting-2 {
+  color: #179fff !important;
+}
+
+[data-theme="dark"] .bracket-highlighting-0 {
+  color: #b93a67 !important;
+}
+
+[data-theme="dark"] .bracket-highlighting-1 {
+  color: #b93a67 !important;
+}
+
+[data-theme="dark"] .unexpected-closing-bracket {
+  color: #b93a67 !important;
+}
+
+[data-theme="dark"] .bracket-highlighting-2 {
+  color: #179fff !important;
+}
+
+.active-line-number {
+  color: #008F8D !important;
+}
+
+.monaco-editor {
+  --vscode-editor-wordHighlightTextBackground: #57575730 !important;
+  --vscode-editor-wordHighlightBackground: #57575730 !important;
+}

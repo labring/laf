@@ -43,6 +43,7 @@ function HeadPanel() {
             {recentFunctionList.length > 0 &&
               recentFunctionList.map((item, index) => {
                 const selected = currentFunction?._id === item._id;
+                const isLast = recentFunctionList.length <= 1;
                 return (
                   <div
                     key={index}
@@ -78,11 +79,16 @@ function HeadPanel() {
                     </div>
                     {functionCache.getCache(item?._id, (item as any)?.source?.code) !==
                     (item as any)?.source?.code ? (
-                      <span className="ml-2 inline-block h-1 w-1 flex-none rounded-full bg-rose-500 group-hover:hidden"></span>
+                      <span
+                        className={clsx(
+                          "ml-2 inline-block h-1 w-1 flex-none rounded-full bg-rose-500",
+                          !isLast ? "group-hover:hidden" : "",
+                        )}
+                      ></span>
                     ) : (
                       <span className="ml-2 inline-block h-1 w-1 flex-none rounded-full bg-none group-hover:hidden"></span>
                     )}
-                    <span className="-mr-1 hidden group-hover:flex">
+                    <span className={clsx(!isLast ? "-mr-1 hidden group-hover:flex" : "hidden")}>
                       <IconWrap
                         size={16}
                         onClick={(e) => {

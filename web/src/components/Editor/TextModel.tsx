@@ -26,9 +26,6 @@ StandaloneCodeEditorService.prototype.doOpenEditor = function (
     return null;
   }
 
-  if (model.uri.toString().includes(".d.ts")) {
-    return editor;
-  }
   editor.setModel(model);
 
   const functionName = model.uri.path.match(/\/functions\/([^\.]+)\.ts/)[1];

@@ -1,5 +1,4 @@
-import { CSSProperties, useEffect, useMemo, useRef } from "react";
-import { debounce } from "lodash";
+import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import {
   RegisteredFileSystemProvider,
@@ -13,7 +12,8 @@ import { COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
 import "./userWorker";
 
 import { createUrl, createWebSocketAndStartClient } from "./LanguageClient";
-import { AutoImportTypings } from "./typesResolve";
+
+import "./theme/index.css";
 
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
@@ -22,15 +22,12 @@ import useGlobalStore from "@/pages/globalStore";
 
 export const fileSystemProvider = new RegisteredFileSystemProvider(false);
 registerFileSystemOverlay(1, fileSystemProvider);
-const autoImportTypings = new AutoImportTypings();
-const parseImports = debounce(autoImportTypings.parse.bind(autoImportTypings), 1500);
 const updateModel = (path: string, editorRef: any) => {
   const newModel = monaco.editor.getModel(monaco.Uri.file(path));
 
   if (editorRef.current?.getModel() !== newModel) {
     editorRef.current?.setModel(newModel);
   }
-  autoImportTypings.parse(editorRef.current?.getValue() || "");
 };
 
 function FunctionEditor(props: {
@@ -62,8 +59,11 @@ function FunctionEditor(props: {
   const port = 80;
   const url = useMemo(() => createUrl(hostname, port, lspPath), [hostname, port, lspPath]);
   const globalStore = useGlobalStore((state) => state);
-  const { allFunctionList, setLSPStatus } = useFunctionStore((state) => state);
+  const { allFunctionList, setLSPStatus, recentFunctionList, currentFunction } = useFunctionStore(
+    (state) => state,
+  );
   const functionCache = useFunctionCache();
+  const [functionList, setFunctionList] = useState(allFunctionList);
 
   useHotKey(
     DEFAULT_SHORTCUTS.send_request,
@@ -76,9 +76,8 @@ function FunctionEditor(props: {
   );
 
   useEffect(() => {
-    const lspWebSocket = createWebSocketAndStartClient(url);
+    const lspWebSocket = createWebSocketAndStartClient(url, globalStore.currentApp.develop_token);
     setLSPStatus("initializing");
-
     lspWebSocket.addEventListener("message", (event) => {
       const message = JSON.parse(event.data);
       if (message.method === "textDocument/publishDiagnostics") {
@@ -105,6 +104,19 @@ function FunctionEditor(props: {
   }, []);
 
   useEffect(() => {
+    const listener = (event: any) => {
+      if (event?.reason?.message?.includes("Unable to resolve nonexistent file")) {
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("unhandledrejection", listener);
+    return () => {
+      window.removeEventListener("unhandledrejection", listener);
+    };
+  });
+
+  useEffect(() => {
     if (monacoEl && !editorRef.current) {
       const start = async () => {
         editorRef.current = monaco.editor.create(monacoEl.current!, {
@@ -127,27 +139,46 @@ function FunctionEditor(props: {
           fontWeight: "450",
           scrollBeyondLastLine: false,
         });
-        setTimeout(() => {
-          autoImportTypings.loadDefaults();
-        });
       };
       start();
     }
+
     allFunctionList.forEach(async (item: any) => {
       const uri = monaco.Uri.file(`${RUNTIMES_PATH}/${item.name}.ts`);
-      if (!monaco.editor.getModel(uri)) {
-        fileSystemProvider.registerFile(new RegisteredMemoryFile(uri, item.source.code));
-        monaco.editor.createModel(
-          functionCache.getCache(item._id, item.source?.code),
-          "typescript",
-          uri,
-        );
+
+      if (functionList.includes(item)) {
+        if (!monaco.editor.getModel(uri)) {
+          fileSystemProvider.registerFile(new RegisteredMemoryFile(uri, item.source.code));
+          monaco.editor.createModel(
+            functionCache.getCache(item._id, item.source?.code),
+            "typescript",
+            uri,
+          );
+        }
       }
     });
 
+    functionList.forEach(async (item: any) => {
+      const uri = monaco.Uri.file(`${RUNTIMES_PATH}/${item.name}.ts`);
+
+      if (!allFunctionList.includes(item)) {
+        monaco.editor.getModel(uri)?.dispose();
+      }
+    });
+
+    setFunctionList(allFunctionList);
     updateModel(path, editorRef);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allFunctionList]);
+  }, [
+    allFunctionList,
+    colorMode,
+    currentFunction?.name,
+    fontSize,
+    functionCache,
+    functionList,
+    path,
+    readOnly,
+    recentFunctionList.length,
+  ]);
 
   // onChange
   useEffect(() => {
@@ -155,7 +186,6 @@ function FunctionEditor(props: {
     if (onChange) {
       subscriptionRef.current = editorRef.current?.onDidChangeModelContent((event) => {
         onChange(editorRef.current?.getValue(), editorRef.current?.getPosition() || undefined);
-        parseImports(editorRef.current?.getValue() || "");
       });
     }
   }, [onChange]);
