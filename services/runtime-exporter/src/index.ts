@@ -13,7 +13,7 @@ process.on('uncaughtException', (err: Error) => {
   logger.error('Caught uncaughtException:', err)
 })
 
-app.get('/runtime/metrics:token', getRuntimeMetrics)
+app.get('/runtime/metrics/:token', getRuntimeMetrics)
 app.get('/healthz', (_, res: Response) => res.send('ok'))
 
 // express error capture middleware
