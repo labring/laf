@@ -115,16 +115,14 @@ const IndexModal = (props: { children: React.ReactElement }) => {
                         </HStack>
                       </Td>
                       <Td>
-                        <Center>
-                          <PopConfirm
-                            onConfirm={() => dropIndexMutation.mutateAsync(v.name)}
-                            title={String(t("Delete"))}
-                            placement="left"
-                            description={t("CollectionPanel.ConfirmDeleteIndex")}
-                          >
-                            <CloseButton fontSize={10} />
-                          </PopConfirm>
-                        </Center>
+                        <PopConfirm
+                          onConfirm={() => dropIndexMutation.mutateAsync(v.name)}
+                          title={String(t("Delete"))}
+                          placement="left"
+                          description={t("CollectionPanel.ConfirmDeleteIndex")}
+                        >
+                          <CloseButton fontSize={10} />
+                        </PopConfirm>
                       </Td>
                     </Tr>
                   ))}
