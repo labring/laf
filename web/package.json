@@ -1,9 +1,10 @@
 {
   "name": "web",
   "private": true,
+  "type": "module",
   "version": "1.0.0-beta.12",
   "scripts": {
-    "dev": "vite",
+    "dev": "node --experimental-import-meta-resolve ./node_modules/vite/bin/vite.js",
     "build": "tsc && node --max_old_space_size=32768 ./node_modules/vite/bin/vite.js build",
     "tsc": "tsc",
     "preview": "vite preview",
