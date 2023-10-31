@@ -73,7 +73,6 @@ export default defineConfig(({ command, mode }) => {
     optimizeDeps: {
       esbuildOptions: {
         plugins: [
-          // copied from "https://github.com/CodinGame/monaco-vscode-api/blob/main/demo/vite.config.ts"
           {
             name: "import.meta.url",
             setup({ onLoad }) {

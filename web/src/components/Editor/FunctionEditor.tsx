@@ -11,6 +11,7 @@ import { COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
 
 import "./userWorker";
 
+// import "./theme"
 import { createUrl, createWebSocketAndStartClient } from "./LanguageClient";
 
 import "./theme/index.css";
