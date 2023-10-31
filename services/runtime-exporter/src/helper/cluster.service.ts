@@ -6,26 +6,12 @@ import {
   quantityToScalar,
 } from '@kubernetes/client-node/dist/util'
 
-export class Metric {
+export interface Metric {
   cpu: number
   memory: number
   appid: string
   containerName: string
   podName: string
-
-  constructor(
-    cpu: number,
-    memory: number,
-    appid: string,
-    containerName: string,
-    podName: string,
-  ) {
-    this.cpu = cpu
-    this.memory = memory
-    this.appid = appid
-    this.containerName = containerName
-    this.podName = podName
-  }
 }
 
 export class ClusterService {
@@ -61,7 +47,7 @@ export class ClusterService {
     return new k8s.Metrics(kc)
   }
 
-  static async getRuntimePodsMetricsForAllNameSpaces(): Promise<Metric[]> {
+  static async getRuntimePodMetricsForAllNamespaces(): Promise<Metric[]> {
     const metricsClient = this.getMetricsClient()
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -77,7 +63,13 @@ export class ClusterService {
         const cpu = Number(quantityToScalar(container.usage.cpu || 0))
         const memory = Number(quantityToScalar(container.usage.memory || 0))
 
-        const metric = new Metric(cpu, memory, appid, containerName, podName)
+        const metric: Metric = {
+          cpu: cpu,
+          memory: memory,
+          appid: appid,
+          containerName: containerName,
+          podName: podName,
+        }
         metricsList.push(metric)
       }
     }
@@ -85,7 +77,7 @@ export class ClusterService {
     return metricsList
   }
 
-  static async getRuntimePodsLimitForAllNameSpaces(): Promise<Metric[]> {
+  static async getRuntimePodsLimitForAllNamespaces(): Promise<Metric[]> {
     const coreV1Api = this.makeCoreV1Api()
     const res = await coreV1Api.listPodForAllNamespaces(
       undefined,
@@ -101,10 +93,17 @@ export class ClusterService {
 
       for (const container of item.spec.containers) {
         const containerName = container.name
-        const cpu = Number(totalCPUForContainer(container).limit || 0)
-        const memory = Number(totalMemoryForContainer(container).limit || 0)
+        const cpu = Number(totalCPUForContainer(container).limit || 0) * 1000
+        const memory =
+          Number(totalMemoryForContainer(container).limit || 0) / 1048576
 
-        const metric = new Metric(cpu, memory, appid, containerName, podName)
+        const metric: Metric = {
+          cpu: cpu,
+          memory: memory,
+          appid: appid,
+          containerName: containerName,
+          podName: podName,
+        }
         metricsList.push(metric)
       }
     }

@@ -63,14 +63,14 @@ const getRuntimeMetrics: RequestHandler = async (req, res) => {
   }
 
   const runtimeMetrics =
-    await ClusterService.getRuntimePodsMetricsForAllNameSpaces()
+    await ClusterService.getRuntimePodMetricsForAllNamespaces()
 
   for (const metric of runtimeMetrics) {
     updateMetrics(metric)
   }
 
   const runtimeLimitMetrics =
-    await ClusterService.getRuntimePodsLimitForAllNameSpaces()
+    await ClusterService.getRuntimePodsLimitForAllNamespaces()
 
   for (const metric of runtimeLimitMetrics) {
     updateLimitMetrics(metric)
