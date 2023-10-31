@@ -31,23 +31,23 @@
 }
 
 [data-theme="dark"] .mtk11 {
-  color: #36ADEF !important;
+  color: #36adef !important;
 }
 
 [data-theme="dark"] .mtk14 {
-  color: #9699B4 !important;
+  color: #9699b4 !important;
 }
 
 [data-theme="dark"] .mtk3 {
-  color: #47C8BF !important;
+  color: #47c8bf !important;
 }
 
 [data-theme="dark"] .mtk4 {
-  color: #00A9A6 !important;
+  color: #00a9a6 !important;
 }
 
 [data-theme="dark"] .mtk19 {
-  color: #A558C9 !important;
+  color: #a558c9 !important;
 }
 
 [data-theme="dark"] .mtk1 {
@@ -87,7 +87,7 @@
 }
 
 .active-line-number {
-  color: #008F8D !important;
+  color: #008f8d !important;
 }
 
 .monaco-editor {

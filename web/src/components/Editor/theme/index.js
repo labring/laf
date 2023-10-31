@@ -22,7 +22,7 @@ var manifest = {
         label: "lafEditorDarkTheme",
         uiTheme: "lafEditorDarkTheme",
         path: "./themes/laf_editor_dark_theme.json",
-      }
+      },
     ],
   },
 

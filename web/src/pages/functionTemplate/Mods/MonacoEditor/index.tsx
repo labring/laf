@@ -51,16 +51,16 @@ const MonacoEditor = (props: {
       horizontalScrollbarSize: 8,
     },
     suggest: {
-      showStatusBar: false, 
-      showMethods: false, 
-      showFunctions: false, 
-      showClasses: false, 
-      showVariables: false, 
-      showConstants: false, 
-      showProperties: false, 
+      showStatusBar: false,
+      showMethods: false,
+      showFunctions: false,
+      showClasses: false,
+      showVariables: false,
+      showConstants: false,
+      showProperties: false,
       showEvents: false,
       showOperators: false,
-      showKeywords: false, 
+      showKeywords: false,
       showWords: false,
     },
     mouseWheelScrollSensitivity: 0,
@@ -69,7 +69,7 @@ const MonacoEditor = (props: {
     lineNumbersMinChars: 4,
     fontSize: popover ? 10 : 14,
     fontWeight: popover ? "400" : "450",
-  }
+  };
 
   return (
     <div
@@ -135,10 +135,10 @@ const MonacoEditor = (props: {
         theme={darkMode ? "MonacoEditorThemeDark" : "MonacoEditorTheme"}
         beforeMount={(monaco) => {
           monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-            allowNonTsExtensions:true,
-            lib:[]
-          })
-          monaco?.editor.defineTheme("MonacoEditorTheme", {
+            allowNonTsExtensions: true,
+            lib: [],
+          });
+          monaco.editor.defineTheme("MonacoEditorTheme", {
             base: "vs",
             inherit: true,
             rules: [
@@ -156,8 +156,8 @@ const MonacoEditor = (props: {
               "editorIndentGuide.background": "#eee",
             },
           });
-          
-          monaco?.editor.defineTheme("MonacoEditorThemeDark", {
+
+          monaco.editor.defineTheme("MonacoEditorThemeDark", {
             base: "vs-dark",
             inherit: true,
             rules: [

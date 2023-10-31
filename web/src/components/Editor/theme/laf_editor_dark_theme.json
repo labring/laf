@@ -97,7 +97,7 @@
         "meta.definition.variable.name",
         "support.variable",
         "entity.name.variable",
-        "constant.other.placeholder", // placeholders in strings
+        "constant.other.placeholder" // placeholders in strings
       ],
       "settings": {
         "foreground": "#006674"
@@ -105,19 +105,14 @@
     },
     {
       "name": "Constants and enums",
-      "scope": [
-        "variable.other.constant",
-        "variable.other.enummember"
-      ],
+      "scope": ["variable.other.constant", "variable.other.enummember"],
       "settings": {
-        "foreground": "#006674",
+        "foreground": "#006674"
       }
     },
     {
       "name": "Object keys, TS grammar specific",
-      "scope": [
-        "meta.object-literal.key"
-      ],
+      "scope": ["meta.object-literal.key"],
       "settings": {
         "foreground": "#006674"
       }
@@ -170,19 +165,13 @@
       }
     },
     {
-      "scope": [
-        "keyword.operator.or.regexp",
-        "keyword.control.anchor.regexp"
-      ],
+      "scope": ["keyword.operator.or.regexp", "keyword.control.anchor.regexp"],
       "settings": {
         "foreground": "#EE0000"
       }
     },
     {
-      "scope": [
-        "constant.character",
-        "constant.other.option"
-      ],
+      "scope": ["constant.character", "constant.other.option"],
       "settings": {
         "foreground": "#0178CE"
       }
@@ -370,10 +359,7 @@
       }
     },
     {
-      "scope": [
-        "meta.preprocessor",
-        "entity.name.function.preprocessor"
-      ],
+      "scope": ["meta.preprocessor", "entity.name.function.preprocessor"],
       "settings": {
         "foreground": "#0178CE"
       }
@@ -409,19 +395,13 @@
       }
     },
     {
-      "scope": [
-        "storage.modifier",
-        "keyword.operator.noexcept"
-      ],
+      "scope": ["storage.modifier", "keyword.operator.noexcept"],
       "settings": {
         "foreground": "#0178CE"
       }
     },
     {
-      "scope": [
-        "string",
-        "meta.embedded.assembly"
-      ],
+      "scope": ["string", "meta.embedded.assembly"],
       "settings": {
         "foreground": "#B934C5"
       }
@@ -467,9 +447,7 @@
     },
     {
       "name": "Reset JavaScript string interpolation expression",
-      "scope": [
-        "meta.template.expression"
-      ],
+      "scope": ["meta.template.expression"],
       "settings": {
         "foreground": "#000000"
       }
@@ -502,9 +480,7 @@
       }
     },
     {
-      "scope": [
-        "support.type.property-name.json"
-      ],
+      "scope": ["support.type.property-name.json"],
       "settings": {
         "foreground": "#0451a5"
       }
@@ -551,10 +527,7 @@
       }
     },
     {
-      "scope": [
-        "punctuation.section.embedded.begin.php",
-        "punctuation.section.embedded.end.php"
-      ],
+      "scope": ["punctuation.section.embedded.begin.php", "punctuation.section.embedded.end.php"],
       "settings": {
         "foreground": "#800000"
       }
@@ -577,13 +550,13 @@
       "settings": {
         "foreground": "#0178CE"
       }
-    },
+    }
   ],
   "semanticHighlighting": true,
   "semanticTokenColors": {
     "newOperator": "#AF00DB",
     "stringLiteral": "#B934C5",
     "customLiteral": "#006674",
-    "numberLiteral": "#098658",
+    "numberLiteral": "#098658"
   }
 }
