@@ -32,7 +32,7 @@ const useFunctionStore = create<State>()(
       functionCodes: {},
       currentRequestId: undefined,
       isFetchButtonClicked: false,
-      LSPStatus: "initializing",
+      LSPStatus: "closed",
 
       getFunctionUrl: () => {
         const currentApp = useGlobalStore.getState().currentApp;

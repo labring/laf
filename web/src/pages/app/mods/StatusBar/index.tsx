@@ -6,6 +6,7 @@ import ColorModeSwitch from "@/components/ColorModeSwitch";
 import LanguageSwitch from "@/components/LanguageSwitch";
 import Panel from "@/components/Panel";
 
+import useFunctionStore from "../../functions/store";
 import Icons from "../SideBar/Icons";
 
 import LSPBar from "./LSPBar";
@@ -20,6 +21,7 @@ function StatusBar() {
   const { t } = useTranslation();
   const { currentApp } = useGlobalStore((state) => state);
   const darkMode = useColorMode().colorMode === "dark";
+  const { allFunctionList } = useFunctionStore((state) => state);
 
   return (
     <Panel className="!mt-1 !flex-row justify-between">
@@ -45,7 +47,7 @@ function StatusBar() {
           statusConditions={currentApp?.phase}
           state={currentApp?.state}
         />
-        <LSPBar />
+        {allFunctionList.length && <LSPBar />}
       </HStack>
       <HStack spacing={4}>
         <MonitorBar />

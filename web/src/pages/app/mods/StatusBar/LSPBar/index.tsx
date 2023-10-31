@@ -1,46 +1,46 @@
 import { useMemo } from "react";
-import { Spinner } from "@chakra-ui/react";
+import { useTranslation } from "react-i18next";
+import { Spinner, Tooltip } from "@chakra-ui/react";
 
 import { createUrl, createWebSocketAndStartClient } from "@/components/Editor/LanguageClient";
 
 import useFunctionStore from "@/pages/app/functions/store";
-
+import useGlobalStore from "@/pages/globalStore";
 export default function LSPBar() {
   const hostname = "scm3dt.100.66.76.85.nip.io";
   const lspPath = "/_/lsp";
   const port = 80;
   const url = useMemo(() => createUrl(hostname, port, lspPath), [hostname, port, lspPath]);
-
+  const { t } = useTranslation();
   const { LSPStatus, setLSPStatus } = useFunctionStore();
+  const { currentApp } = useGlobalStore();
 
   return (
     <div>
-      {LSPStatus === "ready" && (
-        <div className="flex items-center text-blue-600">
-          <span>LSP is Running</span>
-        </div>
-      )}
+      {LSPStatus === "ready" && null}
       {LSPStatus === "initializing" && (
         <div className="flex items-center text-grayModern-600">
           <Spinner size="xs" className="mr-2" />
-          <span>Initializing TS language features…</span>
+          <span>{t("LSP.InitializingLanguageServer")}</span>
         </div>
       )}
       {LSPStatus === "closed" && (
         <div className="flex cursor-pointer items-center text-warn-600">
-          <span>LSP closed</span>
+          <span>{t("LSP.LanguageServerClosed")}</span>
         </div>
       )}
       {LSPStatus === "error" && (
-        <div
-          className="flex cursor-pointer items-center text-red-600"
-          onClick={() => {
-            createWebSocketAndStartClient(url);
-            setLSPStatus("initializing");
-          }}
-        >
-          <span>LSP ERROR</span>
-        </div>
+        <Tooltip label={t("LSP.InitLanguageServer")}>
+          <div
+            className="flex cursor-pointer items-center text-red-600"
+            onClick={() => {
+              createWebSocketAndStartClient(url, currentApp.develop_token);
+              setLSPStatus("initializing");
+            }}
+          >
+            <span>{t("LSP.LanguageServerError")}</span>
+          </div>
+        </Tooltip>
       )}
     </div>
   );

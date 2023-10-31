@@ -49,9 +49,10 @@ export const createUrl = (
   return url.toString();
 };
 
-export const createWebSocketAndStartClient = (url: string) => {
-  const webSocket = new WebSocket(url);
+export const createWebSocketAndStartClient = (url: string, token: string) => {
+  const webSocket = new WebSocket(url, [token]);
   webSocket.onopen = async () => {
+    webSocket.send(token);
     const socket = toSocket(webSocket);
     const reader = new WebSocketMessageReader(socket);
     const writer = new WebSocketMessageWriter(socket);
