@@ -8,12 +8,18 @@ import * as assert from 'assert'
 import { ApplicationBilling } from './entities/application-billing'
 import { CalculatePriceDto } from './dto/calculate-price.dto'
 import { BillingQuery } from './interface/billing-query.interface'
+import { PrometheusDriver } from 'prometheus-query'
+import { Application } from 'src/application/entities/application'
+import { RegionService } from 'src/region/region.service'
 
 @Injectable()
 export class BillingService {
   private readonly db = SystemDatabase.db
 
-  constructor(private readonly resource: ResourceService) {}
+  constructor(
+    private readonly resource: ResourceService,
+    private readonly region: RegionService,
+  ) {}
 
   async query(userId: ObjectId, condition?: BillingQuery) {
     const query = { createdBy: userId }
@@ -211,6 +217,35 @@ export class BillingService {
       storageCapacity: storagePrice.toNumber(),
       databaseCapacity: databasePrice.toNumber(),
       total: totalPrice.toNumber(),
+    }
+  }
+
+  async getMeteringData(app: Application) {
+    const region = await this.region.findOne(app.regionId)
+
+    const prom = new PrometheusDriver({
+      endpoint: region.prometheusConf.apiUrl,
+    })
+
+    const cpuTask = prom
+      .instantQuery(
+        `sum(max_over_time(laf_runtime_cpu_limit{containerName!="",appid="${app.appid}"}[1h])) by (appid)`,
+      )
+      .then((res) => res.result[0])
+      .then((res) => Number(res.value.value))
+
+    const memoryTask = prom
+      .instantQuery(
+        `sum(max_over_time(laf_runtime_memory_limit{containerName!="",appid="${app.appid}"}[1h])) by (appid)`,
+      )
+      .then((res) => res.result[0])
+      .then((res) => Number(res.value.value))
+
+    const [cpu, memory] = await Promise.all([cpuTask, memoryTask])
+
+    return {
+      cpu,
+      memory,
     }
   }
 }
