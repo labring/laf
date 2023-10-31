@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-cd $(dirname -- "$0")
-cd ../
-npm run tsc
-npm run lint-staged --allow-empty

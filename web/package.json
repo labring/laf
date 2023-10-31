@@ -9,7 +9,6 @@
     "preview": "vite preview",
     "lint": "eslint src --fix",
     "prettier": "prettier --write ./src",
-    "prepare": "cd .. && husky install web/.husky",
     "intercept": "telepresence intercept laf-web -n laf-system -p 3001:80",
     "leave": "telepresence leave laf-web-laf-system",
     "lint-staged": "lint-staged"
@@ -71,7 +70,6 @@
     "eslint": "^8.41.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
-    "husky": "^8.0.3",
     "install": "^0.13.0",
     "lint-staged": "^13.2.2",
     "postcss": "^8.4.23",
