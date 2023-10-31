@@ -56,7 +56,7 @@ function updateLimitMetrics(metric: Metric) {
 }
 
 const getRuntimeMetrics: RequestHandler = async (req, res) => {
-  const token = req.query.token
+  const token = req.params.token
 
   if (!token || Config.API_SECRET !== token) {
     return res.status(403).send('forbidden')
