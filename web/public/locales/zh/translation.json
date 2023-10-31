@@ -32,7 +32,21 @@
     "EmptyDataText": "暂无数据信息,",
     "EmptyPolicyTip": "您还没有创建策略",
     "EmptyRuleTip": "此策略还没有规则,",
-    "CreateTagTip": "按「回车键」输入标签，每个标签最多由16个字符组成"
+    "CreateTagTip": "按「回车键」输入标签，每个标签最多由16个字符组成",
+    "IndexManage": "索引管理",
+    "ConfirmDeleteIndex": "确定删除该索引吗？",
+    "IndexKey": "索引字段",
+    "SelectIndexType": "选择类型",
+    "AddIndexKey": "添加字段",
+    "AdvancedOptions": "高级选项",
+    "CreateIndex": "创建索引",
+    "CapacityLimit": "容量限制",
+    "CreateTTL": "创建 TTL",
+    "CreateUniqueIndex": "创建唯一索引",
+    "UniqueIndexDescription": "唯一索引可确保索引字段不存储重复的值，如果该字段中已有重复的数据，创建唯一索引时会报错。",
+    "TTLDescription": "TTL索引使文档在特定时间后自动过期和删除，需要在一个日期字段上创建索引。",
+    "CapacityLimitDescription": "使用“固定集合”来限制集合的容量。固定集合有一个固定的大小，当它满了之后，新的文档会替代最老的文档。",
+    "DocumentNum": "条"
   },
   "Add": "添加",
   "AddData": "新增数据",
@@ -660,5 +674,10 @@
   "UnBind": "解绑",
   "UnBindSuccess": "解绑成功",
   "SavedSuccessfully": "保存成功",
-  "CreateSuccess": "创建成功"
+  "CreateSuccess": "创建成功",
+  "Properties": "属性",
+  "Action": "操作",
+  "Byte": "字节",
+  "Second": "秒",
+  "Optional": "可选"
 }

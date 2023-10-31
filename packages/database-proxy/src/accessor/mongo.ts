@@ -1,4 +1,4 @@
-import { AccessorInterface, ReadResult, UpdateResult, AddResult, RemoveResult, CountResult } from "./accessor"
+import { AccessorInterface, ReadResult, UpdateResult, AddResult, RemoveResult, CountResult, ListIndexesResult, DropIndexResult, CreateIndexResult } from "./accessor"
 import { Params, ActionType, Order, Direction } from '../types'
 import { MongoClient, ObjectId, MongoClientOptions, Db, UpdateOptions, Filter } from 'mongodb'
 import * as mongodb from 'mongodb'
@@ -141,33 +141,32 @@ export class MongoAccessor implements AccessorInterface {
      * @param params 数据请求参数
      * @returns 
      */
-    async execute(params: Params): Promise<ReadResult | UpdateResult | AddResult | RemoveResult | CountResult | never> {
+    async execute(params: Params): Promise<ReadResult | UpdateResult | AddResult | RemoveResult | CountResult | CreateIndexResult | DropIndexResult | ListIndexesResult | never> {
         const { collection, action } = params
 
         this.logger.info(`mongo start executing {${collection}}: ` + JSON.stringify(params))
 
-        if (action === ActionType.READ) {
-            return await this.read(collection, params)
-        }
-
-        if (action === ActionType.AGGREGATE) {
-            return await this.aggregate(collection, params)
-        }
-
-        if (action === ActionType.UPDATE) {
-            return await this.update(collection, params)
-        }
-
-        if (action === ActionType.ADD) {
-            return await this.add(collection, params)
-        }
-
-        if (action === ActionType.REMOVE) {
-            return await this.remove(collection, params)
-        }
-
-        if (action === ActionType.COUNT) {
-            return await this.count(collection, params)
+        switch (action) {
+            case ActionType.READ:
+                return await this.read(collection, params)
+            case ActionType.UPDATE:
+                return await this.update(collection, params)
+            case ActionType.AGGREGATE:
+                return await this.aggregate(collection, params)
+            case ActionType.REMOVE:
+                return await this.remove(collection, params)
+            case ActionType.ADD:
+                return await this.add(collection, params)
+            case ActionType.COUNT:
+                return await this.count(collection, params)
+            case ActionType.CREATE_INDEX:
+                return await this.createIndex(collection, params)
+            case ActionType.CREATE_INDEX:
+                return await this.createIndex(collection, params)
+            case ActionType.DROP_INDEX:
+                return await this.dropIndex(collection, params)
+            case ActionType.LIST_INDEXES:
+                return await this.listIndexes(collection, params)
         }
 
         const error = new Error(`invalid 'action': ${action}`)
@@ -445,5 +444,80 @@ export class MongoAccessor implements AccessorInterface {
             return { [key]: value }
         })
         return _stages
+    }
+
+    /**
+     * Execute create index query
+     * @param collection Collection name
+     * @param params 
+     * @returns 
+     */
+    protected async createIndex(collection: string, params: Params): Promise<CreateIndexResult> {
+        const coll = this.db.collection(collection)
+        let { data } = params
+        data = this.deserializedEjson(data || {})
+
+        const { keys, options } = data;
+
+        this.logger.debug(`mongo before creating index {${collection}}: `, { data })
+
+        const result = await coll.createIndex(
+            keys as mongodb.IndexSpecification,
+            options as mongodb.CreateIndexesOptions
+        )
+
+        const ret: CreateIndexResult = {
+            indexName: result
+        }
+
+        this.emitResult(params, ret)
+        this.logger.debug(`mongo end of creating index {${collection}}: `, { data, result: ret })
+        return ret
+    }
+
+    /**
+     * Execute drop index query
+     * @param collection Collection name
+     * @param params 
+     * @returns 
+     */
+    protected async dropIndex(collection: string, params: Params): Promise<DropIndexResult> {
+        const coll = this.db.collection(collection)
+        let { data } = params
+        data = this.deserializedEjson(data || {})
+
+        this.logger.debug(`mongo before drop index {${collection}}: `, { data })
+
+        const result = await coll.dropIndex(data)
+
+        const ret: DropIndexResult = {
+            result
+        }
+
+        this.emitResult(params, ret)
+        this.logger.debug(`mongo end of drop index {${collection}}: `, { data, result: ret })
+        return ret
+    }
+
+     /**
+     * Execute list indexes query
+     * @param collection Collection name
+     * @param params 
+     * @returns 
+     */
+    protected async listIndexes(collection: string, params: Params): Promise<ListIndexesResult> {
+        const coll = this.db.collection(collection)
+        let { data } = params
+        data = this.deserializedEjson(data || {})
+
+        this.logger.debug(`mongo before listing indexes {${collection}}: `, { data })
+
+        const result = await coll.listIndexes(data).toArray()
+
+        this.logger.debug(`mongo end of listing indexes {${collection}}: `, { data })
+
+        this.emitResult(params, { result })
+        const serialized = result.map(doc => this.serializeBson(doc))
+        return { list: serialized }
     }
 }

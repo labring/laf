@@ -6,7 +6,12 @@ export enum ActionType {
   REMOVE = 'database.deleteDocument',
   COUNT = 'database.countDocument',
   WATCH = 'database.watchDocument',
-  AGGREGATE = 'database.aggregateDocuments'
+  AGGREGATE = 'database.aggregateDocuments',
+  CREATE_INDEX = 'database.createIndex',
+  CREATE_INDEXES = "database.createIndexes",
+  DROP_INDEX = "database.dropIndex",
+  DROP_INDEXES = "database.dropIndexes",
+  LIST_INDEXES = "database.listIndexes",
 }
 
 export interface Action {
@@ -78,6 +83,10 @@ const AddAcceptParams = ['data', 'multi']
 const RemoveAcceptParams = ['query', 'multi', 'joins']
 const CountAcceptParams = ['query', 'joins']
 const AggregateAcceptParams = ['stages']
+const CreateIndexParams = ['data']
+const DropIndexParams = ['data']
+const DropIndexesParams = ['data']
+const ListIndexesParams = ['data']
 
 const ReadAction: Action = { type: ActionType.READ, fields: ReadAcceptParams }
 const UpdateAction: Action = { type: ActionType.UPDATE, fields: UpdateAcceptParams }
@@ -86,9 +95,12 @@ const AddAction: Action = { type: ActionType.ADD, fields: AddAcceptParams }
 const CountAction: Action = { type: ActionType.COUNT, fields: CountAcceptParams }
 const WatchAction: Action = { type: ActionType.WATCH, fields: ReadAcceptParams }
 const AggregateAction: Action = { type: ActionType.AGGREGATE, fields: AggregateAcceptParams }
+const CreateIndexAction: Action = { type: ActionType.CREATE_INDEX, fields: CreateIndexParams }
+const DropIndexAction: Action = { type: ActionType.DROP_INDEX, fields: DropIndexParams }
+const DropIndexesAction: Action = { type: ActionType.DROP_INDEXES, fields:DropIndexesParams }
+const ListIndexesAction: Action = { type: ActionType.LIST_INDEXES, fields: ListIndexesParams }
 
 export function getAction(actionName: ActionType): Action | null {
-
   let action: Action
   switch (actionName) {
     case ActionType.READ:
@@ -111,6 +123,18 @@ export function getAction(actionName: ActionType): Action | null {
       break
     case ActionType.AGGREGATE:
       action = AggregateAction
+      break
+    case ActionType.CREATE_INDEX:
+      action = CreateIndexAction
+      break
+    case ActionType.DROP_INDEX:
+      action = DropIndexAction
+      break
+    case ActionType.DROP_INDEXES:
+      action = DropIndexesAction
+      break
+    case ActionType.LIST_INDEXES:
+      action = ListIndexesAction
       break
     default:
       action = null

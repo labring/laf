@@ -2,6 +2,7 @@ import { Db } from './index'
 import { DocumentReference } from './document'
 import { Query } from './query'
 import Aggregation from './aggregate'
+import { CreateIndexRes, DropIndexRes, ListIndexesRes } from './result-types'
 
 
 /**
@@ -52,5 +53,26 @@ export class CollectionReference extends Query {
 
   aggregate(rawPipeline: object[] = []) {
     return new Aggregation(this._db, this._coll, rawPipeline)
+  }
+
+  /**
+   * 创建索引
+   */
+  public async createIndex(keys: Record<string, number | string>, options?: any): Promise<CreateIndexRes> {
+    let docRef = new DocumentReference(this._db, this._coll, undefined)
+    return docRef.createIndex(keys, options)
+  }
+
+  /**
+   * 删除索引
+   */
+  public async dropIndex(index: string | Record<string, number | string>): Promise<DropIndexRes> {
+    let docRef = new DocumentReference(this._db, this._coll, undefined)
+    return docRef.dropIndex(index)
+  }
+
+  public async listIndexes(): Promise<ListIndexesRes> {
+    let docRef = new DocumentReference(this._db, this._coll, undefined)
+    return docRef.listIndexes()
   }
 }
