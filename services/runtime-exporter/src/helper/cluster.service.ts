@@ -21,6 +21,7 @@ export class ClusterService {
    * - if kubeconfig is not empty, load from string
    */
   static LABEL_KEY_APP_ID = 'laf.dev/appid'
+  static NAMESPACE = Config.NAMESPACE
 
   static loadKubeConfig() {
     const conf = Config.KUBECONF
@@ -49,14 +50,24 @@ export class ClusterService {
 
   static async getRuntimePodMetricsForAllNamespaces(): Promise<Metric[]> {
     const metricsClient = this.getMetricsClient()
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const res = await metricsClient.metricsApiRequest(
-      '/apis/metrics.k8s.io/v1beta1/pods?labelSelector=laf.dev/appid',
-    )
+    let res: any
+    if (ClusterService.NAMESPACE) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      res = await metricsClient.metricsApiRequest(
+        `/apis/metrics.k8s.io/v1beta1/namespace/${ClusterService.NAMESPACE}/pods?labelSelector=laf.dev/appid`,
+      )
+    } else {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      res = await metricsClient.metricsApiRequest(
+        '/apis/metrics.k8s.io/v1beta1/pods?labelSelector=laf.dev/appid',
+      )
+    }
+
     const metricsList: Metric[] = []
     for (const item of res.items) {
-      const appid = item.metadata.labels[this.LABEL_KEY_APP_ID]
+      const appid = item.metadata.labels[ClusterService.LABEL_KEY_APP_ID]
       const podName = item.metadata.name
       for (const container of item.containers) {
         const containerName = container.name
@@ -79,16 +90,29 @@ export class ClusterService {
 
   static async getRuntimePodsLimitForAllNamespaces(): Promise<Metric[]> {
     const coreV1Api = this.makeCoreV1Api()
-    const res = await coreV1Api.listPodForAllNamespaces(
-      undefined,
-      undefined,
-      undefined,
-      this.LABEL_KEY_APP_ID,
-    )
+    let res: any
+    if (ClusterService.NAMESPACE) {
+      res = await coreV1Api.listNamespacedPod(
+        ClusterService.NAMESPACE,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        this.LABEL_KEY_APP_ID,
+      )
+    } else {
+      res = await coreV1Api.listPodForAllNamespaces(
+        undefined,
+        undefined,
+        undefined,
+        ClusterService.LABEL_KEY_APP_ID,
+      )
+    }
+
     const metricsList: Metric[] = []
 
     for (const item of res.body.items) {
-      const appid = item.metadata.labels[this.LABEL_KEY_APP_ID]
+      const appid = item.metadata.labels[ClusterService.LABEL_KEY_APP_ID]
       const podName = item.metadata.name
 
       for (const container of item.spec.containers) {

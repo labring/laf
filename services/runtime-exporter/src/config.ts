@@ -34,6 +34,10 @@ export default class Config {
     return process.env.KUBECONF || ''
   }
 
+  static get NAMESPACE(): string {
+    return process.env.NAMESPACE || ''
+  }
+
   static get API_SECRET(): string {
     if (!process.env.API_SECRET) {
       throw new Error('API_SECRET is not defined')
