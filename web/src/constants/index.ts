@@ -99,4 +99,4 @@ export enum APP_SETTING_KEY {
   COMMON = "common",
 }
 
-export const RUNTIMES_PATH = "/root/laf/runtimes/nodejs/functions";
+export const RUNTIMES_PATH = "/app/functions";
