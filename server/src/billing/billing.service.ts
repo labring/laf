@@ -229,14 +229,14 @@ export class BillingService {
 
     const cpuTask = prom
       .instantQuery(
-        `sum(max_over_time(laf_runtime_cpu_limit{containerName!="",appid="${app.appid}"}[1h])) by (appid)`,
+        `sum(max_over_time(laf_runtime_cpu_limit{container!="",appid="${app.appid}"}[1h])) by (appid)`,
       )
       .then((res) => res.result[0])
       .then((res) => Number(res.value.value))
 
     const memoryTask = prom
       .instantQuery(
-        `sum(max_over_time(laf_runtime_memory_limit{containerName!="",appid="${app.appid}"}[1h])) by (appid)`,
+        `sum(max_over_time(laf_runtime_memory_limit{container!="",appid="${app.appid}"}[1h])) by (appid)`,
       )
       .then((res) => res.result[0])
       .then((res) => Number(res.value.value))
