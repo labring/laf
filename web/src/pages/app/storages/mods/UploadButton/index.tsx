@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { CheckCircleIcon } from "@chakra-ui/icons";
+import { CheckCircleIcon, WarningIcon } from "@chakra-ui/icons";
 import {
   Modal,
   ModalCloseButton,
@@ -21,7 +21,7 @@ import useAwsS3 from "@/hooks/useAwsS3";
 import useGlobalStore from "@/pages/globalStore";
 
 export type TFileItem = {
-  status: boolean;
+  status: string;
   fileName: string;
 };
 function UploadButton(props: { onUploadSuccess: Function; children: React.ReactElement }) {
@@ -59,9 +59,10 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
                       : item.webkitRelativePath
                       ? item.webkitRelativePath
                       : item.file.name,
-                  status: false,
+                  status: "pending",
                 }));
                 setFileList(newFileList);
+                const tasks = [];
                 for (let i = 0; i < files.length; i++) {
                   const file = files[0] instanceof File ? files[i] : files[i].file;
                   const fileName =
@@ -72,15 +73,27 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
                       : files[i].webkitRelativePath
                       ? files[i].webkitRelativePath
                       : file.name;
-                  await uploadFile(currentStorage?.name!, prefix + fileName, file, {
+                  const task = uploadFile(currentStorage?.name!, prefix + fileName, file, {
                     contentType: file.type,
-                  });
-                  setFileList((pre) => {
-                    const newList = [...pre];
-                    newList[i].status = true;
-                    return newList;
-                  });
+                  })
+                    .then(() => {
+                      setFileList((pre) => {
+                        const newList = [...pre];
+                        newList[i].status = "success";
+                        return newList;
+                      });
+                    })
+                    .catch(() => {
+                      setFileList((pre) => {
+                        const newList = [...pre];
+                        newList[i].status = "fail";
+                        return newList;
+                      });
+                    });
+
+                  tasks.push(task);
                 }
+                await Promise.all(tasks);
                 onUploadSuccess();
                 onClose();
                 showSuccess(t("StoragePanel.Success"));
@@ -98,10 +111,12 @@ function UploadButton(props: { onUploadSuccess: Function; children: React.ReactE
                     )}
                   >
                     <span className="text-slate-500">{item.fileName}</span>
-                    {item.status ? (
+                    {item.status === "success" && (
                       <CheckCircleIcon color="green.500" fontSize={20} />
-                    ) : (
-                      <Spinner size="xs" className="mr-1" />
+                    )}
+                    {item.status === "pending" && <Spinner size="xs" className="mr-1" />}
+                    {item.status === "fail" && (
+                      <WarningIcon className="!text-red-400" fontSize={20} />
                     )}
                   </div>
                 );

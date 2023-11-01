@@ -4,6 +4,7 @@ import clsx from "clsx";
 
 import styles from "./index.module.scss";
 
+
 type UploadType = "file" | "folder";
 
 type TFileItem = {
@@ -63,7 +64,7 @@ function FileUpload(props: { onUpload: (files: any) => void; darkMode: boolean }
         });
       } else {
         const dirReader = file.createReader();
-        dirReader.readEntries(function (entries: any) {
+        readAllEntries(dirReader, []).then((entries: any) => {
           const promises = [];
           for (let i = 0; i < entries.length; i++) {
             const entry = entries[i];
@@ -75,6 +76,19 @@ function FileUpload(props: { onUpload: (files: any) => void; darkMode: boolean }
       }
     });
   };
+
+  function readAllEntries(dirReader:any, entries:any) {
+    return new Promise((resolve, reject) => {
+      dirReader.readEntries(function (newEntries: any) {
+        if (newEntries.length === 0) {
+          resolve(entries);
+        } else {
+          entries = entries.concat(newEntries);
+          readAllEntries(dirReader, entries).then(resolve).catch(reject);
+        }
+      });
+    });
+  }
 
   // triggers when file is selected with click
   const handleChange = function (e: React.ChangeEvent<HTMLInputElement>) {
