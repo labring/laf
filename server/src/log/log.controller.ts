@@ -112,18 +112,23 @@ export class LogController {
         if (k8sResponse) {
           k8sResponse?.destroy()
         }
-        logStream.removeAllListeners()
+        logStream?.removeAllListeners()
         logStream?.destroy()
       }
 
       logStream.on('data', (chunk) => {
-        subscriber.next({ data: chunk.toString() } as MessageEvent)
+        subscriber.next(chunk.toString() as MessageEvent)
       })
 
       logStream.on('error', (error) => {
         this.logger.error('stream error', error)
-        destroyStream()
         subscriber.error(error)
+        destroyStream()
+      })
+
+      logStream.on('end', () => {
+        subscriber.complete()
+        destroyStream()
       })
       ;(async () => {
         try {
