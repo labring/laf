@@ -696,5 +696,6 @@
     "LanguageServerClosed": "语言服务器关闭",
     "LanguageServerError": "语言服务器错误",
     "InitializingLanguageServer": "正在初始化语言服务"
-  }
+  },
+  "KeyAlreadyExists": "key 已经存在"
 }

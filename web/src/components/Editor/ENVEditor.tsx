@@ -1,7 +1,8 @@
 import { useTranslation } from "react-i18next";
-import { Center, Spinner } from "@chakra-ui/react";
 
 import EditableTable from "../EditableTable";
+
+import useGlobalStore from "@/pages/globalStore";
 
 export default function ENVEditor(props: {
   env: Array<{ name: string; value: string }>;
@@ -9,11 +10,10 @@ export default function ENVEditor(props: {
 }) {
   const { t } = useTranslation();
   const { env, setEnv } = props;
+  const globalStore = useGlobalStore();
 
   return (
-    <div>
-      {env && env.length > 0 ? (
-        <EditableTable
+      <EditableTable
           column={[
             {
               name: "Key",
@@ -50,7 +50,7 @@ export default function ENVEditor(props: {
             saveButtonText: String(t("Confirm")),
           }}
           tableData={env}
-          onEdit={async (data) => {
+          onEdit={(data) => {
             setEnv(
               env.map((item) => {
                 if (item.name === data.item.name) {
@@ -60,18 +60,16 @@ export default function ENVEditor(props: {
               }),
             );
           }}
-          onDelete={async (data) => {
+          onDelete={(data) => {
             setEnv(env.filter((item) => item.name !== data));
           }}
-          onCreate={async (data) => {
+          onCreate={(data) => {
+              if (env.find((item) => item.name === data.name)) {
+                globalStore.showError(t("KeyAlreadyExists").toString())
+                return;
+              }
             setEnv([...env, data]);
           }}
-        />
-      ) : (
-        <Center className="h-[360px]">
-          <Spinner />
-        </Center>
-      )}
-    </div>
+      />
   );
 }

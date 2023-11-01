@@ -696,5 +696,6 @@
     "LanguageServerClosed": "Language Server Closed",
     "LanguageServerError": "Language Server Error",
     "InitializingLanguageServer": "Initializing Language Server"
-  }
+  },
+  "KeyAlreadyExists": "Key already exists"
 }

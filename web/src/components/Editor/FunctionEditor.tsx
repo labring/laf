@@ -59,7 +59,7 @@ function FunctionEditor(props: {
   );
   const functionCache = useFunctionCache();
   const [functionList, setFunctionList] = useState(allFunctionList);
-  const baseUrl = globalStore.currentApp.origin;
+  const baseUrl = globalStore.currentApp.host;
   const url = useMemo(() => createUrl(baseUrl, "/_/lsp"), [baseUrl]);
 
   useHotKey(
@@ -75,6 +75,7 @@ function FunctionEditor(props: {
   useEffect(() => {
     const lspWebSocket = createWebSocketAndStartClient(url, globalStore.currentApp.develop_token);
     setLSPStatus("initializing");
+
     lspWebSocket.addEventListener("message", (event) => {
       const message = JSON.parse(event.data);
       if (message.method === "textDocument/publishDiagnostics") {
@@ -83,8 +84,10 @@ function FunctionEditor(props: {
       }
     });
 
-    lspWebSocket.addEventListener("error", () => {
+    lspWebSocket.addEventListener("error", (error) => {
+      console.log("error", error);
       setLSPStatus("error");
+      lspWebSocket?.close();
     });
 
     window.onbeforeunload = () => {
