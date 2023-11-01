@@ -42,8 +42,8 @@ export class ServerConfig {
     return process.env.DISABLED_GATEWAY_TASK === 'true'
   }
 
-  static get DISABLED_SUBSCRIPTION_TASK() {
-    return process.env.DISABLED_GATEWAY_TASK === 'true'
+  static get DISABLED_TRIGGER_TASK() {
+    return process.env.DISABLED_TRIGGER_TASK === 'true'
   }
 
   static get DISABLED_STORAGE_TASK() {

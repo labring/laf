@@ -2,7 +2,7 @@
 interface BaseResult {
   requestId?: string
   code?: string | number
-  error?: string
+  error?: any
   ok?: boolean
 }
 
@@ -34,4 +34,16 @@ export interface RemoveRes extends BaseResult {
 
 export interface CountRes extends BaseResult {
   total: number
+}
+
+export interface CreateIndexRes extends BaseResult{
+    indexName: string
+}
+
+export interface DropIndexRes extends BaseResult{ 
+    result: any
+}
+
+export interface ListIndexesRes extends BaseResult{ 
+    list: object[]
 }

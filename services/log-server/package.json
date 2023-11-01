@@ -1,6 +1,6 @@
 {
   "name": "log-server",
-  "version": "1.0.0-beta.11",
+  "version": "1.0.0-beta.12",
   "description": "the function log server for laf",
   "main": "./dist/index.js",
   "private": true,
@@ -18,7 +18,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "database-proxy": "^1.0.0-beta.2",
+    "database-proxy": "^1.0.0-beta.12",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",

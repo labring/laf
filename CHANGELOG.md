@@ -1,4 +1,62 @@
-# [1.0.0-beta.4](https://github.com/labring/laf/compare/v1.0.0-beta.11...v1.0.0-beta.4) (2023-09-12)
+# [1.0.0-beta.4](https://github.com/labring/laf/compare/v1.0.0-beta.12...v1.0.0-beta.4) (2023-10-31)
+
+
+
+# [1.0.0-beta.12](https://github.com/labring/laf/compare/v1.0.0-beta.11...v1.0.0-beta.12) (2023-10-31)
+
+
+### Bug Fixes
+
+* **cli:** fix app init error ([#1608](https://github.com/labring/laf/issues/1608)) ([7788d6c](https://github.com/labring/laf/commit/7788d6c7811cc5bb2e5f26474abfc70273ba3f60))
+* **cli:** fix update func bug ([#1610](https://github.com/labring/laf/issues/1610)) ([92c9830](https://github.com/labring/laf/commit/92c98309a0259cda2768e16feb4c40104a8bf64c))
+* **cli:** storage server api changed for cli ([#1609](https://github.com/labring/laf/issues/1609)) ([bf4150e](https://github.com/labring/laf/commit/bf4150e6a0136d80993c1b21836665d928fac232))
+* **deploy:** minio console ingress enable websocket ([#1555](https://github.com/labring/laf/issues/1555)) ([f360709](https://github.com/labring/laf/commit/f3607099e72c7e0ca8c22f770f8140788c9bec7c))
+* **gateway:** fix cors headers conf of runtime, ingress nginx installation ([#1565](https://github.com/labring/laf/issues/1565)) ([8de0a29](https://github.com/labring/laf/commit/8de0a29de636ecd10287b17fad5504f9c66e4270))
+* **runtime:** default close module cache ([#1604](https://github.com/labring/laf/issues/1604)) ([ba378a6](https://github.com/labring/laf/commit/ba378a6e51551e48a5129385dcf3d07f9844e0fa))
+* **runtime:** enable cors in runtime; disable cors in gateway ingress ([#1603](https://github.com/labring/laf/issues/1603)) ([06cafd4](https://github.com/labring/laf/commit/06cafd4a793afb9c55f0d3f577aa4e0128bc5180))
+* **runtime:** fix compile error ([#1563](https://github.com/labring/laf/issues/1563)) ([3878bc0](https://github.com/labring/laf/commit/3878bc092c4e830cbcb7641da26eed89afc885a6))
+* **runtime:** fix db stream initialize ([#1592](https://github.com/labring/laf/issues/1592)) ([40e25f1](https://github.com/labring/laf/commit/40e25f13163f1a0d1274caa8ae4f091e15710fba))
+* **runtime:** fix runtime cors options ([#1607](https://github.com/labring/laf/issues/1607)) ([366a6a4](https://github.com/labring/laf/commit/366a6a4e8989ce2f8fd362479001da6b4fd6eb25))
+* **runtime:** fix update function not effective ([#1597](https://github.com/labring/laf/issues/1597)) ([0c9daa3](https://github.com/labring/laf/commit/0c9daa304e51d3cb60c7aa1875960c9d8c67bc79))
+* **runtime:** support default function ([#1602](https://github.com/labring/laf/issues/1602)) ([04905dc](https://github.com/labring/laf/commit/04905dce839ab1aea2acc29ed8d7cb522fd0f32d))
+* **server:** add storage service conf for runtime, add cors conf for bucket ingress ([fc73e6f](https://github.com/labring/laf/commit/fc73e6f9355d2145ee4f24a26ce897430004dbff))
+* **server:** fix nest deps missing ([#1564](https://github.com/labring/laf/issues/1564)) ([7781a3e](https://github.com/labring/laf/commit/7781a3ef6c30882a7c2e789b5dfb255bc0d35931))
+* **server:** fix not reapply service when restart app ([#1578](https://github.com/labring/laf/issues/1578)) ([bb9e8e2](https://github.com/labring/laf/commit/bb9e8e24a588ddcbe10dc5cc019d0be694889184))
+* **server:** fix runtime deployment labels ([#1585](https://github.com/labring/laf/issues/1585)) ([93de793](https://github.com/labring/laf/commit/93de793a119507e5d57f51646203c6d4b5509873))
+* **server:** fix user quota ([#1534](https://github.com/labring/laf/issues/1534)) ([d3a2e65](https://github.com/labring/laf/commit/d3a2e65ed86161a6ddd3ff962a53247f0b659689))
+* **server:** fixed runtime manifest labels ([#1583](https://github.com/labring/laf/issues/1583)) ([364c7a6](https://github.com/labring/laf/commit/364c7a68526c703d9bb3aa2b9d0b82d0206e8484))
+* **server:** set deleting phase for runtime domain and website when deleting app ([#1613](https://github.com/labring/laf/issues/1613)) ([27b0587](https://github.com/labring/laf/commit/27b0587f18f57b04d2a207eae44a27f833ed4b2e))
+* **server:** update logic of cronjob deletion ([#1623](https://github.com/labring/laf/issues/1623)) ([fb7a45d](https://github.com/labring/laf/commit/fb7a45db3f137e58e4df00d8e2f51913b5a1f310))
+* **web:** disable navigate cache for api endpoint ([#1579](https://github.com/labring/laf/issues/1579)) ([f7b8775](https://github.com/labring/laf/commit/f7b8775843c2908b82761ae93a9e9f78343bf82b))
+* **web:** fix bucket display name in edit mode ([#1606](https://github.com/labring/laf/issues/1606)) ([d16bb36](https://github.com/labring/laf/commit/d16bb361d529da9349ebdb739a3334e95246efc1))
+* **web:** fix create function default code ([#1544](https://github.com/labring/laf/issues/1544)) ([0b903e8](https://github.com/labring/laf/commit/0b903e8e8fd002d2a0e60a123524ea69a8d23288))
+* **web:** fix delete button covered in dependency panel ([#1546](https://github.com/labring/laf/issues/1546)) ([b065acd](https://github.com/labring/laf/commit/b065acdd21b020713243dd8964b667fbb55808b6))
+* **web:** fix files can't be accessed before refreshing & change file path ([#1538](https://github.com/labring/laf/issues/1538)) ([86250d9](https://github.com/labring/laf/commit/86250d9b3ad9f9936734af55beadb4af30560a53))
+* **web:** fix function list folder name display ([#1561](https://github.com/labring/laf/issues/1561)) ([1f7d6af](https://github.com/labring/laf/commit/1f7d6af998d2b9229ab381f0c092cc957e901f9b))
+* **web:** fix params not update & change function list type ([#1535](https://github.com/labring/laf/issues/1535)) ([5366201](https://github.com/labring/laf/commit/53662012e96f3238128623440be9e90bd9104aa8))
+* **web:** fix sentry allowlist ([#1587](https://github.com/labring/laf/issues/1587)) ([6c812bd](https://github.com/labring/laf/commit/6c812bd674ccac959c5331d90aa33dd07d8fd2d9))
+* **web:** fix sign up navigate & storage display ([#1580](https://github.com/labring/laf/issues/1580)) ([7dac760](https://github.com/labring/laf/commit/7dac7602eb91d7d66aa28ad31c17e961666a2f01))
+* **web:** remove storage.credential ([#1594](https://github.com/labring/laf/issues/1594)) ([8e5f568](https://github.com/labring/laf/commit/8e5f56836582b9b4719a9b666c124b93eb92dcb0))
+
+
+### Features
+
+* **cli:** improve the cli interface ([#1591](https://github.com/labring/laf/issues/1591)) ([fdbfc5c](https://github.com/labring/laf/commit/fdbfc5c518f641c7cd54dd3750a4ba5ea17c2851))
+* **cli:** support database export and import ([#1540](https://github.com/labring/laf/issues/1540)) ([8c68089](https://github.com/labring/laf/commit/8c68089a7864cf0eb0895199512f9be72ec48d5f))
+* **gateway:** refactor gateway to support ingress ([#1559](https://github.com/labring/laf/issues/1559)) ([155814b](https://github.com/labring/laf/commit/155814bd6751c2962238c8c3d9b5598dea179634))
+* **runtime:** add Access-Control-Max-Age to cors options ([#1615](https://github.com/labring/laf/issues/1615)) ([c4b79fb](https://github.com/labring/laf/commit/c4b79fbc041d04a3d960ec182d287e2f46ce73a8))
+* **runtime:** proxy cloud storage & website hosting request to minio ([#1560](https://github.com/labring/laf/issues/1560)) ([5456de2](https://github.com/labring/laf/commit/5456de268b8d6fb5128eef499be5e2e980f00db5))
+* **runtime:** refactor function engine ([#1590](https://github.com/labring/laf/issues/1590)) ([811066b](https://github.com/labring/laf/commit/811066b5e76f2d85212df8d682a6ebe6edef3824))
+* **runtime:** reuse context ([#1539](https://github.com/labring/laf/issues/1539)) ([acafda5](https://github.com/labring/laf/commit/acafda5d43e661ec772cee6790d89066debcb12e))
+* **server:** add runtime affinity settings in region ([#1548](https://github.com/labring/laf/issues/1548)) ([d3da138](https://github.com/labring/laf/commit/d3da138bc585ede2d0ee158884e0c40763087cbe))
+* **server:** add sealos manager labels to rumtime manifest([#1577](https://github.com/labring/laf/issues/1577)) ([f71ea31](https://github.com/labring/laf/commit/f71ea31457ad22881a32f26ccbdc06a256b3a9b8))
+* **server:** add tls config for ingress gateway ([#1569](https://github.com/labring/laf/issues/1569)) ([8751858](https://github.com/labring/laf/commit/8751858cb2fd130fc8030fb5e4caaae86b948c54))
+* **server:** support github login ([#1542](https://github.com/labring/laf/issues/1542)) ([14540c1](https://github.com/labring/laf/commit/14540c1a061b9dc24220effded8fa3c759127a8e))
+* **web:** add client settings & change settings directory ([#1536](https://github.com/labring/laf/issues/1536)) ([d22fd4e](https://github.com/labring/laf/commit/d22fd4e4469a204efe3e35f9da92bcc1801d7efe))
+* **web:** add database indexes management ([#1611](https://github.com/labring/laf/issues/1611)) ([f8c068a](https://github.com/labring/laf/commit/f8c068a95022be80b3fa229db90fb70b70a1fb46))
+* **web:** add function list desc-name display & fix editor min-h ([#1545](https://github.com/labring/laf/issues/1545)) ([2b252f2](https://github.com/labring/laf/commit/2b252f2591f8e0d49b09755a46e449e2bba8c3ed))
+* **web:** optimize editor ctx type definition ([#1558](https://github.com/labring/laf/issues/1558)) ([b3ecb45](https://github.com/labring/laf/commit/b3ecb4515dd894930b434bebedca87c9db813301))
+* **web:** support github login ([#1543](https://github.com/labring/laf/issues/1543)) ([e8b8380](https://github.com/labring/laf/commit/e8b838090ae997add978ca3d0a348d831b268a0f))
 
 
 
