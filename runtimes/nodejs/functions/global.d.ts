@@ -16,18 +16,16 @@ interface File {
 }
 
 /**
- * 云函数调用入参
+ * Params of cloud function
  */
 interface FunctionContext {
   /**
-   * auth 对象解析自 JWT Token Payload
+   * payload object parsed from JWT token
    */
-  auth?: {
-    uid?: string
-  }
+  user?: any
 
   /**
-   * 上传到云函数的文件
+   * files uploaded
    */
   files?: File[]
 
@@ -37,37 +35,38 @@ interface FunctionContext {
   headers?: IncomingHttpHeaders
 
   /**
-   * HTTP Query 参数 （URL 参数），JSON 对象
+   * HTTP query params
+   * @see https://expressjs.com/en/4x/api.html#req.query
    */
-  query?: any
+  query?: {
+    [key: string]: string
+  }
 
   /**
-   * HTTP Body 参数， JSON 对象
+   * HTTP body data
+   * @see https://expressjs.com/en/4x/api.html#req.body
    */
   body?: any
 
   /**
-   * Trigger 调用时为触发器所带参数
-   */
-  params?: any
-
-  /**
-   * HTTP Request ID
+   * HTTP request id
    */
   requestId?: string
 
   /**
-   * 调用方法：GET | POST | PUT | DELETE | TRIGGER
+   * HTTP methods
    */
-  method?: string
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'WebSocket:connection' | 'WebSocket:close' | 'WebSocket:message' | 'WebSocket:error'
 
   /**
-   * Express Response 对象
+   * Response object of express
+   * @see https://expressjs.com/en/4x/api.html#res
    */
   response: HttpResponse
 
   /**
-   * WebSocket 对象
+   * WebSocket object
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket
    */
   socket?: WebSocket
 }
