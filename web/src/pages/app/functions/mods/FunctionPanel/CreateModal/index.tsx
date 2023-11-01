@@ -126,7 +126,7 @@ const CreateModal = (props: {
       showSuccess(isEdit ? t("update success") : t("create success"));
       onClose();
       reset(defaultValues);
-      navigate(`/app/${currentApp.appid}/function/${res.data.name}`);
+      navigate(`/app/${currentApp.appid}/function/${res.data.name}`, { replace: true });
     }
   };
 

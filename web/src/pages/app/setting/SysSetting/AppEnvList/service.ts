@@ -65,7 +65,6 @@ export const useUpdateEnvironmentMutation = (callback?: () => void) => {
     (params: { name: string; value: string }[]) => EnvironmentVariableControllerUpdateAll(params),
     {
       onSuccess: async () => {
-        useGlobalStore.getState().showSuccess("update environment success");
         await queryClient.invalidateQueries(queryKeys.useEnvironmentQuery);
         callback && callback();
       },

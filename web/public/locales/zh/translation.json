@@ -682,5 +682,15 @@
   "Action": "操作",
   "Byte": "字节",
   "Second": "秒",
-  "Optional": "可选"
+  "Optional": "可选",
+  "KeyCannotBeEmpty": "Key 不能为空",
+  "ValueCannotBeEmpty": "Value 不能为空",
+  "AddENV": "新增环境变量",
+  "LSP": {
+    "InitLanguageServer": "点击以重新连接语言服务器",
+    "LanguageServerClosed": "语言服务器关闭",
+    "LanguageServerError": "语言服务器错误",
+    "InitializingLanguageServer": "正在初始化语言服务"
+  },
+  "KeyAlreadyExists": "key 已经存在"
 }

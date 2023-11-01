@@ -12,6 +12,7 @@ type State = {
   currentRequestId: string | undefined;
   functionCodes: { [key: string]: string };
   isFetchButtonClicked: Boolean;
+  LSPStatus: string;
   getFunctionUrl: () => string;
   setCurrentRequestId: (requestId: string | undefined) => void;
   setAllFunctionList: (functionList: TFunctionNode[]) => void;
@@ -19,6 +20,7 @@ type State = {
   setCurrentFunction: (currentFunction: TFunction | { [key: string]: any }) => void;
   updateFunctionCode: (current: TFunction | { [key: string]: any }, codes: string) => void;
   setIsFetchButtonClicked: () => void;
+  setLSPStatus: (status: string) => void;
 };
 
 const useFunctionStore = create<State>()(
@@ -30,6 +32,7 @@ const useFunctionStore = create<State>()(
       functionCodes: {},
       currentRequestId: undefined,
       isFetchButtonClicked: false,
+      LSPStatus: "closed",
 
       getFunctionUrl: () => {
         const currentApp = useGlobalStore.getState().currentApp;
@@ -75,6 +78,12 @@ const useFunctionStore = create<State>()(
       setIsFetchButtonClicked: async () => {
         set((state) => {
           state.isFetchButtonClicked = !state.isFetchButtonClicked;
+        });
+      },
+
+      setLSPStatus: async (status) => {
+        set((state) => {
+          state.LSPStatus = status;
         });
       },
     })),

@@ -4,6 +4,7 @@ import { useColorMode } from "@chakra-ui/react";
 import FunctionEditor from "@/components/Editor/FunctionEditor";
 import EmptyBox from "@/components/EmptyBox";
 import Panel from "@/components/Panel";
+import { RUNTIMES_PATH } from "@/constants";
 
 import { useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
@@ -14,7 +15,7 @@ import useCustomSettingStore from "@/pages/customSetting";
 
 function EditorPanel() {
   const store = useFunctionStore((store) => store);
-  const { currentFunction, updateFunctionCode, recentFunctionList } = store;
+  const { currentFunction, updateFunctionCode } = store;
   const { commonSettings } = useCustomSettingStore();
   const { colorMode } = useColorMode();
   const { t } = useTranslation();
@@ -24,7 +25,7 @@ function EditorPanel() {
   return (
     <Panel className="flex-1 flex-grow !rounded-tl-none px-0">
       {!functionListQuery.isFetching && functionListQuery.data?.data?.length === 0 && (
-        <EmptyBox>
+        <EmptyBox className="mt-24">
           <>
             <div className="flex items-center justify-center">
               <span className="text-[#828289]">{t("NoFunctionYet")}</span>
@@ -35,29 +36,21 @@ function EditorPanel() {
           </>
         </EmptyBox>
       )}
-      {recentFunctionList.length > 0 && currentFunction?.name ? (
-        <FunctionEditor
-          colorMode={colorMode}
-          className="flex-grow"
-          style={{
-            marginLeft: -14,
-            marginRight: -14,
-          }}
-          path={currentFunction?._id || ""}
-          value={functionCache.getCache(currentFunction!._id, currentFunction!.source?.code)}
-          onChange={(value) => {
-            updateFunctionCode(currentFunction, value || "");
-            functionCache.setCache(currentFunction!._id, value || "");
-          }}
-          fontSize={commonSettings.fontSize}
-        />
-      ) : (
-        functionListQuery.data?.data?.length !== 0 && (
-          <EmptyBox>
-            <></>
-          </EmptyBox>
-        )
-      )}
+      <FunctionEditor
+        colorMode={colorMode}
+        className="flex-grow"
+        style={{
+          marginLeft: -14,
+          marginRight: -14,
+        }}
+        path={`${RUNTIMES_PATH}/${currentFunction?.name}.ts`}
+        onChange={(code, pos) => {
+          updateFunctionCode(currentFunction, code || "");
+          functionCache.setCache(currentFunction!._id, code || "");
+          functionCache.setPositionCache(currentFunction!.name, JSON.stringify(pos));
+        }}
+        fontSize={commonSettings.fontSize}
+      />
     </Panel>
   );
 }

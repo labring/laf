@@ -98,3 +98,5 @@ export enum APP_SETTING_KEY {
   DOMAIN = "domain",
   COMMON = "common",
 }
+
+export const RUNTIMES_PATH = "/root/laf/runtimes/nodejs/functions";

@@ -10,6 +10,7 @@ import { ClickToComponent } from "click-to-react-component";
 
 import "@/utils/i18n";
 
+import { performInit } from "./components/Editor/LanguageClient";
 import useAuthStore from "./pages/auth/store";
 import useSiteSettingStore from "./pages/siteSetting";
 import theme from "./chakraTheme";
@@ -67,6 +68,10 @@ function APP() {
     getSiteSettings();
     initProviders();
   }, [getSiteSettings, i18n.language, initProviders]);
+
+  useEffect(() => {
+    performInit(true);
+  }, []);
 
   return (
     <Sentry.ErrorBoundary>

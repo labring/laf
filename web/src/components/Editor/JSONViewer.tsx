@@ -238,6 +238,7 @@ const JSONViewerDarkStyle: any = {
     fontWeight: "bold",
   },
 };
+
 export default function JSONViewer(props: JSONViewerProps) {
   const { code, language = "json", colorMode = COLOR_MODE.light, ...rest } = props;
   const lightTheme = { background: "#fdfdfe" };

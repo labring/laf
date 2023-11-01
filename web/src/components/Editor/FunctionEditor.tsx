@@ -1,114 +1,38 @@
-import { CSSProperties, useEffect, useRef } from "react";
-import { debounce } from "lodash";
+import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+import {
+  RegisteredFileSystemProvider,
+  RegisteredMemoryFile,
+  registerFileSystemOverlay,
+} from "vscode/service-override/files";
+import { Position } from "vscode/vscode/src/vs/editor/common/core/position";
 
-import { COLOR_MODE, Pages } from "@/constants";
+import { COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
 
-import "./userWorker";
+import { createUrl, createWebSocketAndStartClient } from "./LanguageClient";
 
-import { AutoImportTypings } from "./typesResolve";
+import "./theme/index.css";
 
+import { TFunctionNode } from "@/apis/typing";
+import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useFunctionStore from "@/pages/app/functions/store";
 import useGlobalStore from "@/pages/globalStore";
 
-const autoImportTypings = new AutoImportTypings();
-const parseImports = debounce(autoImportTypings.parse, 1500).bind(autoImportTypings);
-
-monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-  target: monaco.languages.typescript.ScriptTarget.ESNext,
-  allowNonTsExtensions: true,
-  moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-  module: monaco.languages.typescript.ModuleKind.CommonJS,
-  /**
-   * This option is required to enable the synthetic default imports.
-   * Support for `import dayjs from 'dayjs'` instead of `import * as dayjs from 'dayjs'`.
-   * This only affects the editor, not the actual compilation.
-   */
-  allowSyntheticDefaultImports: true,
-  noEmit: true,
-  allowJs: false,
-  sourceMap: true,
-  noImplicitAny: false,
-});
-
-monaco?.editor.defineTheme("lafEditorTheme", {
-  base: "vs",
-  inherit: true,
-  rules: [
-    {
-      foreground: "#008189",
-      token: "keyword",
-    },
-  ],
-  colors: {
-    "editorLineNumber.foreground": "#aaa",
-    "editorOverviewRuler.border": "#fff",
-    "editor.lineHighlightBackground": "#F7F8FA",
-    "scrollbarSlider.background": "#E8EAEC",
-    "editorIndentGuide.activeBackground": "#fff",
-    "editorIndentGuide.background": "#eee",
-  },
-});
-
-monaco?.editor.defineTheme("lafEditorThemeDark", {
-  base: "vs-dark",
-  inherit: true,
-  rules: [
-    {
-      foreground: "65737e",
-      token: "punctuation.definition.comment",
-    },
-  ],
-  colors: {
-    // https://github.com/microsoft/monaco-editor/discussions/3838
-    "editor.foreground": "#ffffff",
-    "editor.background": "#202631",
-    "editorIndentGuide.activeBackground": "#fff",
-    "editorIndentGuide.background": "#eee",
-    "editor.selectionBackground": "#101621",
-    "menu.selectionBackground": "#101621",
-    "dropdown.background": "#1a202c",
-    "dropdown.foreground": "#f0f0f0",
-    "dropdown.border": "#fff",
-    "quickInputList.focusBackground": "#1a202c",
-    "editorWidget.background": "#1a202c",
-    "editorWidget.foreground": "#f0f0f0",
-    "editorWidget.border": "#1a202c",
-    "input.background": "#1a202c",
-    "list.hoverBackground": "#2a303c",
-  },
-});
-
-const updateModel = (path: string, value: string, editorRef: any) => {
-  const newModel =
-    monaco.editor.getModel(monaco.Uri.parse(path)) ||
-    monaco.editor.createModel(value, "typescript", monaco.Uri.parse(path));
+export const fileSystemProvider = new RegisteredFileSystemProvider(false);
+registerFileSystemOverlay(1, fileSystemProvider);
+const updateModel = (path: string, editorRef: any) => {
+  const newModel = monaco.editor.getModel(monaco.Uri.file(path));
 
   if (editorRef.current?.getModel() !== newModel) {
     editorRef.current?.setModel(newModel);
-    autoImportTypings.parse(editorRef.current?.getValue() || "");
-  }
-};
-
-const updateFetchModel = (path: string, value: string, editorRef: any) => {
-  const newModel =
-    monaco.editor.getModel(monaco.Uri.parse(path)) ||
-    monaco.editor.createModel(value, "typescript", monaco.Uri.parse(path));
-
-  newModel.setValue(value);
-
-  if (editorRef.current?.getModel() !== newModel) {
-    editorRef.current?.setModel(newModel);
-    autoImportTypings.parse(editorRef.current?.getValue() || "");
   }
 };
 
 function FunctionEditor(props: {
-  value: string;
   className?: string;
   style?: CSSProperties;
-  onChange?: (value: string | undefined) => void;
+  onChange?: (code: string | undefined, pos: Position | undefined) => void;
   path: string;
   height?: string;
   colorMode?: string;
@@ -116,7 +40,6 @@ function FunctionEditor(props: {
   fontSize?: number;
 }) {
   const {
-    value,
     onChange,
     path,
     height = "100%",
@@ -130,20 +53,68 @@ function FunctionEditor(props: {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
-
   const globalStore = useGlobalStore((state) => state);
-  const { isFetchButtonClicked, setIsFetchButtonClicked } = useFunctionStore((state) => state);
+  const { allFunctionList, setLSPStatus, recentFunctionList, currentFunction } = useFunctionStore(
+    (state) => state,
+  );
+  const functionCache = useFunctionCache();
+  const [functionList, setFunctionList] = useState(allFunctionList);
+  const baseUrl = globalStore.currentApp.host;
+  const url = useMemo(() => createUrl(baseUrl, "/_/lsp"), [baseUrl]);
 
   useHotKey(
     DEFAULT_SHORTCUTS.send_request,
     () => {
-      // format
       editorRef.current?.trigger("keyboard", "editor.action.formatDocument", {});
     },
     {
       enabled: globalStore.currentPageId === Pages.function,
     },
   );
+
+  useEffect(() => {
+    const lspWebSocket = createWebSocketAndStartClient(url, globalStore.currentApp.develop_token);
+    setLSPStatus("initializing");
+
+    lspWebSocket.addEventListener("message", (event) => {
+      const message = JSON.parse(event.data);
+      if (message.method === "textDocument/publishDiagnostics") {
+        setLSPStatus("ready");
+        return;
+      }
+    });
+
+    lspWebSocket.addEventListener("error", (error) => {
+      console.log("error", error);
+      setLSPStatus("error");
+      lspWebSocket?.close();
+    });
+
+    window.onbeforeunload = () => {
+      // On page reload/exit, close web socket connection
+      lspWebSocket?.close();
+      setLSPStatus("closed");
+    };
+    return () => {
+      // On component unmount, close web socket connection
+      lspWebSocket?.close();
+      setLSPStatus("closed");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const listener = (event: any) => {
+      if (event?.reason?.message?.includes("Unable to resolve nonexistent file")) {
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("unhandledrejection", listener);
+    return () => {
+      window.removeEventListener("unhandledrejection", listener);
+    };
+  }, []);
 
   useEffect(() => {
     if (monacoEl && !editorRef.current) {
@@ -162,50 +133,78 @@ function FunctionEditor(props: {
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
         fontSize: fontSize,
-        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
+        theme: colorMode === COLOR_MODE.dark ? "lafEditorDarkTheme" : "lafEditorTheme",
+        fontFamily: "Fira Code",
+        fontWeight: "450",
         scrollBeyondLastLine: false,
       });
-
-      updateModel(path, value, editorRef);
-
-      setTimeout(() => {
-        autoImportTypings.loadDefaults();
-      }, 10);
     }
 
-    return () => {};
-  }, [colorMode, path, readOnly, value, fontSize]);
+    allFunctionList.forEach((item: any) => {
+      const uri = monaco.Uri.file(`${RUNTIMES_PATH}/${item.name}.ts`);
 
-  useEffect(() => {
-    if (monacoEl && editorRef.current) {
-      if (isFetchButtonClicked) {
-        updateFetchModel(path, value, editorRef);
-        setIsFetchButtonClicked();
-      } else {
-        updateModel(path, value, editorRef);
+      if (functionList.includes(item)) {
+        if (!monaco.editor.getModel(uri)) {
+          fileSystemProvider.registerFile(new RegisteredMemoryFile(uri, item.source.code));
+          monaco.editor.createModel(
+            functionCache.getCache(item._id, item.source?.code),
+            "typescript",
+            uri,
+          );
+        }
       }
-    }
-  }, [path, value, isFetchButtonClicked, setIsFetchButtonClicked]);
+    });
 
-  useEffect(() => {
-    if (monacoEl && editorRef.current) {
-      editorRef.current.updateOptions({
-        fontSize: fontSize,
-        theme: colorMode === COLOR_MODE.dark ? "lafEditorThemeDark" : "lafEditorTheme",
-      });
-    }
-  }, [colorMode, fontSize]);
+    functionList.forEach((item: TFunctionNode) => {
+      const uri = monaco.Uri.file(`${RUNTIMES_PATH}/${item.name}.ts`);
+
+      if (!allFunctionList.includes(item)) {
+        monaco.editor.getModel(uri)?.dispose();
+      }
+    });
+
+    setFunctionList(allFunctionList);
+    updateModel(path, editorRef);
+  }, [
+    allFunctionList,
+    colorMode,
+    currentFunction?.name,
+    fontSize,
+    functionCache,
+    functionList,
+    path,
+    readOnly,
+    recentFunctionList.length,
+  ]);
 
   // onChange
   useEffect(() => {
     subscriptionRef.current?.dispose();
     if (onChange) {
       subscriptionRef.current = editorRef.current?.onDidChangeModelContent((event) => {
-        onChange(editorRef.current?.getValue());
-        parseImports(editorRef.current?.getValue() || "");
+        onChange(editorRef.current?.getValue(), editorRef.current?.getPosition() || undefined);
       });
     }
   }, [onChange]);
+
+  useEffect(() => {
+    updateModel(path, editorRef);
+    const pos = JSON.parse(functionCache.getPositionCache(path) || "{}");
+    if (pos.lineNumber && pos.column) {
+      editorRef.current?.setPosition(pos);
+      editorRef.current?.revealPositionInCenter(pos);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [path]);
+
+  useEffect(() => {
+    if (monacoEl && editorRef.current) {
+      editorRef.current.updateOptions({
+        fontSize: fontSize,
+        theme: colorMode === COLOR_MODE.dark ? "lafEditorDarkTheme" : "lafEditorTheme",
+      });
+    }
+  }, [colorMode, fontSize]);
 
   return <div style={{ height: height, ...style }} className={className} ref={monacoEl}></div>;
 }

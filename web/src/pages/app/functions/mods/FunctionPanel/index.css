@@ -1,5 +1,5 @@
 .funcList .simplebar-scrollbar::before {
-  background: #DEE0E2;
+  background: #dee0e2;
   width: 4px;
   transform: translateX(100%);
 }

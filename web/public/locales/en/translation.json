@@ -682,5 +682,15 @@
   "Action": "Action",
   "Byte": "byte",
   "Second": "second",
-  "Optional": "optional"
+  "Optional": "optional",
+  "KeyCannotBeEmpty": "Key can't be empty",
+  "ValueCannotBeEmpty": "Value can't be empty",
+  "AddENV": "Add ENV",
+  "LSP": {
+    "InitLanguageServer": "Click to reconnect to language server",
+    "LanguageServerClosed": "Language Server Closed",
+    "LanguageServerError": "Language Server Error",
+    "InitializingLanguageServer": "Initializing Language Server"
+  },
+  "KeyAlreadyExists": "Key already exists"
 }

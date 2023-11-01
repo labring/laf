@@ -1,5 +1,5 @@
 .recentList .simplebar-scrollbar::before {
-  background: #DEE0E2;
+  background: #dee0e2;
   height: 6px;
   transform: translateY(50%);
 }
