@@ -103,22 +103,31 @@ export class LogController {
     const region = await this.regionService.findByAppId(appid)
     const namespaceOfApp = GetApplicationNamespace(region, appid)
     const kc = this.clusterService.loadKubeConfig(region)
-    return new Observable((observer) => {
+    return new Observable<MessageEvent>((subscriber) => {
       const logStream = new PassThrough()
       const logs = new Log(kc)
+      let k8sResponse
 
       const destroyStream = () => {
-        logStream.destroy()
+        if (k8sResponse) {
+          k8sResponse?.destroy()
+        }
+        logStream.removeAllListeners()
+        logStream?.destroy()
       }
+
+      logStream.on('data', (chunk) => {
+        subscriber.next({ data: chunk.toString() } as MessageEvent)
+      })
 
       logStream.on('error', (error) => {
         this.logger.error('stream error', error)
         destroyStream()
-        observer.error(error)
+        subscriber.error(error)
       })
       ;(async () => {
         try {
-          const k8sResponse = await logs.log(
+          k8sResponse = await logs.log(
             namespaceOfApp,
             podName,
             appid,
@@ -130,36 +139,15 @@ export class LogController {
               tailLines: 1000,
             },
           )
-
-          k8sResponse.on('error', (error) => {
-            this.logger.error('k8s log stream error', error)
-            k8sResponse?.destroy()
-            destroyStream()
-            observer.error(error)
-          })
-
-          logStream.on('data', (chunk) => {
-            observer.next({ data: chunk.toString() } as MessageEvent)
-          })
-
-          logStream.on('end', () => {
-            destroyStream()
-            k8sResponse?.destroy()
-            observer.complete()
-          })
         } catch (error) {
           this.logger.error('Failed to get logs', error)
+          subscriber.error(error)
           destroyStream()
-          observer.error(error)
         }
       })()
 
       // Clean up when the client disconnects
-      return {
-        unsubscribe() {
-          destroyStream()
-        },
-      }
+      return () => destroyStream()
     })
   }
 }
