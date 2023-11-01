@@ -49,6 +49,8 @@ export default function DebugPanel(props: { containerRef: any }) {
     allFunctionList,
     setAllFunctionList,
     setCurrentFunction,
+    setCurrentFuncLogs,
+    setCurrentFuncTimeUsage,
   } = useFunctionStore((state: any) => state);
   const updateDebugFunctionMutation = useUpdateDebugFunctionMutation();
   const globalStore = useGlobalStore((state) => state);
@@ -152,6 +154,8 @@ export default function DebugPanel(props: { containerRef: any }) {
         });
 
         setCurrentRequestId(res.headers["request-id"]);
+        setCurrentFuncLogs(res.headers["x-laf-func-logs"]);
+        setCurrentFuncTimeUsage(res.headers["x-laf-func-time-usage"]);
 
         setRunningResData(res.data);
       }
