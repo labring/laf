@@ -1,16 +1,11 @@
+import { FunctionCache, FunctionContext } from '.'
 import Config from '../../config'
-import { FunctionCache } from './cache'
-import { FunctionContext } from './types'
 import { buildSandbox, createScript } from './utils'
 
 export class FunctionModule {
   private static cache: Map<string, any> = new Map()
 
-  static require(
-    name: string,
-    fromModule: string[],
-    functionContext: FunctionContext,
-  ): any {
+  static require(name: string, fromModule: string[]): any {
     if (name === '@/cloud-sdk') {
       return require('@lafjs/cloud')
     } else if (name.startsWith('@/')) {
@@ -28,6 +23,12 @@ export class FunctionModule {
         )
       }
 
+      // build function context
+      const functionContext: FunctionContext = {
+        requestId: '',
+        __function_name: name,
+      }
+
       // build function module
       const data = FunctionCache.get(name)
       const functionModule = FunctionModule.build(
@@ -37,7 +38,7 @@ export class FunctionModule {
       )
 
       // cache module
-      if (Config.ENABLE_MODULE_CACHE) {
+      if (!Config.DISABLE_MODULE_CACHE) {
         FunctionModule.cache.set(name, functionModule)
       }
       return functionModule
@@ -67,11 +68,15 @@ export class FunctionModule {
     FunctionModule.cache.delete(name)
   }
 
+  static deleteAllCache(): void {
+    FunctionModule.cache.clear()
+  }
+
   private static wrap(code: string): string {
     return `
     const require = (name) => {
       fromModule.push(__filename)
-      return requireFunc(name, fromModule, __context__)
+      return requireFunc(name, fromModule)
     }
     const exports = {};
     ${code}

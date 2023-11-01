@@ -287,7 +287,9 @@
     "DomainUpdateSuccess": "Domain Update Success",
     "DomainDeleteSuccess": "Domain Delete Success",
     "CustomApplicationDomain": "Custom Application Domain",
-    "BucketNameisRequired": "Bucket name is required"
+    "BucketNameisRequired": "Bucket name is required",
+    "Fail": "upload failed",
+    "UploadFailTip": "{{number}} files upload failed"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",

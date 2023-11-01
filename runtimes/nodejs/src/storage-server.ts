@@ -9,12 +9,14 @@ import cors from 'cors'
 
 const app = express()
 
-app.use(cors({
-  origin: true,
-  methods: '*',
-  exposedHeaders: '*',
-  credentials: true,
-}))
+app.use(
+  cors({
+    origin: true,
+    methods: '*',
+    exposedHeaders: '*',
+    credentials: true,
+  }),
+)
 
 const tryPath = (bucket: string, path: string) => {
   const testPaths = path.endsWith('/')
