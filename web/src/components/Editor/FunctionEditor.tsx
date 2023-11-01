@@ -9,7 +9,6 @@ import { Position } from "vscode/vscode/src/vs/editor/common/core/position";
 
 import { COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
 
-// import "./theme"
 import { createUrl, createWebSocketAndStartClient } from "./LanguageClient";
 
 import "./theme/index.css";
@@ -57,12 +56,12 @@ function FunctionEditor(props: {
   const globalStore = useGlobalStore((state) => state);
   const { allFunctionList, setLSPStatus, recentFunctionList, currentFunction } = useFunctionStore(
     (state) => state,
-    );
-    const functionCache = useFunctionCache();
-    const [functionList, setFunctionList] = useState(allFunctionList);
-    const hostname = globalStore.currentApp.origin;
-    const url = useMemo(() => createUrl(hostname, 80, "/_/lsp"), [hostname]);
-    
+  );
+  const functionCache = useFunctionCache();
+  const [functionList, setFunctionList] = useState(allFunctionList);
+  const baseUrl = globalStore.currentApp.origin;
+  const url = useMemo(() => createUrl(baseUrl, "/_/lsp"), [baseUrl]);
+
   useHotKey(
     DEFAULT_SHORTCUTS.send_request,
     () => {
