@@ -24,7 +24,9 @@ export class PodController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
   async get(@Param('appid') appid: string) {
-    const podNames: PodNamesDto = await this.podService.getPodNameByAppid(appid)
+    const podNames: PodNamesDto = await this.podService.getPodNameListByAppid(
+      appid,
+    )
     return ResponseUtil.ok(podNames)
   }
 }

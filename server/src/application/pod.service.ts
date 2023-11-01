@@ -5,6 +5,7 @@ import { RegionService } from 'src/region/region.service'
 import { GetApplicationNamespace } from 'src/utils/getter'
 import http from 'http'
 import { PodNamesDto } from './dto/pod.dto'
+import { LABEL_KEY_APP_ID } from 'src/constants'
 
 @Injectable()
 export class PodService {
@@ -14,7 +15,7 @@ export class PodService {
     private readonly regionService: RegionService,
     private readonly cluster: ClusterService,
   ) {}
-  async getPodNameByAppid(appid: string) {
+  async getPodNameListByAppid(appid: string) {
     const region = await this.regionService.findByAppId(appid)
     const namespaceOfApp = GetApplicationNamespace(region, appid)
     const coreV1Api = this.cluster.makeCoreV1Api(region)
@@ -25,7 +26,7 @@ export class PodService {
         undefined,
         undefined,
         undefined,
-        `app=${appid}`,
+        `${LABEL_KEY_APP_ID}=${appid}`,
       )
     const podNames: PodNamesDto = { appid: appid, pods: [] }
     for (const item of res.body.items) {
