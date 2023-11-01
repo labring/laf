@@ -4,7 +4,6 @@ import clsx from "clsx";
 
 import styles from "./index.module.scss";
 
-
 type UploadType = "file" | "folder";
 
 type TFileItem = {
@@ -77,7 +76,7 @@ function FileUpload(props: { onUpload: (files: any) => void; darkMode: boolean }
     });
   };
 
-  function readAllEntries(dirReader:any, entries:any) {
+  function readAllEntries(dirReader: any, entries: any) {
     return new Promise((resolve, reject) => {
       dirReader.readEntries(function (newEntries: any) {
         if (newEntries.length === 0) {
