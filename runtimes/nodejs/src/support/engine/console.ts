@@ -1,48 +1,23 @@
 import * as util from 'util'
-import { FunctionContext } from './types'
-import Config from '../../config'
-import axios from 'axios'
+import dayjs from 'dayjs'
 
-export class FunctionConsole {
-  ctx: FunctionContext
+export class Console {
+  functionName: string
 
-  static write(message: string, ctx: FunctionContext) {
-    if (!Config.LOG_SERVER_URL || !Config.LOG_SERVER_TOKEN) return
-
-    const doc = {
-      request_id: ctx.requestId || '',
-      func: ctx.__function_name,
-      is_required: ctx.__is_required || false,
-      data: message,
-      created_at: new Date(),
-    }
-
-    axios.post(
-      `${Config.LOG_SERVER_URL}/function/log`,
-      {
-        appid: Config.APPID,
-        log: doc,
-      },
-      {
-        headers: {
-          'x-token': Config.LOG_SERVER_TOKEN,
-        },
-      },
-    )
+  constructor(functionName: string) {
+    this.functionName = functionName
   }
 
-  constructor(ctx: FunctionContext) {
-    this.ctx = ctx
-  }
-
-  private _log(...params: any[]) {
+  _log(...params: any[]): void {
+    const now = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')
     const content = params
       .map((param) => {
-        return util.inspect(param, { depth: 30 })
+        return util.inspect(param, { depth: 1 })
       })
       .join(' ')
-
-    FunctionConsole.write(content, this.ctx)
+    
+    const data = `[${now}] [${this.functionName}] ${content}`
+    console.log(data)
   }
 
   debug(...params: any[]) {
@@ -60,8 +35,29 @@ export class FunctionConsole {
   warn(...params: any[]) {
     this._log(...params)
   }
+}
 
-  error(...params: any[]) {
-    this._log(...params)
+export class DebugConsole extends Console {
+  constructor(functionName: string) {
+    super(functionName)
+  }
+
+  private _logs: string[] = []
+
+  _log(...params: any[]): void {
+    const now = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')
+    const content = params
+      .map((param) => {
+        return util.inspect(param, { depth: 1 })
+      })
+      .join(' ')
+
+    const data = `[${now}] [${this.functionName}] ${content}`
+    this._logs.push(data)
+    console.log(data)
+  }
+
+  getLogs() {
+    return JSON.stringify(this._logs)
   }
 }
