@@ -287,7 +287,9 @@
     "DomainUpdateSuccess": "域名修改成功",
     "DomainDeleteSuccess": "域名删除成功",
     "CustomApplicationDomain": "自定义应用域名",
-    "BucketNameisRequired": "请输入 Bucket 名称"
+    "BucketNameisRequired": "请输入 Bucket 名称",
+    "Fail": "上传失败",
+    "UploadFailTip": "{{number}} 个文件上传失败"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
@@ -483,7 +485,8 @@
       "item2_5": "文档",
       "support": "支持",
       "item3_1": "问题反馈",
-      "item3_2": "开发者社区"
+      "item3_2": "开发者社区",
+      "item3_3": "关于我们"
     }
   },
   "ChatGPT example": "ChatGPT 示例",

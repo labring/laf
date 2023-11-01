@@ -1,4 +1,4 @@
-import { FunctionConsole } from './console'
+import { Console } from './console'
 import { FunctionModule } from './module'
 import { FunctionContext, RuntimeContext } from './types'
 import * as vm from 'vm'
@@ -35,9 +35,8 @@ export function createScript(
 export function buildSandbox(
   functionContext: FunctionContext,
   fromModule: string[],
+  debugConsole: any = null,
 ): RuntimeContext {
-  const fconsole = new FunctionConsole(functionContext)
-
   const _module = {
     exports: {},
   }
@@ -46,12 +45,19 @@ export function buildSandbox(
     fromModule = []
   }
 
+  let fConsole = null
+  if (debugConsole) {
+    fConsole = debugConsole
+  } else {
+    fConsole = new Console(functionContext.__function_name)
+  }
+
   const sandbox = {
     __context__: functionContext,
     __filename: functionContext.__function_name,
     module: _module,
     exports: _module.exports,
-    console: fconsole,
+    console: fConsole,
     requireFunc: FunctionModule.require,
     Buffer: Buffer,
     setImmediate: setImmediate,
