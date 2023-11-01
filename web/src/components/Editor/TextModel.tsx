@@ -28,23 +28,25 @@ StandaloneCodeEditorService.prototype.doOpenEditor = function (
 
   editor.setModel(model);
 
-  const functionName = model.uri.path.match(/\/functions\/([^\.]+)\.ts/)[1];
+  const functionName = model.uri.path.match(/\/functions\/([^.]+)\.ts/)[1];
   const allFunctionList = useFunctionStore.getState().allFunctionList;
   const recentFunctionList = useFunctionStore.getState().recentFunctionList;
   const currentFunction = allFunctionList.find((item) => item.name === functionName);
+  
   let newRecentFunctionList = [];
+  
   if (recentFunctionList.find((item) => item.name === functionName)) {
     newRecentFunctionList = recentFunctionList;
   } else {
     newRecentFunctionList = [...recentFunctionList, currentFunction!];
   }
+  
   useFunctionStore.setState({
     recentFunctionList: newRecentFunctionList as any,
     currentFunction: currentFunction,
   });
-  const newUrl = `${window.location.origin}/app/${
-    useGlobalStore.getState().currentApp.appid
-  }/function/${functionName}`;
+
+  const newUrl = `${window.location.origin}/app/${useGlobalStore.getState().currentApp.appid}/function/${functionName}`;
   window.history.replaceState({}, "", newUrl);
 
   let selection = input.options ? input.options.selection : null;

@@ -7,14 +7,12 @@ import { createUrl, createWebSocketAndStartClient } from "@/components/Editor/La
 import useFunctionStore from "@/pages/app/functions/store";
 import useGlobalStore from "@/pages/globalStore";
 export default function LSPBar() {
-  const hostname = "scm3dt.100.66.76.85.nip.io";
-  const lspPath = "/_/lsp";
-  const port = 80;
-  const url = useMemo(() => createUrl(hostname, port, lspPath), [hostname, port, lspPath]);
   const { t } = useTranslation();
   const { LSPStatus, setLSPStatus } = useFunctionStore();
   const { currentApp } = useGlobalStore();
-
+  const hostname = currentApp.origin;
+  const url = useMemo(() => createUrl(hostname, 80, "/_/lsp"), [hostname]);
+  
   return (
     <div>
       {LSPStatus === "ready" && null}

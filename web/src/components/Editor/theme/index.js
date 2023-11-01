@@ -1,12 +1,12 @@
 import { registerExtension } from "vscode/extensions";
 
 var manifest = {
-  name: "theme-append",
-  displayName: "Default Themes",
-  description: "The default Visual Studio light and dark themes",
+  name: "theme-laf",
+  displayName: "Laf Themes",
+  description: "The laf function editor themes.",
   categories: ["Themes"],
   version: "1.0.0",
-  publisher: "vscode",
+  publisher: "laf team",
   license: "MIT",
   engines: { vscode: "*" },
   contributes: {

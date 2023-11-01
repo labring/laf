@@ -162,7 +162,7 @@ const MonacoEditor = (props: {
             inherit: true,
             rules: [
               {
-                foreground: "65737e",
+                foreground: "#65737e",
                 token: "punctuation.definition.comment",
               },
             ],

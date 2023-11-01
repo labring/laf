@@ -314,12 +314,6 @@ export default function FunctionList() {
                         const res = await deleteFunctionMutation.mutateAsync(item);
                         if (!res.error) {
                           showSuccess(t("DeleteSuccess"));
-
-                          // const nextFunction = recentFunctionList[0].name === currentFunction?.name ? recentFunctionList[1] : recentFunctionList[0] || allFunctionList[0] || {};
-                          // setCurrentFunction(nextFunction);
-                          // if (nextFunction.name) {
-                          //   navigate(`/app/${currentApp?.appid}/${Pages.function}/${nextFunction?.name}`, {replace: true})
-                          // }
                         }
                       }}
                       headerText={String(t("Delete"))}
