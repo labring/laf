@@ -682,5 +682,10 @@
   "Action": "Action",
   "Byte": "byte",
   "Second": "second",
-  "Optional": "optional"
+  "Optional": "optional",
+  "Logs": {
+    "PodLogs": "Instance Logs",
+    "Export": "Export",
+    "logs": "Logs"
+  }
 }

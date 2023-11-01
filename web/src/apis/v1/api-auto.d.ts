@@ -293,12 +293,11 @@ declare namespace Definitions {
 
   export type GithubSigninDto = {
     code?: string;
-    state?: string;
   };
 
   export type GithubBind = {
     token?: string /* temporary token signed for github bindings */;
-    register?: boolean /* Is a newly registered use */;
+    isRegister?: boolean /* Is a newly registered use */;
   };
 
   export type UserWithProfile = {
@@ -333,14 +332,14 @@ declare namespace Definitions {
     username?: string /* username */;
   };
 
+  export type DeleteDependencyDto = {
+    name?: string;
+  };
+
   export type CreateTriggerDto = {
     desc?: string;
     cron?: string;
     target?: string;
-  };
-
-  export type DeleteDependencyDto = {
-    name?: string;
   };
 
   export type CalculatePriceDto = {
@@ -449,7 +448,6 @@ declare namespace Definitions {
     _id?: string;
     name?: string;
     displayName?: string;
-    tls?: boolean;
     state?: string;
     createdAt?: string;
     updatedAt?: string;
@@ -728,6 +726,14 @@ declare namespace Paths {
   }
 
   namespace EnvironmentVariableControllerDelete {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace PodControllerGet {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -1207,31 +1213,15 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace TriggerControllerCreate {
-    export type QueryParameters = any;
-
-    export type BodyParameters = Definitions.CreateTriggerDto;
-
-    export type Responses = any;
-  }
-
-  namespace TriggerControllerFindAll {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
-  namespace TriggerControllerRemove {
-    export type QueryParameters = any;
-
-    export type BodyParameters = any;
-
-    export type Responses = any;
-  }
-
   namespace LogControllerGetLogs {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace LogControllerStreamLogs {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -1267,6 +1257,30 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.DeleteDependencyDto;
+
+    export type Responses = any;
+  }
+
+  namespace TriggerControllerCreate {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.CreateTriggerDto;
+
+    export type Responses = any;
+  }
+
+  namespace TriggerControllerFindAll {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace TriggerControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
 
     export type Responses = any;
   }

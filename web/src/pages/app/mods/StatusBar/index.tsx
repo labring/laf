@@ -3,11 +3,13 @@ import { HStack, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import ColorModeSwitch from "@/components/ColorModeSwitch";
+import { TextIcon } from "@/components/CommonIcon";
 import LanguageSwitch from "@/components/LanguageSwitch";
 import Panel from "@/components/Panel";
 
 import Icons from "../SideBar/Icons";
 
+import LogsModal from "./LogsModal";
 import MonitorBar from "./MonitorBar";
 
 import SysSetting from "@/pages/app/setting/SysSetting";
@@ -46,6 +48,16 @@ function StatusBar() {
         />
       </HStack>
       <HStack spacing={4}>
+        <LogsModal>
+          <div
+            className={clsx("flex cursor-pointer space-x-1", darkMode ? "" : "text-grayModern-600")}
+          >
+            <span className="flex items-center">
+              <TextIcon />
+            </span>
+            <span>{t("Logs.logs")}</span>
+          </div>
+        </LogsModal>
         <MonitorBar />
         <div className={clsx("mt-1")}>
           <CreateAppModal application={currentApp as any} isCurrentApp type="change">
