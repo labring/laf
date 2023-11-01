@@ -103,7 +103,7 @@ export class CloudFunction {
     const wrapped = `
       const require = (module) => {
         fromModule.push(__filename)
-        return requireFunc(module, fromModule)
+        return requireFunc(module, fromModule, __filename)
       }
       ${code}; 
       const __main__ = exports.main || exports.default
@@ -123,7 +123,7 @@ export class CloudFunction {
     const wrapped = `
       const require = (module) => {
         fromModule.push(__filename)
-        return requireFunc(module, fromModule)
+        return requireFunc(module, fromModule, __filename)
       }
 
       function __next__() {

@@ -1,4 +1,3 @@
-import { FunctionCache, FunctionContext } from '.'
 import Config from '../../config'
 import path from 'path'
 import { FunctionCache } from './cache'
@@ -9,7 +8,7 @@ import { buildSandbox, createScript } from './utils'
 export class FunctionModule {
   private static cache: Map<string, any> = new Map()
 
-  static require(name: string, fromModule: string[]): any {
+  static require(name: string, fromModule: string[], filename: string): any {
     if (name === '@/cloud-sdk') {
       return require('@lafjs/cloud')
     } else if (
@@ -20,7 +19,7 @@ export class FunctionModule {
       if (!name.startsWith('@/')) {
         const dirname = '/'
         const filePath = path.join(
-          path.dirname(dirname + functionContext.__function_name),
+          path.dirname(dirname + filename),
           name,
         )
         name = filePath.slice(dirname.length)
@@ -93,7 +92,7 @@ export class FunctionModule {
     return `
     const require = (name) => {
       fromModule.push(__filename)
-      return requireFunc(name, fromModule)
+      return requireFunc(name, fromModule, __filename)
     }
     const exports = {};
     ${code}
