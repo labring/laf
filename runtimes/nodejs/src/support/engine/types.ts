@@ -41,7 +41,6 @@ export interface FunctionContext {
   headers?: IncomingHttpHeaders
   query?: any
   body?: any
-  params?: any
   /**
    * @deprecated use user instead
    */

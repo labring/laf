@@ -36,7 +36,7 @@ export appid=your-app-id
 telepresence intercept $appid -n laf-runtime -p 8000:8000 -e $(pwd)/.env
 
 # after intercept command, you can use following command to check if intercept active
-telepresence list -n $appid
+telepresence list -n laf-runtime
 
 # Start local service first, required nodejs version >= 18.0.0
 npm install
