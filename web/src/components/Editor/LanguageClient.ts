@@ -1,6 +1,7 @@
 import getConfigurationServiceOverride from "@codingame/monaco-vscode-configuration-service-override";
 import getTextmateServiceOverride from "@codingame/monaco-vscode-textmate-service-override";
 import getThemeServiceOverride from "@codingame/monaco-vscode-theme-service-override";
+import { languages } from "monaco-editor";
 import { initServices, MonacoLanguageClient } from "monaco-languageclient";
 import { Uri } from "vscode";
 import { CloseAction, ErrorAction, MessageTransports } from "vscode-languageclient";
@@ -35,13 +36,12 @@ export const createLanguageClient = (transports: MessageTransports): MonacoLangu
 };
 
 export const createUrl = (
-  hostname: string,
-  port: number,
+  baseUrl: string,
   path: string,
-  secure: boolean = window.isSecureContext
+  secure: boolean = window.isSecureContext,
 ): string => {
   const protocol = secure ? "wss" : "ws";
-  const url = new URL(`${protocol}://${hostname}:${port}${path}`);
+  const url = new URL(`${protocol}://${baseUrl}${path}`);
   return url.toString();
 };
 
@@ -70,7 +70,13 @@ export const performInit = async (vscodeApiInit: boolean) => {
         ...getTextmateServiceOverride(),
         ...getConfigurationServiceOverride(Uri.file(RUNTIMES_PATH)),
       },
-      // debugLogging: true,
+    });
+
+    languages.register({
+      id: "typescript",
+      extensions: [".ts", ".tsx"],
+      aliases: ["typescript", "javascript"],
+      mimetypes: ["text/typescript", "text/javascript"],
     });
   }
 };
