@@ -176,6 +176,7 @@ async function invokeDebug(
 
     // set logs to response header
     ctx.response.set('x-laf-func-logs', debugConsole.getLogs())
+    ctx.response.set('x-laf-func-time-usage', result.time_usage.toString())
 
     if (result.error) {
       logger.error(requestId, `debug function ${funcName} error: `, result)

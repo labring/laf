@@ -6,6 +6,7 @@ import { CLOUD_FUNCTION_COLLECTION } from '../../constants'
 import { InitHook } from '../init-hook'
 import { DatabaseChangeStream } from '../database-change-stream'
 import { FunctionModule } from './module'
+import { ChangeStreamDocument } from 'mongodb'
 
 export class FunctionCache {
   private static cache: Map<string, ICloudFunctionData> = new Map()
@@ -36,7 +37,7 @@ export class FunctionCache {
    * @param change
    * @returns
    */
-  private static async streamChange(change): Promise<void> {
+  private static async streamChange(change: ChangeStreamDocument<ICloudFunctionData>): Promise<void> {
     if (change.operationType === 'insert') {
       const func = await DatabaseAgent.db
         .collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)

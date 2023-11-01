@@ -9,13 +9,15 @@ export class Console {
   }
 
   _log(...params: any[]): void {
-    const now = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS Z')
+    const now = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')
     const content = params
       .map((param) => {
-        return util.inspect(param, { depth: 30 })
+        return util.inspect(param, { depth: 1 })
       })
       .join(' ')
-    console.log(now + ' ' + this.functionName + ' ' + content)
+    
+    const data = `[${now}] [${this.functionName}] ${content}`
+    console.log(data)
   }
 
   debug(...params: any[]) {
@@ -43,15 +45,16 @@ export class DebugConsole extends Console {
   private _logs: string[] = []
 
   _log(...params: any[]): void {
-    const now = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS Z')
+    const now = dayjs().format('YYYY-MM-DD HH:mm:ss.SSS')
     const content = params
       .map((param) => {
-        return util.inspect(param, { depth: 30 })
+        return util.inspect(param, { depth: 1 })
       })
       .join(' ')
 
-    this._logs.push(now + ' ' + this.functionName + ' ' + content)
-    console.log(now + ' ' + this.functionName + ' ' + content)
+    const data = `[${now}] [${this.functionName}] ${content}`
+    this._logs.push(data)
+    console.log(data)
   }
 
   getLogs() {

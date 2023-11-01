@@ -38,7 +38,7 @@ export class FunctionModule {
       )
 
       // cache module
-      if (Config.ENABLE_MODULE_CACHE) {
+      if (Config.DISABLE_MODULE_CACHE) {
         FunctionModule.cache.set(name, functionModule)
       }
       return functionModule

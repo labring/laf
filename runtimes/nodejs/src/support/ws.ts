@@ -1,11 +1,9 @@
 import { IncomingMessage } from 'http'
 import { WebSocket, WebSocketServer } from 'ws'
 import {
-  CLOUD_FUNCTION_COLLECTION,
-  WEBSOCKET_FUNCTION_NAME,
+   WEBSOCKET_FUNCTION_NAME,
 } from '../constants'
-import { DatabaseAgent } from '../db'
-import { CloudFunction, ICloudFunctionData } from './engine'
+import { FunctionCache } from './engine'
 import { logger } from './logger'
 import { generateUUID } from './utils'
 
@@ -70,37 +68,21 @@ async function handleWebSocketEvent(
   socket: WebSocket,
   request?: IncomingMessage,
 ) {
-  const func = await getWebsocketCloudFunction()
-  if (!func) {
-    logger.error('WebSocket function not found')
-    return 'WebSocket handler not found'
-  }
 
   const param: any = {
     params: data,
     method: event,
     requestId: generateUUID(),
     socket,
-    __function_name: func.name,
+    __function_name: WEBSOCKET_FUNCTION_NAME,
     headers: request?.headers,
   }
 
-  const cf = new CloudFunction(func)
+  // const cf = new CloudFunction(func)
+  const cf = FunctionCache.getEngine(WEBSOCKET_FUNCTION_NAME)
+  if (!cf) {
+    logger.error('WebSocket function not found')
+    return 'WebSocket handler not found'
+  }
   await cf.execute(param)
-}
-
-/**
- * Get websocket handler cloud function
- * @returns
- */
-async function getWebsocketCloudFunction() {
-  const db = DatabaseAgent.db
-
-  const doc = await db
-    .collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
-    .findOne({
-      name: WEBSOCKET_FUNCTION_NAME,
-    })
-
-  return doc
 }

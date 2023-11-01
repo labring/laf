@@ -87,8 +87,9 @@ export class RuntimeGatewayService {
           // k8s nginx ingress annotations
           // websocket is enabled by default in k8s nginx ingress
           'nginx.ingress.kubernetes.io/proxy-body-size': '0',
+          'nginx.ingress.kubernetes.io/proxy-buffer-size': '8192k',
           'nginx.ingress.kubernetes.io/server-snippet':
-            'client_header_buffer_size 4096k;\nlarge_client_header_buffers 8 512k;\n',
+            'client_header_buffer_size 8192k;\nlarge_client_header_buffers 8 512k;\n',
         },
       },
       spec: { ingressClassName, rules, tls },
