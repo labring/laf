@@ -10,7 +10,7 @@ export default function LSPBar() {
   const { t } = useTranslation();
   const { LSPStatus, setLSPStatus } = useFunctionStore();
   const { currentApp } = useGlobalStore();
-  const baseUrl = currentApp.origin;
+  const baseUrl = currentApp.host;
   const url = useMemo(() => createUrl(baseUrl, "/_/lsp"), [baseUrl]);
 
   return (

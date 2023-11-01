@@ -22,9 +22,9 @@ const EditableTable = function (props: {
   column: TColumnItem[];
   tableData: any[] | undefined;
   configuration: TConfiguration;
-  onEdit: (data: any) => Promise<any>;
-  onDelete: (data: any) => Promise<any>;
-  onCreate: (data: any) => Promise<any>;
+  onEdit: (data: any) => any;
+  onDelete: (data: any) => any;
+  onCreate: (data: any) => any;
 }) {
   const { column, tableData, configuration, onEdit, onCreate, onDelete } = props;
   const [columnList, setColumnList] = useState<TColumnItem[]>(column);

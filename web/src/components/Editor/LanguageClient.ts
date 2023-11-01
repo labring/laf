@@ -38,7 +38,7 @@ export const createLanguageClient = (transports: MessageTransports): MonacoLangu
 export const createUrl = (
   baseUrl: string,
   path: string,
-  secure: boolean = window.isSecureContext,
+  secure: boolean = window.location.protocol === "https:",
 ): string => {
   const protocol = secure ? "wss" : "ws";
   const url = new URL(`${protocol}://${baseUrl}${path}`);
