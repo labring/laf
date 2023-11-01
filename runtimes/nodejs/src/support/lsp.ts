@@ -104,7 +104,7 @@ export class LspWebSocket {
         // @ts-ignore
         if (message?.error?.code === -32601) {
           // suppress error messages that cause lsp server to shut down
-          return
+          return '' as any
         }
 
         if (lsp.Message.isRequest(message)) {
