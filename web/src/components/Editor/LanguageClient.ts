@@ -1,10 +1,8 @@
 import getConfigurationServiceOverride from "@codingame/monaco-vscode-configuration-service-override";
 import getTextmateServiceOverride from "@codingame/monaco-vscode-textmate-service-override";
 import getThemeServiceOverride from "@codingame/monaco-vscode-theme-service-override";
-import { editor, languages } from "monaco-editor";
 import { initServices, MonacoLanguageClient } from "monaco-languageclient";
 import { Uri } from "vscode";
-import { IReference, ITextFileEditorModel } from "vscode/monaco";
 import { CloseAction, ErrorAction, MessageTransports } from "vscode-languageclient";
 import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode-ws-jsonrpc";
 
@@ -15,7 +13,7 @@ import "./TextModel";
 
 export const createLanguageClient = (transports: MessageTransports): MonacoLanguageClient => {
   return new MonacoLanguageClient({
-    name: "Sample Language Client",
+    name: "Laf Language Client",
     clientOptions: {
       documentSelector: ["typescript"],
       errorHandler: {
@@ -28,7 +26,6 @@ export const createLanguageClient = (transports: MessageTransports): MonacoLangu
         index: 0,
       },
     },
-    // create a language client connection from the JSON RPC connection on demand
     connectionProvider: {
       get: () => {
         return Promise.resolve(transports);
@@ -41,17 +38,16 @@ export const createUrl = (
   hostname: string,
   port: number,
   path: string,
-  secure?: boolean,
+  secure: boolean = window.isSecureContext
 ): string => {
   const protocol = secure ? "wss" : "ws";
   const url = new URL(`${protocol}://${hostname}:${port}${path}`);
-
   return url.toString();
 };
 
 export const createWebSocketAndStartClient = (url: string, token: string) => {
   const webSocket = new WebSocket(url, [token]);
-  webSocket.onopen = async () => {
+  webSocket.onopen = () => {
     webSocket.send(token);
     const socket = toSocket(webSocket);
     const reader = new WebSocketMessageReader(socket);
@@ -60,18 +56,12 @@ export const createWebSocketAndStartClient = (url: string, token: string) => {
       reader,
       writer,
     });
-    await languageClient.start();
+    languageClient.start();
     reader.onClose(() => languageClient?.stop());
   };
   return webSocket;
 };
 
-export type ExampleJsonEditor = {
-  languageId: string;
-  editor: editor.IStandaloneCodeEditor;
-  uri: Uri;
-  modelRef: IReference<ITextFileEditorModel>;
-};
 export const performInit = async (vscodeApiInit: boolean) => {
   if (vscodeApiInit === true) {
     await initServices({
@@ -81,13 +71,6 @@ export const performInit = async (vscodeApiInit: boolean) => {
         ...getConfigurationServiceOverride(Uri.file(RUNTIMES_PATH)),
       },
       // debugLogging: true,
-    });
-
-    languages.register({
-      id: "typescript",
-      extensions: [".ts", ".tsx"],
-      aliases: ["typescript", "javascript"],
-      mimetypes: ["text/typescript", "text/javascript"],
     });
   }
 };

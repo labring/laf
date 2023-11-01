@@ -9,13 +9,12 @@ import { Position } from "vscode/vscode/src/vs/editor/common/core/position";
 
 import { COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
 
-import "./userWorker";
-
 // import "./theme"
 import { createUrl, createWebSocketAndStartClient } from "./LanguageClient";
 
 import "./theme/index.css";
 
+import { TFunctionNode } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useFunctionStore from "@/pages/app/functions/store";
@@ -55,17 +54,15 @@ function FunctionEditor(props: {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
-  const hostname = "scm3dt.100.66.76.85.nip.io";
-  const lspPath = "/_/lsp";
-  const port = 80;
-  const url = useMemo(() => createUrl(hostname, port, lspPath), [hostname, port, lspPath]);
   const globalStore = useGlobalStore((state) => state);
   const { allFunctionList, setLSPStatus, recentFunctionList, currentFunction } = useFunctionStore(
     (state) => state,
-  );
-  const functionCache = useFunctionCache();
-  const [functionList, setFunctionList] = useState(allFunctionList);
-
+    );
+    const functionCache = useFunctionCache();
+    const [functionList, setFunctionList] = useState(allFunctionList);
+    const hostname = globalStore.currentApp.origin;
+    const url = useMemo(() => createUrl(hostname, 80, "/_/lsp"), [hostname]);
+    
   useHotKey(
     DEFAULT_SHORTCUTS.send_request,
     () => {
@@ -115,36 +112,33 @@ function FunctionEditor(props: {
     return () => {
       window.removeEventListener("unhandledrejection", listener);
     };
-  });
+  }, []);
 
   useEffect(() => {
     if (monacoEl && !editorRef.current) {
-      const start = async () => {
-        editorRef.current = monaco.editor.create(monacoEl.current!, {
-          minimap: {
-            enabled: false,
-          },
-          readOnly: readOnly,
-          language: "typescript",
-          automaticLayout: true,
-          scrollbar: {
-            verticalScrollbarSize: 4,
-            horizontalScrollbarSize: 8,
-          },
-          formatOnPaste: true,
-          overviewRulerLanes: 0,
-          lineNumbersMinChars: 4,
-          fontSize: fontSize,
-          theme: colorMode === COLOR_MODE.dark ? "lafEditorDarkTheme" : "lafEditorTheme",
-          fontFamily: "Fira Code",
-          fontWeight: "450",
-          scrollBeyondLastLine: false,
-        });
-      };
-      start();
+      editorRef.current = monaco.editor.create(monacoEl.current!, {
+        minimap: {
+          enabled: false,
+        },
+        readOnly: readOnly,
+        language: "typescript",
+        automaticLayout: true,
+        scrollbar: {
+          verticalScrollbarSize: 4,
+          horizontalScrollbarSize: 8,
+        },
+        formatOnPaste: true,
+        overviewRulerLanes: 0,
+        lineNumbersMinChars: 4,
+        fontSize: fontSize,
+        theme: colorMode === COLOR_MODE.dark ? "lafEditorDarkTheme" : "lafEditorTheme",
+        fontFamily: "Fira Code",
+        fontWeight: "450",
+        scrollBeyondLastLine: false,
+      });
     }
 
-    allFunctionList.forEach(async (item: any) => {
+    allFunctionList.forEach((item: any) => {
       const uri = monaco.Uri.file(`${RUNTIMES_PATH}/${item.name}.ts`);
 
       if (functionList.includes(item)) {
@@ -159,7 +153,7 @@ function FunctionEditor(props: {
       }
     });
 
-    functionList.forEach(async (item: any) => {
+    functionList.forEach((item: TFunctionNode) => {
       const uri = monaco.Uri.file(`${RUNTIMES_PATH}/${item.name}.ts`);
 
       if (!allFunctionList.includes(item)) {

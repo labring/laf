@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { Button } from "@chakra-ui/react";
+import clsx from "clsx";
 const TextButton = function (
   props: {
     text: string;
@@ -14,7 +15,7 @@ const TextButton = function (
     <Button
       variant={"link"}
       size="xs"
-      className={className + " !text-[#219BF4]"}
+      className={clsx(className, "!text-[#219BF4]")}
       type={type}
       onClick={() => {
         onClick && onClick();
