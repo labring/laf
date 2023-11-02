@@ -98,7 +98,7 @@ export class ClusterService {
         undefined,
         undefined,
         undefined,
-        this.LABEL_KEY_APP_ID,
+        ClusterService.LABEL_KEY_APP_ID,
       )
     } else {
       res = await coreV1Api.listPodForAllNamespaces(
