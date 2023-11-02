@@ -60,8 +60,10 @@ export default function LogsModal(props: { children: React.ReactElement }) {
       onMessage(text) {
         const regex = /id:\s+\d+|data:/g;
         const resultText = text.replace(regex, "");
+        const regex1 = /^\s*$/gm;
+        const resultText1 = resultText.replace(regex1, "");
         setLogs((pre) => {
-          return pre + resultText;
+          return pre + resultText1;
         });
       },
     });
