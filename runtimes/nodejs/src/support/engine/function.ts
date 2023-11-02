@@ -124,6 +124,7 @@ export class CloudFunction {
       }
 
       function __next__() {
+        const exports = {}
         ${code}
         const __main__ = exports.main || exports.default
         if(!__main__) { throw new Error('FunctionExecError: main function not found') }
