@@ -58,7 +58,6 @@ export class CloudFunction {
       code = this.wrap(this.data.source.compiled)
     }
     const script = createScript(code, {})
-    const fconsole = sandbox.console
     const options: RunningScriptOptions = {
       filename: `CloudFunction.${this.data.name}`,
       timeout: this.timeout,
@@ -83,8 +82,6 @@ export class CloudFunction {
         time_usage,
       }
     } catch (error) {
-      fconsole.log(error.message, error.stack)
-
       const _end_time = process.hrtime.bigint()
       const time_usage = nanosecond2ms(_end_time - _start_time)
 

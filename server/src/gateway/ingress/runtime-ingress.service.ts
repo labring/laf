@@ -86,6 +86,8 @@ export class RuntimeGatewayService {
 
           // k8s nginx ingress annotations
           // websocket is enabled by default in k8s nginx ingress
+          'nginx.ingress.kubernetes.io/proxy-read-timeout': '300',
+          'nginx.ingress.kubernetes.io/proxy-send-timeout': '300',
           'nginx.ingress.kubernetes.io/proxy-body-size': '0',
           'nginx.ingress.kubernetes.io/proxy-buffer-size': '8192k',
           'nginx.ingress.kubernetes.io/server-snippet':
