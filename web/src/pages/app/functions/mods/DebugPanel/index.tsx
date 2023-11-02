@@ -141,7 +141,13 @@ export default function DebugPanel(props: { containerRef: any }) {
 
       if (!compileRes.error) {
         const _funcData = JSON.stringify(compileRes.data);
-        const res = await axios({
+        const axiosInstance = axios.create({
+          validateStatus: function (status) {
+            return status === 500 ? true : (status >= 200 && status <300);
+          }
+        });
+
+        const res = await axiosInstance({
           url: getFunctionUrl(),
           method: runningMethod,
           params: mapValues(keyBy(queryParams, "name"), "value"),
