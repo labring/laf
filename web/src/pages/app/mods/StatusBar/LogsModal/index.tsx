@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Box,
+  Button,
   Center,
   HStack,
   Modal,
@@ -14,10 +14,12 @@ import {
   Spinner,
   useDisclosure,
 } from "@chakra-ui/react";
+import { LogViewer, LogViewerSearch } from "@patternfly/react-log-viewer";
 import { useQuery } from "@tanstack/react-query";
-import { AnsiUp } from "ansi_up";
 
 import { streamFetch } from "@/utils/streamFetch";
+
+import "./index.css";
 
 import { PodControllerGet } from "@/apis/v1/apps";
 import useGlobalStore from "@/pages/globalStore";
@@ -32,8 +34,6 @@ export default function LogsModal(props: { children: React.ReactElement }) {
   const [logs, setLogs] = useState("");
   const [podName, setPodName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const LogBox = useRef<HTMLDivElement>(null);
-  const ansi_up = useRef(new AnsiUp());
 
   const { data: podData } = useQuery(
     ["GetPodQuery"],
@@ -44,58 +44,41 @@ export default function LogsModal(props: { children: React.ReactElement }) {
       onSuccess: (data) => {
         setPodName(data.data.pods[0]);
       },
+      enabled: !!isOpen,
     },
   );
 
-  const watchLogs = useCallback(() => {
-    // podName is empty. pod may  has been deleted
+  const fetchLogs = () => {
     if (!podName) return;
-
     const controller = new AbortController();
-
     streamFetch({
       url: `/v1/apps/${currentApp.appid}/logs/${podName}`,
       abortSignal: controller,
       firstResponse() {
         setIsLoading(false);
-        setTimeout(() => {
-          if (!LogBox.current) return;
-
-          LogBox.current.scrollTo({
-            top: LogBox.current.scrollHeight,
-          });
-        }, 500);
       },
       onMessage(text) {
-        const regex = /id:\s+\d+|data:\s+/g;
+        const regex = /id:\s+\d+|data:/g;
         const resultText = text.replace(regex, "");
+        const regex1 = /^\s*$/gm;
+        const resultText1 = resultText.replace(regex1, "");
         setLogs((pre) => {
-          return pre + ansi_up.current.ansi_to_html(resultText);
+          return pre + resultText1;
         });
-
-        setTimeout(() => {
-          if (!LogBox.current) return;
-          const isBottom =
-            LogBox.current.scrollTop === 0 ||
-            LogBox.current.scrollTop + LogBox.current.clientHeight + 200 >=
-              LogBox.current.scrollHeight;
-
-          isBottom &&
-            LogBox.current.scrollTo({
-              top: LogBox.current.scrollHeight,
-            });
-        }, 100);
       },
     });
     return controller;
-  }, [currentApp.appid, podName]);
+  };
 
   useEffect(() => {
-    const controller = watchLogs();
+    setLogs("");
+    setIsLoading(true);
+    const controller = fetchLogs();
     return () => {
       controller?.abort();
     };
-  }, [watchLogs]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [podName, isOpen]);
 
   return (
     <>
@@ -106,7 +89,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
       })}
       <Modal isOpen={isOpen} onClose={onClose} size={"6xl"}>
         <ModalOverlay />
-        <ModalContent className="h-[90vh]" px={0} m={"auto"}>
+        <ModalContent className="h-[90vh]" m={"auto"}>
           <ModalHeader>
             <ModalCloseButton />
             <HStack>
@@ -128,28 +111,43 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                     ))}
                 </Select>
               </span>
+              <span>
+                <Button
+                  variant={"outline"}
+                  onClick={() => {
+                    setIsLoading(true);
+                    setLogs("");
+                    fetchLogs();
+                  }}
+                >
+                  {t("Refresh")}
+                </Button>
+              </span>
             </HStack>
           </ModalHeader>
-          <ModalBody px={0} py={0}>
+          <ModalBody pr={0} py={0}>
             {isLoading ? (
               <Center className="h-full w-full">
                 <Spinner />
               </Center>
             ) : (
-              <Box flex={"1 0 0"} h={"78vh"} position={"relative"} overflow={"auto"}>
-                <Box
-                  ref={LogBox}
-                  h={"100%"}
-                  whiteSpace={"pre"}
-                  px={4}
-                  overflow={"auto"}
-                  fontSize={"13px"}
-                  fontWeight={400}
-                  lineHeight={"10px"}
-                  fontFamily={"SFMono-Regular,Menlo,Monaco,Consolas,monospace"}
-                  dangerouslySetInnerHTML={{ __html: logs }}
-                ></Box>
-              </Box>
+              <div id="log-viewer-container" className="h-[98%]">
+                <LogViewer
+                  data={logs}
+                  hasLineNumbers={false}
+                  scrollToRow={100000}
+                  height={"100%"}
+                  toolbar={
+                    <div className="absolute right-16 top-4">
+                      <LogViewerSearch
+                        placeholder="Search"
+                        minSearchChars={1}
+                        className="mr-4 h-8 rounded-lg border pl-4 !text-grayModern-400"
+                      />
+                    </div>
+                  }
+                />
+              </div>
             )}
           </ModalBody>
         </ModalContent>

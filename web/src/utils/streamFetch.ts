@@ -23,7 +23,6 @@ export const streamFetch = ({ url, onMessage, firstResponse, abortSignal }: Stre
 
       const read = async () => {
         const { done, value } = await reader?.read();
-        console.log(done, value, "====");
         if (done) {
           if (res.status === 200) {
             resolve(responseText);
