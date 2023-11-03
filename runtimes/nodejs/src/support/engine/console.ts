@@ -1,7 +1,7 @@
 import * as util from 'util'
-import dayjs from 'dayjs'
 import chalk from 'chalk'
 import { padStart} from 'lodash'
+import Config from '../../config'
 
 enum LogLevel {
   DEBUG = 'DEBUG',
@@ -19,7 +19,7 @@ export class Console {
   }
 
   protected _format(level: LogLevel, ...params: any[]): string {
-    const time = chalk.gray(dayjs().format('YYYY-MM-DD HH:mm:ss.SSS'))
+    const time = chalk.gray(new Date().toISOString())
     const levelStr = this._colorize(level, padStart(level, 5, ' '))
     const fn = chalk.blue(`[${this.category}]`)
 
@@ -36,26 +36,31 @@ export class Console {
   }
 
   debug(...params: any[]) {
+    if (!this._shouldLog(LogLevel.DEBUG)) return
     const data = this._format(LogLevel.DEBUG, ...params)
     console.debug(data)
   }
 
   info(...params: any[]) {
+    if (!this._shouldLog(LogLevel.INFO)) return
     const data = this._format(LogLevel.INFO, ...params)
     console.info(data)
   }
 
   log(...params: any[]) {
+    if (!this._shouldLog(LogLevel.INFO)) return
     const data = this._format(LogLevel.INFO, ...params)
     console.log(data)
   }
 
   warn(...params: any[]) {
+    if (!this._shouldLog(LogLevel.WARN)) return
     const data = this._format(LogLevel.WARN, ...params)
     console.warn(data)
   }
 
   error(...params: any[]) {
+    if (!this._shouldLog(LogLevel.ERROR)) return
     const data = this._format(LogLevel.ERROR, ...params)
     console.error(data)
   }
@@ -80,6 +85,18 @@ export class Console {
         break
     }
     return result
+  }
+
+  protected _shouldLog(level: LogLevel) { 
+    const LogLevelValue = {
+      [LogLevel.DEBUG]: 0,
+      [LogLevel.INFO]: 1,
+      [LogLevel.WARN]: 2,
+      [LogLevel.ERROR]: 3,
+    }
+    const configLevel = (Config.LOG_LEVEL || 'debug').toUpperCase()
+    const configLevelValue = LogLevelValue[configLevel] ?? 0
+    return LogLevelValue[level] >= configLevelValue
   }
 
 }

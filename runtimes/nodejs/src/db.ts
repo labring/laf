@@ -5,10 +5,11 @@
  * @Description:
  */
 
-import { MongoAccessor } from 'database-proxy'
+import { LoggerInterface, MongoAccessor } from 'database-proxy'
 import Config from './config'
-import { createLogger, logger } from './support/logger'
 import * as mongodb_uri from 'mongodb-uri'
+import * as log4js from 'log4js'
+import { logger } from './support/logger'
 
 /**
  * Database Management
@@ -38,14 +39,16 @@ export class DatabaseAgent {
     const { database } = mongodb_uri.parse(Config.DB_URI)
     const accessor = new MongoAccessor(database, Config.DB_URI)
 
-    accessor.setLogger(createLogger('accessor', 'warning'))
+    const accessorLogger: any = log4js.getLogger('accessor')
+    accessorLogger.level = 'warning'
+    accessor.setLogger(accessorLogger as LoggerInterface)
     accessor
       .init()
       .then(async () => {
         logger.info('db connected')
       })
       .catch((error) => {
-        logger.error(error)
+        accessorLogger.error(error)
         setTimeout(() => process.exit(101), 0)
       })
 

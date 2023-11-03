@@ -43,7 +43,6 @@ export async function handleDatabaseProxy(req: IRequest, res: Response) {
   try {
     const data = await proxy.execute(params)
     logger.debug(requestId, 'executed query success with params: ', params)
-    logger.trace(requestId, `executed query: `, data)
 
     return res.send({
       code: 0,

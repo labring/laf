@@ -1,9 +1,15 @@
+import { RunningScriptOptions } from 'vm'
 import { FunctionCache, FunctionContext } from '.'
 import Config from '../../config'
 import { buildSandbox, createScript } from './utils'
 
 export class FunctionModule {
   private static cache: Map<string, any> = new Map()
+
+  static get(functionName: string): any {
+    const moduleName = `@/${functionName}`
+    return FunctionModule.require(moduleName, [])
+  }
 
   static require(name: string, fromModule: string[]): any {
     if (name === '@/cloud-sdk') {
@@ -60,8 +66,15 @@ export class FunctionModule {
   ): any {
     code = FunctionModule.wrap(code)
     const sandbox = buildSandbox(functionContext, fromModule)
+    const options: RunningScriptOptions = {
+      filename: `CloudFunction.${functionContext.__function_name}`,
+      displayErrors: true,
+      contextCodeGeneration: {
+        strings: false,
+      },
+    } as any
     const script = createScript(code, {})
-    return script.runInNewContext(sandbox, {})
+    return script.runInNewContext(sandbox, options)
   }
 
   static deleteCache(name: string): void {
