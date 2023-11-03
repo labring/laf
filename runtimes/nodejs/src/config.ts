@@ -37,6 +37,18 @@ export default class Config {
     return (process.env['LOG_LEVEL'] as any) || 'debug'
   }
 
+
+  /**
+   * the object depth limit when logging
+   */
+  static get LOG_DEPTH(): number {
+    const depth = (process.env['LOG_DEPTH'] as any) ?? 1
+    if (depth < 0) {
+      return 0
+    }
+    return depth > 5 ? 5 : depth
+  }
+
   /**
    * the serving port, default is 8000
    */
