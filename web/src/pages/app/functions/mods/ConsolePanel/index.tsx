@@ -9,6 +9,8 @@ import { formatDate } from "@/utils/format";
 
 import useFunctionStore from "../../store";
 
+import useCustomSettingStore from "@/pages/customSetting";
+
 function ConsolePanel() {
   const { t } = useTranslation();
   const { currentRequestId, currentFuncLogs, currentFuncTimeUsage } = useFunctionStore();
@@ -26,13 +28,14 @@ function ConsolePanel() {
       }
     });
   }, [currentFuncLogs]);
-
+  const { commonSettings } = useCustomSettingStore();
+  
   return (
     <Panel className="flex-1">
       <Panel.Header title="Console" pageId="functionPage" panelId="ConsolePanel"></Panel.Header>
       <div
         className="text-sm relative flex flex-col overflow-y-auto px-2 font-mono"
-        style={{ height: "100%" }}
+        style={{ height: "100%", fontSize: commonSettings.fontSize-1 }}
       >
         {logsArray && logsArray[0] !== "" ? (
           <LogViewer
