@@ -22,12 +22,14 @@ import { streamFetch } from "@/utils/streamFetch";
 import "./index.css";
 
 import { PodControllerGet } from "@/apis/v1/apps";
+import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function LogsModal(props: { children: React.ReactElement }) {
   const { children } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { t } = useTranslation();
+  const settingStore = useCustomSettingStore();
 
   const { currentApp } = useGlobalStore((state) => state);
 
@@ -131,7 +133,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                 <Spinner />
               </Center>
             ) : (
-              <div id="log-viewer-container" className="h-[98%]">
+              <div id="log-viewer-container" className="h-[98%]" style={{fontSize: settingStore.commonSettings.fontSize}}>
                 <LogViewer
                   data={logs}
                   hasLineNumbers={false}
