@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
@@ -20,7 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "@/utils/format";
 import { streamFetch } from "@/utils/streamFetch";
 
-import "./index.css";
+import "./index.scss";
 
 import { PodControllerGet } from "@/apis/v1/apps";
 import useCustomSettingStore from "@/pages/customSetting";
@@ -51,7 +51,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
     },
   );
 
-  const fetchLogs = () => {
+  const fetchLogs = useCallback(() => {
     if (!podName) return;
     const controller = new AbortController();
     streamFetch({
@@ -61,40 +61,31 @@ export default function LogsModal(props: { children: React.ReactElement }) {
         setIsLoading(false);
       },
       onMessage(text) {
-        const regex = /id:\s+\d+|data:/g;
-        const resultText = text.replace(regex, "");
-        const regex1 = /^\s*$/gm;
-        const resultText1 = resultText.replace(regex1, "");
+        const regex = /id:\s\d+\s+data:\s(.*)\s+data:/g;
+        const logs = [...text.matchAll(regex)];
         const regexTime = /(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z)/g;
-        let match: RegExpExecArray | null;
-        const matches = new Set<string>();
-        while ((match = regexTime.exec(resultText1)) !== null) {
-          matches.add(match[1]);
-        }
-        let newLogs = resultText1;
-        if (matches.size > 0) {
-          for (const matchStr of matches) {
-            const newTimeStr = formatDate(matchStr, "YYYY-MM-DD HH:mm:ss.SSS");
-            newLogs = newLogs.replaceAll(matchStr, newTimeStr);
-          }
-        }
-        setLogs((pre) => {
-          return pre + newLogs;
-        });
+
+        const logStr = logs
+          .map((log) =>
+            log[1].replace(regexTime, (str) => formatDate(str, "YYYY-MM-DD HH:mm:ss.SSS")),
+          )
+          .join("\n");
+
+        setLogs((pre) => pre + logStr);
       },
     });
     return controller;
-  };
+  }, [podName, currentApp.appid]);
 
   useEffect(() => {
+    if (!isOpen) return;
     setLogs("");
     setIsLoading(true);
     const controller = fetchLogs();
     return () => {
       controller?.abort();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [podName, isOpen]);
+  }, [podName, isOpen, fetchLogs]);
 
   return (
     <>
@@ -149,8 +140,8 @@ export default function LogsModal(props: { children: React.ReactElement }) {
             ) : (
               <div
                 id="log-viewer-container"
-                className="h-[98%]"
-                style={{ fontSize: settingStore.commonSettings.fontSize }}
+                className="text-sm relative flex flex-col overflow-y-auto px-2 font-mono"
+                style={{ height: "98%", fontSize: settingStore.commonSettings.fontSize - 1 }}
               >
                 <LogViewer
                   data={logs}
@@ -158,7 +149,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                   scrollToRow={100000}
                   height={"100%"}
                   toolbar={
-                    <div className="absolute right-16 top-4">
+                    <div className="absolute right-16 top-4 z-10">
                       <LogViewerSearch
                         placeholder="Search"
                         minSearchChars={1}
