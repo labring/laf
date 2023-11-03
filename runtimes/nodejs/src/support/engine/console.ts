@@ -1,6 +1,6 @@
 import * as util from 'util'
 import chalk from 'chalk'
-import { padStart} from 'lodash'
+import { padStart } from 'lodash'
 import Config from '../../config'
 
 enum LogLevel {
@@ -11,7 +11,6 @@ enum LogLevel {
 }
 
 export class Console {
-
   category: string
 
   constructor(category: string) {
@@ -20,15 +19,27 @@ export class Console {
 
   protected _format(level: LogLevel, ...params: any[]): string {
     const time = chalk.gray(new Date().toISOString())
-    const levelStr = this._colorize(level, padStart(level, 5, ' '))
-    const fn = chalk.blue(`[${this.category}]`)
+    let levelStr = padStart(level, 5, ' ')
+    if (level === LogLevel.INFO) {
+      levelStr = chalk.gray(levelStr)
+    } else {
+      levelStr = this._colorize(level, levelStr)
+    }
+
+    const fn = chalk.blueBright(`[${this.category}]`)
 
     let content = params
-    .map((param) => {
-      if (typeof param === 'string') return this._colorize(level, param)
-      return this._colorize(level, util.inspect(param, { depth: 1, colors: true }))
-    })
-    .join(' ')
+      .map((param) => {
+        if (typeof param === 'string') return this._colorize(level, param)
+        if (typeof param === 'object') {
+          return this._colorize(
+            level,
+            util.inspect(param, { depth: Config.LOG_DEPTH, colors: true }),
+          )
+        }
+        return this._colorize(level, param)
+      })
+      .join(' ')
 
     // content = this._colorize(level, content)
     const data = `${time} ${levelStr} ${fn} ${content}`
@@ -69,10 +80,7 @@ export class Console {
     let result = data
     switch (level) {
       case LogLevel.DEBUG:
-        result = chalk.gray(data)
-        break
-      case LogLevel.INFO:
-        result = chalk.green(data)
+        result = chalk.cyan(data)
         break
       case LogLevel.WARN:
         result = chalk.yellow(data)
@@ -87,7 +95,7 @@ export class Console {
     return result
   }
 
-  protected _shouldLog(level: LogLevel) { 
+  protected _shouldLog(level: LogLevel) {
     const LogLevelValue = {
       [LogLevel.DEBUG]: 0,
       [LogLevel.INFO]: 1,
@@ -98,7 +106,6 @@ export class Console {
     const configLevelValue = LogLevelValue[configLevel] ?? 0
     return LogLevelValue[level] >= configLevelValue
   }
-
 }
 
 export class DebugConsole extends Console {

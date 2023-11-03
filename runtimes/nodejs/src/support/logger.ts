@@ -11,4 +11,4 @@ import { Console } from './engine'
 /**
  * The global logger instance
  */
-export const logger = new Console('*runtime*')
+export const logger = new Console('#')
