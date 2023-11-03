@@ -684,7 +684,7 @@
   "Second": "second",
   "Optional": "optional",
   "Logs": {
-    "PodLogs": "Instance Logs",
+    "PodLogs": "App Instance Logs",
     "Export": "Export",
     "logs": "Logs"
   }

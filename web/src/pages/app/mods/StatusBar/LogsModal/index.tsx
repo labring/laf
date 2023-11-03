@@ -17,6 +17,7 @@ import {
 import { LogViewer, LogViewerSearch } from "@patternfly/react-log-viewer";
 import { useQuery } from "@tanstack/react-query";
 
+import { formatDate } from "@/utils/format";
 import { streamFetch } from "@/utils/streamFetch";
 
 import "./index.css";
@@ -64,8 +65,21 @@ export default function LogsModal(props: { children: React.ReactElement }) {
         const resultText = text.replace(regex, "");
         const regex1 = /^\s*$/gm;
         const resultText1 = resultText.replace(regex1, "");
+        const regexTime = /(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z)/g;
+        let match: RegExpExecArray | null;
+        const matches = new Set<string>();
+        while ((match = regexTime.exec(resultText1)) !== null) {
+          matches.add(match[1]);
+        }
+        let newLogs = resultText1;
+        if (matches.size > 0) {
+          for (const matchStr of matches) {
+            const newTimeStr = formatDate(matchStr, "YYYY-MM-DD HH:mm:ss.SSS");
+            newLogs = newLogs.replaceAll(matchStr, newTimeStr);
+          }
+        }
         setLogs((pre) => {
-          return pre + resultText1;
+          return pre + newLogs;
         });
       },
     });
@@ -133,7 +147,11 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                 <Spinner />
               </Center>
             ) : (
-              <div id="log-viewer-container" className="h-[98%]" style={{fontSize: settingStore.commonSettings.fontSize}}>
+              <div
+                id="log-viewer-container"
+                className="h-[98%]"
+                style={{ fontSize: settingStore.commonSettings.fontSize }}
+              >
                 <LogViewer
                   data={logs}
                   hasLineNumbers={false}

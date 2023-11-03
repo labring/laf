@@ -1,5 +1,6 @@
 #log-viewer-container .pf-v5-c-log-viewer__list {
-  line-height: 0.9;
+  line-height: 1;
+  font-family: "Consolas";
 }
 
 .pf-v5-c-text-input-group__icon {

@@ -684,7 +684,7 @@
   "Second": "秒",
   "Optional": "可选",
   "Logs": {
-    "PodLogs": "Instance 日志",
+    "PodLogs": "应用实例日志",
     "Export": "导出",
     "logs": "日志"
   }
