@@ -9,6 +9,10 @@ EXPOSE 9000
 
 WORKDIR /app
 ENV LOG_LEVEL=debug
+
+# enable chalk colors
+ENV FORCE_COLOR=1
+
 COPY . /app
 # COPY --chown=node:node . /app
 RUN mkdir /app/data || true

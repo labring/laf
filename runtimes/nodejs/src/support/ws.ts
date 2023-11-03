@@ -3,9 +3,9 @@ import { WebSocket, WebSocketServer } from 'ws'
 import {
    WEBSOCKET_FUNCTION_NAME,
 } from '../constants'
-import { FunctionCache } from './engine'
 import { logger } from './logger'
 import { generateUUID } from './utils'
+import { FunctionModule } from './engine/module'
 
 export class WebSocketAgent {
   private static _server = null
@@ -78,11 +78,12 @@ async function handleWebSocketEvent(
     headers: request?.headers,
   }
 
-  // const cf = new CloudFunction(func)
-  const cf = FunctionCache.getEngine(WEBSOCKET_FUNCTION_NAME)
-  if (!cf) {
-    logger.error('WebSocket function not found')
-    return 'WebSocket handler not found'
+  const module = FunctionModule.get(WEBSOCKET_FUNCTION_NAME)
+  console.log(module)
+  const handler = module.default || module.main || module
+  if(typeof handler === 'function') {
+    await handler(param)
+  } else {
+    logger.error(`default function not found in ${WEBSOCKET_FUNCTION_NAME}`)
   }
-  await cf.execute(param)
 }

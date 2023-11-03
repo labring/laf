@@ -31,16 +31,10 @@ export default class Config {
   }
 
   /**
-   * the logger level : 'fatal', 'error', 'warning', 'info', 'debug', 'trace'
+   * the logger level : 'debug', 'info', 'warn', 'error'
    */
-  static get LOG_LEVEL():
-    | 'fatal'
-    | 'error'
-    | 'warning'
-    | 'info'
-    | 'debug'
-    | 'trace' {
-    return (process.env['LOG_LEVEL'] as any) ?? (this.isProd ? 'info' : 'debug')
+  static get LOG_LEVEL(): 'debug' | 'info' | 'warn' | 'error' {
+    return (process.env['LOG_LEVEL'] as any) || 'debug'
   }
 
   /**

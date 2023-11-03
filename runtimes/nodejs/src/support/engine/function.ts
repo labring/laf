@@ -15,7 +15,7 @@ export class CloudFunction {
   /**
    * execution timeout
    */
-  timeout = 60 * 1000
+  timeout = 600 * 1000
 
   /**
    * function data struct
