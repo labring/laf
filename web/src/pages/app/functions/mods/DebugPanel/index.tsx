@@ -143,8 +143,8 @@ export default function DebugPanel(props: { containerRef: any }) {
         const _funcData = JSON.stringify(compileRes.data);
         const axiosInstance = axios.create({
           validateStatus: function (status) {
-            return status === 500 ? true : (status >= 200 && status <300);
-          }
+            return status === 500 ? true : status >= 200 && status < 300;
+          },
         });
 
         const res = await axiosInstance({
