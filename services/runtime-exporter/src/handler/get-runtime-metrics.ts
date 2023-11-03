@@ -9,28 +9,28 @@ const RUNTIME_CPU = new prom.Gauge({
   name: 'laf_runtime_cpu',
   help: 'the cpu of the runtime',
   registers: [register],
-  labelNames: ['containerName', 'podName', 'appid'],
+  labelNames: ['container', 'pod', 'appid'],
 })
 
 const RUNTIME_MEMORY = new prom.Gauge({
   name: 'laf_runtime_memory',
   help: 'the memory of the runtime',
   registers: [register],
-  labelNames: ['containerName', 'podName', 'appid'],
+  labelNames: ['container', 'pod', 'appid'],
 })
 
 const RUNTIME_CPU_LIMIT = new prom.Gauge({
   name: 'laf_runtime_cpu_limit',
   help: 'the cpu of the runtime limit',
   registers: [register],
-  labelNames: ['containerName', 'podName', 'appid'],
+  labelNames: ['container', 'pod', 'appid'],
 })
 
 const RUNTIME_MEMORY_LIMIT = new prom.Gauge({
   name: 'laf_runtime_memory_limit',
   help: 'the memory of the runtime limit',
   registers: [register],
-  labelNames: ['containerName', 'podName', 'appid'],
+  labelNames: ['container', 'pod', 'appid'],
 })
 
 function updateMetrics(metric: Metric) {
