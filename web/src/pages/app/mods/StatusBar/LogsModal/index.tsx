@@ -71,7 +71,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
           )
           .join("\n");
 
-        setLogs((pre) => pre + logStr);
+        setLogs((pre) => pre + logStr + "\n");
       },
     });
     return controller;
