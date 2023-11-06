@@ -51,7 +51,9 @@ export class ClusterService {
   static async getRuntimePodMetricsForAllNamespaces(): Promise<Metric[]> {
     const metricsClient = this.getMetricsClient()
     let res: any
+    console.log(ClusterService.NAMESPACE)
     if (ClusterService.NAMESPACE) {
+      console.log(`sss${ClusterService.NAMESPACE}`)
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       res = await metricsClient.metricsApiRequest(
