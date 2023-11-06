@@ -94,7 +94,7 @@ helm install server -n ${NAMESPACE} \
     --set default_region.minio_root_access_key=${MINIO_ROOT_ACCESS_KEY} \
     --set default_region.minio_root_secret_key=${MINIO_ROOT_SECRET_KEY} \
     --set default_region.runtime_domain=${DOMAIN} \
-    --set default_region.website_domain=site.${DOMAIN} \
+    --set default_region.website_domain=${DOMAIN} \
     --set default_region.tls.enabled=false \
     --set default_region.log_server_url=${LOG_SERVER_URL} \
     --set default_region.log_server_secret=${LOG_SERVER_SECRET} \
@@ -108,5 +108,5 @@ sealos run docker.io/labring/sealos-cloud-resources-metering-controller:latest -
 
 ## 7. install laf-web
 helm install web -n ${NAMESPACE} \
-    --set domain=${DOMAIN} \
+    --set domain=www.${DOMAIN} \
     ./charts/laf-web
