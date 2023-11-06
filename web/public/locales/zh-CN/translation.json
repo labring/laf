@@ -230,7 +230,9 @@
     "EditorFont": "编辑器字体",
     "FontSize": "字体大小",
     "FuncListDisplay": "函数列表显示",
-    "ListDisplay": "列表显示"
+    "ListDisplay": "列表显示",
+    "EditorLanguageServer": "编辑器语言服务",
+    "isOpenLanguageServer": "是否开启语言服务"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -697,5 +699,9 @@
     "LanguageServerError": "语言服务器错误",
     "InitializingLanguageServer": "正在初始化语言服务"
   },
-  "KeyAlreadyExists": "key 已经存在"
+  "KeyAlreadyExists": "key 已经存在",
+  "SettingPanal": {
+    "EditorSettings": "编辑器设置",
+    "FunctionListSettings": "函数列表设置"
+  }
 }

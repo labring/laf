@@ -54,7 +54,7 @@ function FunctionEditor(props: {
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
   const globalStore = useGlobalStore((state) => state);
-  const { allFunctionList, setLSPStatus, recentFunctionList, currentFunction } = useFunctionStore(
+  const { allFunctionList, setLSPStatus } = useFunctionStore(
     (state) => state,
   );
   const functionCache = useFunctionCache();
@@ -165,17 +165,8 @@ function FunctionEditor(props: {
 
     setFunctionList(allFunctionList);
     updateModel(path, editorRef);
-  }, [
-    allFunctionList,
-    colorMode,
-    currentFunction?.name,
-    fontSize,
-    functionCache,
-    functionList,
-    path,
-    readOnly,
-    recentFunctionList.length,
-  ]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allFunctionList, path]);
 
   // onChange
   useEffect(() => {

@@ -23,7 +23,7 @@ export default function LSPBar() {
         </div>
       )}
       {LSPStatus === "closed" && (
-        <div className="flex cursor-pointer items-center text-warn-600">
+        <div className="flex items-center text-warn-600">
           <span>{t("LSP.LanguageServerClosed")}</span>
         </div>
       )}

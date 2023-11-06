@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Divider, Select, useColorMode } from "@chakra-ui/react";
+import { Button, Divider, Select, Switch, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
+
+const fontSizes = [12, 13, 14, 15, 16, 17, 18, 19, 20];
 
 export default function CommonSetting() {
   const { setCommonSettings, commonSettings } = useCustomSettingStore();
@@ -24,6 +26,25 @@ export default function CommonSetting() {
   return (
     <div className="ml-12 mr-16">
       <div className="mt-8 flex flex-col">
+        <span className="mb-4 text-xl font-medium">{t("SettingPanel.EditorLanguageServer")}</span>
+        <span className={darkMode ? "mb-2 text-grayModern-200" : "mb-2 text-grayModern-700"}>
+          {t("SettingPanel.isOpenLanguageServer")}
+        </span>
+        <div className="w-48">
+          <Switch
+            defaultChecked={currentCommonSettings.useLSP}
+            onChange={() => {
+              setCurrentCommonSettings({
+                ...currentCommonSettings,
+                useLSP: !currentCommonSettings.useLSP,
+              });
+            }}
+            variant={"primary"}
+            colorScheme="primary"
+          />
+        </div>
+      </div>
+      <div className="mt-8 flex flex-col">
         <span className="mb-4 text-xl font-medium">{t("SettingPanel.EditorFont")}</span>
         <span className={darkMode ? "mb-2 text-grayModern-200" : "mb-2 text-grayModern-700"}>
           {t("SettingPanel.FontSize")}
@@ -39,7 +60,7 @@ export default function CommonSetting() {
               })
             }
           >
-            {[12, 13, 14, 15, 16, 17, 18, 19, 20].map((size) => {
+            {fontSizes.map((size) => {
               return (
                 <option key={size} value={size}>
                   {size}
