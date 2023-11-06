@@ -71,7 +71,9 @@ export class ClusterService {
       const podName = item.metadata.name
       for (const container of item.containers) {
         const containerName = container.name
+        // millicores
         const cpu = Number(quantityToScalar(container.usage.cpu || 0))
+        // bytes
         const memory = Number(quantityToScalar(container.usage.memory || 0))
 
         const metric: Metric = {
