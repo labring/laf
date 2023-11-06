@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import {
+  BucketLocationConstraint,
   CreateBucketCommand,
   DeleteBucketCommand,
   DeleteBucketPolicyCommand,
@@ -170,7 +171,7 @@ export class MinioService {
     const cmd = new CreateBucketCommand({
       Bucket: bucket,
       CreateBucketConfiguration: {
-        LocationConstraint: region.name,
+        LocationConstraint: region.name as BucketLocationConstraint,
       },
     })
     const res = await s3.send(cmd)
