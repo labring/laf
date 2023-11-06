@@ -15,7 +15,7 @@ export class CloudFunction {
   /**
    * execution timeout
    */
-  timeout = 60 * 1000
+  timeout = 600 * 1000
 
   /**
    * function data struct
@@ -44,8 +44,9 @@ export class CloudFunction {
   async execute(
     param: FunctionContext,
     useInterceptor: boolean = false,
+    debugConsole: any = null,
   ): Promise<FunctionResult> {
-    const sandbox = buildSandbox(param, [])
+    const sandbox = buildSandbox(param, [], debugConsole)
     let code = ``
     if (useInterceptor) {
       const interceptorFunc = FunctionCache.get(INTERCEPTOR_FUNCTION_NAME)
@@ -57,7 +58,6 @@ export class CloudFunction {
       code = this.wrap(this.data.source.compiled)
     }
     const script = createScript(code, {})
-    const fconsole = sandbox.console
     const options: RunningScriptOptions = {
       filename: `CloudFunction.${this.data.name}`,
       timeout: this.timeout,
@@ -82,8 +82,6 @@ export class CloudFunction {
         time_usage,
       }
     } catch (error) {
-      fconsole.log(error.message, error.stack)
-
       const _end_time = process.hrtime.bigint()
       const time_usage = nanosecond2ms(_end_time - _start_time)
 
@@ -102,7 +100,7 @@ export class CloudFunction {
     const wrapped = `
       const require = (module) => {
         fromModule.push(__filename)
-        return requireFunc(module, fromModule, __context__)
+        return requireFunc(module, fromModule)
       }
       ${code}; 
       const __main__ = exports.main || exports.default
@@ -122,7 +120,7 @@ export class CloudFunction {
     const wrapped = `
       const require = (module) => {
         fromModule.push(__filename)
-        return requireFunc(module, fromModule, __context__)
+        return requireFunc(module, fromModule)
       }
 
       function __next__() {

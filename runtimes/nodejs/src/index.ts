@@ -69,19 +69,6 @@ app.use(function (req, res, next) {
 
   const requestId = (req['requestId'] =
     req.headers['x-request-id'] || generateUUID())
-  if (req.url !== '/_/healthz') {
-    logger.info(
-      requestId,
-      `${req.method} "${req.url}" - referer: ${
-        req.get('referer') || '-'
-      } ${req.get('user-agent')}`,
-    )
-    logger.trace(requestId, `${req.method} ${req.url}`, {
-      body: req.body,
-      headers: req.headers,
-      auth,
-    })
-  }
   res.set('request-id', requestId)
   next()
 })

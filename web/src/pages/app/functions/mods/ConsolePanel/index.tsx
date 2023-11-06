@@ -1,6 +1,6 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Center, Spinner } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
+import { LogViewer } from "@patternfly/react-log-viewer";
 
 import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
@@ -9,53 +9,51 @@ import { formatDate } from "@/utils/format";
 
 import useFunctionStore from "../../store";
 
-import { LogControllerGetLogs } from "@/apis/v1/apps";
+import useCustomSettingStore from "@/pages/customSetting";
 
 function ConsolePanel() {
-  const { currentRequestId } = useFunctionStore();
   const { t } = useTranslation();
-
-  const logControllerGetLogsQuery = useQuery(
-    ["LogControllerGetLogs", currentRequestId],
-    () => {
-      return LogControllerGetLogs({ requestId: currentRequestId, limit: 100 });
-    },
-    {
-      enabled: typeof currentRequestId !== "undefined",
-    },
-  );
-
-  const list = logControllerGetLogsQuery.data?.data?.list || [];
-  // reverse will change the original array, so we need to clone it first
-  const cloneReverseArray = [...list].reverse();
-
+  const { currentRequestId, currentFuncLogs, currentFuncTimeUsage } = useFunctionStore();
+  const logsArray = useMemo(() => {
+    if (!currentFuncLogs) return [""];
+    const strArray = JSON.parse(decodeURIComponent(currentFuncLogs));
+    const regex = /(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z)/;
+    return strArray.map((item: string) => {
+      const match = item.match(regex);
+      if (match) {
+        const newTimeStr = formatDate(match[1], "YYYY-MM-DD HH:mm:ss.SSS");
+        return item.replace(match[1], newTimeStr);
+      } else {
+        return item;
+      }
+    });
+  }, [currentFuncLogs]);
+  const { commonSettings } = useCustomSettingStore();
+  
   return (
     <Panel className="flex-1">
       <Panel.Header title="Console" pageId="functionPage" panelId="ConsolePanel"></Panel.Header>
       <div
         className="text-sm relative flex flex-col overflow-y-auto px-2 font-mono"
-        style={{ height: "100%" }}
+        style={{ height: "100%", fontSize: commonSettings.fontSize-1 }}
       >
-        {currentRequestId && (
-          <p className="mb-1 ml-1">
-            RequestID: {currentRequestId} <CopyText text={String(currentRequestId)} />
-          </p>
-        )}
-        {logControllerGetLogsQuery.isFetching ? (
-          <Center>
-            <Spinner />
-          </Center>
-        ) : cloneReverseArray.length > 0 ? (
-          cloneReverseArray.map((item: any) => {
-            return (
-              <div key={item._id} className="flex ">
-                <span className="min-w-[160px] text-slate-500">
-                  [{formatDate(item.created_at, "YYYY-MM-DD HH:mm:ss")}]
+        {logsArray && logsArray[0] !== "" ? (
+          <LogViewer
+            data={logsArray}
+            hasLineNumbers={false}
+            height={"100%"}
+            header={
+              <p className="flex w-full justify-between">
+                <span className="mb-1 ml-1">
+                  RequestID: {currentRequestId} <CopyText text={String(currentRequestId)} />
                 </span>
-                <pre className="flex-1">{item.data}</pre>
-              </div>
-            );
-          })
+                <span className="mb-1 ml-1 text-grayModern-400">
+                  Time-Usage: {currentFuncTimeUsage}ms
+                </span>
+              </p>
+            }
+            scrollToRow={10000}
+          />
         ) : (
           <EmptyBox hideIcon>
             <span>{t("NoInfo")}</span>

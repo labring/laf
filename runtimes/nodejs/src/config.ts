@@ -31,16 +31,22 @@ export default class Config {
   }
 
   /**
-   * the logger level : 'fatal', 'error', 'warning', 'info', 'debug', 'trace'
+   * the logger level : 'debug', 'info', 'warn', 'error'
    */
-  static get LOG_LEVEL():
-    | 'fatal'
-    | 'error'
-    | 'warning'
-    | 'info'
-    | 'debug'
-    | 'trace' {
-    return (process.env['LOG_LEVEL'] as any) ?? (this.isProd ? 'info' : 'debug')
+  static get LOG_LEVEL(): 'debug' | 'info' | 'warn' | 'error' {
+    return (process.env['LOG_LEVEL'] as any) || 'debug'
+  }
+
+
+  /**
+   * the object depth limit when logging
+   */
+  static get LOG_DEPTH(): number {
+    const depth = (process.env['LOG_DEPTH'] as any) ?? 1
+    if (depth < 0) {
+      return 0
+    }
+    return depth > 5 ? 5 : depth
   }
 
   /**
@@ -101,7 +107,7 @@ export default class Config {
     return process.env.OSS_EXTERNAL_ENDPOINT
   }
 
-  static get ENABLE_MODULE_CACHE(): boolean {
-    return process.env.ENABLE_MODULE_CACHE === 'true' || false
+  static get DISABLE_MODULE_CACHE(): boolean {
+    return process.env.DISABLE_MODULE_CACHE === 'true'
   }
 }

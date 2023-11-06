@@ -2,9 +2,10 @@ import { Response } from 'express'
 import { IRequest } from '../support/types'
 import { DEFAULT_FUNCTION_NAME, INTERCEPTOR_FUNCTION_NAME } from '../constants'
 import { parseToken } from '../support/token'
-import { logger } from '../support/logger'
 import {
   CloudFunction,
+  Console,
+  DebugConsole,
   FunctionCache,
   FunctionContext,
   ICloudFunctionData,
@@ -71,42 +72,27 @@ async function invokeFunction(
     return ctx.response.status(405).send('Method Not Allowed')
   }
 
+  const logger = new Console(func.data.name)
   try {
     // execute the func
     ctx.__function_name = func.data.name
     const result = await func.execute(ctx, useInterceptor)
 
-    // return false to reject request if interceptor got error
     if (result.error) {
-      logger.error(
+      logger.error(result.error)
+      return ctx.response.status(500).send({
+        error: 'Internal Server Error',
         requestId,
-        `invoke function ${ctx.__function_name} invoke error: `,
-        result,
-      )
-
-      ctx.response
-        .status(400)
-        .send({
-          error: `invoke ${ctx.__function_name} function got error, please check the function logs`,
-          requestId,
-        })
-      return false
+      })
     }
 
-    logger.trace(
-      requestId,
-      `invoke function ${ctx.__function_name} invoke success: `,
-      result,
-    )
-
-    // return false to reject request if interceptor return false
+    // reject request if interceptor return false
     if (
       typeof result.data === 'object' &&
       result.data.__type__ === '__interceptor__' &&
       result.data.__res__ == false
     ) {
-      ctx.response.status(403).send({ error: 'Forbidden', requestId })
-      return false
+      return ctx.response.status(403).send({ error: 'Forbidden', requestId })
     }
 
     if (ctx.response.writableEnded === false) {
@@ -167,31 +153,36 @@ async function invokeDebug(
   }
 
   const func = new CloudFunction(funcData)
+  const debugConsole = new DebugConsole(funcName)
 
   try {
     // execute the func
     ctx.__function_name = funcName
-    const result = await func.execute(ctx, useInterceptor)
+    const result = await func.execute(ctx, useInterceptor, debugConsole)
+
+
+    // set logs to response header
+    if (result.error) {
+      debugConsole.error(result.error)
+    }
+    const logs = encodeURIComponent(debugConsole.getLogs())
+    ctx.response.set('x-laf-func-logs', logs)
+    ctx.response.set('x-laf-func-time-usage', result.time_usage.toString())
 
     if (result.error) {
-      logger.error(requestId, `debug function ${funcName} error: `, result)
-      return ctx.response.send({
-        error: 'invoke function got error: ' + result.error.toString(),
-        time_usage: result.time_usage,
+      return ctx.response.status(500).send({
+        error: 'Internal Server Error',
         requestId,
       })
     }
 
-    logger.trace(requestId, `invoke ${funcName} invoke success: `, result)
-
-    // return false to reject request if interceptor return false
+    // reject request if interceptor return false
     if (
       typeof result.data === 'object' &&
       result.data.__type__ === '__interceptor__' &&
       result.data.__res__ == false
     ) {
-      ctx.response.status(403).send({ error: 'Forbidden', requestId })
-      return false
+      return ctx.response.status(403).send({ error: 'Forbidden', requestId })
     }
 
     if (ctx.response.writableEnded === false) {
@@ -202,7 +193,7 @@ async function invokeDebug(
       return ctx.response.send(data)
     }
   } catch (error) {
-    logger.error(requestId, 'failed to invoke error', error)
+    debugConsole.error(requestId, 'failed to invoke error', error)
     return ctx.response.status(500).send('Internal Server Error')
   }
 }

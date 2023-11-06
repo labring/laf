@@ -245,6 +245,24 @@ export async function EnvironmentVariableControllerDelete(
 }
 
 /**
+ * Get app all pod name
+ */
+export async function PodControllerGet(params: Paths.PodControllerGet.BodyParameters): Promise<{
+  error: string;
+  data: Paths.PodControllerGet.Responses;
+}> {
+  // /v1/apps/{appid}/pods
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/pods`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
  * Create a new bucket
  */
 export async function BucketControllerCreate(params: Definitions.CreateBucketDto): Promise<{
@@ -767,64 +785,6 @@ export async function WebsiteControllerCheckResolved(
 }
 
 /**
- * Create a cron trigger
- */
-export async function TriggerControllerCreate(params: Definitions.CreateTriggerDto): Promise<{
-  error: string;
-  data: Paths.TriggerControllerCreate.Responses;
-}> {
-  // /v1/apps/{appid}/triggers
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/apps/${_params.appid}/triggers`, {
-    method: "POST",
-    data: params,
-  });
-}
-
-/**
- * Get trigger list of an application
- */
-export async function TriggerControllerFindAll(
-  params: Paths.TriggerControllerFindAll.BodyParameters,
-): Promise<{
-  error: string;
-  data: Paths.TriggerControllerFindAll.Responses;
-}> {
-  // /v1/apps/{appid}/triggers
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/apps/${_params.appid}/triggers`, {
-    method: "GET",
-    params: params,
-  });
-}
-
-/**
- * Remove a cron trigger
- */
-export async function TriggerControllerRemove(
-  params: Paths.TriggerControllerRemove.BodyParameters,
-): Promise<{
-  error: string;
-  data: Paths.TriggerControllerRemove.Responses;
-}> {
-  // /v1/apps/{appid}/triggers/{id}
-  let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
-    ...params,
-  };
-  return request(`/v1/apps/${_params.appid}/triggers/${_params.id}`, {
-    method: "DELETE",
-    data: params,
-  });
-}
-
-/**
  * Get function logs
  */
 export async function LogControllerGetLogs(
@@ -839,6 +799,26 @@ export async function LogControllerGetLogs(
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/logs/functions`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Get app pod logs
+ */
+export async function LogControllerStreamLogs(
+  params: Paths.LogControllerStreamLogs.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.LogControllerStreamLogs.Responses;
+}> {
+  // /v1/apps/{appid}/logs/{podName}
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/logs/${_params.podName}`, {
     method: "GET",
     params: params,
   });
@@ -917,6 +897,64 @@ export async function DependencyControllerRemove(params: Definitions.DeleteDepen
     ...params,
   };
   return request(`/v1/apps/${_params.appid}/dependencies`, {
+    method: "DELETE",
+    data: params,
+  });
+}
+
+/**
+ * Create a cron trigger
+ */
+export async function TriggerControllerCreate(params: Definitions.CreateTriggerDto): Promise<{
+  error: string;
+  data: Paths.TriggerControllerCreate.Responses;
+}> {
+  // /v1/apps/{appid}/triggers
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/triggers`, {
+    method: "POST",
+    data: params,
+  });
+}
+
+/**
+ * Get trigger list of an application
+ */
+export async function TriggerControllerFindAll(
+  params: Paths.TriggerControllerFindAll.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.TriggerControllerFindAll.Responses;
+}> {
+  // /v1/apps/{appid}/triggers
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/triggers`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Remove a cron trigger
+ */
+export async function TriggerControllerRemove(
+  params: Paths.TriggerControllerRemove.BodyParameters,
+): Promise<{
+  error: string;
+  data: Paths.TriggerControllerRemove.Responses;
+}> {
+  // /v1/apps/{appid}/triggers/{id}
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/triggers/${_params.id}`, {
     method: "DELETE",
     data: params,
   });

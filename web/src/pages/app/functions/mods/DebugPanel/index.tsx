@@ -49,6 +49,8 @@ export default function DebugPanel(props: { containerRef: any }) {
     allFunctionList,
     setAllFunctionList,
     setCurrentFunction,
+    setCurrentFuncLogs,
+    setCurrentFuncTimeUsage,
   } = useFunctionStore((state: any) => state);
   const updateDebugFunctionMutation = useUpdateDebugFunctionMutation();
   const globalStore = useGlobalStore((state) => state);
@@ -139,7 +141,13 @@ export default function DebugPanel(props: { containerRef: any }) {
 
       if (!compileRes.error) {
         const _funcData = JSON.stringify(compileRes.data);
-        const res = await axios({
+        const axiosInstance = axios.create({
+          validateStatus: function (status) {
+            return status === 500 ? true : status >= 200 && status < 300;
+          },
+        });
+
+        const res = await axiosInstance({
           url: getFunctionUrl(),
           method: runningMethod,
           params: mapValues(keyBy(queryParams, "name"), "value"),
@@ -152,6 +160,8 @@ export default function DebugPanel(props: { containerRef: any }) {
         });
 
         setCurrentRequestId(res.headers["request-id"]);
+        setCurrentFuncLogs(res.headers["x-laf-func-logs"]);
+        setCurrentFuncTimeUsage(res.headers["x-laf-func-time-usage"]);
 
         setRunningResData(res.data);
       }

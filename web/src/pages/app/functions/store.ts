@@ -10,10 +10,14 @@ type State = {
   recentFunctionList: TFunction[];
   currentFunction: TFunction | { [key: string]: any };
   currentRequestId: string | undefined;
+  currentFuncLogs: string;
+  currentFuncTimeUsage: string;
   functionCodes: { [key: string]: string };
   isFetchButtonClicked: Boolean;
   getFunctionUrl: () => string;
   setCurrentRequestId: (requestId: string | undefined) => void;
+  setCurrentFuncLogs: (logs: string) => void;
+  setCurrentFuncTimeUsage: (timeUsage: string) => void;
   setAllFunctionList: (functionList: TFunctionNode[]) => void;
   setRecentFunctionList: (functionList: TFunction[]) => void;
   setCurrentFunction: (currentFunction: TFunction | { [key: string]: any }) => void;
@@ -30,6 +34,8 @@ const useFunctionStore = create<State>()(
       functionCodes: {},
       currentRequestId: undefined,
       isFetchButtonClicked: false,
+      currentFuncLogs: "",
+      currentFuncTimeUsage: "",
 
       getFunctionUrl: () => {
         const currentApp = useGlobalStore.getState().currentApp;
@@ -75,6 +81,18 @@ const useFunctionStore = create<State>()(
       setIsFetchButtonClicked: async () => {
         set((state) => {
           state.isFetchButtonClicked = !state.isFetchButtonClicked;
+        });
+      },
+
+      setCurrentFuncLogs: (logs) => {
+        set((state) => {
+          state.currentFuncLogs = logs;
+        });
+      },
+
+      setCurrentFuncTimeUsage: (timeUsage) => {
+        set((state) => {
+          state.currentFuncTimeUsage = timeUsage;
         });
       },
     })),

@@ -20,6 +20,8 @@ import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/functi
 import { HttpModule } from '@nestjs/axios'
 import { QuotaService } from 'src/user/quota.service'
 import { SettingService } from 'src/setting/setting.service'
+import { PodService } from './pod.service'
+import { PodController } from './pod.controller'
 
 @Module({
   imports: [
@@ -29,7 +31,11 @@ import { SettingService } from 'src/setting/setting.service'
     AccountModule,
     HttpModule,
   ],
-  controllers: [ApplicationController, EnvironmentVariableController],
+  controllers: [
+    ApplicationController,
+    EnvironmentVariableController,
+    PodController,
+  ],
   providers: [
     ApplicationService,
     ApplicationTaskService,
@@ -45,6 +51,7 @@ import { SettingService } from 'src/setting/setting.service'
     ResourceService,
     QuotaService,
     SettingService,
+    PodService,
   ],
   exports: [
     ApplicationService,

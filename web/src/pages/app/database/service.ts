@@ -25,6 +25,7 @@ const queryKeys = {
   useEntryDataQuery: (db: string) => ["useEntryDataQuery", db],
   usePolicyListQuery: ["usePolicyListQuery"],
   useRulesListQuery: (name: string) => ["useRulesListQuery", name],
+  useCollectionIndexQuery: (db: string) => ["useCollectionIndexQuery", db],
 };
 
 export const useCollectionListQuery = (config?: { onSuccess: (data: any) => void }) => {
@@ -334,6 +335,73 @@ export const useDeleteRuleMutation = (onSuccess?: () => void) => {
         if (!data.error) {
           globalStore.showSuccess(t("DeleteSuccess"));
           onSuccess && onSuccess();
+        }
+      },
+    },
+  );
+};
+
+export const useCollectionIndexQuery = (config?: { onSuccess: (data: any) => void }) => {
+  const { currentDB } = useDBMStore();
+  const { db } = useDB();
+
+  return useQuery(
+    queryKeys.useCollectionIndexQuery(currentDB?.name!),
+    async () => {
+      const result = await db.collection(currentDB?.name!).listIndexes();
+      return result;
+    },
+    {
+      onSuccess: config?.onSuccess,
+      enabled: !!currentDB,
+    },
+  );
+};
+
+export const useCreateIndexMutation = (config?: { onSuccess: (data: any) => void }) => {
+  const { currentDB } = useDBMStore();
+  const globalStore = useGlobalStore();
+  const { db } = useDB();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (values: any) => {
+      const result = await db.collection(currentDB?.name!).createIndex(values.keys, values.options);
+      return result;
+    },
+    {
+      onSuccess(data) {
+        if (data.ok) {
+          globalStore.showSuccess(t("AddSuccess"));
+          queryClient.invalidateQueries(queryKeys.useCollectionIndexQuery(currentDB?.name!));
+          config && config.onSuccess(data);
+        } else {
+          globalStore.showError(data.error.codeName);
+        }
+      },
+    },
+  );
+};
+
+export const useDropIndexMutation = (config?: { onSuccess: (data: any) => void }) => {
+  const { currentDB } = useDBMStore();
+  const globalStore = useGlobalStore();
+  const { db } = useDB();
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (indexName: string) => {
+      const result = await db.collection(currentDB?.name!).dropIndex(indexName);
+      return result;
+    },
+    {
+      onSuccess(data) {
+        if (data.ok) {
+          globalStore.showSuccess(t("DeleteSuccess"));
+          queryClient.invalidateQueries(queryKeys.useCollectionIndexQuery(currentDB?.name!));
+          config && config.onSuccess(data);
+        } else {
+          globalStore.showError(data.error.codeName);
         }
       },
     },

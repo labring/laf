@@ -1,0 +1,31 @@
+#log-viewer-container {
+  .pf-v5-c-text-input-group__icon {
+    visibility: hidden;
+  }
+
+  .pf-v5-c-text-input-group__text-input:focus {
+    outline: none !important;
+    color: #000;
+  }
+
+  .pf-m-current {
+    background: #91ded9 !important;
+  }
+
+  .pf-m-match {
+    background: #daf4f2 !important;
+  }
+
+  [data-theme="dark"] & .pf-v5-c-text-input-group__text-input:focus {
+    outline: none !important;
+    color: #fff;
+  }
+
+  [data-theme="dark"] & .pf-m-current {
+    background: #47c8bf !important;
+  }
+
+  [data-theme="dark"] & .pf-m-match {
+    background: #2b7873 !important;
+  }
+}
