@@ -117,8 +117,10 @@ export class ClusterService {
 
       for (const container of item.spec.containers) {
         const containerName = container.name
+        // cpu is in cores, convert to millicores, 1 core = 1000 millicores
         const cpu = Number(totalCPUForContainer(container).limit || 0) * 1000
         const memory =
+          // memory is in bytes, convert to MB, 1024 * 1024 = 1048576
           Number(totalMemoryForContainer(container).limit || 0) / 1048576
 
         const metric: Metric = {

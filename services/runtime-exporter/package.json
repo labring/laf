@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "NODE_ENV=development node ./dist/index.js",
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.json",
     "watch": "tsc -p tsconfig.json -w",
     "start": "NODE_ENV=production node ./dist/index.js",
     "prettier": "npx prettier --write ./src"
