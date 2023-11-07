@@ -30,6 +30,7 @@
     "@aws-sdk/s3-request-presigner": "^3.231.0",
     "@kubernetes/client-node": "^0.18.0",
     "@lafjs/cloud": "^1.0.0-beta.12",
+    "@types/pako": "^2.0.2",
     "axios": "^1.4.0",
     "chalk": "^4.1.2",
     "chatgpt": "^5.2.5",
@@ -50,6 +51,7 @@
     "multer": "^1.4.5-lts.1",
     "node-modules-utils": "^0.8.2",
     "nodemailer": "^6.6.3",
+    "pako": "^2.1.0",
     "validator": "^13.7.0",
     "ws": "^8.11.0"
   },

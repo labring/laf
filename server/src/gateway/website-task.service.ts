@@ -96,7 +96,7 @@ export class WebsiteTaskService {
         bucketName: site.bucketName,
       })
 
-    assert(bucketDomain, 'bucket domain not found')
+    assert(bucketDomain, `bucket domain not found: ${site.bucketName}`)
 
     // create website custom certificate if custom domain is set
     // Warning: create certificate before ingress, otherwise apisix ingress will not work

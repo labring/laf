@@ -10,6 +10,8 @@ import {
   FunctionContext,
   ICloudFunctionData,
 } from '../support/engine'
+import pako from 'pako'
+import { base64ToUint8Array, uint8ArrayToBase64 } from '../support/utils'
 
 export async function handleInvokeFunction(req: IRequest, res: Response) {
   const ctx: FunctionContext = {
@@ -26,12 +28,6 @@ export async function handleInvokeFunction(req: IRequest, res: Response) {
   }
 
   let useInterceptor = true
-
-  // intercept the request, skip websocket request
-  if (true === req.method.startsWith('WebSocket:')) {
-    useInterceptor = false
-  }
-
   if (!FunctionCache.get(INTERCEPTOR_FUNCTION_NAME)) {
     useInterceptor = false
   }
@@ -126,19 +122,31 @@ async function invokeDebug(
       .send('permission denied: invalid develop token')
   }
 
-  // get func_data from header
-  const funcStr = ctx.request.get('x-laf-func-data')
-  if (!funcStr) {
-    return ctx.response.status(400).send('x-laf-func-data is required')
-  }
-
   // parse func_data
   let funcData: ICloudFunctionData
-  try {
-    const decoded = decodeURIComponent(funcStr)
-    funcData = JSON.parse(decoded)
-  } catch (error) {
-    return ctx.response.status(400).send('x-laf-func-data is invalid')
+
+  // get func_data from header `x-laf-debug-data`
+  if (ctx.request.get('x-laf-debug-data')) {
+    const funcStr = ctx.request.get('x-laf-debug-data')
+    try {
+      // decode base64 string
+      const compressed = base64ToUint8Array(funcStr)
+      const restored = pako.ungzip(compressed, { to: 'string' })
+      funcData = JSON.parse(restored)
+    } catch (error) {
+      return ctx.response.status(400).send('x-laf-debug-data is invalid')
+    }
+  } else if (ctx.request.get('x-laf-func-data')) {
+    // reserve 'x-laf-func-data' check to keep compatible to old clients (laf-web, laf-cli)
+    const funcStr = ctx.request.get('x-laf-func-data')
+    try {
+      const decoded = decodeURIComponent(funcStr)
+      funcData = JSON.parse(decoded)
+    } catch (error) {
+      return ctx.response.status(400).send('x-laf-func-data is invalid')
+    }
+  } else {
+    return ctx.response.status(400).send('x-laf-debug-data is required')
   }
 
   const requestId = ctx.requestId
@@ -160,14 +168,23 @@ async function invokeDebug(
     ctx.__function_name = funcName
     const result = await func.execute(ctx, useInterceptor, debugConsole)
 
-
     // set logs to response header
     if (result.error) {
       debugConsole.error(result.error)
     }
-    const logs = encodeURIComponent(debugConsole.getLogs())
-    ctx.response.set('x-laf-func-logs', logs)
-    ctx.response.set('x-laf-func-time-usage', result.time_usage.toString())
+
+    const logs = debugConsole.getLogs()
+    if (ctx.request.get('x-laf-debug-data')) {
+      const compressed = pako.gzip(logs)
+      const base64Encoded = uint8ArrayToBase64(compressed)
+      ctx.response.set('x-laf-debug-logs', base64Encoded)
+    } else if (ctx.request.get('x-laf-func-data')) {
+      // keep compatible for old version clients(laf web & laf cli)
+      const encoded = encodeURIComponent(logs)
+      ctx.response.set('x-laf-func-logs', encoded)
+    }
+    
+    ctx.response.set('x-laf-debug-time-usage', result.time_usage.toString())
 
     if (result.error) {
       return ctx.response.status(500).send({
