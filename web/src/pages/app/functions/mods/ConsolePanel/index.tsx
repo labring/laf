@@ -6,6 +6,7 @@ import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
 import Panel from "@/components/Panel";
 import { formatDate } from "@/utils/format";
+import { decodeData } from "@/utils/handleData";
 
 import useFunctionStore from "../../store";
 
@@ -16,7 +17,7 @@ function ConsolePanel() {
   const { currentRequestId, currentFuncLogs, currentFuncTimeUsage } = useFunctionStore();
   const logsArray = useMemo(() => {
     if (!currentFuncLogs) return [""];
-    const strArray = JSON.parse(decodeURIComponent(currentFuncLogs));
+    const strArray = JSON.parse(decodeData(currentFuncLogs));
     const regex = /(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z)/;
     return strArray.map((item: string) => {
       const match = item.match(regex);

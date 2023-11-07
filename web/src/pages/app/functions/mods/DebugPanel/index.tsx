@@ -21,6 +21,7 @@ import { Row } from "@/components/Grid";
 import Panel from "@/components/Panel";
 import Resize from "@/components/Resize";
 import { COLOR_MODE, Pages, PanelMinHeight } from "@/constants";
+import { encodeData } from "@/utils/handleData";
 
 import { useCompileMutation, useUpdateDebugFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
@@ -154,7 +155,7 @@ export default function DebugPanel(props: { containerRef: any }) {
           data: bodyParams?.data,
           headers: Object.assign(mapValues(keyBy(headerParams, "name"), "value"), {
             "x-laf-develop-token": `${globalStore.currentApp?.develop_token}`,
-            "x-laf-func-data": encodeURIComponent(_funcData),
+            "x-laf-debug-data": encodeData(_funcData),
             "Content-Type": bodyParams?.contentType || "application/json",
           }),
         });

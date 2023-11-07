@@ -38,6 +38,7 @@
     "laf-client-sdk": "^1.0.0-beta.12",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.38.0",
+    "pako": "^2.1.0",
     "qrcode.react": "^3.1.0",
     "react": "18.2.0",
     "react-datepicker": "^4.11.0",
@@ -61,6 +62,7 @@
   "devDependencies": {
     "@types/lodash": "^4.14.194",
     "@types/node": "20.2.3",
+    "@types/pako": "^2.0.2",
     "@types/react": "^18.2.7",
     "@types/react-datepicker": "^4.11.2",
     "@types/react-dom": "^18.2.4",
