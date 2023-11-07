@@ -120,7 +120,7 @@ export class BillingCreationTaskService {
 
     const meteringData = await this.billing.getMeteringData(
       app,
-      latestBillingTime,
+      nextMeteringTime,
     )
 
     // get application bundle
