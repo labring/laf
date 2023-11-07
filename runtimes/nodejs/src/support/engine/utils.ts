@@ -53,7 +53,6 @@ export function buildSandbox(
   }
 
   const sandbox = {
-    __context__: functionContext,
     __filename: functionContext.__function_name,
     module: _module,
     exports: _module.exports,

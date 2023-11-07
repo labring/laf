@@ -11,6 +11,8 @@ import { ChangeStreamDocument } from 'mongodb'
 export class FunctionCache {
   private static cache: Map<string, ICloudFunctionData> = new Map()
 
+  private static functionCache: Map<string, CloudFunction> = new Map()
+
   static async initialize(): Promise<void> {
     logger.info('initialize function cache')
     const funcs = await DatabaseAgent.db
@@ -51,6 +53,7 @@ export class FunctionCache {
       for (const [funcName, func] of this.cache) {
         if (change.documentKey._id.equals(func._id)) {
           FunctionCache.cache.delete(funcName)
+          FunctionCache.functionCache.delete(funcName)
         }
       }
     }
@@ -61,8 +64,18 @@ export class FunctionCache {
   }
 
   static getEngine(name: string): CloudFunction {
-    const func = FunctionCache.get(name)
-    if (!func) return null
-    return new CloudFunction(func)
+
+    // get cloud function from cache
+    if (FunctionCache.functionCache.has(name)) {
+      return FunctionCache.functionCache.get(name)
+    }
+    // get func code from cache
+    let funcCode = FunctionCache.get(name)
+    if (!funcCode) return null
+
+    // create cloud function
+    const func = new CloudFunction(funcCode)
+    FunctionCache.functionCache.set(name, func)
+    return func
   }
 }

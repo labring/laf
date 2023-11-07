@@ -13,7 +13,6 @@ export type RequireFuncType = (
  * vm run context (global)
  */
 export interface RuntimeContext {
-  __context__: FunctionContext
   module: { exports: Object }
   exports: Object
   console: any

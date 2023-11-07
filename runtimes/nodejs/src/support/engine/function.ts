@@ -28,6 +28,11 @@ export class CloudFunction {
   param: FunctionContext
 
   /**
+   * function object
+   */
+  function: any
+
+  /**
    * execution result
    */
   result: FunctionResult
@@ -46,34 +51,33 @@ export class CloudFunction {
     useInterceptor: boolean = false,
     debugConsole: any = null,
   ): Promise<FunctionResult> {
-    const sandbox = buildSandbox(param, [], debugConsole)
-    let code = ``
-    if (useInterceptor) {
-      const interceptorFunc = FunctionCache.get(INTERCEPTOR_FUNCTION_NAME)
-      code = this.warpWithInterceptor(
-        this.data.source.compiled,
-        interceptorFunc.source.compiled,
-      )
-    } else {
-      code = this.wrap(this.data.source.compiled)
+    if (!this.function) {
+      const sandbox = buildSandbox(param, [], debugConsole)
+      let code = ``
+      if (useInterceptor) {
+        const interceptorFunc = FunctionCache.get(INTERCEPTOR_FUNCTION_NAME)
+        code = this.warpWithInterceptor(
+          this.data.source.compiled,
+          interceptorFunc.source.compiled,
+        )
+      } else {
+        code = this.wrap(this.data.source.compiled)
+      }
+      const script = createScript(code, {})
+      const options: RunningScriptOptions = {
+        filename: `CloudFunction.${this.data.name}`,
+        timeout: this.timeout,
+        displayErrors: true,
+        contextCodeGeneration: {
+          strings: false,
+        },
+      } as any
+      this.function = script.runInNewContext(sandbox, options)
     }
-    const script = createScript(code, {})
-    const options: RunningScriptOptions = {
-      filename: `CloudFunction.${this.data.name}`,
-      timeout: this.timeout,
-      displayErrors: true,
-      contextCodeGeneration: {
-        strings: false,
-      },
-    } as any
 
     const _start_time = process.hrtime.bigint()
     try {
-      const result = script.runInNewContext(sandbox, options)
-      let data = result
-      if (typeof result?.then === 'function') {
-        data = await result
-      }
+      let data = await this.function(param)
 
       const _end_time = process.hrtime.bigint()
       const time_usage = nanosecond2ms(_end_time - _start_time)
@@ -103,10 +107,10 @@ export class CloudFunction {
         return requireFunc(module, fromModule)
       }
       ${code}; 
-      const __main__ = exports.main || exports.default
-      if(!__main__) { throw new Error('FunctionExecError: main function not found') }
-      if(typeof __main__ !== 'function') { throw new Error('FunctionExecError: main function must be callable')}
-      __main__(__context__ )
+      const __run__ = exports.main || exports.default
+      if(!__run__) { throw new Error('FunctionExecError: main function not found') }
+      if(typeof __run__ !== 'function') { throw new Error('FunctionExecError: main function must be callable')}
+      __run__
       `
     return wrapped
   }
@@ -135,7 +139,7 @@ export class CloudFunction {
       if(!__interceptor__) { throw new Error('FunctionExecError: interceptor function not found') }
       if(typeof __interceptor__ !== 'function') { throw new Error('FunctionExecError: interceptor function must be callable')}
       
-      async function __flow__(ctx) {
+      async function __run__(ctx) {
         if (__interceptor__.length === 2) {
           return __interceptor__(__context__, __next__())
         } else {
@@ -146,7 +150,7 @@ export class CloudFunction {
           return __next__()(ctx)
         }
       }
-      __flow__(__context__)
+      __run__
     `
     return wrapped
   }
