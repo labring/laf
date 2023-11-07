@@ -120,16 +120,7 @@ export class BillingCreationTaskService {
       return
     }
 
-    // lookup metering data
-    const meteringData = await MeteringDatabase.db
-      .collection('metering')
-      .find({ category: appid, time: nextMeteringTime }, { sort: { time: 1 } })
-      .toArray()
-
-    if (meteringData.length === 0) {
-      this.logger.warn(`No metering data found for application: ${appid}`)
-      return
-    }
+    const meteringData = await this.billing.getMeteringData(app)
 
     // get application bundle
     const bundle = await this.bundleService.findOne(appid)
@@ -195,21 +186,14 @@ export class BillingCreationTaskService {
 
   private buildCalculatePriceInput(
     app: Application,
-    meteringData: any[],
+    meteringData: any,
     bundle: ApplicationBundle,
   ) {
     const dto = new CalculatePriceDto()
     dto.regionId = app.regionId.toString()
-    dto.cpu = 0
-    dto.memory = 0
-    dto.storageCapacity = 0
-    dto.databaseCapacity = 0
 
-    for (const item of meteringData) {
-      if (item.property === 'cpu') dto.cpu = item.value
-      if (item.property === 'memory') dto.memory = item.value
-    }
-
+    dto.cpu = meteringData.cpu
+    dto.memory = meteringData.memory
     dto.storageCapacity = bundle.resource.storageCapacity
     dto.databaseCapacity = bundle.resource.databaseCapacity
 

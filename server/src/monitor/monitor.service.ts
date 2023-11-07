@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios'
 import { Injectable, Logger } from '@nestjs/common'
-import { ApplicationService } from 'src/application/application.service'
 import { PrometheusConf } from 'src/region/entities/region'
 import { RegionService } from 'src/region/region.service'
 import { GetApplicationNamespace } from 'src/utils/getter'
@@ -18,12 +17,12 @@ export const getQuery =
       case MonitorMetric.cpuUsage:
         return {
           instant: false,
-          query: `sum(rate(container_cpu_usage_seconds_total{image!="",container!="",pod=~"${opts.pods}",namespace="${opts.namespace}"}[${rateAccuracy}])) by (${opts.selector})`,
+          query: `sum(laf_runtime_cpu{container!="",appid="${opts.appid}"}) by (${opts.selector})`,
         }
       case MonitorMetric.memoryUsage:
         return {
           instant: false,
-          query: `sum(container_memory_working_set_bytes{image!="",container!="",pod=~"${opts.pods}",namespace="${opts.namespace}"}) by (${opts.selector})`,
+          query: `sum(laf_runtime_memory{container!="",appid="${opts.appid}"}) by (${opts.selector})`,
         }
       case MonitorMetric.networkReceive:
         return {
@@ -61,7 +60,6 @@ export enum MonitorMetric {
 export class MonitorService {
   constructor(
     private readonly httpService: HttpService,
-    private readonly applicationService: ApplicationService,
     private readonly regionService: RegionService,
   ) {}
   private readonly logger = new Logger(MonitorService.name)
