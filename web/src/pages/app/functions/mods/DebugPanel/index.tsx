@@ -161,8 +161,8 @@ export default function DebugPanel(props: { containerRef: any }) {
         });
 
         setCurrentRequestId(res.headers["request-id"]);
-        setCurrentFuncLogs(res.headers["x-laf-func-logs"]);
-        setCurrentFuncTimeUsage(res.headers["x-laf-func-time-usage"]);
+        setCurrentFuncLogs(res.headers["x-laf-debug-logs"]);
+        setCurrentFuncTimeUsage(res.headers["x-laf-debug-time-usage"]);
 
         setRunningResData(res.data);
       }
