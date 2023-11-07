@@ -27,7 +27,6 @@ set -e
 set -x
 
 DATABASE_URL="mongodb://${DB_USERNAME:-admin}:${PASSWD_OR_SECRET}@mongodb-0.mongo.${NAMESPACE}.svc.cluster.local:27017/sys_db?authSource=admin&replicaSet=rs0&w=majority"
-METERING_DATABASE_URL="mongodb://${DB_USERNAME:-admin}:${PASSWD_OR_SECRET}@mongodb-0.mongo.${NAMESPACE}.svc.cluster.local:27017/sealos-resources?authSource=admin&replicaSet=rs0&w=majority"
 helm install mongodb -n ${NAMESPACE} \
     --set db.username=${DB_USERNAME:-admin} \
     --set db.password=${PASSWD_OR_SECRET} \
@@ -79,7 +78,6 @@ LOG_SERVER_SECRET=$PASSWD_OR_SECRET
 RUNTIME_EXPORTER_SECRET=$PASSWD_OR_SECRET
 helm install server -n ${NAMESPACE} \
     --set databaseUrl=${DATABASE_URL} \
-    --set meteringDatabaseUrl=${METERING_DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
     --set apiServerHost=api.${DOMAIN} \
     --set apiServerUrl=${EXTERNAL_HTTP_SCHEMA}://api.${DOMAIN} \
@@ -101,11 +99,7 @@ helm install server -n ${NAMESPACE} \
     $([ "$ENABLE_MONITOR" = "true" ] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}") \
     ./charts/laf-server
 
-## 6. install metering service
-sealos run docker.io/labring/sealos-cloud-resources-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system
-sealos run docker.io/labring/sealos-cloud-resources-metering-controller:latest --env MONGO_URI=${METERING_DATABASE_URL} --env DEFAULT_NAMESPACE=resources-system
-
-## 7. install laf-web
+## 6. install laf-web
 helm install web -n ${NAMESPACE} \
     --set domain=www.${DOMAIN} \
     ./charts/laf-web

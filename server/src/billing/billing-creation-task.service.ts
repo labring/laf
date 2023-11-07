@@ -7,7 +7,6 @@ import {
   ApplicationBilling,
   ApplicationBillingState,
 } from './entities/application-billing'
-import { MeteringDatabase } from './metering-database'
 import { CalculatePriceDto } from './dto/calculate-price.dto'
 import { BillingService } from './billing.service'
 import { ApplicationBundle } from 'src/application/entities/application-bundle'
@@ -110,17 +109,19 @@ export class BillingCreationTaskService {
 
     // determine latest billing time & next metering time
     const latestBillingTime = await this.getLatestBillingTime(appid)
-    const nextMeteringTime = await this.determineNextMeteringTime(
-      appid,
-      latestBillingTime,
+    const nextMeteringTime = new Date(
+      latestBillingTime.getTime() + 1000 * 60 * 60,
     )
 
-    if (!nextMeteringTime) {
+    if (nextMeteringTime > new Date()) {
       this.logger.warn(`No next metering time for application: ${appid}`)
       return
     }
 
-    const meteringData = await this.billing.getMeteringData(app)
+    const meteringData = await this.billing.getMeteringData(
+      app,
+      nextMeteringTime,
+    )
 
     // get application bundle
     const bundle = await this.bundleService.findOne(appid)
@@ -198,26 +199,6 @@ export class BillingCreationTaskService {
     dto.databaseCapacity = bundle.resource.databaseCapacity
 
     return dto
-  }
-
-  private async determineNextMeteringTime(
-    appid: string,
-    latestBillingTime: Date,
-  ) {
-    const db = MeteringDatabase.db
-    const nextMeteringData = await db
-      .collection('metering')
-      .findOne(
-        { category: appid, time: { $gt: latestBillingTime } },
-        { sort: { time: 1 } },
-      )
-
-    if (!nextMeteringData) {
-      this.logger.debug(`No next metering data for application: ${appid}`)
-      return null
-    }
-
-    return nextMeteringData.time as Date
   }
 
   private async getLatestBillingTime(appid: string) {
