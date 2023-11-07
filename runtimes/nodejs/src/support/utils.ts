@@ -106,3 +106,12 @@ export function sleep(ms: number) {
 export function md5(content: string) {
   return crypto.createHash('md5').update(content).digest('hex')
 }
+
+export function uint8ArrayToBase64(buffer: Uint8Array) {
+  return Buffer.from(buffer).toString('base64')
+}
+
+export function base64ToUint8Array(base64: string) {
+  const buffer = Buffer.from(base64, 'base64')
+  return new Uint8Array(buffer)
+}

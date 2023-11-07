@@ -79,7 +79,6 @@ async function handleWebSocketEvent(
   }
 
   const module = FunctionModule.get(WEBSOCKET_FUNCTION_NAME)
-  console.log(module)
   const handler = module.default || module.main || module
   if(typeof handler === 'function') {
     await handler(param)
