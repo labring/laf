@@ -53,8 +53,6 @@ spec:
               value: {{ .Values.default_region.fixed_namespace | quote}}
             - name: DATABASE_URL
               value: {{ .Values.databaseUrl | quote}}
-            - name: METERING_DATABASE_URL
-              value: {{ .Values.meteringDatabaseUrl | quote}}
             - name: JWT_SECRET
               value: {{ .Values.jwt.secret | quote}}
             - name: API_SERVER_URL

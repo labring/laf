@@ -4,7 +4,6 @@
 
 apiServerHost: ""
 databaseUrl: ""
-meteringDatabaseUrl: ""
 apiServerUrl: ""
 siteName: "laf"
 # init default region conf
