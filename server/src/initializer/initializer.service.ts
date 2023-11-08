@@ -83,9 +83,9 @@ export class InitializerService {
         },
       },
       logServerConf: {
-        apiUrl: ServerConfig.DEFAULT_REGION_LOG_SERVER_URL,
-        secret: ServerConfig.DEFAULT_REGION_LOG_SERVER_SECRET,
-        databaseUrl: ServerConfig.DEFAULT_REGION_LOG_SERVER_DATABASE_URL,
+        apiUrl: '',
+        secret: '',
+        databaseUrl: '',
       },
       prometheusConf: {
         apiUrl: ServerConfig.DEFAULT_REGION_PROMETHEUS_URL,

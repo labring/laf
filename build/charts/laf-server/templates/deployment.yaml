@@ -79,12 +79,6 @@ spec:
               value: {{ .Values.default_region.tls.enabled | quote}}
             - name: DEFAULT_REGION_TLS_WILDCARD_CERTIFICATE_SECRET_NAME
               value: {{ .Values.default_region.tls.wildcard_certificate_secret_name | quote}}
-            - name: DEFAULT_REGION_LOG_SERVER_URL
-              value: {{ .Values.default_region.log_server_url }}
-            - name: DEFAULT_REGION_LOG_SERVER_SECRET
-              value: {{ .Values.default_region.log_server_secret }}
-            - name: DEFAULT_REGION_LOG_SERVER_DATABASE_URL
-              value: {{ .Values.default_region.log_server_database_url }}
             - name: DEFAULT_REGION_PROMETHEUS_URL
               value: {{ .Values.default_region.prometheus_url }}
             - name: SITE_NAME

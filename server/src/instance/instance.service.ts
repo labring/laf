@@ -11,23 +11,19 @@ import { LABEL_KEY_APP_ID, MB } from '../constants'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from 'src/database/database.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
-import { SystemDatabase } from 'src/system-database'
 import { ApplicationWithRelations } from 'src/application/entities/application'
 import { ApplicationService } from 'src/application/application.service'
-import { JwtService } from '@nestjs/jwt'
 import * as assert from 'assert'
 
 @Injectable()
 export class InstanceService {
   private readonly logger = new Logger('InstanceService')
-  private readonly db = SystemDatabase.db
 
   constructor(
     private readonly cluster: ClusterService,
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
     private readonly applicationService: ApplicationService,
-    private readonly jwtService: JwtService,
   ) {}
 
   public async create(appid: string) {
@@ -111,7 +107,6 @@ export class InstanceService {
   }
 
   public async restart(appid: string) {
-    const labels = this.getRuntimeLabel(appid)
     const app = await this.applicationService.findOneUnsafe(appid)
     const region = app.region
     const { deployment, hpa, service } = await this.get(appid)
@@ -292,21 +287,6 @@ export class InstanceService {
       {
         name: 'RESTART_AT',
         value: new Date().getTime().toString(),
-      },
-      {
-        name: 'LOG_SERVER_URL',
-        value: region.logServerConf.apiUrl,
-      },
-      {
-        name: 'LOG_SERVER_TOKEN',
-        value: this.jwtService.sign(
-          {
-            appid: appid,
-          },
-          {
-            secret: region.logServerConf.secret,
-          },
-        ),
       },
     ]
 

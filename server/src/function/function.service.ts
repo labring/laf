@@ -37,7 +37,7 @@ export class FunctionService {
     private readonly functionRecycleBinService: FunctionRecycleBinService,
     private readonly httpService: HttpService,
     private readonly regionService: RegionService,
-  ) { }
+  ) {}
   async create(appid: string, userid: ObjectId, dto: CreateFunctionDto) {
     await this.db.collection<CloudFunction>('CloudFunction').insertOne({
       appid,
@@ -364,6 +364,12 @@ export class FunctionService {
     },
   ) {
     const region = await this.regionService.findByAppId(appid)
+    if (!region?.logServerConf?.apiUrl) {
+      return {
+        data: [],
+        total: 0,
+      }
+    }
 
     const res = await this.httpService.axiosRef.get(
       `${region.logServerConf.apiUrl}/function/log`,
