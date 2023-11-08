@@ -68,14 +68,10 @@ export class WebsiteHostingGatewayService {
       metadata: {
         name,
         namespace,
-        annotations: {
+        labels: {
           [LABEL_KEY_APP_ID]: appid,
           'laf.dev/bucket.name': website.bucketName,
           'laf.dev/ingress.type': 'website',
-          // apisix ingress annotations
-          'k8s.apisix.apache.org/svc-namespace': namespace,
-
-          // k8s nginx ingress annotations
         },
       },
       spec: { ingressClassName, rules: [rule], tls },

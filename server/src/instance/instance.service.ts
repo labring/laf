@@ -29,19 +29,6 @@ export class InstanceService {
   public async create(appid: string) {
     const app = await this.applicationService.findOneUnsafe(appid)
     const labels: Record<string, string> = this.getRuntimeLabel(appid)
-    // const region = app.region
-
-    // // Although a namespace has already been created during application creation,
-    // // we still need to check it again here in order to handle situations where the cluster is rebuilt.
-    // const namespace = await this.cluster.getAppNamespace(region, appid)
-    // if (!namespace) {
-    //   this.logger.debug(`Creating namespace for application ${appid}`)
-    //   await this.cluster.createAppNamespace(
-    //     region,
-    //     appid,
-    //     app.createdBy.toString(),
-    //   )
-    // }
 
     // ensure deployment created
     const res = await this.get(app.appid)

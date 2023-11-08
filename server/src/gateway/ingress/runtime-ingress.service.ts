@@ -77,12 +77,13 @@ export class RuntimeGatewayService {
       metadata: {
         name,
         namespace,
-        annotations: {
+        labels: {
           [LABEL_KEY_APP_ID]: appid,
           'laf.dev/ingress.type': 'runtime',
+        },
+        annotations: {
           // apisix ingress annotations
           'k8s.apisix.apache.org/enable-websocket': 'true',
-          'k8s.apisix.apache.org/svc-namespace': namespace,
 
           // k8s nginx ingress annotations
           // websocket is enabled by default in k8s nginx ingress
