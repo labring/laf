@@ -101,5 +101,5 @@ helm install server -n ${NAMESPACE} \
 
 ## 6. install laf-web
 helm install web -n ${NAMESPACE} \
-    --set domain=www.${DOMAIN} \
+    --set domain=${DOMAIN} \
     ./charts/laf-web
