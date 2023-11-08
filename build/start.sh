@@ -72,9 +72,6 @@ helm install minio -n ${NAMESPACE} \
 
 ## 5. install laf-server
 SERVER_JWT_SECRET=$PASSWD_OR_SECRET
-LOG_SERVER_URL="http://log-server.${NAMESPACE}.svc.cluster.local:5060"
-LOG_SERVER_DATABASE_URL="mongodb://${DB_USERNAME:-admin}:${PASSWD_OR_SECRET}@mongodb-0.mongo.${NAMESPACE}.svc.cluster.local:27017/function-logs?authSource=admin&replicaSet=rs0&w=majority"
-LOG_SERVER_SECRET=$PASSWD_OR_SECRET
 RUNTIME_EXPORTER_SECRET=$PASSWD_OR_SECRET
 helm install server -n ${NAMESPACE} \
     --set databaseUrl=${DATABASE_URL} \
@@ -92,10 +89,7 @@ helm install server -n ${NAMESPACE} \
     --set default_region.runtime_domain=${DOMAIN} \
     --set default_region.website_domain=${DOMAIN} \
     --set default_region.tls.enabled=false \
-    --set default_region.log_server_url=${LOG_SERVER_URL} \
-    --set default_region.log_server_secret=${LOG_SERVER_SECRET} \
     --set default_region.runtime_exporter_secret=${RUNTIME_EXPORTER_SECRET} \
-    --set default_region.log_server_database_url=${LOG_SERVER_DATABASE_URL} \
     $([ "$ENABLE_MONITOR" = "true" ] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}") \
     ./charts/laf-server
 

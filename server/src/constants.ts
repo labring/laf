@@ -147,18 +147,6 @@ export class ServerConfig {
     return process.env.DEFAULT_REGION_MINIO_ROOT_SECRET_KEY
   }
 
-  static get DEFAULT_REGION_LOG_SERVER_URL() {
-    return process.env.DEFAULT_REGION_LOG_SERVER_URL
-  }
-
-  static get DEFAULT_REGION_LOG_SERVER_SECRET() {
-    return process.env.DEFAULT_REGION_LOG_SERVER_SECRET
-  }
-
-  static get DEFAULT_REGION_LOG_SERVER_DATABASE_URL() {
-    return process.env.DEFAULT_REGION_LOG_SERVER_DATABASE_URL
-  }
-
   static get DEFAULT_REGION_PROMETHEUS_URL() {
     return process.env.DEFAULT_REGION_PROMETHEUS_URL
   }

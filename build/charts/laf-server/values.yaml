@@ -23,10 +23,6 @@ default_region:
     wildcard_certificate_secret_name: ""
   runtime_domain: ""
   website_domain: ""
-  # log-server
-  log_server_url: ""
-  log_server_secret: ""
-  log_server_database_url: ""
   # runtime-exporter
   runtime_exporter_secret: ""
   # prometheus

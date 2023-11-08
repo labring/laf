@@ -45,18 +45,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Common labels
 */}}
-{{- define "log-server.labels" -}}
-helm.sh/chart: {{ include "laf-server.chart" . }}
-{{ include "log-server.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-
-{{/*
-Common labels
-*/}}
 {{- define "runtime-exporter.labels" -}}
 helm.sh/chart: {{ include "laf-server.chart" . }}
 {{ include "runtime-exporter.selectorLabels" . }}
@@ -71,14 +59,6 @@ Selector labels
 */}}
 {{- define "laf-server.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "laf-server.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
-Selector labels
-*/}}
-{{- define "log-server.selectorLabels" -}}
-app.kubernetes.io/name: log-server
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
