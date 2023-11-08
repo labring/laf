@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import {
   RegisteredFileSystemProvider,
@@ -9,9 +9,9 @@ import { Position } from "vscode/vscode/src/vs/editor/common/core/position";
 
 import { COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
 
-import { createUrl, createWebSocketAndStartClient } from "./LanguageClient";
+import "./useWorker";
 
-import "./theme/index.css";
+import { createUrl, createWebSocketAndStartClient, performInit } from "./LanguageClient";
 
 import { TFunctionNode } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
@@ -31,32 +31,18 @@ const updateModel = (path: string, editorRef: any) => {
 
 function FunctionEditor(props: {
   className?: string;
-  style?: CSSProperties;
   onChange?: (code: string | undefined, pos: Position | undefined) => void;
   path: string;
-  height?: string;
   colorMode?: string;
-  readOnly?: boolean;
   fontSize?: number;
 }) {
-  const {
-    onChange,
-    path,
-    height = "100%",
-    className,
-    style = {},
-    colorMode = COLOR_MODE.light,
-    readOnly = false,
-    fontSize = 14,
-  } = props;
+  const { onChange, path, className, colorMode = COLOR_MODE.light, fontSize = 14 } = props;
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
   const globalStore = useGlobalStore((state) => state);
-  const { allFunctionList, setLSPStatus } = useFunctionStore(
-    (state) => state,
-  );
+  const { allFunctionList, setLSPStatus } = useFunctionStore((state) => state);
   const functionCache = useFunctionCache();
   const [functionList, setFunctionList] = useState(allFunctionList);
   const baseUrl = globalStore.currentApp.host;
@@ -118,11 +104,11 @@ function FunctionEditor(props: {
 
   useEffect(() => {
     if (monacoEl && !editorRef.current) {
+      performInit(true);
       editorRef.current = monaco.editor.create(monacoEl.current!, {
         minimap: {
           enabled: false,
         },
-        readOnly: readOnly,
         language: "typescript",
         automaticLayout: true,
         scrollbar: {
@@ -133,7 +119,7 @@ function FunctionEditor(props: {
         overviewRulerLanes: 0,
         lineNumbersMinChars: 4,
         fontSize: fontSize,
-        theme: colorMode === COLOR_MODE.dark ? "lafEditorDarkTheme" : "lafEditorTheme",
+        theme: colorMode === COLOR_MODE.dark ? "vs-dark" : "vs",
         fontFamily: "Fira Code",
         fontWeight: "450",
         scrollBeyondLastLine: false,
@@ -165,8 +151,8 @@ function FunctionEditor(props: {
 
     setFunctionList(allFunctionList);
     updateModel(path, editorRef);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allFunctionList, path]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allFunctionList, functionList, path]);
 
   // onChange
   useEffect(() => {
@@ -192,12 +178,12 @@ function FunctionEditor(props: {
     if (monacoEl && editorRef.current) {
       editorRef.current.updateOptions({
         fontSize: fontSize,
-        theme: colorMode === COLOR_MODE.dark ? "lafEditorDarkTheme" : "lafEditorTheme",
+        theme: colorMode === COLOR_MODE.dark ? "vs-dark" : "vs",
       });
     }
   }, [colorMode, fontSize]);
 
-  return <div style={{ height: height, ...style }} className={className} ref={monacoEl}></div>;
+  return <div className={className} ref={monacoEl}></div>;
 }
 
 export default FunctionEditor;

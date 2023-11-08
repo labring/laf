@@ -23,9 +23,11 @@ export default function LSPBar() {
         </div>
       )}
       {LSPStatus === "closed" && (
-        <div className="flex items-center text-warn-600">
-          <span>{t("LSP.LanguageServerClosed")}</span>
-        </div>
+        <Tooltip label={t("LSP.StartLanguageServer")}>
+          <div className="flex items-center text-warn-600">
+            <span>{t("LSP.LanguageServerClosed")}</span>
+          </div>
+        </Tooltip>
       )}
       {LSPStatus === "error" && (
         <Tooltip label={t("LSP.InitLanguageServer")}>

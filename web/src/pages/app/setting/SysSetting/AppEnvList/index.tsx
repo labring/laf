@@ -24,14 +24,16 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
           <Center className="h-[360px]">
             <Spinner />
           </Center>
-        ) : (<ENVEditor env={env} setEnv={setEnv} />)}
-        <ButtonGroup className="mt-4 h-8 self-end space-x-4">
+        ) : (
+          <ENVEditor env={env} setEnv={setEnv} />
+        )}
+        <ButtonGroup className="mt-4 h-8 space-x-4 self-end">
           <Button
             w={24}
             variant="outline"
             color={"grayModern.500"}
             onClick={() => {
-              setEnv(data?.data || [])
+              setEnv(data?.data || []);
             }}
           >
             {t("Reset")}
@@ -43,7 +45,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
               const res = await updateEnvironmentMutation.mutateAsync(env);
               if (!res.error) {
                 props.onClose && props.onClose();
-                globalStore.showSuccess(t("UpdateSuccess"))
+                globalStore.showSuccess(t("UpdateSuccess"));
               }
             }}
           >

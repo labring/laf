@@ -697,7 +697,8 @@
     "InitLanguageServer": "Click to reconnect to language server",
     "LanguageServerClosed": "Language Server Closed",
     "LanguageServerError": "Language Server Error",
-    "InitializingLanguageServer": "Initializing Language Server"
+    "InitializingLanguageServer": "Initializing Language Server",
+    "StartLanguageServer": "Click on 'Settings' on the left to enable the language server."
   },
   "KeyAlreadyExists": "Key already exists",
   "SettingPanal": {

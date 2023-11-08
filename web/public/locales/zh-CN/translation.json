@@ -697,7 +697,8 @@
     "InitLanguageServer": "点击以重新连接语言服务器",
     "LanguageServerClosed": "语言服务器关闭",
     "LanguageServerError": "语言服务器错误",
-    "InitializingLanguageServer": "正在初始化语言服务"
+    "InitializingLanguageServer": "正在初始化语言服务",
+    "StartLanguageServer": "点击左侧”设置”启用语言服务器"
   },
   "KeyAlreadyExists": "key 已经存在",
   "SettingPanal": {

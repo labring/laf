@@ -57,6 +57,7 @@ export default defineConfig(({ command, mode }) => {
       alias: {
         "@": path.resolve(__dirname, "./src"),
       },
+      dedupe: ['monaco-editor', 'vscode']
     },
     build: {
       sourcemap: true,

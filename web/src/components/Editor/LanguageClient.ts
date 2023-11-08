@@ -10,6 +10,7 @@ import { toSocket, WebSocketMessageReader, WebSocketMessageWriter } from "vscode
 import { RUNTIMES_PATH } from "@/constants";
 
 import "@codingame/monaco-vscode-typescript-basics-default-extension";
+import "@codingame/monaco-vscode-theme-defaults-default-extension";
 import "./TextModel";
 
 export const createLanguageClient = (transports: MessageTransports): MonacoLanguageClient => {

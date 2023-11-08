@@ -11,9 +11,10 @@ import { useFunctionListQuery } from "../../service";
 import useFunctionStore from "../../store";
 import CreateModal from "../FunctionPanel/CreateModal";
 
+import "@/components/Editor/index.css";
+
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useCustomSettingStore from "@/pages/customSetting";
-
 
 function EditorPanel() {
   const store = useFunctionStore((store) => store);
@@ -25,7 +26,7 @@ function EditorPanel() {
 
   const functionListQuery = useFunctionListQuery();
   return (
-    <Panel className="flex-1 flex-grow !rounded-tl-none px-0">
+    <Panel className="flex-1 flex-grow !rounded-tl-none !px-0">
       {!functionListQuery.isFetching && functionListQuery.data?.data?.length === 0 && (
         <EmptyBox className="mt-24">
           <>
@@ -42,10 +43,6 @@ function EditorPanel() {
         <FunctionEditor
           colorMode={colorMode}
           className="flex-grow"
-          style={{
-            marginLeft: -14,
-            marginRight: -14,
-          }}
           path={`${RUNTIMES_PATH}/${currentFunction?.name}.ts`}
           onChange={(code, pos) => {
             updateFunctionCode(currentFunction, code || "");
@@ -57,11 +54,13 @@ function EditorPanel() {
       ) : (
         <TSEditor
           value={functionCache.getCache(currentFunction!._id, currentFunction!.source?.code)}
+          path={`${RUNTIMES_PATH}/${currentFunction?.name}.ts`}
           onChange={(value) => {
             updateFunctionCode(currentFunction, value || "");
             functionCache.setCache(currentFunction!._id, value || "");
           }}
           fontSize={commonSettings.fontSize}
+          colorMode={colorMode}
         />
       )}
     </Panel>

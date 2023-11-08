@@ -6,8 +6,6 @@ import { EditIconLine, RecycleDeleteIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import { COLOR_MODE } from "@/constants";
 
-import "@/components/Editor/theme";
-
 import AddFunctionModal from "../../CreateFuncTemplate/Mods/AddFunctionModal";
 
 import FunctionPopOver from "./FunctionPopover";

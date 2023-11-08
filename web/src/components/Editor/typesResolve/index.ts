@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// import * as monaco from "monaco-editor";
 import { globalDeclare } from "./globals";
 
 import useGlobalStore from "@/pages/globalStore";
@@ -68,41 +67,41 @@ export class AutoImportTypings {
    * @param {string} source ts 代码
    * @returns
    */
-  async parse(source: string, defaults: any) {
+  async parse(source: string, monaco: any) {
     const rets = this._parser.parseDependencies(source);
     if (!rets || !rets.length) return;
 
     const newImports = rets.filter((pkg) => !this.isLoaded(pkg));
     for (const pkg of newImports) {
-      await this.loadDeclaration(pkg, defaults);
+      await this.loadDeclaration(pkg, monaco);
     }
   }
 
   /**
    * 加载初始默认的 类型文件
    */
-  loadDefaults(defaults: any) {
-    this.addExtraLib({ path: "globals.d.ts", content: globalDeclare, defaults });
+  loadDefaults(monaco: any) {
+    this.addExtraLib({ path: "globals.d.ts", content: globalDeclare, monaco });
     if (!this.isLoaded("globals")) {
-      this.loadDeclaration("globals", defaults);
+      this.loadDeclaration("globals", monaco);
     }
     if (!this.isLoaded("database-proxy")) {
-      this.loadDeclaration("database-proxy", defaults);
+      this.loadDeclaration("database-proxy", monaco);
     }
     if (!this.isLoaded("database-ql")) {
-      this.loadDeclaration("database-ql", defaults);
+      this.loadDeclaration("database-ql", monaco);
     }
     if (!this.isLoaded("axios")) {
-      this.loadDeclaration("axios", defaults);
+      this.loadDeclaration("axios", monaco);
     }
     if (!this.isLoaded("mongodb")) {
-      this.loadDeclaration("mongodb", defaults);
+      this.loadDeclaration("mongodb", monaco);
     }
     if (!this.isLoaded("@types/node")) {
-      this.loadDeclaration("@types/node", defaults);
+      this.loadDeclaration("@types/node", monaco);
     }
     if (!this.isLoaded("ws")) {
-      this.loadDeclaration("ws", defaults);
+      this.loadDeclaration("ws", monaco);
     }
   }
 
@@ -120,7 +119,7 @@ export class AutoImportTypings {
    * @param {string} packageName
    * @returns
    */
-  async loadDeclaration(packageName: string, defaults: any) {
+  async loadDeclaration(packageName: string, monaco: any) {
     if (this.isLoaded(packageName)) return;
     try {
       const r = await loadPackageTypings(packageName).catch((err: any) => console.error(err));
@@ -134,15 +133,12 @@ export class AutoImportTypings {
         if (packageName === lib.packageName && lib.path !== `${packageName}/index.d.ts`) {
           const _lib = { ...lib };
           _lib.path = `${packageName}/index.d.ts`;
-          this.addExtraLib({path:_lib.path, content: _lib.content, defaults});
+          this.addExtraLib({ path: _lib.path, content: _lib.content, monaco });
         }
-        this.addExtraLib({path: lib.path, content: lib.content, defaults});
-      }
 
-      console.log("loadDeclaration", packageName)
-      console.log("this._loaded", this._loaded)
+        this.addExtraLib({ path: lib.path, content: lib.content, monaco });
+      }
       this._loaded.push(packageName);
-      console.log("this._loaded", this._loaded)
     } catch (error) {
       console.error(`failed to load package: ${packageName} :`, error);
     }
@@ -153,8 +149,9 @@ export class AutoImportTypings {
    * @param {path: string, content: string} param0
    * @returns
    */
-  addExtraLib({ path, content, defaults }: { path: string; content: string; defaults: any }) {
+  addExtraLib({ path, content, monaco }: { path: string; content: string; monaco: any }) {
     const fullPath = `file:///node_modules/${path}`;
+    const defaults = monaco.languages.typescript.typescriptDefaults;
     const loaded = defaults.getExtraLibs();
     const keys = Object.keys(loaded);
 
@@ -163,15 +160,11 @@ export class AutoImportTypings {
       return;
     }
     try {
-      defaults.addExtraLib(content, fullPath, defaults);
+      defaults.addExtraLib(content, fullPath);
+      monaco.editor.createModel(content, "typescript", monaco.Uri.parse(fullPath));
     } catch (error) {
       console.log(error, fullPath, keys);
       throw error;
     }
   }
-
-  // getExtraLibs() {
-  //   const defaults = monaco.languages.typescript.typescriptDefaults;
-  //   return defaults.getExtraLibs();
-  // }
 }
