@@ -71,13 +71,14 @@ export class BucketGatewayService {
       metadata: {
         name,
         namespace,
-        annotations: {
+        labels: {
           [LABEL_KEY_APP_ID]: appid,
           'laf.dev/bucket.name': domain.bucketName,
           'laf.dev/ingress.type': 'bucket',
+        },
+        annotations: {
           // apisix ingress annotations
           'k8s.apisix.apache.org/cors-expose-headers': '*',
-          'k8s.apisix.apache.org/svc-namespace': namespace,
 
           // k8s nginx ingress annotations
           // websocket is enabled by default in k8s nginx ingress
