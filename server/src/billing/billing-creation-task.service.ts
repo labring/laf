@@ -122,6 +122,10 @@ export class BillingCreationTaskService {
       app,
       nextMeteringTime,
     )
+    if (!meteringData) {
+      this.logger.warn(`No metering data found for application: ${appid}`)
+      return
+    }
 
     // get application bundle
     const bundle = await this.bundleService.findOne(appid)
