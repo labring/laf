@@ -232,7 +232,9 @@
     "FuncListDisplay": "Function List Display",
     "ListDisplay": "List Display",
     "EditorLanguageServer": "Editor Language Server",
-    "isOpenLanguageServer": "Open or Close Language server"
+    "isOpenLanguageServer": "Enable or Close Language server (Note that enabling this feature may consume more CPU and memory)",
+    "Editor": "Editor",
+    "FuncList": "Function List"
   },
   "StoragePanel": {
     "All": "Total Capacity",

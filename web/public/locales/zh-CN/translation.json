@@ -232,7 +232,9 @@
     "FuncListDisplay": "函数列表显示",
     "ListDisplay": "列表显示",
     "EditorLanguageServer": "编辑器语言服务",
-    "isOpenLanguageServer": "是否开启语言服务"
+    "isOpenLanguageServer": "是否开启语言服务（开启后会占用更多的 CPU 和内存）",
+    "Editor": "编辑器",
+    "FuncList": "函数列表"
   },
   "StoragePanel": {
     "All": "总容量",

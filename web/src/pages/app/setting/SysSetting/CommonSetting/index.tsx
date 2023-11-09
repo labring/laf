@@ -26,7 +26,7 @@ export default function CommonSetting() {
   return (
     <div className="ml-12 mr-16">
       <div className="mt-8 flex flex-col">
-        <span className="mb-2 text-xl font-medium">{t("SettingPanel.EditorLanguageServer")}</span>
+        <span className="mb-2 text-xl font-medium">{t("SettingPanel.Editor")}</span>
         <span className={darkMode ? "mb-2 text-grayModern-200" : "mb-2 text-grayModern-700"}>
           {t("SettingPanel.isOpenLanguageServer")}
         </span>
@@ -45,7 +45,6 @@ export default function CommonSetting() {
         </div>
       </div>
       <div className="mt-4 flex flex-col">
-        <span className="mb-2 text-xl font-medium">{t("SettingPanel.EditorFont")}</span>
         <span className={darkMode ? "mb-2 text-grayModern-200" : "mb-2 text-grayModern-700"}>
           {t("SettingPanel.FontSize")}
         </span>
@@ -72,7 +71,7 @@ export default function CommonSetting() {
       </div>
       <Divider className="my-8" />
       <div className="flex flex-col">
-        <span className="mb-2 text-xl font-medium">{t("SettingPanel.FuncListDisplay")}</span>
+        <span className="mb-2 text-xl font-medium">{t("SettingPanel.FuncList")}</span>
         <span className={darkMode ? "mb-2 text-grayModern-200" : "mb-2 text-grayModern-700"}>
           {t("SettingPanel.ListDisplay")}
         </span>

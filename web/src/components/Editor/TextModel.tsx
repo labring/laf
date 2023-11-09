@@ -57,7 +57,7 @@ StandaloneCodeEditorService.prototype.doOpenEditor = function (
       editor.setSelection(selection);
       editor.revealRangeInCenter(selection, 1);
     } else {
-      var pos = {
+      const pos = {
         lineNumber: selection.startLineNumber,
         column: selection.startColumn,
       };
