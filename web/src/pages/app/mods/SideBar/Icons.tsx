@@ -1,7 +1,7 @@
 import React from "react";
 import { Icon } from "@chakra-ui/react";
 
-function Icons(props: { type: "function" | "database" | "storage" | "logs" | "setting" | "info" }) {
+function Icons(props: { type: "function" | "database" | "storage" | "setting" | "info" }) {
   const { type } = props;
   switch (type) {
     case "function":
@@ -22,20 +22,6 @@ function Icons(props: { type: "function" | "database" | "storage" | "logs" | "se
       return (
         <Icon width="28px" height="28px" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
           <path d="M21 4.66659V23.3333H6.99999V10.3016L12.635 4.66659H21ZM21 2.33325H11.6667L4.66666 9.33325V23.3333C4.66666 24.6166 5.71666 25.6666 6.99999 25.6666H21C22.2833 25.6666 23.3333 24.6166 23.3333 23.3333V4.66659C23.3333 3.38325 22.2833 2.33325 21 2.33325ZM10.5 8.16659H12.8333V12.8333H10.5V8.16659ZM14 8.16659H16.3333V12.8333H14V8.16659ZM17.5 8.16659H19.8333V12.8333H17.5V8.16659Z" />
-        </Icon>
-      );
-
-    case "logs":
-      return (
-        <Icon
-          width="28px"
-          height="28px"
-          viewBox="0 0 28 28"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M22.1667 5.83333V22.1667H5.83333V5.83333H22.1667ZM22.1667 3.5H5.83333C4.55 3.5 3.5 4.55 3.5 5.83333V22.1667C3.5 23.45 4.55 24.5 5.83333 24.5H22.1667C23.45 24.5 24.5 23.45 24.5 22.1667V5.83333C24.5 4.55 23.45 3.5 22.1667 3.5Z" />
-          <path d="M16.3333 19.8334H8.16666V17.5001H16.3333V19.8334ZM19.8333 15.1667H8.16666V12.8334H19.8333V15.1667ZM19.8333 10.5001H8.16666V8.16675H19.8333V10.5001Z" />
         </Icon>
       );
 

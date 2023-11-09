@@ -230,7 +230,8 @@
     "EditorFont": "编辑器字体",
     "FontSize": "字体大小",
     "FuncListDisplay": "函数列表显示",
-    "ListDisplay": "列表显示"
+    "ListDisplay": "列表显示",
+    "OldLogs": "旧版日志"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -687,5 +688,6 @@
     "PodLogs": "应用实例日志",
     "Export": "导出",
     "logs": "日志"
-  }
+  },
+  "Deprecated": "已弃用"
 }
