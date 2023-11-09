@@ -72,7 +72,7 @@ async function invokeFunction(
   try {
     // execute the func
     ctx.__function_name = func.data.name
-    const result = await func.execute(ctx, useInterceptor)
+    const result = await func.invoke(ctx, useInterceptor)
 
     if (result.error) {
       logger.error(result.error)
@@ -166,7 +166,7 @@ async function invokeDebug(
   try {
     // execute the func
     ctx.__function_name = funcName
-    const result = await func.execute(ctx, useInterceptor, debugConsole)
+    const result = await func.invoke(ctx, useInterceptor)
 
     // set logs to response header
     if (result.error) {
@@ -183,7 +183,7 @@ async function invokeDebug(
       const encoded = encodeURIComponent(logs)
       ctx.response.set('x-laf-func-logs', encoded)
     }
-    
+
     ctx.response.set('x-laf-debug-time-usage', result.time_usage.toString())
 
     if (result.error) {
