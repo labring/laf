@@ -1,14 +1,15 @@
 import { RunningScriptOptions } from 'vm'
-import { FunctionCache, FunctionContext } from '.'
+import { FunctionCache, FunctionModuleGlobalContext } from '.'
 import Config from '../../config'
-import { buildSandbox, createScript } from './utils'
+import { Console } from '.'
+import * as vm from 'vm'
 
 export class FunctionModule {
-  private static cache: Map<string, any> = new Map()
+  protected static cache: Map<string, any> = new Map()
 
   static get(functionName: string): any {
     const moduleName = `@/${functionName}`
-    return FunctionModule.require(moduleName, [])
+    return this.require(moduleName, [])
   }
 
   static require(name: string, fromModule: string[]): any {
@@ -29,71 +30,122 @@ export class FunctionModule {
         )
       }
 
-      // build function context
-      const functionContext: FunctionContext = {
-        requestId: '',
-        __function_name: name,
-      }
-
       // build function module
       const data = FunctionCache.get(name)
-      const functionModule = FunctionModule.build(
-        data.source.compiled,
-        functionContext,
-        fromModule,
-      )
+      const mod = this.compile(name, data.source.compiled, fromModule)
 
       // cache module
       if (!Config.DISABLE_MODULE_CACHE) {
-        FunctionModule.cache.set(name, functionModule)
+        FunctionModule.cache.set(name, mod)
       }
-      return functionModule
+      return mod
     }
     return require(name)
   }
 
   /**
-   * build function module
-   * @param code
-   * @param functionContext
-   * @param fromModule
-   * @returns
+   * Compile function module
    */
-  private static build(
+  static compile(
+    functionName: string,
     code: string,
-    functionContext: FunctionContext,
-    fromModule: string[],
+    fromModules: string[],
+    consoleInstance?: Console,
   ): any {
-    code = FunctionModule.wrap(code)
-    const sandbox = buildSandbox(functionContext, fromModule)
+    const wrapped = this.wrap(code)
+    const sandbox = this.buildSandbox(
+      functionName,
+      fromModules,
+      consoleInstance,
+    )
     const options: RunningScriptOptions = {
-      filename: `CloudFunction.${functionContext.__function_name}`,
+      filename: `FunctionModule.${functionName}`,
       displayErrors: true,
       contextCodeGeneration: {
         strings: false,
       },
     } as any
-    const script = createScript(code, {})
+    const script = this.createScript(wrapped, {})
     return script.runInNewContext(sandbox, options)
   }
 
-  static deleteCache(name: string): void {
-    FunctionModule.cache.delete(name)
-  }
-
-  static deleteAllCache(): void {
+  static deleteCache(): void {
     FunctionModule.cache.clear()
   }
 
-  private static wrap(code: string): string {
+  protected static wrap(code: string): string {
     return `
     const require = (name) => {
-      fromModule.push(__filename)
-      return requireFunc(name, fromModule)
+      __from_modules.push(__filename)
+      return __require(name, __from_modules)
     }
-    const exports = {};
+
     ${code}
     exports;
     `
+  }
+
+  /**
+   * Create vm.Script
+   */
+  protected static createScript(
+    code: string,
+    options: vm.RunningScriptOptions,
+  ): vm.Script {
+    const _options = {
+      ...options,
+
+      importModuleDynamically: async (
+        specifier: string,
+        _: vm.Script,
+        _importAssertions: any,
+      ) => {
+        return await import(specifier)
+      },
+    } as any
+
+    const script = new vm.Script(code, _options)
+    return script
+  }
+
+  /**
+   * Build function module global sandbox
+   */
+  protected static buildSandbox(
+    functionName: string,
+    fromModules: string[],
+    consoleInstance?: Console,
+  ): FunctionModuleGlobalContext {
+    const _module = {
+      exports: {},
+    }
+
+    const fConsole = consoleInstance || new Console(functionName)
+    const __from_modules = fromModules || []
+
+    const sandbox: FunctionModuleGlobalContext = {
+      __filename: functionName,
+      module: _module,
+      exports: _module.exports,
+      console: fConsole,
+      __require: this.require.bind(this),
+      Buffer: Buffer,
+      setImmediate: setImmediate,
+      clearImmediate: clearImmediate,
+      Float32Array: Float32Array,
+      setInterval: setInterval,
+      clearInterval: clearInterval,
+      setTimeout: setTimeout,
+      clearTimeout: clearTimeout,
+      process: {
+        env: { ...process.env },
+      },
+      URL: URL,
+      fetch: globalThis.fetch,
+      global: null,
+      __from_modules: [...__from_modules],
+    }
+    sandbox.global = sandbox
+    return sandbox
   }
 }

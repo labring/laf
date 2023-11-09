@@ -4,9 +4,15 @@ import { DatabaseAgent } from '../db'
 import { getToken, parseToken } from './token'
 import { WebSocketAgent } from './ws'
 import Config from '../config'
-import { CloudFunction, FunctionCache, FunctionContext } from './engine'
+import { FunctionContext } from './engine'
+import { FunctionModule } from './engine/module'
 
 Cloud.create = createCloudSdk
+
+/**
+ * object shared cross all functions & requests
+ */
+const _shared_preference = new Map<string, any>()
 
 /**
  * Create a new Cloud SDK instance
@@ -17,7 +23,7 @@ function createCloudSdk() {
   const cloud: CloudSdkInterface = {
     database: () => getDb(DatabaseAgent.accessor),
     invoke: invokeInFunction,
-    shared: CloudFunction._shared_preference,
+    shared: _shared_preference,
     getToken: getToken,
     parseToken: parseToken,
     mongo: {
@@ -47,28 +53,23 @@ function createCloudSdk() {
  * The cloud function is invoked in the cloud function, which runs in the cloud function.
  *
  * @param name the name of cloud function to be invoked
- * @param param the invoke params
+ * @ctx ctx the invoke params
  * @returns
  */
-async function invokeInFunction(name: string, param?: FunctionContext) {
-  const func = FunctionCache.getEngine(name)
+async function invokeInFunction(name: string, ctx?: FunctionContext) {
+  const mod = FunctionModule.get(name)
+  const func = mod?.default || mod?.main
 
   if (!func) {
     throw new Error(`invoke() failed to get function: ${name}`)
   }
 
-  param = param ?? ({} as any)
-  param.__function_name = name
+  ctx = ctx ?? ({} as any)
+  ctx.__function_name = name
 
-  param.requestId = param.requestId ?? 'invoke'
+  ctx.requestId = ctx.requestId ?? 'invoke'
 
-  param.method = param.method ?? 'call'
+  ctx.method = ctx.method ?? 'call'
 
-  const result = await func.execute(param)
-
-  if (result.error) {
-    throw result.error
-  }
-
-  return result.data
+  return await func(ctx)
 }

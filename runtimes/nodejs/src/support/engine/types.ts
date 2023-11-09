@@ -12,12 +12,11 @@ export type RequireFuncType = (
 /**
  * vm run context (global)
  */
-export interface RuntimeContext {
-  __context__: FunctionContext
+export interface FunctionModuleGlobalContext {
   module: { exports: Object }
   exports: Object
   console: any
-  requireFunc: RequireFuncType
+  __require: RequireFuncType
   Buffer: typeof Buffer
   setTimeout: typeof setTimeout
   clearTimeout: typeof clearTimeout
@@ -25,12 +24,15 @@ export interface RuntimeContext {
   clearInterval: typeof clearInterval
   setImmediate: typeof setImmediate
   clearImmediate: typeof clearImmediate
+  Float32Array: typeof Float32Array
   __filename: string
+  URL: typeof URL
   process: {
     env: { [key: string]: string }
   }
-  global: RuntimeContext
-  fromModule: string[]
+  global: FunctionModuleGlobalContext
+  __from_modules: string[]
+  fetch: typeof globalThis.fetch
 }
 
 /**
@@ -41,19 +43,13 @@ export interface FunctionContext {
   headers?: IncomingHttpHeaders
   query?: any
   body?: any
-  params?: any
-  /**
-   * @deprecated use user instead
-   */
-  auth?: any
   user?: any
-  requestId: string
+  requestId?: string
   method?: string
   socket?: WebSocket
   request?: Request
   response?: Response
   __function_name?: string
-  __is_required?: boolean
   [key: string]: any
 }
 
