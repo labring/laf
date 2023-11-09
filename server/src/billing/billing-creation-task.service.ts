@@ -20,6 +20,7 @@ export class BillingCreationTaskService {
   private readonly logger = new Logger(BillingCreationTaskService.name)
   private readonly lockTimeout = 15 // in second
   private readonly billingInterval = 60 * 60 // in second
+  private lastTick = TASK_LOCK_INIT_TIME
 
   constructor(
     private readonly billing: BillingService,
@@ -34,12 +35,22 @@ export class BillingCreationTaskService {
       return
     }
 
+    // If last tick is less than 1 minute ago, return
+    if (Date.now() - this.lastTick.getTime() < 1000 * 60) {
+      this.logger.debug(
+        `Skip billing creation task due to last tick time ${this.lastTick.toISOString()}`,
+      )
+      return
+    }
+
     // Handle application billing creation
     this.logger.debug('Start handling application billing creation')
     await this.handleApplicationBillingCreating()
   }
 
   private async handleApplicationBillingCreating() {
+    this.lastTick = new Date()
+
     const db = SystemDatabase.db
     const res = await db
       .collection<Application>('Application')
