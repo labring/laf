@@ -94,7 +94,6 @@ export class ApplicationService {
           regionId: new ObjectId(dto.regionId),
           runtimeId: new ObjectId(dto.runtimeId),
           billingLockedAt: TASK_LOCK_INIT_TIME,
-          latestBillingTime: TASK_LOCK_INIT_TIME,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
