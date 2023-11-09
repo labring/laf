@@ -234,7 +234,8 @@
     "EditorLanguageServer": "编辑器语言服务",
     "isOpenLanguageServer": "是否开启语言服务（开启后会占用更多的 CPU 和内存）",
     "Editor": "编辑器",
-    "FuncList": "函数列表"
+    "FuncList": "函数列表",
+    "OldLogs": "旧版日志"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -706,5 +707,6 @@
   "SettingPanal": {
     "EditorSettings": "编辑器设置",
     "FunctionListSettings": "函数列表设置"
-  }
+  },
+  "Deprecated": "已弃用"
 }

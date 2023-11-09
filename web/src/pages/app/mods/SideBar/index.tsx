@@ -55,11 +55,6 @@ export default function SideBar() {
       name: String(t("StoragePanel.Storage")),
       icon: <Icons type="storage" />,
     },
-    {
-      pageId: Pages.logs,
-      name: String(t("LogPanel.Log")),
-      icon: <Icons type="logs" />,
-    },
   ];
 
   const BOTTOM_ICONS: TIcon[] = [

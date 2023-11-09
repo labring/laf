@@ -234,7 +234,8 @@
     "EditorLanguageServer": "Editor Language Server",
     "isOpenLanguageServer": "Enable or Close Language server (Note that enabling this feature may consume more CPU and memory)",
     "Editor": "Editor",
-    "FuncList": "Function List"
+    "FuncList": "Function List",
+    "OldLogs": "Old Logs"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -706,5 +707,6 @@
   "SettingPanal": {
     "EditorSettings": "Editor Settings",
     "FunctionListSettings": "Function list settings"
-  }
+  },
+  "Deprecated": "Deprecated"
 }

@@ -9,7 +9,6 @@ export const Pages = {
   function: "function",
   storage: "storage",
   database: "database",
-  logs: "logs",
   setting: "setting",
   userSetting: "userSetting",
 };
@@ -97,6 +96,7 @@ export enum APP_SETTING_KEY {
   MONITOR = "monitor",
   DOMAIN = "domain",
   COMMON = "common",
+  OLD_LOGS = "oldLogs",
 }
 
 export const RUNTIMES_PATH = "/app/functions";
