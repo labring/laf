@@ -23,6 +23,7 @@ export type TTabItem = {
   name: string;
   component: React.ReactElement;
   icon: React.ReactElement;
+  status?: string | null;
 };
 
 export type TTabMatch = {
@@ -118,6 +119,7 @@ const SettingModal = (props: {
                               <span className="flex">
                                 <span className="flex items-center pr-2 ">{tab.icon}</span>
                                 {tab.name}
+                                {tab?.status && <span className="border rounded-full px-1 text-red-300 border-red-300 scale-75 ml-4">{tab.status}</span>}
                               </span>
                             </SectionList.Item>
                           );
