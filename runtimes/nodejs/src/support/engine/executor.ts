@@ -5,6 +5,7 @@ import { INTERCEPTOR_FUNCTION_NAME } from '../../constants'
 import { FunctionModule } from './module'
 import assert from 'assert'
 import { DebugConsole } from './console'
+import { logger } from '../logger'
 
 export class FunctionExecutor {
   /**
@@ -36,7 +37,9 @@ export class FunctionExecutor {
       }
 
       let data = null
-      if (useInterceptor) {
+      if (this.data.name === INTERCEPTOR_FUNCTION_NAME) {
+        data = await main(context, () => {})
+      } else if (useInterceptor) {
         data = await this.invokeWithInterceptor(context, main)
       } else {
         data = await main(context)
@@ -80,6 +83,9 @@ export class FunctionExecutor {
     if (interceptor.length === 2) {
       return interceptor(context, next)
     } else {
+      logger.warn(
+        'WARNING: the old style interceptor function is deprecated in `__interceptor__`, use `next()` as its second param instead',
+      )
       const res = await interceptor(context)
       if (res === false) {
         return {
