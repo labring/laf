@@ -62,7 +62,7 @@ export class Application {
 
   billingLockedAt: Date
 
-  latestBillingTime?: Date
+  latestBillingTime: Date
 
   constructor(partial: Partial<Application>) {
     Object.assign(this, partial)

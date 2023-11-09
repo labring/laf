@@ -125,9 +125,10 @@ export class BillingCreationTaskService {
     const db = SystemDatabase.db
 
     // determine latest billing time & next metering time
-    const latestBillingTime = app.latestBillingTime
-      ? app.latestBillingTime
-      : await this.getLatestBillingTime(appid)
+    const latestBillingTime =
+      app.latestBillingTime > TASK_LOCK_INIT_TIME
+        ? app.latestBillingTime
+        : await this.getLatestBillingTime(appid)
     const nextMeteringTime = new Date(
       latestBillingTime.getTime() + 1000 * this.billingInterval,
     )
