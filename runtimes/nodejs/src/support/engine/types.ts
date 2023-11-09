@@ -6,7 +6,7 @@ import WebSocket = require('ws')
 export type RequireFuncType = (
   module: string,
   fromModules: string[],
-  ctx: FunctionContext,
+  filename: string
 ) => any
 
 /**
