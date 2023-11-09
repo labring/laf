@@ -31,7 +31,7 @@ export class PhoneController {
   @Post('phone/sms/code')
   async sendCode(@Req() req: IRequest, @Body() dto: SendPhoneCodeDto) {
     const { phone, type } = dto
-    const ip = req.headers['x-real-ip'] as string
+    const ip = req.headers['x-forwarded-for'] as string
 
     const err = await this.phoneService.sendCode(phone, type, ip)
     if (err) {

@@ -21,7 +21,7 @@ export class EmailController {
   @Post('email/code')
   async sendCode(@Req() req: IRequest, @Body() dto: SendEmailCodeDto) {
     const { email, type } = dto
-    const ip = req.headers['x-real-ip'] as string
+    const ip = req.headers['x-forwarded-for'] as string
 
     const err = await this.emailService.sendCode(email, type, ip)
     if (err) {
