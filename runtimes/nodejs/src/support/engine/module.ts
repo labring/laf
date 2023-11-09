@@ -1,5 +1,5 @@
 import { RunningScriptOptions } from 'vm'
-import { FunctionCache, FunctionContext, FunctionModuleGlobalContext } from '.'
+import { FunctionCache, FunctionModuleGlobalContext } from '.'
 import Config from '../../config'
 import { Console } from '.'
 import * as vm from 'vm'
@@ -7,9 +7,9 @@ import * as vm from 'vm'
 export class FunctionModule {
   protected static cache: Map<string, any> = new Map()
 
-  static getModule(functionName: string): any {
+  static get(functionName: string): any {
     const moduleName = `@/${functionName}`
-    return FunctionModule.require(moduleName, [])
+    return this.require(moduleName, [])
   }
 
   static require(name: string, fromModule: string[]): any {
@@ -32,33 +32,34 @@ export class FunctionModule {
 
       // build function module
       const data = FunctionCache.get(name)
-      const functionModule = FunctionModule.build(
-        name,
-        data.source.compiled,
-        fromModule,
-      )
+      const mod = this.compile(name, data.source.compiled, fromModule)
 
       // cache module
       if (!Config.DISABLE_MODULE_CACHE) {
-        FunctionModule.cache.set(name, functionModule)
+        FunctionModule.cache.set(name, mod)
       }
-      return functionModule
+      return mod
     }
     return require(name)
   }
 
   /**
-   * Build function module
+   * Compile function module
    */
-  protected static build(
+  static compile(
     functionName: string,
     code: string,
     fromModules: string[],
+    consoleInstance?: Console,
   ): any {
-    const wrapped = FunctionModule.wrap(code)
-    const sandbox = this.buildSandbox(functionName, fromModules)
+    const wrapped = this.wrap(code)
+    const sandbox = this.buildSandbox(
+      functionName,
+      fromModules,
+      consoleInstance,
+    )
     const options: RunningScriptOptions = {
-      filename: `CloudFunction.${functionName}`,
+      filename: `FunctionModule.${functionName}`,
       displayErrors: true,
       contextCodeGeneration: {
         strings: false,
@@ -68,7 +69,7 @@ export class FunctionModule {
     return script.runInNewContext(sandbox, options)
   }
 
-  static deleteAllCache(): void {
+  static deleteCache(): void {
     FunctionModule.cache.clear()
   }
 
@@ -79,7 +80,6 @@ export class FunctionModule {
       return __require(name, __from_modules)
     }
 
-    const exports = {};
     ${code}
     exports;
     `
@@ -114,21 +114,21 @@ export class FunctionModule {
   protected static buildSandbox(
     functionName: string,
     fromModules: string[],
-    consoleInstance: Console = null,
+    consoleInstance?: Console,
   ): FunctionModuleGlobalContext {
     const _module = {
       exports: {},
     }
-    fromModules = fromModules || []
 
     const fConsole = consoleInstance || new Console(functionName)
+    const __from_modules = fromModules || []
 
     const sandbox: FunctionModuleGlobalContext = {
       __filename: functionName,
       module: _module,
       exports: _module.exports,
       console: fConsole,
-      __require: FunctionModule.require,
+      __require: this.require.bind(this),
       Buffer: Buffer,
       setImmediate: setImmediate,
       clearImmediate: clearImmediate,
@@ -143,11 +143,9 @@ export class FunctionModule {
       URL: URL,
       fetch: globalThis.fetch,
       global: null,
-      __from_modules: [...fromModules],
+      __from_modules: [...__from_modules],
     }
     sandbox.global = sandbox
     return sandbox
   }
 }
-
-export class DebugFunctionModule extends FunctionModule {}

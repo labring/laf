@@ -4,10 +4,15 @@ import { DatabaseAgent } from '../db'
 import { getToken, parseToken } from './token'
 import { WebSocketAgent } from './ws'
 import Config from '../config'
-import { CloudFunction, FunctionContext } from './engine'
+import { FunctionContext } from './engine'
 import { FunctionModule } from './engine/module'
 
 Cloud.create = createCloudSdk
+
+/**
+ * object shared cross all functions & requests
+ */
+const _shared_preference = new Map<string, any>()
 
 /**
  * Create a new Cloud SDK instance
@@ -18,7 +23,7 @@ function createCloudSdk() {
   const cloud: CloudSdkInterface = {
     database: () => getDb(DatabaseAgent.accessor),
     invoke: invokeInFunction,
-    shared: CloudFunction._shared_preference,
+    shared: _shared_preference,
     getToken: getToken,
     parseToken: parseToken,
     mongo: {
@@ -52,7 +57,7 @@ function createCloudSdk() {
  * @returns
  */
 async function invokeInFunction(name: string, ctx?: FunctionContext) {
-  const mod = FunctionModule.getModule(name)
+  const mod = FunctionModule.get(name)
   const func = mod?.default || mod?.main
 
   if (!func) {

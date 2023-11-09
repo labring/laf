@@ -3,19 +3,16 @@ import { nanosecond2ms } from '../utils'
 import _ from 'lodash'
 import { INTERCEPTOR_FUNCTION_NAME } from '../../constants'
 import { FunctionModule } from './module'
+import assert from 'assert'
+import { DebugConsole } from './console'
 
-export class CloudFunction {
+export class FunctionExecutor {
   /**
-   * object shared cross all functions & requests
+   * cloud function data struct
    */
-  static _shared_preference = new Map<string, any>()
-
-  /**
-   * function data struct
-   */
-  data: ICloudFunctionData
-
+  protected data: ICloudFunctionData
   constructor(data: ICloudFunctionData) {
+    assert(data, 'function data cannot be empty')
     this.data = data
   }
 
@@ -23,11 +20,10 @@ export class CloudFunction {
     context: FunctionContext,
     useInterceptor: boolean,
   ): Promise<FunctionResult> {
-    const fn = this.data.name
     const startTime = process.hrtime.bigint()
 
     try {
-      const mod = FunctionModule.getModule(fn)
+      const mod = this.getModule()
       const main = mod.default || mod.main
       if (!main) {
         throw new Error('FunctionExecutionError: `main` function not found')
@@ -67,7 +63,7 @@ export class CloudFunction {
     context: FunctionContext,
     next?: Function,
   ) {
-    const mod = FunctionModule.getModule(INTERCEPTOR_FUNCTION_NAME)
+    const mod = FunctionModule.get(INTERCEPTOR_FUNCTION_NAME)
     const interceptor = mod.default || mod.main
     if (!interceptor) {
       throw new Error(
@@ -93,5 +89,28 @@ export class CloudFunction {
       }
       return next(context)
     }
+  }
+
+  protected getModule() {
+    const mod = FunctionModule.get(this.data.name)
+    return mod
+  }
+}
+
+export class FunctionDebugExecutor extends FunctionExecutor {
+  protected consoleInstance: DebugConsole
+
+  constructor(data: ICloudFunctionData, consoleInstance: DebugConsole) {
+    super(data)
+    this.consoleInstance = consoleInstance
+  }
+  /**
+   * @override override to
+   */
+  protected getModule() {
+    const name = this.data.name
+    const code = this.data.source.compiled
+    const mod = FunctionModule.compile(name, code, [], this.consoleInstance)
+    return mod
   }
 }

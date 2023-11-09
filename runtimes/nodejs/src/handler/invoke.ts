@@ -3,18 +3,22 @@ import { IRequest } from '../support/types'
 import { DEFAULT_FUNCTION_NAME, INTERCEPTOR_FUNCTION_NAME } from '../constants'
 import { parseToken } from '../support/token'
 import {
-  CloudFunction,
+  FunctionExecutor,
   Console,
   DebugConsole,
   FunctionCache,
   FunctionContext,
   ICloudFunctionData,
+  FunctionDebugExecutor,
 } from '../support/engine'
 import pako from 'pako'
 import { base64ToUint8Array, uint8ArrayToBase64 } from '../support/utils'
 
 export async function handleInvokeFunction(req: IRequest, res: Response) {
+  const name = req.params?.name
+
   const ctx: FunctionContext = {
+    __function_name: name,
     requestId: req.requestId,
     query: req.query,
     files: req.files as any,
@@ -53,26 +57,28 @@ async function invokeFunction(
     isTrigger = true
   }
 
-  let func = FunctionCache.getEngine(ctx.request.params?.name)
+  const name = ctx.__function_name
+
+  let func = FunctionCache.get(name)
   if (!func) {
-    func = FunctionCache.getEngine(DEFAULT_FUNCTION_NAME)
+    func = FunctionCache.get(DEFAULT_FUNCTION_NAME)
     if (!func) {
       return ctx.response.status(404).send('Function Not Found')
     }
   }
   // reject while no HTTP enabled
   if (
-    !func.data.methods.includes(ctx.request.method.toUpperCase()) &&
+    !func.methods.includes(ctx.request.method.toUpperCase()) &&
     !isTrigger
   ) {
     return ctx.response.status(405).send('Method Not Allowed')
   }
 
-  const logger = new Console(func.data.name)
+  const logger = new Console(func.name)
   try {
     // execute the func
-    ctx.__function_name = func.data.name
-    const result = await func.invoke(ctx, useInterceptor)
+    const executor = new FunctionExecutor(func)
+    const result = await executor.invoke(ctx, useInterceptor)
 
     if (result.error) {
       logger.error(result.error)
@@ -159,14 +165,13 @@ async function invokeDebug(
       requestId,
     })
   }
-
-  const func = new CloudFunction(funcData)
   const debugConsole = new DebugConsole(funcName)
+  const executor = new FunctionDebugExecutor(funcData, debugConsole)
 
   try {
     // execute the func
     ctx.__function_name = funcName
-    const result = await func.invoke(ctx, useInterceptor)
+    const result = await executor.invoke(ctx, useInterceptor)
 
     // set logs to response header
     if (result.error) {
