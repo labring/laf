@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Menu, MenuButton, MenuItemOption, MenuList } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -18,13 +17,59 @@ import { formatDate } from "@/utils/format";
 
 import { TCpuUsageData } from "@/apis/typing";
 
+const strokeColorArray = [
+  "#47C8BF",
+  "#9A8EE0",
+  "#FFA100",
+  "#FF4D4F",
+  "#52C41A",
+  "#1890FF",
+  "#FF7A45",
+  "#FFC53D",
+  "#FF85C0",
+  "#A0D911",
+  "#13C2C2",
+  "#2F54EB",
+  "#EB2F96",
+  "#F5222D",
+  "#FAAD14",
+  "#722ED1",
+  "#13C2C2",
+  "#1890FF",
+  "#722ED1",
+  "#FAAD14"
+]
+
+function mergeArrays(arrays: any) {
+  let mergedArray = [];
+  const maxLength = Math.max(...arrays.map((arr: any) => arr.length));
+  for (let i = 0; i < maxLength; i++) {
+      let mergedElement = { xData: 0 };
+      for (let j = 0; j < arrays.length; j++) {
+          if (i < arrays[j].length) {
+            mergedElement.xData = arrays[j][i].xData;
+            // @ts-ignore
+            mergedElement[`value${j}`] = arrays[j][i][`value${j}`];
+          }
+      }
+      mergedArray.push(mergedElement);
+  }
+
+  return mergedArray;
+}
+
+function extractNumber(str: string) {
+  const match = str.match(/\d+$/) || []; 
+  return Number(match[0]); 
+}
+
 export default function AreaCard(props: {
   data: TCpuUsageData;
   strokeColor: string;
   fillColor: string;
   setDataNumber?: (value: number) => void;
   dataNumber: number;
-  podsArray?: string[];
+  podsArray: string[];
   title: string;
   maxValue: number;
   unit: string;
@@ -42,12 +87,33 @@ export default function AreaCard(props: {
     unit,
     className,
   } = props;
-  const { t } = useTranslation();
   const [chartData, setChartData] = useState<any[]>([]);
   useEffect(() => {
-    if (!data[dataNumber]?.values) return;
+    if (dataNumber === 0) { 
+      let tempDataArray:any = []
+      data?.forEach((item, index) => {
+        if (item.values) {
+          const tempData = item.values.map((item) => {
+            if (title === "CPU") {
+              return {
+                xData: item[0] * 1000,
+                [`value${index}`]: Number(item[1]),
+              };
+            } else {
+              return {
+                xData: item[0] * 1000,
+                [`value${index}`]: Number(item[1]) / 1024 / 1024,
+              };
+            }
+          })
+          tempDataArray.push(tempData)
+        }
+      })
+      setChartData(mergeArrays(tempDataArray));
+    }
+    if (!data[dataNumber - 1]?.values) return;
     setChartData(
-      data[dataNumber]?.values.map((item) => {
+      data[dataNumber-1]?.values.map((item) => {
         if (title === "CPU") {
           return {
             xData: item[0] * 1000,
@@ -84,7 +150,7 @@ export default function AreaCard(props: {
                   onClick={() => setDataNumber(index)}
                   className="!px-0 !text-grayModern-600"
                 >
-                  {t("Pod") + ": " + pod}
+                  {pod}
                 </MenuItemOption>
               ))}
             </MenuList>
@@ -113,17 +179,29 @@ export default function AreaCard(props: {
             ifOverflow="extendDomain"
           />
           <Tooltip
-            formatter={(value) => [Number(value).toFixed(3) + " " + unit]}
+            formatter={(value, index) => [ podsArray[extractNumber(index as string) + 1] + "  " + Number(value).toFixed(3) + unit]}
             labelFormatter={(value) => formatDate(new Date(value)).split(" ")[1]}
             labelStyle={{ color: "#24282C" }}
+            contentStyle={{ fontFamily: "Consolas" }}
           />
-          <Area
-            type="monotone"
-            dataKey="value"
-            stroke={strokeColor}
-            fill={fillColor}
-            strokeWidth={2}
-          />
+          {
+            dataNumber === 0 ? data?.map((item, index) => {
+              return <Area
+                key={index}
+                type="monotone"
+                dataKey={`value${index}`}
+                stroke={strokeColorArray[index]}
+                fill={fillColor}
+                strokeWidth={2}
+              />
+            }) : <Area
+              type="monotone"
+              dataKey="value"
+              stroke={strokeColor}
+              fill={fillColor}
+              strokeWidth={2}
+            />
+          }
         </AreaChart>
       </ResponsiveContainer>
     </div>
