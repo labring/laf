@@ -178,12 +178,6 @@ export default function AreaCard(props: {
             label={maxValue + " " + unit}
             ifOverflow="extendDomain"
           />
-          {/* <Tooltip
-            formatter={(value, index) => [podsArray[extractNumber(index as string) + 1] + "  " + Number(value).toFixed(3) + unit]}
-            labelFormatter={(value) => formatDate(new Date(value)).split(" ")[1]}
-            labelStyle={{ color: "#24282C" }}
-            contentStyle={{ fontFamily: "Consolas" }}
-          /> */}
           {dataNumber === 0 ? (
             <>
               <Tooltip

@@ -41,7 +41,7 @@ export default function AppMonitor() {
     if (!cpuData) return [t("All")];
     return cpuData.length > memoryData.length ? [t("All"), ...cpuData] : [t("All"), ...memoryData];
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [monitorData?.data?.cpuUsage, monitorData?.data?.memoryUsage]);
+  }, [monitorData]);
 
   return (
     <div className="flex w-full">
