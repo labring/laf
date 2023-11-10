@@ -39,6 +39,7 @@ export default function AppMonitor() {
     const cpuData = monitorData?.data?.cpuUsage?.map((item: any) => item.metric.pod);
     const memoryData = monitorData?.data?.memoryUsage?.map((item: any) => item.metric.pod);
     if (!cpuData) return [t("All")];
+    if (cpuData.length === 1 && memoryData.length === 1) return cpuData;
     return cpuData.length > memoryData.length ? [t("All"), ...cpuData] : [t("All"), ...memoryData];
   }, [monitorData, t]);
 

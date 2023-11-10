@@ -123,12 +123,12 @@ export default function AreaCard(props: {
         if (title === "CPU") {
           return {
             xData: item[0] * 1000,
-            value: Number(item[1]),
+            value0: Number(item[1]),
           };
         } else {
           return {
             xData: item[0] * 1000,
-            value: Number(item[1]) / 1024 / 1024,
+            value0: Number(item[1]) / 1024 / 1024,
           };
         }
       }),
@@ -146,20 +146,22 @@ export default function AreaCard(props: {
           <Menu>
             <MenuButton className="text-grayModern-600">
               {podsArray[dataNumber]}
-              <ChevronDownIcon />
+              {podsArray.length > 1 && <ChevronDownIcon />}
             </MenuButton>
-            <MenuList>
-              {podsArray.map((pod, index) => (
-                <MenuItemOption
-                  key={index}
-                  value={String(index)}
-                  onClick={() => setDataNumber(index)}
-                  className="!px-0 !text-grayModern-600"
-                >
-                  {pod}
-                </MenuItemOption>
-              ))}
-            </MenuList>
+            {podsArray.length > 1 && (
+              <MenuList>
+                {podsArray.map((pod, index) => (
+                  <MenuItemOption
+                    key={index}
+                    value={String(index)}
+                    onClick={() => setDataNumber(index)}
+                    className="!px-0 !text-grayModern-600"
+                  >
+                    {pod}
+                  </MenuItemOption>
+                ))}
+              </MenuList>
+            )}
           </Menu>
         )}
       </div>
@@ -184,7 +186,7 @@ export default function AreaCard(props: {
             label={maxValue + " " + unit}
             ifOverflow="extendDomain"
           />
-          {dataNumber === 0 ? (
+          {dataNumber === 0 && podsArray.length > 1 ? (
             <>
               <Tooltip
                 formatter={(value, index) => [
@@ -220,7 +222,7 @@ export default function AreaCard(props: {
               />
               <Area
                 type="monotone"
-                dataKey="value"
+                dataKey="value0"
                 stroke={strokeColor}
                 fill={fillColor}
                 strokeWidth={2}
