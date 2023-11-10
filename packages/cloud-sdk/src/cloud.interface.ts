@@ -29,6 +29,7 @@ export interface CloudSdkInterface {
 
   /**
    * Get a database-ql instance
+   * @deprecated use `mongo.db` instead
    */
   database(): Db
 
