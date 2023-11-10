@@ -183,7 +183,7 @@ export default function AreaCard(props: {
               <Tooltip
                 formatter={(value, index) => [
                   podsArray[extractNumber(index as string) + 1] +
-                    "  " +
+                    ": " +
                     Number(value).toFixed(3) +
                     unit,
                 ]}
