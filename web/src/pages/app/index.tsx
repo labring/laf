@@ -25,7 +25,7 @@ function AppDetail() {
           {
             pageId: Pages.storage,
             component: StoragePage,
-          }
+          },
         ].map((item) =>
           visitedViews.includes(item.pageId) ? (
             <div

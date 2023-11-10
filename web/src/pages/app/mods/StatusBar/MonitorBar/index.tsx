@@ -25,7 +25,7 @@ export default function MonitorBar() {
   const darkMode = useColorMode().colorMode === "dark";
 
   useQuery(
-    ["useGetMonitorDataQuery"],
+    ["useGetInstantMonitorDataQuery"],
     () => {
       return MonitorControllerGetData({
         q: MonitorDataType,
