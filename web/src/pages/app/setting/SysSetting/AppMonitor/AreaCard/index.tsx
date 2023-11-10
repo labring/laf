@@ -45,14 +45,13 @@ function mergeArrays(arrays: any) {
   const maxLength = Math.max(...arrays.map((arr: any) => arr.length));
   const newArrays = arrays.map((arr: any) => {
     const padding = maxLength - arr.length;
-    const paddedArray = new Array(padding).fill({xData: 0}).concat(arr);
+    const paddedArray = new Array(padding).fill({ xData: 0 }).concat(arr);
     return paddedArray;
   });
 
   for (let i = maxLength - 1; i >= 0; i--) {
     let mergedElement = { xData: 0 };
     for (let j = 0; j < newArrays.length; j++) {
-      console.log("arrays", j, i, newArrays[j][i])
       if (newArrays[j][i].xData > 0) {
         mergedElement.xData = newArrays[j][i].xData;
         // @ts-ignore
@@ -60,7 +59,6 @@ function mergeArrays(arrays: any) {
       }
     }
     mergedArray = [mergedElement, ...mergedArray];
-    // mergedArray.push(mergedElement);
   }
 
   return mergedArray;
