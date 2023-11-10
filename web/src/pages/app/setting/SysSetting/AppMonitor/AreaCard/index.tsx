@@ -54,7 +54,6 @@ function mergeArrays(arrays: any) {
         endPadding = longestArray.length - i - 1;
       }
     }
-    console.log(frontPadding, endPadding);
     return [
       ...Array(frontPadding).fill({ xData: 0 }),
       ...arr,
