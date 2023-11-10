@@ -228,12 +228,12 @@ export class BillingService {
     })
 
     const cpuTask = prom
-      .instantQuery(`laf:billing:cpu{appid=${app.appid}}`, time)
+      .instantQuery(`laf:billing:cpu{appid="${app.appid}"}`, time)
       .then((res) => res.result[0])
       .then((res) => Number(res.value.value))
 
     const memoryTask = prom
-      .instantQuery(`laf:billing:memory{appid=${app.appid}`, time)
+      .instantQuery(`laf:billing:memory{appid="${app.appid}"}`, time)
       .then((res) => res.result[0])
       .then((res) => Number(res.value.value))
 
