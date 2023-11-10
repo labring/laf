@@ -43,16 +43,29 @@ const strokeColorArray = [
 function mergeArrays(arrays: any) {
   let mergedArray: any = [];
   const maxLength = Math.max(...arrays.map((arr: any) => arr.length));
+  const longestArray = arrays.find((arr: any) => arr.length === maxLength);
   const newArrays = arrays.map((arr: any) => {
-    const padding = maxLength - arr.length;
-    const paddedArray = new Array(padding).fill({ xData: 0 }).concat(arr);
-    return paddedArray;
+    let frontPadding = 0;
+    let endPadding = 0;
+    for (let i = 0; i < longestArray.length; i++) {
+      if (longestArray[i].xData === arr[0].xData) {
+        frontPadding = i;
+      } else if (longestArray[i].xData === arr[arr.length - 1].xData) {
+        endPadding = longestArray.length - i - 1;
+      }
+    }
+    console.log(frontPadding, endPadding);
+    return [
+      ...Array(frontPadding).fill({ xData: 0 }),
+      ...arr,
+      ...Array(endPadding).fill({ xData: 0 }),
+    ];
   });
 
   for (let i = maxLength - 1; i >= 0; i--) {
     let mergedElement = { xData: 0 };
     for (let j = 0; j < newArrays.length; j++) {
-      if (newArrays[j][i].xData > 0) {
+      if (newArrays[j][i]?.xData > 0) {
         mergedElement.xData = newArrays[j][i].xData;
         // @ts-ignore
         mergedElement[`value${j}`] = newArrays[j][i][`value${j}`];
