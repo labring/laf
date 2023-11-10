@@ -36,11 +36,11 @@ export default function AppMonitor() {
   );
 
   const podsArray = useMemo(() => {
-    if (!monitorData?.data?.cpuUsage?.map((item: any) => item.metric.pod)) return ["all"]
-    return monitorData?.data?.cpuUsage?.map((item: any) => item.metric.pod).length >
-      monitorData?.data?.memoryUsage?.map((item: any) => item.metric.pod).length
-      ? ["all", ...monitorData?.data?.cpuUsage?.map((item: any) => item.metric.pod)]
-      : ["all", ...monitorData?.data?.memoryUsage?.map((item: any) => item.metric.pod)]
+    const cpuData = monitorData?.data?.cpuUsage?.map((item: any) => item.metric.pod);
+    const memoryData = monitorData?.data?.memoryUsage?.map((item: any) => item.metric.pod);
+    if (!cpuData) return [t("All")];
+    return cpuData.length > memoryData.length ? [t("All"), ...cpuData] : [t("All"), ...memoryData];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monitorData?.data?.cpuUsage, monitorData?.data?.memoryUsage]);
 
   return (
@@ -49,8 +49,7 @@ export default function AppMonitor() {
         <Center className="h-[400px] w-full">
           <Spinner />
         </Center>
-      ) :
-        monitorData?.data && Object.keys(monitorData?.data).length !== 0 ? (
+      ) : monitorData?.data && Object.keys(monitorData?.data).length !== 0 ? (
         <>
           <div className="mr-4 mt-10 h-[413px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
             <AreaCard

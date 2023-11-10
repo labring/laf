@@ -37,30 +37,30 @@ const strokeColorArray = [
   "#13C2C2",
   "#1890FF",
   "#722ED1",
-  "#FAAD14"
-]
+  "#FAAD14",
+];
 
 function mergeArrays(arrays: any) {
   let mergedArray = [];
   const maxLength = Math.max(...arrays.map((arr: any) => arr.length));
   for (let i = 0; i < maxLength; i++) {
-      let mergedElement = { xData: 0 };
-      for (let j = 0; j < arrays.length; j++) {
-          if (i < arrays[j].length) {
-            mergedElement.xData = arrays[j][i].xData;
-            // @ts-ignore
-            mergedElement[`value${j}`] = arrays[j][i][`value${j}`];
-          }
+    let mergedElement = { xData: 0 };
+    for (let j = 0; j < arrays.length; j++) {
+      if (i < arrays[j].length) {
+        mergedElement.xData = arrays[j][i].xData;
+        // @ts-ignore
+        mergedElement[`value${j}`] = arrays[j][i][`value${j}`];
       }
-      mergedArray.push(mergedElement);
+    }
+    mergedArray.push(mergedElement);
   }
 
   return mergedArray;
 }
 
 function extractNumber(str: string) {
-  const match = str.match(/\d+$/) || []; 
-  return Number(match[0]); 
+  const match = str.match(/\d+$/) || [];
+  return Number(match[0]);
 }
 
 export default function AreaCard(props: {
@@ -89,8 +89,8 @@ export default function AreaCard(props: {
   } = props;
   const [chartData, setChartData] = useState<any[]>([]);
   useEffect(() => {
-    if (dataNumber === 0) { 
-      let tempDataArray:any = []
+    if (dataNumber === 0) {
+      let tempDataArray: any = [];
       data?.forEach((item, index) => {
         if (item.values) {
           const tempData = item.values.map((item) => {
@@ -105,15 +105,15 @@ export default function AreaCard(props: {
                 [`value${index}`]: Number(item[1]) / 1024 / 1024,
               };
             }
-          })
-          tempDataArray.push(tempData)
+          });
+          tempDataArray.push(tempData);
         }
-      })
+      });
       setChartData(mergeArrays(tempDataArray));
     }
     if (!data[dataNumber - 1]?.values) return;
     setChartData(
-      data[dataNumber-1]?.values.map((item) => {
+      data[dataNumber - 1]?.values.map((item) => {
         if (title === "CPU") {
           return {
             xData: item[0] * 1000,
@@ -178,30 +178,55 @@ export default function AreaCard(props: {
             label={maxValue + " " + unit}
             ifOverflow="extendDomain"
           />
-          <Tooltip
-            formatter={(value, index) => [ podsArray[extractNumber(index as string) + 1] + "  " + Number(value).toFixed(3) + unit]}
+          {/* <Tooltip
+            formatter={(value, index) => [podsArray[extractNumber(index as string) + 1] + "  " + Number(value).toFixed(3) + unit]}
             labelFormatter={(value) => formatDate(new Date(value)).split(" ")[1]}
             labelStyle={{ color: "#24282C" }}
             contentStyle={{ fontFamily: "Consolas" }}
-          />
-          {
-            dataNumber === 0 ? data?.map((item, index) => {
-              return <Area
-                key={index}
+          /> */}
+          {dataNumber === 0 ? (
+            <>
+              <Tooltip
+                formatter={(value, index) => [
+                  podsArray[extractNumber(index as string) + 1] +
+                    "  " +
+                    Number(value).toFixed(3) +
+                    unit,
+                ]}
+                labelFormatter={(value) => formatDate(new Date(value)).split(" ")[1]}
+                labelStyle={{ color: "#24282C" }}
+                contentStyle={{ fontFamily: "Consolas", opacity: 0.75 }}
+              />
+              {data?.map((item, index) => {
+                return (
+                  <Area
+                    key={index}
+                    type="monotone"
+                    dataKey={`value${index}`}
+                    stroke={strokeColorArray[index]}
+                    fill={fillColor}
+                    strokeWidth={2}
+                  />
+                );
+              })}
+            </>
+          ) : (
+            <>
+              <Tooltip
+                formatter={(value, index) => [Number(value).toFixed(3) + unit]}
+                labelFormatter={(value) => formatDate(new Date(value)).split(" ")[1]}
+                labelStyle={{ color: "#24282C" }}
+                contentStyle={{ fontFamily: "Consolas", opacity: 0.75 }}
+              />
+              <Area
                 type="monotone"
-                dataKey={`value${index}`}
-                stroke={strokeColorArray[index]}
+                dataKey="value"
+                stroke={strokeColor}
                 fill={fillColor}
                 strokeWidth={2}
               />
-            }) : <Area
-              type="monotone"
-              dataKey="value"
-              stroke={strokeColor}
-              fill={fillColor}
-              strokeWidth={2}
-            />
-          }
+            </>
+          )}
         </AreaChart>
       </ResponsiveContainer>
     </div>
