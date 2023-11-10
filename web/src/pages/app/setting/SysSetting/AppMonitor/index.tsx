@@ -40,8 +40,7 @@ export default function AppMonitor() {
     const memoryData = monitorData?.data?.memoryUsage?.map((item: any) => item.metric.pod);
     if (!cpuData) return [t("All")];
     return cpuData.length > memoryData.length ? [t("All"), ...cpuData] : [t("All"), ...memoryData];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [monitorData]);
+  }, [monitorData, t]);
 
   return (
     <div className="flex w-full">
