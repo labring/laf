@@ -119,7 +119,9 @@ export async function main(ctx: FunctionContext) {
 }
 ```
 
-## 生成和解密 JWT token
+## 云函数鉴权
+
+云函数鉴权可以使用 JWT Token，下方是生成和解密 JWT token 的方法
 
 ```typescript
 cloud.getToken(payload); // payload 可参考下方的示例代码

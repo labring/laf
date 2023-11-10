@@ -22,6 +22,16 @@ Laf 云开发可安装来自 <https://www.npmjs.com/> 的依赖，如果所需�
 
 安装完成后用户可在界面左下方 `依赖管理` 中查看已安装的依赖和版本。
 
+## 自定义源
+
+环境变量中添加：`NPM_INSTALL_FLAGS="--registry=https://registry.npmmirror.com` 即可添加淘宝源，也可以换成其他的源
+
+:::tip
+如果需要安装`sharp`这个依赖，可以使用这个环境变量，可以极快的完成安装:
+
+`NPM_INSTALL_FLAGS="--registry=https://registry.npmmirror.com --canvas_binary_host_mirror=https://npmmirror.com/mirrors/canvas --sharp_binary_host=https://npmmirror.com/mirrors/sharp --sharp_libvips_binary_host=https://npm.taobao.org/mirrors/sharp-libvips"`
+:::
+
 ## 依赖版本选择
 
 ![select-package-version](/doc-images/select-package-version.png)
