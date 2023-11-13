@@ -18,6 +18,10 @@ export class ServerConfig {
     return process.env.NOTIFICATION_CENTER_URL
   }
 
+  static get NOTIFICATION_CENTER_TOKEN() {
+    return process.env.NOTIFICATION_CENTER_TOKEN || ''
+  }
+
   static get JWT_SECRET() {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET is not defined')

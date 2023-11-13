@@ -84,7 +84,7 @@ export class NotificationTaskService {
       {
         title: data.title,
         description: data.content,
-        token: '123456',
+        token: ServerConfig.NOTIFICATION_CENTER_TOKEN,
         channel: 'notification',
         async: true,
         to: to,
