@@ -40,17 +40,39 @@ const strokeColorArray = [
   "#FAAD14",
 ];
 
+const generateChartData = () => {
+  const now = new Date();
+  now.setSeconds(0);
+  now.setMilliseconds(0);
+  const currentTimestamp = now.getTime();
+  let chartData = [];
+
+  for (let i = 0; i <= 60; i++) {
+    const timestamp = currentTimestamp - (60 - i) * 60 * 1000;
+    chartData.push({ xData: timestamp });
+  }
+
+  return chartData;
+};
+
 function mergeArrays(arrays: any) {
   let mergedArray: any = [];
-  const maxLength = Math.max(...arrays.map((arr: any) => arr.length));
-  const longestArray = arrays.find((arr: any) => arr.length === maxLength);
+  const longestArray = generateChartData();
   const newArrays = arrays.map((arr: any) => {
     let frontPadding = 0;
     let endPadding = 0;
     for (let i = 0; i < longestArray.length; i++) {
-      if (longestArray[i].xData === arr[0].xData) {
+      const lastTime = new Date(arr[arr.length - 1].xData);
+      lastTime.setSeconds(0);
+      lastTime.setMilliseconds(0);
+      const firstTime = new Date(arr[0].xData);
+      firstTime.setSeconds(0);
+      firstTime.setMilliseconds(0);
+
+      if (longestArray[i].xData === firstTime.getTime()) {
         frontPadding = i;
-      } else if (longestArray[i].xData === arr[arr.length - 1].xData) {
+      }
+      if (longestArray[i].xData === lastTime.getTime()) {
         endPadding = longestArray.length - i - 1;
       }
     }
@@ -61,14 +83,12 @@ function mergeArrays(arrays: any) {
     ];
   });
 
-  for (let i = maxLength - 1; i >= 0; i--) {
+  for (let i = 60; i >= 0; i--) {
     let mergedElement = { xData: 0 };
+    mergedElement.xData = longestArray[i].xData;
     for (let j = 0; j < newArrays.length; j++) {
-      if (newArrays[j][i]?.xData > 0) {
-        mergedElement.xData = newArrays[j][i].xData;
-        // @ts-ignore
-        mergedElement[`value${j}`] = newArrays[j][i][`value${j}`];
-      }
+      // @ts-ignore
+      mergedElement[`value${j}`] = newArrays[j][i][`value${j}`];
     }
     mergedArray = [mergedElement, ...mergedArray];
   }
