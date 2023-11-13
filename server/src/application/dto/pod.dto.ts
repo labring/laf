@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty, IsArray, IsString } from 'class-validator'
 
-export class PodNamesDto {
+export class PodNameListDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -14,5 +14,21 @@ export class PodNamesDto {
   @IsNotEmpty()
   @IsArray()
   @IsString({ each: true })
-  pods: string[]
+  podNameList: string[]
+}
+
+export class ContainerNameListDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  podName: string
+
+  @ApiProperty({
+    description: 'List of container identifiers',
+    example: ['container1', 'container2'],
+  })
+  @IsNotEmpty()
+  @IsArray()
+  @IsString({ each: true })
+  containerNameList: string[]
 }
