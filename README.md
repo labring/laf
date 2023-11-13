@@ -27,9 +27,9 @@
 
 ## 🖥 在线体验
 
-🎉 [laf.run](https://laf.run) 可免费体验 `laf` 云开发。（国内版）
+🎉 [laf.run](https://laf.run) （国内版）
 
-🎉 [laf.dev](https://laf.dev) 可免费体验 `laf` 云开发。（海外版）
+🎉 [laf.dev](https://laf.dev) （海外版）
 
 ## 👀 `laf` 是什么
 
@@ -86,10 +86,6 @@ laf 是开源的云开发平台，提供云函数、云数据库、云存储等�
 
 - [微信群](https://w4mci7-images.oss.laf.run/wechat.png)
 - [QQ 群：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
-
-## :point_right: Roadmap
-
-- [**laf project roadmap**](https://github.com/orgs/labring/projects/5/views/1)
 
 ## 🌟 Star History
 

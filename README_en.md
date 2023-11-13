@@ -86,10 +86,6 @@
 - [Discord](https://discord.gg/uWZqAwwdvy)
 - [Twitter](https://twitter.com/laf_dev)
 
-## :point_right: Roadmap
-
-- [**laf project roadmap**](https://github.com/orgs/labring/projects/5/views/1)
-
 ## 🌟 Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=labring/laf&type=Date)](https://star-history.com/#labring/laf&Date)
