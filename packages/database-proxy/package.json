@@ -9,7 +9,8 @@
     "test": "npm run test-units",
     "build": "tsc -p tsconfig.json",
     "watch": "tsc -w",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "lint": "eslint . --fix --ext .ts --ext .js"
   },
   "keywords": [
     "BaaS",

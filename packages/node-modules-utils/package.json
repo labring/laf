@@ -26,7 +26,8 @@
     "prepublishOnly": "npm run build",
     "copy2app": "sh copy2app.sh",
     "copy2sys": "sh copy2sys.sh",
-    "copy4dev": "sh copy2app.sh && sh copy2sys.sh"
+    "copy4dev": "sh copy2app.sh && sh copy2sys.sh",
+    "lint": "eslint . --fix --ext .ts --ext .js"
   },
   "bugs": {
     "url": "https://github.com/Maslow/less-framework/issues"

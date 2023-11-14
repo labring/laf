@@ -6,8 +6,7 @@
   "scripts": {
     "watch": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint": "eslint \"./**/*.ts\"",
-    "fix": "eslint --fix \"./**/*.ts\"",
+    "lint": "eslint . --fix --ext .ts --ext .js",
     "build": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run build"
   },
