@@ -8,7 +8,7 @@ import { ObjectId } from 'bson'
 
 /**
  * 地理位置类型
-*/
+ */
 interface GeoType {
   Point: typeof Geo.Point
   LineString: typeof Geo.LineString
@@ -89,7 +89,7 @@ export class Db {
 
   /**
    * Generate a hex string id for document
-   * @returns 
+   * @returns
    */
   generateId(): string {
     const id = new ObjectId()
@@ -98,8 +98,8 @@ export class Db {
 
   /**
    * Wrapper for ObjectId() of mongodb
-   * @param params 
-   * @returns 
+   * @param params
+   * @returns
    */
   ObjectId(id?: string | number | ObjectId) {
     return new ObjectId(id)

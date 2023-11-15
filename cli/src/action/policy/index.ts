@@ -25,7 +25,7 @@ export async function list() {
   const table = new Table({
     head: ['name', 'ruleCount', 'createdAt'],
   })
-  for (let item of policies) {
+  for (const item of policies) {
     table.push([item.name, item.rules?.length, formatDate(item.createdAt)])
   }
   console.log(table.toString())
@@ -40,7 +40,7 @@ export async function pullAll() {
   const appSchema = AppSchema.read()
   const policies = await policyControllerFindAll(appSchema.appid)
 
-  for (let item of policies) {
+  for (const item of policies) {
     await pull(item.name)
   }
 
@@ -52,7 +52,7 @@ async function pull(policyName: string) {
   const rules = await policyRuleControllerFindAll(appSchema.appid, policyName)
   const rulePath = path.join(getBaseDir(), POLICIES_DIRECTORY_NAME, policyName + '.yaml')
   const ruleList: PolicyRule[] = []
-  for (let item of rules) {
+  for (const item of rules) {
     ruleList.push({
       collectionName: item.collectionName,
       rules: {
@@ -71,7 +71,7 @@ export async function pushOne(policyName: string) {
   const appSchema = AppSchema.read()
   const policies = await policyControllerFindAll(appSchema.appid)
   let isCreate = true
-  for (let item of policies) {
+  for (const item of policies) {
     if (item.name === policyName) {
       isCreate = false
       break
@@ -87,24 +87,24 @@ export async function pushAll(options: { force: boolean }) {
   // get server policies
   const serverPolicies = await policyControllerFindAll(appSchema.appid)
   const serverPoliciesMap = new Map<string, boolean>()
-  for (let item of serverPolicies) {
+  for (const item of serverPolicies) {
     serverPoliciesMap.set(item.name, true)
   }
 
   // get local policies
   const localPolicies = getLocalPolicies()
   const localPoliciesMap = new Map<string, boolean>()
-  for (let item of localPolicies) {
+  for (const item of localPolicies) {
     localPoliciesMap.set(item, true)
   }
 
   // push local policies
-  for (let item of localPolicies) {
+  for (const item of localPolicies) {
     await push(item, !serverPoliciesMap.has(item))
   }
 
   // delete server policies
-  for (let item of serverPolicies) {
+  for (const item of serverPolicies) {
     if (!localPoliciesMap.has(item.name)) {
       if (options.force) {
         await policyControllerRemove(appSchema.appid, item.name)
@@ -131,7 +131,7 @@ async function push(policyName: string, isCreate: boolean) {
   }
   const serverRules = await policyRuleControllerFindAll(appSchema.appid, policyName)
   const serverRulesMap = new Map<string, boolean>()
-  for (let item of serverRules) {
+  for (const item of serverRules) {
     serverRulesMap.set(item.collectionName, true)
   }
   const rulePath = path.join(getBaseDir(), POLICIES_DIRECTORY_NAME, policyName + '.yaml')
@@ -139,7 +139,7 @@ async function push(policyName: string, isCreate: boolean) {
   const localRulesMap = new Map<string, boolean>()
 
   // update or create rule
-  for (let item of localRules) {
+  for (const item of localRules) {
     if (serverRulesMap.has(item.collectionName)) {
       // rule exist, update
       const updateRuleDto: UpdatePolicyRuleDto = {
@@ -158,7 +158,7 @@ async function push(policyName: string, isCreate: boolean) {
   }
 
   // delete rule
-  for (let item of serverRules) {
+  for (const item of serverRules) {
     if (!localRulesMap.has(item.collectionName)) {
       await policyRuleControllerRemove(appSchema.appid, policyName, item.collectionName)
     }
@@ -169,7 +169,7 @@ function getLocalPolicies(): string[] {
   const dir = path.join(getBaseDir(), POLICIES_DIRECTORY_NAME)
   const files = fs.readdirSync(dir)
   const policies: string[] = []
-  for (let item of files) {
+  for (const item of files) {
     if (item.endsWith('.yaml')) {
       policies.push(item.replace('.yaml', ''))
     }

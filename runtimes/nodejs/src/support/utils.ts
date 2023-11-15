@@ -59,7 +59,7 @@ export function hashPassword(content: string) {
  * @param object
  * @returns
  */
-export function deepFreeze(object: Object) {
+export function deepFreeze(object: object) {
   // Retrieve the property names defined on object
   const propNames = Object.getOwnPropertyNames(object)
 

@@ -28,13 +28,15 @@ DatabaseAgent.accessor.ready.then(() => {
   DatabaseChangeStream.initialize()
 })
 
-app.use(cors({
-  origin: true,
-  methods: '*',
-  exposedHeaders: '*',
-  credentials: true,
-  maxAge: 86400,
-}))
+app.use(
+  cors({
+    origin: true,
+    methods: '*',
+    exposedHeaders: '*',
+    credentials: true,
+    maxAge: 86400,
+  }),
+)
 
 app.use(express.json({ limit: Config.REQUEST_LIMIT_SIZE }) as any)
 app.use(

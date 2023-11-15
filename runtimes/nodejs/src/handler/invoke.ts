@@ -67,10 +67,7 @@ async function invokeFunction(
     }
   }
   // reject while no HTTP enabled
-  if (
-    !func.methods.includes(ctx.request.method.toUpperCase()) &&
-    !isTrigger
-  ) {
+  if (!func.methods.includes(ctx.request.method.toUpperCase()) && !isTrigger) {
     return ctx.response.status(405).send('Method Not Allowed')
   }
 

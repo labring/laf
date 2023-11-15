@@ -13,13 +13,13 @@ export class Point {
    * 纬度
    * [-90, 90]
    */
-  readonly latitude: number;
+  readonly latitude: number
 
   /**
    * 经度
    * [-180, 180]
    */
-  readonly longitude: number;
+  readonly longitude: number
 
   /**
    * 初始化
@@ -39,18 +39,15 @@ export class Point {
     return {
       [key]: {
         type: 'Point',
-        coordinates: [this.longitude, this.latitude]
-      }
+        coordinates: [this.longitude, this.latitude],
+      },
     }
   }
 
   toJSON() {
     return {
       type: 'Point',
-      coordinates: [
-        this.longitude,
-        this.latitude,
-      ],
+      coordinates: [this.longitude, this.latitude],
     }
   }
 
@@ -59,10 +56,12 @@ export class Point {
   }
 
   static validate(point: ISerializedPoint) {
-    return point.type === 'Point' &&
+    return (
+      point.type === 'Point' &&
       isArray(point.coordinates) &&
       Validate.isGeopoint('longitude', point.coordinates[0]) &&
       Validate.isGeopoint('latitude', point.coordinates[1])
+    )
   }
 
   get _internalType() {
