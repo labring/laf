@@ -164,7 +164,13 @@ export class LogController {
           )
           podLogStream.pipe(combinedLogStream, { end: false })
 
-          podLogStream.on('end', () => {
+          podLogStream.on('error', (error) => {
+            combinedLogStream.emit('error', error)
+            podLogStream.removeAllListeners()
+            podLogStream.destroy()
+          })
+
+          podLogStream.once('end', () => {
             streamsEnded.delete(podName)
             if (streamsEnded.size === 0) {
               combinedLogStream.end()
@@ -174,6 +180,7 @@ export class LogController {
           this.logger.error(`Failed to get logs for pod ${podName}`, error)
           subscriber.error(error)
           k8sResponse?.destroy()
+          podLogStream.removeAllListeners()
           podLogStream.destroy()
           destroyStream()
         }
