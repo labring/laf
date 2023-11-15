@@ -79,5 +79,8 @@
       "http/*"
     ],
     "delay": 1000
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

@@ -39,5 +39,8 @@
     "@types/fs-extra": "^9.0.12",
     "@types/node": "^16.4.2",
     "typescript": "^4.2.3"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

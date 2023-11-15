@@ -19,5 +19,8 @@
     "axios": "^1.4.0",
     "dotenv": "^16.3.1",
     "mongodb": "^5.7.0"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

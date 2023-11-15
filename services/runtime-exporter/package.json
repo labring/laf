@@ -24,5 +24,8 @@
     "express-async-errors": "^3.1.1",
     "log4js": "^6.9.1",
     "prom-client": "^15.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

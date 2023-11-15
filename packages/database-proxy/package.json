@@ -38,5 +38,8 @@
     "@types/validator": "^10.11.3",
     "mocha": "^9.0.2",
     "typescript": "^3.6.4"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

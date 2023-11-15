@@ -32,5 +32,8 @@
     "lodash.clonedeep": "4.5.0",
     "lodash.set": "4.3.2",
     "lodash.unset": "4.5.2"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }
