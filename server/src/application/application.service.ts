@@ -387,11 +387,11 @@ export class ApplicationService {
   }
 
   private buildBundleResource(dto: UpdateApplicationBundleDto) {
-    const requestCPU = Math.floor(dto.cpu * 0.1)
-    const requestMemory = Math.floor(dto.memory * 0.5)
+    const requestCPU = Math.floor(dto.cpu * 0.4)
+    const requestMemory = Math.floor(dto.memory * 0.4)
     const limitCountOfCloudFunction = Math.floor(dto.cpu * 1)
 
-    const magicNumber = Math.floor(dto.cpu * 0.01)
+    const magicNumber = Math.floor(dto.cpu * 0.03)
     const limitCountOfBucket = Math.max(3, magicNumber)
     const limitCountOfDatabasePolicy = Math.max(3, magicNumber)
     const limitCountOfTrigger = Math.max(1, magicNumber)
