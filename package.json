@@ -9,6 +9,7 @@
   },
   "scripts": {
     "install": "lerna exec npm install --parallel",
+    "lint": "lerna exec npm run lint --parallel",
     "build": "lerna run build --parallel",
     "watch": "lerna run watch --parallel",
     "prepublishOnly": "npm run build",

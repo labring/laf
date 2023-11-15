@@ -4,7 +4,8 @@
   "private": true,
   "description": "",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint . --fix --ext .ts --ext .js"
   },
   "keywords": [],
   "author": "",

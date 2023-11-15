@@ -1,5 +1,6 @@
 module.exports = {
   extends: ['react-app', 'plugin:prettier/recommended'],
+  ignorePatterns: ['dist', 'public'],
   rules: {
     'no-alert': 'error',
     'react/no-children-prop': 0,
@@ -7,6 +8,7 @@ module.exports = {
     'simple-import-sort/exports': 'error',
     '@next/next/no-img-element': 0,
     'no-unused-vars': 'error',
+    'no-console': 'warn',
     'prettier/prettier': [
       'error',
       {

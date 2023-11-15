@@ -9,7 +9,7 @@
     "build": "tsc -p tsconfig.json",
     "watch": "tsc -p tsconfig.json -w",
     "start": "NODE_ENV=production node ./dist/index.js",
-    "prettier": "npx prettier --write ./src"
+    "lint": "eslint . --fix --ext .ts --ext .js"
   },
   "devDependencies": {
     "@types/express": "^4.17.20",

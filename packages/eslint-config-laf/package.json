@@ -5,7 +5,12 @@
   "exports": {
     "./web": "./web.js",
     "./server": "./server.js",
-    "./package": "./package.js"
+    "./package": "./package.js",
+    "./service": "./service.js",
+    "./test": "./test.js",
+    "./docs": "./docs.js",
+    "./cli": "./cli.js",
+    "./runtime": "./runtime.js"
   },
   "scripts": {
     "lint": "eslint . --fix --ext .ts --ext .js"
