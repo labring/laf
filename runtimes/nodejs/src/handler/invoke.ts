@@ -12,7 +12,11 @@ import {
   FunctionDebugExecutor,
 } from '../support/engine'
 import pako from 'pako'
-import { base64ToUint8Array, isObject, uint8ArrayToBase64 } from '../support/utils'
+import {
+  base64ToUint8Array,
+  isObject,
+  uint8ArrayToBase64,
+} from '../support/utils'
 
 export async function handleInvokeFunction(req: IRequest, res: Response) {
   const name = req.params?.name
