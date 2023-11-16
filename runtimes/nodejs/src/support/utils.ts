@@ -68,7 +68,7 @@ export function deepFreeze(object: object) {
   for (const name of propNames) {
     const value = object[name]
 
-    if (value && typeof value === 'object') {
+    if (isObject(value)) {
       deepFreeze(value)
     }
   }
@@ -114,4 +114,13 @@ export function uint8ArrayToBase64(buffer: Uint8Array) {
 export function base64ToUint8Array(base64: string) {
   const buffer = Buffer.from(base64, 'base64')
   return new Uint8Array(buffer)
+}
+
+/**
+ * is object.
+ * @param obj
+ * @returns
+ */
+export function isObject(obj: unknown): obj is Object {
+  return obj !== null && typeof obj === 'object'
 }
