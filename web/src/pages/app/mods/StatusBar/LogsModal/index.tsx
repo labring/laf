@@ -22,7 +22,7 @@ import { streamFetch } from "@/utils/streamFetch";
 
 import "./index.scss";
 
-import { PodControllerGetContainerNameList,PodControllerGetPodNameList } from "@/apis/v1/apps";
+import { PodControllerGetContainerNameList, PodControllerGetPodNameList } from "@/apis/v1/apps";
 import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -50,28 +50,28 @@ export default function LogsModal(props: { children: React.ReactElement }) {
           setPodName(data.data.podNameList[0]);
         }
       },
-      enabled: !!isOpen,
+      enabled: isOpen,
     },
   );
 
   const { data: containerData } = useQuery(
     ["GetContainerQuery", podName],
     () => {
-      return PodControllerGetContainerNameList({podName});
+      return PodControllerGetContainerNameList({ podName });
     },
     {
       onSuccess: (data) => {
         if (data.data.containerNameList) {
           const length = data.data.containerNameList.length;
-          setContainerName(data.data.containerNameList[length-1]);
+          setContainerName(data.data.containerNameList[length - 1]);
         }
       },
-      enabled: !!isOpen && !!podName,
+      enabled: isOpen && !!podName && podName !== "all",
     },
   );
 
   const fetchLogs = useCallback(() => {
-    if (!podName || !containerName) return;
+    if (!podName && !containerName) return;
     const controller = new AbortController();
     streamFetch({
       url: `/v1/apps/${currentApp.appid}/logs/${podName}?containerName=${containerName}`,
@@ -125,37 +125,42 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                   className="ml-4 !h-8 !w-64"
                   onChange={(e) => {
                     setPodName(e.target.value);
+                    setContainerName("");
                     setIsLoading(true);
                     setLogs("");
                   }}
                   value={podName}
                 >
                   {podData?.data?.podNameList &&
-                    podData?.data?.podNameList.map((item: string) => (
+                    (podData?.data?.podNameList.length > 1
+                      ? ["all", ...podData?.data?.podNameList]
+                      : podData?.data?.podNameList
+                    ).map((item: string) => (
                       <option key={item} value={item}>
                         {item}
                       </option>
                     ))}
                 </Select>
               </span>
-              <span>
-                <Select
-                  className="ml-4 !h-8 !w-32"
-                  onChange={(e) => {
-                    setContainerName(e.target.value);
-                    setIsLoading(true);
-                    setLogs("");
-                  }}
-                  value={containerName}
-                >
-                  {containerData?.data?.containerNameList &&
-                    containerData?.data?.containerNameList.map((item: string) => (
+              {containerData?.data?.containerNameList && (
+                <span>
+                  <Select
+                    className="ml-1 !h-8 !w-32"
+                    onChange={(e) => {
+                      setContainerName(e.target.value);
+                      setIsLoading(true);
+                      setLogs("");
+                    }}
+                    value={containerName}
+                  >
+                    {...containerData?.data?.containerNameList.map((item: string) => (
                       <option key={item} value={item}>
                         {item}
                       </option>
                     ))}
-                </Select>
-              </span>
+                  </Select>
+                </span>
+              )}
               <span>
                 <Button
                   variant={"outline"}
