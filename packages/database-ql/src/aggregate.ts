@@ -45,7 +45,7 @@ export default class Aggregation {
 
     const res = await this._request.send(ActionType.aggregate, {
       collectionName: this._collectionName,
-      stages: this._stages
+      stages: this._stages,
     })
 
     if (res.error) {
@@ -54,7 +54,7 @@ export default class Aggregation {
         data: res.data,
         requestId: res.requestId,
         ok: false,
-        code: res.code
+        code: res.code,
       }
     }
 
@@ -62,7 +62,7 @@ export default class Aggregation {
     const result: GetRes<T> = {
       data: documents,
       requestId: res.requestId,
-      ok: true
+      ok: true,
     }
     return result
   }
@@ -74,7 +74,7 @@ export default class Aggregation {
   done() {
     return this._stages.map(({ stageKey, stageValue }) => {
       return {
-        [stageKey]: JSON.parse(stageValue)
+        [stageKey]: JSON.parse(stageValue),
       }
     })
   }
@@ -90,7 +90,7 @@ export default class Aggregation {
 
     this._stages.push({
       stageKey: raw ? stage : `$${stage}`,
-      stageValue: transformParam
+      stageValue: transformParam,
     })
     return this
   }
@@ -117,7 +117,10 @@ export default class Aggregation {
     }
 
     // 判断是否有 distanceMultiplier 参数
-    if (param.distanceMultiplier && typeof (param.distanceMultiplier) === 'number') {
+    if (
+      param.distanceMultiplier &&
+      typeof param.distanceMultiplier === 'number'
+    ) {
       param.distanceMultiplier = param.distanceMultiplier * EARTH_RADIUS
     } else {
       param.distanceMultiplier = EARTH_RADIUS

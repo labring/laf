@@ -90,7 +90,7 @@ declare class OutgoingMessage extends Stream {
    * Removes a header that is queued for implicit sending.
    *
    * outgoingMessage.removeHeader('Content-Encoding');
-   * 
+   *
    * @since v0.4.0
    */
   removeHeader(name: string): void
@@ -129,7 +129,6 @@ declare class OutgoingMessage extends Stream {
   flushHeaders(): void
 }
 
-
 // declare class ServerResponse extends OutgoingMessage{
 declare class ServerResponse {
   statusCode: number
@@ -146,7 +145,6 @@ declare class ServerResponse {
   writeHead(statusCode: number, headers?: OutgoingHttpHeaders | OutgoingHttpHeader[]): this
   writeProcessing(): void
 }
-
 
 interface HttpResponse extends ServerResponse {
   /**

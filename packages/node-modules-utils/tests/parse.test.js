@@ -1,9 +1,7 @@
-
 const assert = require('assert')
-const { PackageInfo} = require('../dist')
+const { PackageInfo } = require('../dist')
 const path = require('path')
 const nmp = path.resolve(__dirname, '../../app-service/node_modules')
-
 
 describe('npm-util(unit): Package parse', () => {
   it('get pkg dir: database-ql', async () => {
@@ -35,7 +33,6 @@ describe('npm-util(unit): Package parse', () => {
     assert(pkg.entryPath?.endsWith('dist/commonjs'))
   })
 
-
   it('get pkg dir: axios', async () => {
     const pkg = new PackageInfo('axios', nmp)
     await pkg.parse()
@@ -49,7 +46,6 @@ describe('npm-util(unit): Package parse', () => {
     // console.log(pkg)
     assert.strictEqual(pkg.name, '@types/express')
   })
-
 
   it('get pkg dir: alipay-sdk', async () => {
     const pkg = new PackageInfo('alipay-sdk', nmp)

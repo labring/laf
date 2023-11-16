@@ -33,7 +33,7 @@ export async function list() {
   })
   const apps = await applicationControllerFindAll()
   const regionMap = await getRegionMap()
-  for (let item of apps) {
+  for (const item of apps) {
     table.push([
       item.appid,
       item.name,
@@ -50,13 +50,13 @@ export async function list() {
 async function getRegionMap(): Promise<Map<string, any>> {
   const regionMap = new Map<string, any>()
   const regions = await regionControllerGetRegions()
-  for (let region of regions) {
+  for (const region of regions) {
     regionMap.set(region._id, region)
   }
   return regionMap
 }
 
-export async function init(appid: string, options: { sync: boolean, basicMode: boolean }) {
+export async function init(appid: string, options: { sync: boolean; basicMode: boolean }) {
   if (AppSchema.exist()) {
     console.log(
       `${getEmoji(
@@ -69,7 +69,7 @@ export async function init(appid: string, options: { sync: boolean, basicMode: b
   const app = await applicationControllerFindOne(appid)
 
   // init app schema
-  let timestamp = Date.parse(new Date().toString()) / 1000
+  const timestamp = Date.parse(new Date().toString()) / 1000
   const appSchema: AppSchema = {
     name: app.name,
     appid: app.appid,
@@ -93,9 +93,8 @@ export async function init(appid: string, options: { sync: boolean, basicMode: b
     return
   }
 
-
   if (!ProjectSchema.exist()) {
-  // init project schema
+    // init project schema
     const projectSchema: ProjectSchema = {
       version: '1.0.0',
       name: app.name,

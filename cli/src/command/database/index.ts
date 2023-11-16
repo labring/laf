@@ -1,6 +1,6 @@
-import { Command, program } from "commander";
-import { checkApplication } from "../../common/hook";
-import { exportDB, importDB } from "../../action/database";
+import { Command, program } from 'commander'
+import { checkApplication } from '../../common/hook'
+import { exportDB, importDB } from '../../action/database'
 
 export function command(): Command {
   const cmd = program
@@ -9,7 +9,7 @@ export function command(): Command {
     .hook('preAction', () => {
       checkApplication()
     })
-  
+
   cmd
     .command('export')
     .argument('[exportPath]', 'exportPath')
@@ -17,16 +17,15 @@ export function command(): Command {
     .action((exportPath: string) => {
       exportDB(exportPath)
     })
-  
+
   cmd
     .command('import')
     .argument('[sourceAppid]', 'sourceAppid')
     .argument('[importPath]', 'importPath')
     .description('import database')
-    .action((sourceAppid, importPath: string) => { 
+    .action((sourceAppid, importPath: string) => {
       importDB(sourceAppid, importPath)
     })
-  
-  
+
   return cmd
 }

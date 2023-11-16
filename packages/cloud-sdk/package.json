@@ -6,8 +6,7 @@
   "scripts": {
     "watch": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint": "eslint \"./**/*.ts\"",
-    "fix": "eslint --fix \"./**/*.ts\"",
+    "lint": "eslint . --fix --ext .ts --ext .js",
     "build": "tsc -p tsconfig.json",
     "prepublishOnly": "npm run build"
   },
@@ -34,5 +33,8 @@
     "database-proxy": "^1.0.0-beta.12",
     "mongodb": "^4.12.1",
     "ws": "^8.11.0"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

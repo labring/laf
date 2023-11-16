@@ -1,4 +1,3 @@
-
 const assert = require('assert')
 const { MysqlAccessor, Proxy, ActionType } = require('../../dist')
 const { SqlBuilder } = require('../../dist/accessor/sql_builder')
@@ -12,22 +11,34 @@ describe('Database Mysql join', function () {
     user: config.user,
     password: config.password,
     host: config.host,
-    port: config.port
+    port: config.port,
   })
 
   const table = 'test_tbl'
   const sub_table = 'test_subtbl'
 
-  let entry = new Proxy(accessor)
+  const entry = new Proxy(accessor)
 
   before(async () => {
-    await accessor.conn.execute(`create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, primary key(id))`)
-    await accessor.conn.execute(`insert into ${table} (id, name) values(111, 'less-api-1')`)
-    await accessor.conn.execute(`insert into ${table} (id, name) values(112, 'less-api-2')`)
+    await accessor.conn.execute(
+      `create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, primary key(id))`
+    )
+    await accessor.conn.execute(
+      `insert into ${table} (id, name) values(111, 'less-api-1')`
+    )
+    await accessor.conn.execute(
+      `insert into ${table} (id, name) values(112, 'less-api-2')`
+    )
 
-    await accessor.conn.execute(`create table IF NOT EXISTS ${sub_table} (id int(11) NOT NULL AUTO_INCREMENT, parent_id int(11) NOT NULL, name varchar(255) NOT NULL, age int, primary key(id))`)
-    await accessor.conn.execute(`insert into ${sub_table} (parent_id,name, age) values(111, 'sub-less-api-1', 22)`)
-    await accessor.conn.execute(`insert into ${sub_table} (parent_id, name, age) values(112, 'sub-less-api-2', 29)`)
+    await accessor.conn.execute(
+      `create table IF NOT EXISTS ${sub_table} (id int(11) NOT NULL AUTO_INCREMENT, parent_id int(11) NOT NULL, name varchar(255) NOT NULL, age int, primary key(id))`
+    )
+    await accessor.conn.execute(
+      `insert into ${sub_table} (parent_id,name, age) values(111, 'sub-less-api-1', 22)`
+    )
+    await accessor.conn.execute(
+      `insert into ${sub_table} (parent_id, name, age) values(112, 'sub-less-api-2', 29)`
+    )
   })
 
   it('read with joins should be ok', async () => {
@@ -35,10 +46,20 @@ describe('Database Mysql join', function () {
       collection: table,
       action: ActionType.READ,
       query: { [`${table}.id`]: 111 },
-      projection: { 'test_tbl.*': 1, 'test_subtbl.id sid': 1, 'test_subtbl.name sname': 1, 'test_subtbl.age': 1},
+      projection: {
+        'test_tbl.*': 1,
+        'test_subtbl.id sid': 1,
+        'test_subtbl.name sname': 1,
+        'test_subtbl.age': 1,
+      },
       joins: [
-        { type: 'left', collection: sub_table, leftKey: 'id', rightKey: 'parent_id'}
-      ]
+        {
+          type: 'left',
+          collection: sub_table,
+          leftKey: 'id',
+          rightKey: 'parent_id',
+        },
+      ],
     }
 
     const r = await entry.execute(params)

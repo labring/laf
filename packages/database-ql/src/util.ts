@@ -1,6 +1,13 @@
 import { Binary, EJSON, ObjectId } from 'bson'
 import { FieldType } from './constant'
-import { Point, LineString, Polygon, MultiPoint, MultiLineString, MultiPolygon } from './geo/index'
+import {
+  Point,
+  LineString,
+  Polygon,
+  MultiPoint,
+  MultiLineString,
+  MultiPolygon,
+} from './geo/index'
 import { ServerDate } from './serverDate/index'
 
 interface DocumentModel {
@@ -18,7 +25,7 @@ export class Util {
    * @param document - 后端文档数据
    */
   public static formatResDocumentData = (documents: DocumentModel[]) => {
-    return documents.map(document => {
+    return documents.map((document) => {
       return Util.formatField(document)
     })
   }
@@ -31,7 +38,7 @@ export class Util {
    * @param document
    * @internal
    */
-  public static formatField = document => {
+  public static formatField = (document) => {
     const keys = Object.keys(document)
     let protoField = {}
 
@@ -40,7 +47,7 @@ export class Util {
       protoField = []
     }
 
-    keys.forEach(key => {
+    keys.forEach((key) => {
       const item = document[key]
       const type = Util.whichType(item)
       let realValue
@@ -49,31 +56,42 @@ export class Util {
           realValue = new Point(item.coordinates[0], item.coordinates[1])
           break
         case FieldType.GeoLineString:
-          realValue = new LineString(item.coordinates.map(point => new Point(point[0], point[1])))
+          realValue = new LineString(
+            item.coordinates.map((point) => new Point(point[0], point[1]))
+          )
           break
         case FieldType.GeoPolygon:
           realValue = new Polygon(
             item.coordinates.map(
-              line => new LineString(line.map(([lng, lat]) => new Point(lng, lat)))
+              (line) =>
+                new LineString(line.map(([lng, lat]) => new Point(lng, lat)))
             )
           )
           break
         case FieldType.GeoMultiPoint:
-          realValue = new MultiPoint(item.coordinates.map(point => new Point(point[0], point[1])))
+          realValue = new MultiPoint(
+            item.coordinates.map((point) => new Point(point[0], point[1]))
+          )
           break
         case FieldType.GeoMultiLineString:
           realValue = new MultiLineString(
             item.coordinates.map(
-              line => new LineString(line.map(([lng, lat]) => new Point(lng, lat)))
+              (line) =>
+                new LineString(line.map(([lng, lat]) => new Point(lng, lat)))
             )
           )
           break
         case FieldType.GeoMultiPolygon:
           realValue = new MultiPolygon(
             item.coordinates.map(
-              polygon =>
+              (polygon) =>
                 new Polygon(
-                  polygon.map(line => new LineString(line.map(([lng, lat]) => new Point(lng, lat))))
+                  polygon.map(
+                    (line) =>
+                      new LineString(
+                        line.map(([lng, lat]) => new Point(lng, lat))
+                      )
+                  )
                 )
             )
           )
@@ -112,7 +130,7 @@ export class Util {
    *
    * @param obj
    */
-  public static whichType = (obj: any): String => {
+  public static whichType = (obj: any): string => {
     let type = Object.prototype.toString.call(obj).slice(8, -1)
 
     if (type === FieldType.Timestamp) {
@@ -126,9 +144,7 @@ export class Util {
         return FieldType.Timestamp
       } /* else if (obj instanceof Command) {
         return FieldType.Command;
-      } */ else if (
-        obj instanceof ServerDate
-      ) {
+      } */ else if (obj instanceof ServerDate) {
         return FieldType.ServerDate
       } else if (obj instanceof ObjectId) {
         return FieldType.ObjectId

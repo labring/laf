@@ -1,4 +1,8 @@
-import { InternalSymbol, SYMBOL_UNSET_FIELD_NAME, SYMBOL_UPDATE_COMMAND } from '../helper/symbol'
+import {
+  InternalSymbol,
+  SYMBOL_UNSET_FIELD_NAME,
+  SYMBOL_UPDATE_COMMAND,
+} from '../helper/symbol'
 
 export enum UPDATE_COMMANDS_LITERAL {
   SET = 'set',
@@ -15,18 +19,20 @@ export enum UPDATE_COMMANDS_LITERAL {
   BIT = 'bit',
   RENAME = 'rename',
   MAX = 'max',
-  MIN = 'min'
+  MIN = 'min',
 }
 
 export class UpdateCommand {
-
   public fieldName: string | InternalSymbol
   public operator: UPDATE_COMMANDS_LITERAL
   public operands: any
   public _internalType = SYMBOL_UPDATE_COMMAND
 
-  constructor(operator: UPDATE_COMMANDS_LITERAL, operands?: any, fieldName?: string | InternalSymbol) {
-
+  constructor(
+    operator: UPDATE_COMMANDS_LITERAL,
+    operands?: any,
+    fieldName?: string | InternalSymbol
+  ) {
     Object.defineProperties(this, {
       _internalType: {
         enumerable: false,
@@ -46,11 +52,18 @@ export class UpdateCommand {
 }
 
 export function isUpdateCommand(object: any): object is UpdateCommand {
-  return object && (object instanceof UpdateCommand) && (object._internalType === SYMBOL_UPDATE_COMMAND)
+  return (
+    object &&
+    object instanceof UpdateCommand &&
+    object._internalType === SYMBOL_UPDATE_COMMAND
+  )
 }
 
 export function isKnownUpdateCommand(object: any): object is UpdateCommand {
-  return isUpdateCommand(object) && (object.operator.toUpperCase() in UPDATE_COMMANDS_LITERAL)
+  return (
+    isUpdateCommand(object) &&
+    object.operator.toUpperCase() in UPDATE_COMMANDS_LITERAL
+  )
 }
 
 export default UpdateCommand

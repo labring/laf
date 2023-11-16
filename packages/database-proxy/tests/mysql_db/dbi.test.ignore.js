@@ -6,7 +6,7 @@ const config = require('./_db')
 const TEST_DATA = [
   { name: 'title-1', age: 2 },
   { name: 'title-2', age: 18 },
-  { name: 'title-3', age: 100 }
+  { name: 'title-3', age: 100 },
 ]
 const table = 'test_table'
 
@@ -18,9 +18,8 @@ describe('Database Interface with Mysql read', function () {
     user: config.user,
     password: config.password,
     host: config.host,
-    port: config.port
+    port: config.port,
   })
-
 
   let coll = null
   let db = null
@@ -28,7 +27,9 @@ describe('Database Interface with Mysql read', function () {
   before(async () => {
     // insert data
     // await accessor.init()
-    await accessor.conn.execute(`create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, age int, primary key(id))`)
+    await accessor.conn.execute(
+      `create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, age int, primary key(id))`
+    )
 
     db = await getDb(accessor)
 
@@ -38,10 +39,8 @@ describe('Database Interface with Mysql read', function () {
   })
 
   it('read one should be ok', async () => {
-
     const { data } = await coll.where({}).get()
     assert.ok(data.length)
-
   })
 
   after(async () => {

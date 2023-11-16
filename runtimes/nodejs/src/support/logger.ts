@@ -7,7 +7,6 @@
 
 import { Console } from './engine'
 
-
 /**
  * The global logger instance
  */
