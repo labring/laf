@@ -121,6 +121,6 @@ export function base64ToUint8Array(base64: string) {
  * @param obj
  * @returns
  */
-export function isObject(obj: unknown): obj is Object {
+export function isObject(obj: unknown): obj is object {
   return obj !== null && typeof obj === 'object'
 }

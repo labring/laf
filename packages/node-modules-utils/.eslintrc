@@ -1,5 +1,4 @@
 {
-  "extends": [
-    "laf/package"
-  ]
+  "root": true,
+  "extends": "laf/package"
 }
