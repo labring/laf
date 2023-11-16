@@ -29,7 +29,7 @@ export class Console {
 
     const fn = chalk.blueBright(`[${this.category}]`)
 
-    let content = params
+    const content = params
       .map((param) => {
         if (typeof param === 'string') return this._colorize(level, param)
         if (isObject(param)) {

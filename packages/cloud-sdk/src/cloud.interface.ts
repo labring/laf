@@ -6,12 +6,12 @@ import { FunctionContext } from './function.interface'
 
 export type InvokeFunctionType = (
   name: string,
-  param?: FunctionContext,
+  param?: FunctionContext
 ) => Promise<any>
 export type GetTokenFunctionType = (payload: any, secret?: string) => string
 export type ParseTokenFunctionType = (
   token: string,
-  secret?: string,
+  secret?: string
 ) => any | null
 
 export interface MongoDriverObject {
@@ -61,7 +61,7 @@ export interface CloudSdkInterface {
   /**
    * The mongodb instance of MongoDB node.js native driver.
    * @see https://www.mongodb.com/docs/drivers/node/current/quick-reference/
-   * 
+   *
    * #### Transaction operations
    * ```js
    *  const session = mongo.client.startSession()

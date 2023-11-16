@@ -11,6 +11,6 @@ if (window) {
     initLessClient: init,
     Cloud,
     Db,
-    EnvironmentType
+    EnvironmentType,
   }
 }

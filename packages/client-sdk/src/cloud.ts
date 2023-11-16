@@ -1,9 +1,9 @@
-import { Db } from "database-ql";
-import { Request } from "./request/request";
-import { UniRequest } from "./request/request-uni";
-import { WxmpRequest } from "./request/request-wxmp";
-import { TaroRequest } from "./request/request-taro";
-import { CloudOptions, EnvironmentType, RequestInterface } from "./types";
+import { Db } from 'database-ql'
+import { Request } from './request/request'
+import { UniRequest } from './request/request-uni'
+import { WxmpRequest } from './request/request-wxmp'
+import { TaroRequest } from './request/request-taro'
+import { CloudOptions, EnvironmentType, RequestInterface } from './types'
 
 interface GlobalObjectType {
   getSystemInfoSync: any
@@ -14,38 +14,38 @@ declare const uni: GlobalObjectType
  * class Cloud provide the interface to request cloud function and cloud database.
  */
 class Cloud {
-  private config: CloudOptions;
+  private config: CloudOptions
 
   /**
    * request class by environment
    */
   private get requestClass() {
-    const env = this.config?.environment;
-    let ret = Request;
+    const env = this.config?.environment
+    let ret = Request
     if (this.config?.requestClass) {
-      ret = this.config?.requestClass;
+      ret = this.config?.requestClass
     } else if (env === EnvironmentType.UNI_APP) {
-      const { uniPlatform } = uni.getSystemInfoSync();
+      const { uniPlatform } = uni.getSystemInfoSync()
       if (uniPlatform == 'mp-weixin') {
-        ret = WxmpRequest;
+        ret = WxmpRequest
       } else {
-        ret = UniRequest;
+        ret = UniRequest
       }
     } else if (env === EnvironmentType.WX_MP) {
-      ret = WxmpRequest;
+      ret = WxmpRequest
     } else if (env === EnvironmentType.TARO) {
-      ret = TaroRequest;
+      ret = TaroRequest
     } else {
-      ret = Request;
+      ret = Request
     }
 
-    return ret;
+    return ret
   }
 
   /**
    * internal request class
    */
-  protected _request: RequestInterface;
+  protected _request: RequestInterface
 
   /**
    * Create a cloud instance
@@ -53,9 +53,9 @@ class Cloud {
    */
   constructor(config: CloudOptions) {
     const warningFunc = () => {
-      console.warn("WARNING: no getAccessToken set for db proxy request");
-      return "";
-    };
+      console.warn('WARNING: no getAccessToken set for db proxy request')
+      return ''
+    }
 
     this.config = {
       baseUrl: config.baseUrl,
@@ -66,10 +66,10 @@ class Cloud {
       timeout: config?.timeout,
       headers: config?.headers,
       requestClass: config?.requestClass,
-    };
+    }
 
-    const reqClass = this.requestClass;
-    this._request = new reqClass(this.config);
+    const reqClass = this.requestClass
+    this._request = new reqClass(this.config)
   }
 
   /**
@@ -80,7 +80,7 @@ class Cloud {
     return new Db({
       request: this._request,
       primaryKey: this.config?.primaryKey,
-    });
+    })
   }
 
   /**
@@ -91,10 +91,10 @@ class Cloud {
    * @returns
    */
   async invokeFunction<T = any>(functionName: string, data?: any): Promise<T> {
-    const url = this.config.baseUrl + `/${functionName}`;
-    const res = await this._request.request(url, data);
+    const url = this.config.baseUrl + `/${functionName}`
+    const res = await this._request.request(url, data)
 
-    return res.data;
+    return res.data
   }
 
   /**
@@ -104,8 +104,8 @@ class Cloud {
    * @returns
    */
   async invoke<T = any>(functionName: string, data?: any): Promise<T> {
-    return await this.invokeFunction(functionName, data);
+    return await this.invokeFunction(functionName, data)
   }
 }
 
-export { Cloud, Db, Request };
+export { Cloud, Db, Request }

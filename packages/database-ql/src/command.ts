@@ -1,15 +1,19 @@
-import { IGeoIntersectsOptions, IGeoNearOptions, IGeoWithinOptions, QueryCommand, QUERY_COMMANDS_LITERAL } from './commands/query'
+/* eslint-disable prefer-rest-params */
+import {
+  IGeoIntersectsOptions,
+  IGeoNearOptions,
+  IGeoWithinOptions,
+  QueryCommand,
+  QUERY_COMMANDS_LITERAL,
+} from './commands/query'
 import { LogicCommand, LOGIC_COMMANDS_LITERAL } from './commands/logic'
 import { UpdateCommand, UPDATE_COMMANDS_LITERAL } from './commands/update'
 import { isArray, isObject, isString } from './utils/type'
 import Aggregation from './aggregate'
 
-
-
 export type IQueryCondition = Record<string, any> | LogicCommand
 
 export const Command = {
-
   eq(val: any) {
     return new QueryCommand(QUERY_COMMANDS_LITERAL.EQ, [val])
   },
@@ -79,22 +83,30 @@ export const Command = {
   },
 
   and(...__expressions__: IQueryCondition[]) {
-    const expressions = isArray(arguments[0]) ? arguments[0] : Array.from(arguments)
+    const expressions = isArray(arguments[0])
+      ? arguments[0]
+      : Array.from(arguments)
     return new LogicCommand(LOGIC_COMMANDS_LITERAL.AND, expressions)
   },
 
   nor(...__expressions__: IQueryCondition[]) {
-    const expressions = isArray(arguments[0]) ? arguments[0] : Array.from(arguments)
+    const expressions = isArray(arguments[0])
+      ? arguments[0]
+      : Array.from(arguments)
     return new LogicCommand(LOGIC_COMMANDS_LITERAL.NOR, expressions)
   },
 
   or(...__expressions__: IQueryCondition[]) {
-    const expressions = isArray(arguments[0]) ? arguments[0] : Array.from(arguments)
+    const expressions = isArray(arguments[0])
+      ? arguments[0]
+      : Array.from(arguments)
     return new LogicCommand(LOGIC_COMMANDS_LITERAL.OR, expressions)
   },
 
   not(...__expressions__: IQueryCondition[]) {
-    const expressions = isArray(arguments[0]) ? arguments[0] : Array.from(arguments)
+    const expressions = isArray(arguments[0])
+      ? arguments[0]
+      : Array.from(arguments)
     return new LogicCommand(LOGIC_COMMANDS_LITERAL.NOT, expressions)
   },
 
@@ -122,7 +134,7 @@ export const Command = {
         $each: options.each,
         $position: options.position,
         $sort: options.sort,
-        $slice: options.slice
+        $slice: options.slice,
       }
     } else if (isArray(args[0])) {
       values = args[0]
@@ -176,32 +188,36 @@ export const Command = {
 
   expr(values: AggregationOperator) {
     return {
-      $expr: values
+      $expr: values,
     }
   },
 
   jsonSchema(schema) {
     return {
-      $jsonSchema: schema
+      $jsonSchema: schema,
     }
   },
 
-  text(values: string | {
-    search: string
-    language?: string
-    caseSensitive?: boolean
-    diacriticSensitive: boolean
-  }) {
+  text(
+    values:
+      | string
+      | {
+          search: string
+          language?: string
+          caseSensitive?: boolean
+          diacriticSensitive: boolean
+        }
+  ) {
     if (isString(values)) {
       return {
-        $search: values.search
+        $search: values.search,
       }
     } else {
       return {
         $search: values.search,
         $language: values.language,
         $caseSensitive: values.caseSensitive,
-        $diacriticSensitive: values.diacriticSensitive
+        $diacriticSensitive: values.diacriticSensitive,
       }
     }
   },
@@ -290,11 +306,13 @@ export const Command = {
     objectToArray: (param) => new AggregationOperator('objectToArray', param),
 
     // 集合操作符（7个）
-    allElementsTrue: (param) => new AggregationOperator('allElementsTrue', param),
+    allElementsTrue: (param) =>
+      new AggregationOperator('allElementsTrue', param),
     anyElementTrue: (param) => new AggregationOperator('anyElementTrue', param),
     setDifference: (param) => new AggregationOperator('setDifference', param),
     setEquals: (param) => new AggregationOperator('setEquals', param),
-    setIntersection: (param) => new AggregationOperator('setIntersection', param),
+    setIntersection: (param) =>
+      new AggregationOperator('setIntersection', param),
     setIsSubset: (param) => new AggregationOperator('setIsSubset', param),
     setUnion: (param) => new AggregationOperator('setUnion', param),
 
@@ -333,13 +351,13 @@ export const Command = {
     sum: (param) => new AggregationOperator('sum', param),
 
     // 变量声明操作符
-    let: (param) => new AggregationOperator('let', param)
+    let: (param) => new AggregationOperator('let', param),
   },
 
   project: {
     slice: (param) => new ProjectionOperator('slice', param),
-    elemMatch: (param) => new ProjectionOperator('elemMatch', param)
-  }
+    elemMatch: (param) => new ProjectionOperator('elemMatch', param),
+  },
 }
 
 class AggregationOperator {
@@ -355,4 +373,3 @@ class ProjectionOperator {
 }
 
 export default Command
-

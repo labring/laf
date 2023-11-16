@@ -1,4 +1,4 @@
-import { request, RequestParams } from "../../util/request";
+import { request, RequestParams } from '../../util/request'
 import {
   ApplicationControllerFindOneData,
   BindCustomDomainDto,
@@ -10,7 +10,7 @@ import {
   UpdateApplicationNameDto,
   UpdateApplicationStateDto,
   UpdateDependencyDto,
-} from "./data-contracts";
+} from './data-contracts'
 
 /**
  * No description
@@ -27,10 +27,10 @@ export async function applicationControllerCreate(
 ): Promise<any> {
   return request({
     url: `/v1/applications`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -44,9 +44,9 @@ export async function applicationControllerCreate(
 export async function applicationControllerFindAll(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/applications`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -63,9 +63,9 @@ export async function applicationControllerFindOne(
 ): Promise<ApplicationControllerFindOneData> {
   return request({
     url: `/v1/applications/${appid}`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -79,9 +79,9 @@ export async function applicationControllerFindOne(
 export async function applicationControllerDelete(appid: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/applications/${appid}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -99,10 +99,10 @@ export async function applicationControllerUpdateName(
 ): Promise<any> {
   return request({
     url: `/v1/applications/${appid}/name`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -120,10 +120,10 @@ export async function applicationControllerUpdateState(
 ): Promise<any> {
   return request({
     url: `/v1/applications/${appid}/state`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -141,10 +141,10 @@ export async function applicationControllerUpdateBundle(
 ): Promise<any> {
   return request({
     url: `/v1/applications/${appid}/bundle`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -162,10 +162,10 @@ export async function applicationControllerBindDomain(
 ): Promise<any> {
   return request({
     url: `/v1/applications/${appid}/domain`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -179,9 +179,9 @@ export async function applicationControllerBindDomain(
 export async function applicationControllerRemove(appid: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/applications/${appid}/domain`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -199,10 +199,10 @@ export async function applicationControllerCheckResolved(
 ): Promise<any> {
   return request({
     url: `/v1/applications/${appid}/domain/resolved`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -220,10 +220,10 @@ export async function environmentVariableControllerUpdateAll(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/environments`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -241,10 +241,10 @@ export async function environmentVariableControllerAdd(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/environments`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -258,9 +258,9 @@ export async function environmentVariableControllerAdd(
 export async function environmentVariableControllerGet(appid: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/environments`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -278,9 +278,9 @@ export async function environmentVariableControllerDelete(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/environments/${name}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -298,10 +298,10 @@ export async function dependencyControllerAdd(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/dependencies`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -319,10 +319,10 @@ export async function dependencyControllerUpdate(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/dependencies`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -339,9 +339,9 @@ export async function dependencyControllerGetDependencies(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/dependencies`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -359,8 +359,8 @@ export async function dependencyControllerRemove(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/dependencies`,
-    method: "DELETE",
+    method: 'DELETE',
     data: data,
     ...configParams,
-  });
+  })
 }

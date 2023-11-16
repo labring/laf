@@ -20,11 +20,7 @@ import {
 import { UserService } from './user.service'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { IRequest, IResponse } from 'src/utils/interface'
-import {
-  ApiResponseObject,
-  ResponseUtil,
-  ApiResponseString,
-} from 'src/utils/response'
+import { ApiResponseObject, ResponseUtil } from 'src/utils/response'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { User, UserWithProfile } from './entities/user'
 import { SmsService } from 'src/authentication/phone/sms.service'

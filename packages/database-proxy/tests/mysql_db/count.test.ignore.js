@@ -1,4 +1,3 @@
-
 const assert = require('assert')
 const { MysqlAccessor, Proxy, ActionType } = require('../../dist')
 const config = require('./_db')
@@ -11,25 +10,33 @@ describe('Database Mysql count', function () {
     user: config.user,
     password: config.password,
     host: config.host,
-    port: config.port
+    port: config.port,
   })
 
   const table = 'test_table'
 
-  let entry = new Proxy(accessor)
+  const entry = new Proxy(accessor)
 
   before(async () => {
-    await accessor.conn.execute(`create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, age int, primary key(id))`)
-    await accessor.conn.execute(`insert into ${table} (id,name, age) values(111, 'less-api-1', 2)`)
-    await accessor.conn.execute(`insert into ${table} (id,name, age) values(112, 'less-api-2', 18)`)
-    await accessor.conn.execute(`insert into ${table} (id,name, age) values(113, 'less-api-3', 28)`)
+    await accessor.conn.execute(
+      `create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, age int, primary key(id))`
+    )
+    await accessor.conn.execute(
+      `insert into ${table} (id,name, age) values(111, 'less-api-1', 2)`
+    )
+    await accessor.conn.execute(
+      `insert into ${table} (id,name, age) values(112, 'less-api-2', 18)`
+    )
+    await accessor.conn.execute(
+      `insert into ${table} (id,name, age) values(113, 'less-api-3', 28)`
+    )
   })
 
   it('count one passed', async () => {
     const params = {
       collection: table,
       action: ActionType.COUNT,
-      query: { id: 111 }
+      query: { id: 111 },
     }
     const r = await entry.execute(params)
 
@@ -40,7 +47,7 @@ describe('Database Mysql count', function () {
     const params = {
       collection: table,
       action: ActionType.COUNT,
-      query: {}
+      query: {},
     }
     const r = await entry.execute(params)
 
@@ -51,7 +58,7 @@ describe('Database Mysql count', function () {
     const params = {
       collection: table,
       action: ActionType.COUNT,
-      query: { age: { $gt: 2 } }
+      query: { age: { $gt: 2 } },
     }
     const r = await entry.execute(params)
 

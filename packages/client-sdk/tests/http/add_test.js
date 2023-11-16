@@ -4,17 +4,19 @@ const config = require('./config')
 
 describe('client-sdk(http): db.add()', function () {
   it('add one should be ok', async () => {
-    const cloud = client.init({ dbProxyUrl: config.dbProxyUrl, getAccessToken: config.getAccessToken})
+    const cloud = client.init({
+      dbProxyUrl: config.dbProxyUrl,
+      getAccessToken: config.getAccessToken,
+    })
 
-    const result = await cloud.database()
-      .collection('categories')
-      .add({
-        title: 'title-add-2',
-        content: 'content-add-2'
-      })
+    const result = await cloud.database().collection('categories').add({
+      title: 'title-add-2',
+      content: 'content-add-2',
+    })
 
-    console.log({result})
-    const {data} = await cloud.database()
+    console.log({ result })
+    const { data } = await cloud
+      .database()
       .collection('categories')
       .doc(result.id)
       .get()

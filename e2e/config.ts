@@ -17,7 +17,6 @@ export class Config {
     return process.env.MONGO_URI
   }
 
-
   static get TEST_USERNAME() {
     return process.env.TEST_USERNAME || 'testing-e2e-user'
   }

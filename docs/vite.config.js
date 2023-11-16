@@ -1,9 +1,9 @@
 //vite.config.js
-import { SearchPlugin } from "vitepress-plugin-search";
-import { defineConfig } from "vite";
+import { defineConfig } from 'vite'
+import { SearchPlugin } from 'vitepress-plugin-search'
 
 export default defineConfig({
-  base: "./",
+  base: './',
   server: {
     port: 5173,
     hmr: false,
@@ -12,12 +12,12 @@ export default defineConfig({
   plugins: [
     SearchPlugin({
       encode: false,
-      tokenize: "full",
+      tokenize: 'full',
       previewLength: 62,
-      buttonLabel: "Search",
-      placeholder: "Search docs",
+      buttonLabel: 'Search',
+      placeholder: 'Search docs',
       cache: true,
       context: false,
     }),
   ],
-});
+})

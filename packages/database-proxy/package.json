@@ -9,7 +9,8 @@
     "test": "npm run test-units",
     "build": "tsc -p tsconfig.json",
     "watch": "tsc -w",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "lint": "eslint . --fix --ext .ts --ext .js"
   },
   "keywords": [
     "BaaS",
@@ -37,5 +38,8 @@
     "@types/validator": "^10.11.3",
     "mocha": "^9.0.2",
     "typescript": "^3.6.4"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

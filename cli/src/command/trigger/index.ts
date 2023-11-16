@@ -1,6 +1,6 @@
-import { Command, program } from "commander"
-import { checkApplication } from "../../common/hook"
-import { create, del, list } from "../../action/trigger"
+import { Command, program } from 'commander'
+import { checkApplication } from '../../common/hook'
+import { create, del, list } from '../../action/trigger'
 
 export function command(): Command {
   const cmd = program.command('trigger').hook('preAction', () => {
@@ -13,14 +13,14 @@ export function command(): Command {
     .action(() => {
       list()
     })
-  
+
   cmd
     .command('create <name> <target> <cron>')
     .description('create a trigger')
     .action((name, target, cron) => {
       create(name, target, cron)
     })
-  
+
   cmd
     .command('del [id]')
     .description('delete a trigger')
@@ -32,11 +32,9 @@ export function command(): Command {
       }
       del({
         id,
-        name: options.name
+        name: options.name,
       })
     })
-    
-
 
   return cmd
 }

@@ -5,29 +5,28 @@ const Actions = {
   update: 'database.updateDocument',
   count: 'database.countDocument',
   remove: 'database.deleteDocument',
-  aggregate: 'database.aggregateDocuments'
+  aggregate: 'database.aggregateDocuments',
 }
 
 class MockRequest {
-
   action = null
   params = null
 
   /**
-   * 
-   * @param {string} action 
-   * @param {any} params 
+   *
+   * @param {string} action
+   * @param {any} params
    * @returns
    */
   async send(action, params) {
     let data = {}
     this.action = action
     this.params = params
-    
+
     if (action === Actions.add) {
       data = { _id: '0', insertedCount: 0 }
     }
-    
+
     if (action === Actions.get || action === Actions.aggregate) {
       data = { list: [] }
     }
@@ -47,15 +46,14 @@ class MockRequest {
     if (action === Actions.add) {
       data = { _id: '0', insertedCount: 1 }
     }
-    
+
     return {
       code: 0,
       requestId: 'test_req_id',
-      data
+      data,
     }
   }
 }
-
 
 // mock db
 function getDb() {
@@ -67,5 +65,5 @@ function getDb() {
 module.exports = {
   MockRequest,
   Actions,
-  getDb
+  getDb,
 }

@@ -15,7 +15,7 @@
     "prepublishOnly": "npm run build",
     "trace-gc": "node --trace_gc --trace_gc_verbose ./dist/index.js",
     "init": "node ./dist/init.js",
-    "prettier": "npx prettier --write ./src"
+    "lint": "eslint . --fix --ext .ts --ext .js"
   },
   "keywords": [
     "laf",
@@ -79,5 +79,8 @@
       "http/*"
     ],
     "delay": 1000
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

@@ -13,7 +13,7 @@ import { AppSchema } from '../../schema/app'
 import { ProjectSchema } from '../../schema/project'
 import { getBaseDir } from '../../util/sys'
 
-export async function add(dependencyName: string, options: { targetVersion: string, remote: boolean }) {
+export async function add(dependencyName: string, options: { targetVersion: string; remote: boolean }) {
   const appSchema = AppSchema.read()
   const dependencyDto: CreateDependencyDto = {
     name: dependencyName,
@@ -40,16 +40,16 @@ export async function pull() {
   console.log(`${getEmoji('👉')} please run 'npm install' install dependencies`)
 }
 
-async function pullOne(updateYaml: boolean = true) {
+async function pullOne(updateYaml = true) {
   const appSchema = AppSchema.read()
 
   const dependencies = await dependencyControllerGetDependencies(appSchema.appid)
 
   const packagePath = path.resolve(getBaseDir(), PACKAGE_FILE)
-  let packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'))
+  const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'))
   const devDependencies = {}
   const localDependencies = {}
-  for (let dependency of dependencies) {
+  for (const dependency of dependencies) {
     devDependencies[dependency.name] = dependency.spec
 
     // add a non-built-in dependency
@@ -73,13 +73,13 @@ export async function push(options: { updatePackage: boolean }) {
 
   const serverDependencies = await dependencyControllerGetDependencies(appSchema.appid)
   const serverDependenciesMap = new Map<string, boolean>()
-  for (let item of serverDependencies) {
+  for (const item of serverDependencies) {
     serverDependenciesMap.set(item.name, true)
   }
 
   const projectSchema = ProjectSchema.read()
 
-  for (let key in projectSchema.spec.dependencies) {
+  for (const key in projectSchema.spec.dependencies) {
     if (!serverDependenciesMap.has(key)) {
       const createDependencyDto: CreateDependencyDto = {
         name: key,
