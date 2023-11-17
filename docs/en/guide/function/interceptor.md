@@ -54,7 +54,7 @@ Only if the return value of the interceptor is `true`, the original cloud functi
 Here is a simple interceptor example. If the IP is `111.111.111.111`, the original cloud function can be accessed:
 
 ```typescript
-export async function main(ctx: FunctionContext) {
+export default async function(ctx: FunctionContext) {
   // Get the actual IP of the request
   const ip = ctx.headers['x-forwarded-for']
   if(ip === '111.111.111.111'){
