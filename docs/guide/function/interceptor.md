@@ -20,7 +20,7 @@ Laf 云函数拦截器，是在所有的云函数请求之前被请求，故而�
 export default async function(ctx: FunctionContext) {
   // 获取请求的实际 IP
   const ip = ctx.headers['x-forward-for']
-  if(ip == '111.111.111.111'){
+  if(ip === '111.111.111.111'){
     return true
   }else{
     return false
