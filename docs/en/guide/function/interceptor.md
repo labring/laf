@@ -56,7 +56,7 @@ Here is a simple interceptor example. If the IP is `111.111.111.111`, the origin
 ```typescript
 export async function main(ctx: FunctionContext) {
   // Get the actual IP of the request
-  const ip = ctx.headers['x-forward-for']
+  const ip = ctx.headers['x-forwarded-for']
   if(ip == '111.111.111.111'){
     return true
   }else{
