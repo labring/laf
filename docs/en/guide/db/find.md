@@ -102,7 +102,7 @@ The difference from `where` is that `doc` only filters based on _id.
 
 ::: warning
 If the document is added using cloud.database(), the _id type is string.
-If the document is added using cloud.mongo.db, the_id type is generally ObjectId.
+If the document is added using cloud.mongo.db, the _id type is generally ObjectId.
 :::
 
 ```typescript
