@@ -3,9 +3,14 @@ import { FunctionCache, FunctionModuleGlobalContext } from '.'
 import Config from '../../config'
 import { Console } from '.'
 import * as vm from 'vm'
+import * as fs from 'fs'
+
+
 
 export class FunctionModule {
   protected static cache: Map<string, any> = new Map()
+
+  private static customRequire: any = null;
 
   static get(functionName: string): any {
     const moduleName = `@/${functionName}`
@@ -40,6 +45,19 @@ export class FunctionModule {
       }
       return mod
     }
+
+    // check custom dependency exists
+    const dependencyPath = `${Config.CUSTOM_DEPENDENCY_BASE_PATH}/node_modules/`
+    if (fs.existsSync(`${dependencyPath}/${name}`)) {
+      if (!FunctionModule.customRequire) {
+        FunctionModule.customRequire = require('module').createRequire(
+          dependencyPath,
+        )
+      }
+      console.log('custom dependency path', dependencyPath)
+      return FunctionModule.customRequire(name)
+    }
+
     return require(name)
   }
 
