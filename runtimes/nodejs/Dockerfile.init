@@ -1,7 +1,7 @@
 FROM node:18
 
-WORKDIR /app/dependencies
+WORKDIR /app
 
-COPY ./init.sh /app/dependencies/init.sh
+COPY ./init.sh /app/init.sh
 
-CMD [ "sh", "/app/dependencies/init.sh" ]
+CMD [ "sh", "/app/init.sh" ]

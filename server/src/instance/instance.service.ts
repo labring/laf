@@ -323,7 +323,7 @@ export class InstanceService {
               volumeMounts: [
                 {
                   name: 'app',
-                  mountPath: '/app',
+                  mountPath: '/data/custom_dependency/node_modules/',
                 },
               ],
               startupProbe: {
@@ -365,7 +365,7 @@ export class InstanceService {
               volumeMounts: [
                 {
                   name: 'app',
-                  mountPath: '/tmp/app',
+                  mountPath: '/app/node_modules/',
                 },
               ],
               resources: {
