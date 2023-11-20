@@ -247,16 +247,38 @@ export async function EnvironmentVariableControllerDelete(
 /**
  * Get app all pod name
  */
-export async function PodControllerGet(params: Paths.PodControllerGet.BodyParameters): Promise<{
+export async function PodControllerGetPodNameList(
+  params: Paths.PodControllerGetPodNameList.BodyParameters,
+): Promise<{
   error: string;
-  data: Paths.PodControllerGet.Responses;
+  data: Definitions.PodNameListDto;
 }> {
-  // /v1/apps/{appid}/pods
+  // /v1/apps/{appid}/pod
   let _params: { [key: string]: any } = {
     appid: useGlobalStore.getState().currentApp?.appid || "",
     ...params,
   };
-  return request(`/v1/apps/${_params.appid}/pods`, {
+  return request(`/v1/apps/${_params.appid}/pod`, {
+    method: "GET",
+    params: params,
+  });
+}
+
+/**
+ * Get pod's containers
+ */
+export async function PodControllerGetContainerNameList(
+  params: Paths.PodControllerGetContainerNameList.BodyParameters,
+): Promise<{
+  error: string;
+  data: Definitions.ContainerNameListDto;
+}> {
+  // /v1/apps/{appid}/pod/container
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || "",
+    ...params,
+  };
+  return request(`/v1/apps/${_params.appid}/pod/container`, {
     method: "GET",
     params: params,
   });
