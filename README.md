@@ -84,7 +84,7 @@ laf 是开源的云开发平台，提供云函数、云数据库、云存储等�
 
 ## 🏘️ Community Groups
 
-- [微信群](https://w4mci7-images.oss.laf.run/wechat.png)
+- [微信群](https://oss.laf.run/htr4n1-images/laf-qr-code.jpg)
 - [QQ 群：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
 
 ## 🌟 Star History
