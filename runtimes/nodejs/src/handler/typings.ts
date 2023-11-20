@@ -81,7 +81,6 @@ export async function handlePackageTypings(req: IRequest, res: Response) {
   // get custom dependency types
   const customDependencyPath = `${Config.CUSTOM_DEPENDENCY_BASE_PATH}/node_modules/`
   if (fs.existsSync(`${customDependencyPath}/${packageName}`)) {
-    console.log('custom dependency path', customDependencyPath)
     getThreePartyPackageTypings(req, res, customDependencyPath, packageName)
   } else {
     getThreePartyPackageTypings(req, res, nodeModulesRoot, packageName)

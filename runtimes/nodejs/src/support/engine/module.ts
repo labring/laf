@@ -54,7 +54,6 @@ export class FunctionModule {
           dependencyPath,
         )
       }
-      console.log('custom dependency path', dependencyPath)
       return FunctionModule.customRequire(name)
     }
 
