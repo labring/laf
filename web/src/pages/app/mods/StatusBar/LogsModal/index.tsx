@@ -55,7 +55,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
   );
 
   const { data: containerData } = useQuery(
-    ["GetContainerQuery", podName],
+    ["GetContainerQuery"],
     () => {
       return PodControllerGetContainerNameList({ podName });
     },
@@ -125,7 +125,6 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                   className="ml-4 !h-8 !w-64"
                   onChange={(e) => {
                     setPodName(e.target.value);
-                    setContainerName("");
                     setIsLoading(true);
                     setLogs("");
                   }}
@@ -183,7 +182,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
             ) : (
               <div
                 id="log-viewer-container"
-                className="text-sm relative flex flex-col overflow-y-auto px-2 font-mono"
+                className="text-sm flex flex-col overflow-y-auto px-2 font-mono"
                 style={{ height: "98%", fontSize: settingStore.commonSettings.fontSize - 1 }}
               >
                 <LogViewer
@@ -192,7 +191,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                   scrollToRow={100000}
                   height={"100%"}
                   toolbar={
-                    <div className="absolute right-16 top-4 z-10">
+                    <div className="absolute right-24 top-4">
                       <LogViewerSearch
                         placeholder="Search"
                         minSearchChars={1}
