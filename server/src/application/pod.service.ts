@@ -43,15 +43,12 @@ export class PodService {
     const res: { response: http.IncomingMessage; body: V1Pod } =
       await coreV1Api.readNamespacedPod(podName, namespaceOfApp)
 
-    const initContainerNameList =
-      res.body.spec.initContainers?.map((container) => container.name) || []
-
     const containerNameList =
       res.body.spec.containers?.map((container) => container.name) || []
 
     const containerNames: ContainerNameListDto = {
       podName: podName,
-      containerNameList: [...initContainerNameList, ...containerNameList],
+      containerNameList: containerNameList,
     }
 
     return containerNames
