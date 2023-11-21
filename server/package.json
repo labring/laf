@@ -11,6 +11,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "start": "nest start",
+    "dev": "nest start --watch --debug",
     "watch": "nest start --watch",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
