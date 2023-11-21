@@ -12,11 +12,7 @@ import {
   FunctionDebugExecutor,
 } from '../support/engine'
 import pako from 'pako'
-import {
-  base64ToUint8Array,
-  isObject,
-  uint8ArrayToBase64,
-} from '../support/utils'
+import { base64ToUint8Array, uint8ArrayToBase64 } from '../support/utils'
 
 export async function handleInvokeFunction(req: IRequest, res: Response) {
   const name = req.params?.name
@@ -91,9 +87,8 @@ async function invokeFunction(
 
     // reject request if interceptor return false
     if (
-      isObject(result.data) &&
-      result.data.__type__ === '__interceptor__' &&
-      result.data.__res__ == false
+      result.data?.__type__ === '__interceptor__' &&
+      result.data?.__res__ == false
     ) {
       return ctx.response.status(403).send({ error: 'Forbidden', requestId })
     }
@@ -201,9 +196,8 @@ async function invokeDebug(
 
     // reject request if interceptor return false
     if (
-      isObject(result.data) &&
-      result.data.__type__ === '__interceptor__' &&
-      result.data.__res__ == false
+      result.data?.__type__ === '__interceptor__' &&
+      result.data?.__res__ === false
     ) {
       return ctx.response.status(403).send({ error: 'Forbidden', requestId })
     }

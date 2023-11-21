@@ -2,7 +2,6 @@ import * as util from 'util'
 import chalk from 'chalk'
 import { padStart } from 'lodash'
 import Config from '../../config'
-import { isObject } from '../utils'
 
 enum LogLevel {
   DEBUG = 'DEBUG',
@@ -32,7 +31,7 @@ export class Console {
     const content = params
       .map((param) => {
         if (typeof param === 'string') return this._colorize(level, param)
-        if (isObject(param)) {
+        if (typeof param === 'object') {
           return this._colorize(
             level,
             util.inspect(param, { depth: Config.LOG_DEPTH, colors: true }),
