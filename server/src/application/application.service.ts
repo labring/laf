@@ -23,12 +23,18 @@ import {
 } from './entities/application-bundle'
 import { GroupService } from 'src/group/group.service'
 import { GroupMember } from 'src/group/entities/group-member'
+import { RegionService } from 'src/region/region.service'
+import { assert } from 'console'
+import { Region } from 'src/region/entities/region'
 
 @Injectable()
 export class ApplicationService {
   private readonly logger = new Logger(ApplicationService.name)
 
-  constructor(private readonly groupService: GroupService) {}
+  constructor(
+    private readonly groupService: GroupService,
+    readonly regionService: RegionService,
+  ) {}
 
   /**
    * Create application
@@ -37,6 +43,7 @@ export class ApplicationService {
    * - create application
    */
   async create(
+    regionId: ObjectId,
     userid: ObjectId,
     appid: string,
     dto: CreateApplicationDto,
@@ -45,6 +52,8 @@ export class ApplicationService {
     const client = SystemDatabase.client
     const db = client.db()
     const session = client.startSession()
+    const region = await this.regionService.findOne(regionId)
+    assert(region, 'region cannot be empty')
 
     try {
       // start transaction
@@ -72,7 +81,7 @@ export class ApplicationService {
       await db.collection<ApplicationBundle>('ApplicationBundle').insertOne(
         {
           appid,
-          resource: this.buildBundleResource(dto),
+          resource: this.buildBundleResource(region, dto),
           autoscaling: this.buildAutoscalingConfig(dto),
           isTrialTier: isTrialTier,
           createdAt: new Date(),
@@ -323,7 +332,10 @@ export class ApplicationService {
     isTrialTier: boolean,
   ) {
     const db = SystemDatabase.db
-    const resource = this.buildBundleResource(dto)
+    const region = await this.regionService.findByAppId(appid)
+    assert(region, 'region cannot be empty')
+
+    const resource = this.buildBundleResource(region, dto)
     const autoscaling = this.buildAutoscalingConfig(dto)
 
     const res = await db
@@ -386,9 +398,13 @@ export class ApplicationService {
     return prefix + nano()
   }
 
-  private buildBundleResource(dto: UpdateApplicationBundleDto) {
-    const requestCPU = Math.floor(dto.cpu * 0.4)
-    const requestMemory = Math.floor(dto.memory * 0.4)
+  private buildBundleResource(region: Region, dto: UpdateApplicationBundleDto) {
+    const bundleConf = region.bundleConf
+    const cpuRatio = bundleConf?.cpuRequestLimitRatio || 0.1
+    const memoryRatio = bundleConf?.memoryRequestLimitRatio || 0.5
+
+    const requestCPU = Math.floor(dto.cpu * cpuRatio)
+    const requestMemory = Math.floor(dto.memory * memoryRatio)
     const limitCountOfCloudFunction = Math.floor(dto.cpu * 1)
 
     const magicNumber = Math.floor(dto.cpu * 0.03)
