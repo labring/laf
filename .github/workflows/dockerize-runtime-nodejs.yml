@@ -62,9 +62,9 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=ref,event=pr
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
-            type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
-            type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request' }}
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request_target' }}
+            type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request_target' }}
+            type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request_target' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -96,7 +96,7 @@ jobs:
           platforms: linux/amd64, linux/arm64
 
       - name: Comment docker image tags to PR
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         uses: mshick/add-pr-comment@v2
         with:
           message-id: 'dockerize-runtime-nodejs'

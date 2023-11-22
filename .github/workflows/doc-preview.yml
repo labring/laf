@@ -21,7 +21,7 @@ env:
 
 jobs:
   create-or-update-doc-preview:
-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    if: github.event_name == 'pull_request_target' && github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -72,7 +72,7 @@ jobs:
             ${{ steps.create-bucket-and-website.outputs.website_url_message }}
 
   delete-doc-preview:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    if: github.event_name == 'pull_request_target' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
