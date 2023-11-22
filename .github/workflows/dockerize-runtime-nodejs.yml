@@ -92,6 +92,14 @@ jobs:
       #     labels: ${{ steps.meta.outputs.labels }}
       #     platforms: linux/amd64, linux/arm64
 
+      - name: Comment docker image tags to PR
+        if: github.event_name == 'pull_request'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            Nodejs runtime images built successfully for PR ${{ github.event.pull_request.number }}:
+            ${{ steps.meta.outputs.tags }}
+
   # dockerize-init-image:
   #   needs: [dockerize-main-image]
   #   runs-on: ubuntu-latest
