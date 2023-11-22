@@ -3,7 +3,7 @@ name: Laf Doc Preview
 # todo: When the requirements are mature enough, refactor using TypeScript, create a generic GitHub Action, and make it available to users.
 
 on:
-  pull_request:
+  pull_request_target:
     branches: [main]
     types: [opened, synchronize, reopened, closed]
     paths:
