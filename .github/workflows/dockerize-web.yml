@@ -2,6 +2,14 @@ name: dockerize-web
 
 on:
   workflow_dispatch:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'web/**'
+      - '.github/workflows/dockerize-web.yml'
+      - '!**/*.md'
+      - '!web/package-lock.json'
   push:
     branches:
       - main
@@ -10,6 +18,11 @@ on:
       - '.github/workflows/dockerize-web.yml'
       - '!**/*.md'
       - '!web/package-lock.json'
+
+# permissions:
+#   pull-requests: write
+#   packages: write
+#   contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -74,8 +87,10 @@ jobs:
             docker.io/${{ secrets.DOCKER_USERNAME }}/laf-web
           # https://github.com/docker/metadata-action#typesemver
           tags: |
-            type=raw,value=latest,enable=true
-            type=sha,enable=true,format=short
+            type=ref,event=pr
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -106,9 +121,21 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64, linux/arm64
 
+      - name: Comment docker image tags to PR
+        if: github.event_name == 'pull_request'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-id: 'dockerize-web'
+          message: |
+            **:boom: laf web image built successfully for pr ${{ github.event.pull_request.number }}**
+            ```
+            ${{ steps.meta.outputs.tags }}
+            ```
+
   trigger-workflow-build-cluster-image:
     needs: [dockerize-web]
     runs-on: ubuntu-latest
+    if: github.ref == format('refs/heads/{0}', 'main')
     steps:
       - name: trigger cluster image workflow
         uses: peter-evans/repository-dispatch@v2

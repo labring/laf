@@ -3,15 +3,15 @@ name: Laf Doc Preview
 # todo: When the requirements are mature enough, refactor using TypeScript, create a generic GitHub Action, and make it available to users.
 
 on:
-  pull_request:
+  pull_request_target:
     branches: [main]
     types: [opened, synchronize, reopened, closed]
     paths:
       - "docs/**"
       - ".github/workflows/doc-preview.yml"
 
-permissions:
-  pull-requests: write
+# permissions:
+#   pull-requests: write
 
 env:
   LAF_CI_DOCS_PREVIEW_PAT: ${{ secrets.LAF_CI_DOCS_PREVIEW_PAT }}

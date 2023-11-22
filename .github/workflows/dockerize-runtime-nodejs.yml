@@ -2,17 +2,29 @@ name: dockerize-runtime-nodejs
 
 on:
   workflow_dispatch:
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - "runtimes/nodejs/**"
+      - ".github/workflows/dockerize-runtime-nodejs.yml"
+      - "!**/*.md"
+      - "!runtimes/nodejs/package-lock.json"
   push:
     tags:
       - v*.*.*
-    branches:
-      - main
+    branches: [main]
     paths:
       - "runtimes/nodejs/**"
       - ".github/workflows/dockerize-runtime-nodejs.yml"
       - "!**/*.md"
       - "!runtimes/nodejs/package-lock.json"
 
+# permissions:
+#   pull-requests: write
+#   packages: write
+#   contents: read
+  
 concurrency:
   group: dockerize-runtime-nodejs-${{ github.ref }}
   cancel-in-progress: true
@@ -29,7 +41,7 @@ jobs:
       - name: Use Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18.x
+          node-version: 20.x
 
       - name: Install Package
         working-directory: runtimes/nodejs
@@ -49,8 +61,10 @@ jobs:
           # https://github.com/docker/metadata-action#typesemver
           tags: |
             type=semver,pattern={{version}}
-            type=raw,value=latest,enable=true
-            type=sha,enable=true,format=short
+            type=ref,event=pr
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -81,76 +95,24 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64, linux/arm64
 
-  dockerize-init-image:
-    needs: [dockerize-main-image]
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
+      - name: Comment docker image tags to PR
+        if: github.event_name == 'pull_request'
+        uses: mshick/add-pr-comment@v2
         with:
-          fetch-depth: 0
+          message-id: 'dockerize-runtime-nodejs'
+          message: |
+            **:boom: laf nodejs runtime image built successfully for pr ${{ github.event.pull_request.number }}**
+            ```
+            ${{ steps.meta.outputs.tags }}
+            ```
 
-      - name: Use Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
 
-      - name: Install Package
-        working-directory: runtimes/nodejs
-        run: npm cache clean --force && npm install
-
-      - name: Build Packages
-        working-directory: runtimes/nodejs
-        run: npm run build
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ghcr.io/${{ github.repository_owner }}/runtime-node-init
-            docker.io/${{ secrets.DOCKER_USERNAME }}/runtime-node-init
-          # https://github.com/docker/metadata-action#typesemver
-          tags: |
-            type=semver,pattern={{version}}
-            type=raw,value=latest,enable=true
-            type=sha,enable=true,format=short
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Login to Github Container Hub
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: ./runtimes/nodejs
-          file: ./runtimes/nodejs/Dockerfile.init
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64, linux/arm64
-
-  trigger-workflow-e2e:
-    needs: [dockerize-main-image, dockerize-init-image]
-    runs-on: ubuntu-latest
-    steps:
-      - name: trigger cluster image workflow
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          event-type: dockerize-runtime-success
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "latest"}'
+  # trigger-workflow-e2e:
+  #   needs: [dockerize-main-image]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: trigger cluster image workflow
+  #       uses: peter-evans/repository-dispatch@v2
+  #       with:
+  #         event-type: dockerize-runtime-success
+  #         client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "latest"}'

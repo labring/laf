@@ -2,14 +2,26 @@ name: dockerize-server
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened]
     paths:
       - 'server/**'
       - '.github/workflows/dockerize-server.yml'
       - '!**/*.md'
       - '!server/package-lock.json'
+  push:
+    branches: [main]
+    paths:
+      - 'server/**'
+      - '.github/workflows/dockerize-server.yml'
+      - '!**/*.md'
+      - '!server/package-lock.json'
+
+# permissions:
+#   pull-requests: write
+#   packages: write
+#   contents: read
 
 concurrency:
   group: dockerize-server-${{ github.ref }}
@@ -54,8 +66,10 @@ jobs:
             docker.io/${{ secrets.DOCKER_USERNAME }}/laf-server
           # https://github.com/docker/metadata-action#typesemver
           tags: |
-            type=raw,value=latest,enable=true
-            type=sha,enable=true,format=short
+            type=ref,event=pr
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -85,9 +99,21 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64, linux/arm64
+      
+      - name: Comment docker image tags to PR
+        if: github.event_name == 'pull_request'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-id: 'dockerize-server'
+          message: |
+            **:boom: laf server image built successfully for pr ${{ github.event.pull_request.number }}**
+            ```
+            ${{ steps.meta.outputs.tags }}
+            ```
 
   trigger-workflow-build-cluster-image:
     needs: [dockerize-server]
+    if: github.ref == format('refs/heads/{0}', 'main')
     runs-on: ubuntu-latest
     steps:
       - name: trigger cluster image workflow
