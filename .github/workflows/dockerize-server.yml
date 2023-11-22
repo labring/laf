@@ -99,6 +99,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
         with:
+          message-id: 'dockerize-server'
           message: |
             **:boom: laf server image built successfully for pr ${{ github.event.pull_request.number }}**
             ```
