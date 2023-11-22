@@ -13,8 +13,7 @@ on:
   push:
     tags:
       - v*.*.*
-    branches:
-      - main
+    branches: [main]
     paths:
       - "runtimes/nodejs/**"
       - ".github/workflows/dockerize-runtime-nodejs.yml"
@@ -34,18 +33,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Use Node
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 20.x
+      - name: Use Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
 
-      # - name: Install Package
-      #   working-directory: runtimes/nodejs
-      #   run: npm cache clean --force && npm install
+      - name: Install Package
+        working-directory: runtimes/nodejs
+        run: npm cache clean --force && npm install
 
-      # - name: Build Packages
-      #   working-directory: runtimes/nodejs
-      #   run: npm run build
+      - name: Build Packages
+        working-directory: runtimes/nodejs
+        run: npm run build
 
       - name: Docker meta
         id: meta
@@ -60,109 +59,47 @@ jobs:
             type=ref,event=pr
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
             type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
-            # if not main branch, not push tag, not pr, then enable
             type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request' }}
 
-      # - name: Set up QEMU
-      #   uses: docker/setup-qemu-action@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
 
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      # - name: Login to DockerHub
-      #   uses: docker/login-action@v2
-      #   with:
-      #     username: ${{ secrets.DOCKER_USERNAME }}
-      #     password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # - name: Login to Github Container Hub
-      #   uses: docker/login-action@v2
-      #   with:
-      #     registry: ghcr.io
-      #     username: ${{ github.repository_owner }}
-      #     password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login to Github Container Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Build and push
-      #   uses: docker/build-push-action@v3
-      #   with:
-      #     context: ./runtimes/nodejs
-      #     file: ./runtimes/nodejs/Dockerfile
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
-      #     platforms: linux/amd64, linux/arm64
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: ./runtimes/nodejs
+          file: ./runtimes/nodejs/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64, linux/arm64
 
       - name: Comment docker image tags to PR
         if: github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
         with:
           message: |
-            Nodejs runtime images built successfully for PR ${{ github.event.pull_request.number }}:
+            **:boom: Nodejs runtime image built successfully for pr ${{ github.event.pull_request.number }}**
+            ```
             ${{ steps.meta.outputs.tags }}
+            ```
 
-  # dockerize-init-image:
-  #   needs: [dockerize-main-image]
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
-
-  #     - name: Use Node
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: 18.x
-
-  #     - name: Install Package
-  #       working-directory: runtimes/nodejs
-  #       run: npm cache clean --force && npm install
-
-  #     - name: Build Packages
-  #       working-directory: runtimes/nodejs
-  #       run: npm run build
-
-  #     - name: Docker meta
-  #       id: meta
-  #       uses: docker/metadata-action@v4
-  #       with:
-  #         images: |
-  #           ghcr.io/${{ github.repository_owner }}/runtime-node-init
-  #           docker.io/${{ secrets.DOCKER_USERNAME }}/runtime-node-init
-  #         # https://github.com/docker/metadata-action#typesemver
-  #         tags: |
-  #           type=semver,pattern={{version}}
-  #           type=raw,value=latest,enable=true
-  #           type=sha,enable=true,format=short
-
-  #     - name: Set up QEMU
-  #       uses: docker/setup-qemu-action@v2
-
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v2
-
-  #     - name: Login to DockerHub
-  #       uses: docker/login-action@v2
-  #       with:
-  #         username: ${{ secrets.DOCKER_USERNAME }}
-  #         password: ${{ secrets.DOCKER_PASSWORD }}
-
-  #     - name: Login to Github Container Hub
-  #       uses: docker/login-action@v2
-  #       with:
-  #         registry: ghcr.io
-  #         username: ${{ github.repository_owner }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
-
-  #     - name: Build and push
-  #       uses: docker/build-push-action@v3
-  #       with:
-  #         context: ./runtimes/nodejs
-  #         file: ./runtimes/nodejs/Dockerfile.init
-  #         push: true
-  #         tags: ${{ steps.meta.outputs.tags }}
-  #         labels: ${{ steps.meta.outputs.labels }}
-  #         platforms: linux/amd64, linux/arm64
 
   # trigger-workflow-e2e:
   #   needs: [dockerize-main-image]
