@@ -22,6 +22,8 @@ on:
 
 permissions:
   pull-requests: write
+  packages: write
+  contents: read
   
 concurrency:
   group: dockerize-runtime-nodejs-${{ github.ref }}
