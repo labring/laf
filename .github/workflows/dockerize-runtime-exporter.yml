@@ -18,7 +18,9 @@ on:
       - ".github/workflows/dockerize-runtime-exporter.yml"
       - "!**/*.md"
       - "!services/runtime-exporter/package-lock.json"
-
+permissions:
+  pull-requests: write
+  
 concurrency:
   group: dockerize-runtime-exporter-${{ github.ref }}
   cancel-in-progress: true

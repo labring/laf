@@ -20,6 +20,9 @@ on:
       - "!**/*.md"
       - "!runtimes/nodejs/package-lock.json"
 
+permissions:
+  pull-requests: write
+  
 concurrency:
   group: dockerize-runtime-nodejs-${{ github.ref }}
   cancel-in-progress: true
@@ -96,7 +99,7 @@ jobs:
         with:
           message-id: 'dockerize-runtime-nodejs'
           message: |
-            **:boom: Nodejs runtime image built successfully for pr ${{ github.event.pull_request.number }}**
+            **:boom: laf nodejs runtime image built successfully for pr ${{ github.event.pull_request.number }}**
             ```
             ${{ steps.meta.outputs.tags }}
             ```

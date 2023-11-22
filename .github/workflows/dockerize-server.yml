@@ -18,6 +18,9 @@ on:
       - '!**/*.md'
       - '!server/package-lock.json'
 
+permissions:
+  pull-requests: write
+
 concurrency:
   group: dockerize-server-${{ github.ref }}
   cancel-in-progress: true

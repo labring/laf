@@ -19,6 +19,9 @@ on:
       - '!**/*.md'
       - '!web/package-lock.json'
 
+permissions:
+  pull-requests: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
