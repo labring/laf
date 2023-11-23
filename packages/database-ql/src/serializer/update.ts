@@ -1,7 +1,7 @@
 import {
   UpdateCommand,
   isUpdateCommand,
-  UPDATE_COMMANDS_LITERAL
+  UPDATE_COMMANDS_LITERAL,
 } from '../commands/update'
 import { LogicCommand } from '../commands/logic'
 import { SYMBOL_UNSET_FIELD_NAME } from '../helper/symbol'
@@ -10,7 +10,7 @@ import { operatorToString } from '../operator-map'
 import {
   flattenQueryObject,
   encodeInternalDataType,
-  mergeConditionAfterEncode
+  mergeConditionAfterEncode,
 } from './common'
 export type IQueryCondition = Record<string, any> | LogicCommand
 
@@ -24,7 +24,7 @@ interface IPushModifiers {
 }
 
 export class UpdateSerializer {
-  private constructor() { }
+  private constructor() {}
 
   static encode(query: IQueryCondition | UpdateCommand): IUpdateCondition {
     const stringifier = new UpdateSerializer()
@@ -71,15 +71,15 @@ export class UpdateSerializer {
       case UPDATE_COMMANDS_LITERAL.REMOVE: {
         return {
           [$op]: {
-            [query.fieldName as string]: ''
-          }
+            [query.fieldName as string]: '',
+          },
         }
       }
       default: {
         return {
           [$op]: {
-            [query.fieldName as string]: query.operands[0]
-          }
+            [query.fieldName as string]: query.operands[0],
+          },
         }
       }
     }
@@ -93,7 +93,7 @@ export class UpdateSerializer {
         let modifiers
         if (isArray(query.operands)) {
           modifiers = {
-            $each: query.operands.map(encodeInternalDataType)
+            $each: query.operands.map(encodeInternalDataType),
           }
         } else {
           modifiers = query.operands
@@ -101,41 +101,41 @@ export class UpdateSerializer {
 
         return {
           [$op]: {
-            [query.fieldName as string]: modifiers
-          }
+            [query.fieldName as string]: modifiers,
+          },
         }
       }
       case UPDATE_COMMANDS_LITERAL.UNSHIFT: {
         const modifiers: IPushModifiers = {
           $each: query.operands.map(encodeInternalDataType),
-          $position: 0
+          $position: 0,
         }
 
         return {
           [$op]: {
-            [query.fieldName as string]: modifiers
-          }
+            [query.fieldName as string]: modifiers,
+          },
         }
       }
       case UPDATE_COMMANDS_LITERAL.POP: {
         return {
           [$op]: {
-            [query.fieldName as string]: 1
-          }
+            [query.fieldName as string]: 1,
+          },
         }
       }
       case UPDATE_COMMANDS_LITERAL.SHIFT: {
         return {
           [$op]: {
-            [query.fieldName as string]: -1
-          }
+            [query.fieldName as string]: -1,
+          },
         }
       }
       default: {
         return {
           [$op]: {
-            [query.fieldName as string]: encodeInternalDataType(query.operands)
-          }
+            [query.fieldName as string]: encodeInternalDataType(query.operands),
+          },
         }
       }
     }

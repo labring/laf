@@ -111,12 +111,12 @@ jobs:
           SEALOS_ISSUE_REPO: "labring-actions/cluster-image"
           SEALOS_COMMENT_BODY: "/imagesync ghcr.io/${{ github.repository_owner }}/${{ env.image }}:${{ env.tag }}"
 
-  trigger-workflow-e2e:
-    needs: [build_cluster_image]
-    runs-on: ubuntu-latest
-    steps:
-      - name: trigger cluster image workflow
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          event-type: cluster_image_build_success
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "latest"}'
+  # trigger-workflow-e2e:
+  #   needs: [build_cluster_image]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: trigger cluster image workflow
+  #       uses: peter-evans/repository-dispatch@v2
+  #       with:
+  #         event-type: cluster_image_build_success
+  #         client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "latest"}'

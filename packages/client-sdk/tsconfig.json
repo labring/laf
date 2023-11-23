@@ -4,7 +4,6 @@
     "allowJs": false,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "charset": "utf8",
     "declaration": true,
     "declarationMap": false,
     "sourceMap": true,

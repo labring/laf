@@ -6,16 +6,14 @@ import { PackageInfo } from './package'
 export interface DeclarationType {
   packageName: string
   path: string
-  content: string,
+  content: string
   from?: string
 }
-
 
 /**
  * 解析、处理包的类型声明文件
  */
 export class PackageDeclaration extends PackageInfo {
-
   protected _types: DeclarationType[] = []
 
   get declarations(): DeclarationType[] {
@@ -29,7 +27,7 @@ export class PackageDeclaration extends PackageInfo {
 
   /**
    * 加载类型文件
-   * @returns 
+   * @returns
    */
   async load() {
     await this.parse()
@@ -39,7 +37,7 @@ export class PackageDeclaration extends PackageInfo {
     const r = await this.loadFromTypesPackage(typePkgName)
     if (r && r.length) {
       this._types.push(...r)
-      this._types.forEach(data => data['from'] = this.name)
+      this._types.forEach((data) => (data['from'] = this.name))
       return
     }
 
@@ -52,7 +50,7 @@ export class PackageDeclaration extends PackageInfo {
   async loadFromTypesPackage(typePkgName: string): Promise<DeclarationType[]> {
     // check @types/pkg exists
     const pkg = new PackageInfo(typePkgName, this.nodeModulesRoot)
-    await pkg.parsePackageInfo().catch(() => { })
+    await pkg.parsePackageInfo().catch(() => {})
     if (!pkg.info) {
       return []
     }
@@ -60,12 +58,18 @@ export class PackageDeclaration extends PackageInfo {
     // load type file
     const typeFile = pkg.info?.types || pkg.info?.typings || 'index.d.ts'
     const typeFilePath = path.join(pkg.rootPath, typeFile)
-    if (!await pkg.exists(typeFilePath)) {
+    if (!(await pkg.exists(typeFilePath))) {
       return []
     }
 
     const data = await fse.readFile(typeFilePath, 'utf8')
-    const results: DeclarationType[] = [{ packageName: pkg.name, path: pkg.relative_path(typeFilePath), content: data }]
+    const results: DeclarationType[] = [
+      {
+        packageName: pkg.name,
+        path: pkg.relative_path(typeFilePath),
+        content: data,
+      },
+    ]
 
     // load sub dependencies type
     const deps = pkg.dependencyNames
@@ -76,7 +80,6 @@ export class PackageDeclaration extends PackageInfo {
     }
     return results
   }
-
 
   /**
    * 从包目录获取声明文件
@@ -96,11 +99,10 @@ export class PackageDeclaration extends PackageInfo {
 
   /**
    * 获取 `typings` (Typescript 类型声明文件的入口) 文件绝对路径
-   * 1. 尝试读取 package.json#typings，若为目录，则自动拼上 index.d.ts 
+   * 1. 尝试读取 package.json#typings，若为目录，则自动拼上 index.d.ts
    * 2. 如果未读取到，则指定 package.json#main 所在目录 下的 index.d.ts 为 typings
    */
   async resolveTypingsEntryPath() {
-
     let defaultFilename = 'index.d.ts'
     const entryStat = await this.exists(this.entryFile)
     if (entryStat.isFile()) {
@@ -131,15 +133,16 @@ export class PackageDeclaration extends PackageInfo {
   /**
    * 读取 typings 类型文件
    * @param typingFilePath 绝对路径
-   * @returns 
+   * @returns
    */
-  protected async readTypings(typingFilePath: string): Promise<DeclarationType[]> {
-
+  protected async readTypings(
+    typingFilePath: string
+  ): Promise<DeclarationType[]> {
     if (!typingFilePath) {
       return []
     }
 
-    if (!await this.exists(typingFilePath)) {
+    if (!(await this.exists(typingFilePath))) {
       return []
     }
 
@@ -151,8 +154,8 @@ export class PackageDeclaration extends PackageInfo {
     const entryTypings = {
       from: this.name,
       packageName: this.name,
-      path: typingFilePath,   // 暂保留为绝对路径，待全部加载完，返回之前 统一处理为相对路径
-      content: data
+      path: typingFilePath, // 暂保留为绝对路径，待全部加载完，返回之前 统一处理为相对路径
+      content: data,
     }
 
     this._types.push(entryTypings)
@@ -164,12 +167,14 @@ export class PackageDeclaration extends PackageInfo {
     for (const dep of deps) {
       if (dep.kind !== 'relative') continue
 
-      const filepath = await this.resolveImportPath(dep.importPath, dep.sourcePath)
+      const filepath = await this.resolveImportPath(
+        dep.importPath,
+        dep.sourcePath
+      )
 
       // 已解析的跳过，防止死循环
-      const found = this._types.filter(data => data.path === filepath)
-      if (found.length)
-        continue
+      const found = this._types.filter((data) => data.path === filepath)
+      if (found.length) continue
 
       await this.readTypings(filepath)
     }
@@ -192,12 +197,13 @@ export class PackageDeclaration extends PackageInfo {
     return await this.tryResolveImportPath(full_path)
   }
 
-
   /**
    * 尝试解析引入路径:
    * @param filepath 绝对路径
    */
-  protected async tryResolveImportPath(absImportPath: string): Promise<string | null> {
+  protected async tryResolveImportPath(
+    absImportPath: string
+  ): Promise<string | null> {
     const stat0 = await this.exists(absImportPath)
 
     // 如果文件不存在，则拼接 '.d.ts' 后再尝试解析
@@ -221,12 +227,11 @@ export class PackageDeclaration extends PackageInfo {
     }
   }
 
-
   /**
    * 修复获取的类型文件绝对路径为 [packageName/typingsFilePath]：
    * 1. 转为相对路径，相对于 `this.typingsEntryPath`
    * 2. 拼接包名
-   * @param filepath 
+   * @param filepath
    */
   protected fixTypingFilePath(filepath: string) {
     const dir_path = path.dirname(this.typingsEntryPath)
@@ -239,30 +244,58 @@ export class PackageDeclaration extends PackageInfo {
 
   /**
    * 加载类型文件内容
-   * @param filepath 
-   * @returns 
+   * @param filepath
+   * @returns
    */
   protected async loadTypingFile(filepath: string) {
     return await fse.readFile(filepath, 'utf8')
   }
 }
 
-
 /**
  * 专用于加载 Node 官方内置的包类型文件
  */
 export class NodePackageDeclarations {
-
   nodeModulesRoot: string
 
   static NODE_PACKAGES = [
-    'assert', 'crypto', 'child_process', 'path', 'process', 'readline', 'querystring', 'os',
-    'dns', 'domain', 'http', 'https', 'http2', 'module', 'net', 'tls', 'dgram',
-    'stream', 'tty', 'url', 'wasi', 'v8', 'vm', 'worker_threads', 'zlib',
-    'punycode', 'perf_hooks', 'fs', 'events', 'constants', 'console', 'cluster', 'buffer',
-    'fs/promises', 'globals', 'util'
+    'assert',
+    'crypto',
+    'child_process',
+    'path',
+    'process',
+    'readline',
+    'querystring',
+    'os',
+    'dns',
+    'domain',
+    'http',
+    'https',
+    'http2',
+    'module',
+    'net',
+    'tls',
+    'dgram',
+    'stream',
+    'tty',
+    'url',
+    'wasi',
+    'v8',
+    'vm',
+    'worker_threads',
+    'zlib',
+    'punycode',
+    'perf_hooks',
+    'fs',
+    'events',
+    'constants',
+    'console',
+    'cluster',
+    'buffer',
+    'fs/promises',
+    'globals',
+    'util',
   ]
-
 
   typesDir: string
 
@@ -275,7 +308,6 @@ export class NodePackageDeclarations {
    * 获取 node 所有官方包的声明文件
    */
   async getNodeBuiltinPackage(packageName: string): Promise<DeclarationType> {
-
     const full_path = path.join(this.typesDir, `${packageName}.d.ts`)
     const data = await fse.readFile(full_path, 'utf8')
 
@@ -283,7 +315,7 @@ export class NodePackageDeclarations {
       packageName: packageName,
       content: data,
       path: `@types/node/${packageName}.d.ts`,
-      from: 'node'
+      from: 'node',
     }
   }
 }

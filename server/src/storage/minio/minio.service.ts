@@ -5,7 +5,6 @@ import {
   DeleteBucketPolicyCommand,
   HeadBucketCommand,
   PutBucketPolicyCommand,
-  PutBucketVersioningCommand,
   S3,
 } from '@aws-sdk/client-s3'
 import * as assert from 'node:assert'

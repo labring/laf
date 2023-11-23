@@ -22,7 +22,7 @@ import { streamFetch } from "@/utils/streamFetch";
 
 import "./index.scss";
 
-import { PodControllerGet } from "@/apis/v1/apps";
+import { PodControllerGetContainerNameList, PodControllerGetPodNameList } from "@/apis/v1/apps";
 import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -36,26 +36,45 @@ export default function LogsModal(props: { children: React.ReactElement }) {
 
   const [logs, setLogs] = useState("");
   const [podName, setPodName] = useState("");
+  const [containerName, setContainerName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 
   const { data: podData } = useQuery(
     ["GetPodQuery"],
     () => {
-      return PodControllerGet({});
+      return PodControllerGetPodNameList({});
     },
     {
       onSuccess: (data) => {
-        setPodName(data.data.pods[0]);
+        if (data.data.podNameList) {
+          setPodName(data.data.podNameList[0]);
+        }
       },
-      enabled: !!isOpen,
+      enabled: isOpen,
+    },
+  );
+
+  const { data: containerData } = useQuery(
+    ["GetContainerQuery"],
+    () => {
+      return PodControllerGetContainerNameList({ podName });
+    },
+    {
+      onSuccess: (data) => {
+        if (data.data.containerNameList) {
+          const length = data.data.containerNameList.length;
+          setContainerName(data.data.containerNameList[length - 1]);
+        }
+      },
+      enabled: isOpen && !!podName && podName !== "all",
     },
   );
 
   const fetchLogs = useCallback(() => {
-    if (!podName) return;
+    if (!podName && !containerName) return;
     const controller = new AbortController();
     streamFetch({
-      url: `/v1/apps/${currentApp.appid}/logs/${podName}`,
+      url: `/v1/apps/${currentApp.appid}/logs/${podName}?containerName=${containerName}`,
       abortSignal: controller,
       firstResponse() {
         setIsLoading(false);
@@ -75,7 +94,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
       },
     });
     return controller;
-  }, [podName, currentApp.appid]);
+  }, [podName, containerName, currentApp.appid]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -109,15 +128,38 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                     setIsLoading(true);
                     setLogs("");
                   }}
+                  value={podName}
                 >
-                  {podData?.data?.pods &&
-                    podData?.data?.pods.map((item: string) => (
+                  {podData?.data?.podNameList &&
+                    (podData?.data?.podNameList.length > 1
+                      ? ["all", ...podData?.data?.podNameList]
+                      : podData?.data?.podNameList
+                    ).map((item: string) => (
                       <option key={item} value={item}>
                         {item}
                       </option>
                     ))}
                 </Select>
               </span>
+              {containerData?.data?.containerNameList && (
+                <span>
+                  <Select
+                    className="ml-1 !h-8 !w-32"
+                    onChange={(e) => {
+                      setContainerName(e.target.value);
+                      setIsLoading(true);
+                      setLogs("");
+                    }}
+                    value={containerName}
+                  >
+                    {...containerData?.data?.containerNameList.map((item: string) => (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </Select>
+                </span>
+              )}
               <span>
                 <Button
                   variant={"outline"}
@@ -140,7 +182,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
             ) : (
               <div
                 id="log-viewer-container"
-                className="text-sm relative flex flex-col overflow-y-auto px-2 font-mono"
+                className="text-sm flex flex-col overflow-y-auto px-2 font-mono"
                 style={{ height: "98%", fontSize: settingStore.commonSettings.fontSize - 1 }}
               >
                 <LogViewer
@@ -149,7 +191,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                   scrollToRow={100000}
                   height={"100%"}
                   toolbar={
-                    <div className="absolute right-16 top-4 z-10">
+                    <div className="absolute right-24 top-4">
                       <LogViewerSearch
                         placeholder="Search"
                         minSearchChars={1}

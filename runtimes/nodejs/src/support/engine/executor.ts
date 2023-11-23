@@ -1,6 +1,5 @@
 import { FunctionContext, FunctionResult, ICloudFunctionData } from './types'
 import { nanosecond2ms } from '../utils'
-import _ from 'lodash'
 import { INTERCEPTOR_FUNCTION_NAME } from '../../constants'
 import { FunctionModule } from './module'
 import assert from 'assert'
@@ -64,7 +63,7 @@ export class FunctionExecutor {
 
   protected async invokeWithInterceptor(
     context: FunctionContext,
-    next?: Function,
+    next?: (context: FunctionContext) => Promise<unknown>,
   ) {
     const mod = FunctionModule.get(INTERCEPTOR_FUNCTION_NAME)
     const interceptor = mod.default || mod.main

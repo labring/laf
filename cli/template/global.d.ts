@@ -15,12 +15,11 @@ interface File {
   path: string
 }
 
-
 /**
  * 云函数调用入参
  */
 interface FunctionContext {
-   /**
+  /**
    * auth 对象解析自 JWT Token Payload
    * @deprecated 用 user 替代
    */

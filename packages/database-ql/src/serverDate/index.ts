@@ -14,16 +14,16 @@ export class ServerDate {
   parse() {
     return {
       $date: {
-        offset: this.offset
-      }
+        offset: this.offset,
+      },
     }
   }
 }
 
 /**
  * @deprecated This method is deprecated, not implemented in server side
- * @param opt 
- * @returns 
+ * @param opt
+ * @returns
  */
 export function ServerDateConstructor(opt?: { offset: number }) {
   return new ServerDate(opt)

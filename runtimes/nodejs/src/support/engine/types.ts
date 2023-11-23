@@ -13,8 +13,8 @@ export type RequireFuncType = (
  * vm run context (global)
  */
 export interface FunctionModuleGlobalContext {
-  module: { exports: Object }
-  exports: Object
+  module: { exports: object }
+  exports: object
   console: any
   __require: RequireFuncType
   Buffer: typeof Buffer

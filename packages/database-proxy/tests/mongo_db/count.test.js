@@ -5,14 +5,18 @@ const { dbconfig } = require('./_db')
 const TEST_DATA = [
   { type: 'a', title: 'title-1', content: 'content-1' },
   { type: 'a', title: 'title-2', content: 'content-2' },
-  { type: 'b', title: 'title-3', content: 'content-3' }
+  { type: 'b', title: 'title-3', content: 'content-3' },
 ]
 
 describe('db-proxy(mongo): db.count()', function () {
   this.timeout(10000)
 
-  const accessor = new MongoAccessor(dbconfig.dbName, dbconfig.url, dbconfig.connSettings)
-  let entry = new Proxy(accessor)
+  const accessor = new MongoAccessor(
+    dbconfig.dbName,
+    dbconfig.url,
+    dbconfig.connSettings
+  )
+  const entry = new Proxy(accessor)
   let coll = null
 
   before(async () => {
@@ -26,9 +30,9 @@ describe('db-proxy(mongo): db.count()', function () {
   })
 
   it('count all without query should be ok', async () => {
-    let params = {
+    const params = {
       collection: 'test_count',
-      action: ActionType.COUNT
+      action: ActionType.COUNT,
     }
     const result = await entry.execute(params)
     assert.ok(result)
@@ -36,10 +40,10 @@ describe('db-proxy(mongo): db.count()', function () {
   })
 
   it('count with query should be ok', async () => {
-    let params = {
+    const params = {
       collection: 'test_count',
       action: ActionType.COUNT,
-      query: { type: 'a' }
+      query: { type: 'a' },
     }
     let result = await entry.execute(params)
     assert.ok(result)
@@ -50,7 +54,7 @@ describe('db-proxy(mongo): db.count()', function () {
     assert.ok(result)
     assert.equal(result.total, 1)
 
-    params.query = { $or: [{type: 'a'}, {type: 'b'}]}
+    params.query = { $or: [{ type: 'a' }, { type: 'b' }] }
     result = await entry.execute(params)
     assert.ok(result)
     assert.equal(result.total, 3)

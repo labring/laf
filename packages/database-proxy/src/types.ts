@@ -1,4 +1,3 @@
-
 export enum ActionType {
   READ = 'database.queryDocument',
   UPDATE = 'database.updateDocument',
@@ -8,24 +7,24 @@ export enum ActionType {
   WATCH = 'database.watchDocument',
   AGGREGATE = 'database.aggregateDocuments',
   CREATE_INDEX = 'database.createIndex',
-  CREATE_INDEXES = "database.createIndexes",
-  DROP_INDEX = "database.dropIndex",
-  DROP_INDEXES = "database.dropIndexes",
-  LIST_INDEXES = "database.listIndexes",
+  CREATE_INDEXES = 'database.createIndexes',
+  DROP_INDEX = 'database.dropIndex',
+  DROP_INDEXES = 'database.dropIndexes',
+  LIST_INDEXES = 'database.listIndexes',
 }
 
 export interface Action {
-  readonly type: ActionType,
+  readonly type: ActionType
   readonly fields: string[]
 }
 //  params types
 export enum Direction {
   DESC = 'desc',
-  ASC = 'asc'
+  ASC = 'asc',
 }
 
 export interface Order {
-  direction: Direction,
+  direction: Direction
   field: string
 }
 
@@ -34,13 +33,13 @@ export enum JoinType {
   INNER = 'inner',
   LEFT = 'left',
   RIGHT = 'right',
-  FULL = 'full'
+  FULL = 'full',
 }
 
 export interface JoinParam {
-  collection: string,
-  type: JoinType,
-  leftKey: string,
+  collection: string
+  type: JoinType
+  leftKey: string
   rightKey: string
 }
 
@@ -60,7 +59,7 @@ export interface Params {
   upsert?: boolean
   merge?: boolean
 
-  stages?: { stageKey: string, stageValue: string }[]
+  stages?: { stageKey: string; stageValue: string }[]
 
   /**
    * nested table name, when use join, like [{ tableName: {id: 1, name: 'xxx'}, subTable: {id: 1, age: 1}}]
@@ -74,11 +73,27 @@ export interface Params {
    * @deprecated this field is only used for mysql, and will be deprecated
    */
   joins?: JoinParam[]
-
 }
 
-const ReadAcceptParams = ['query', 'order', 'offset', 'limit', 'projection', 'multi', 'count', 'joins', 'nested']
-const UpdateAcceptParams = ['query', 'data', 'multi', 'upsert', 'merge', 'joins']
+const ReadAcceptParams = [
+  'query',
+  'order',
+  'offset',
+  'limit',
+  'projection',
+  'multi',
+  'count',
+  'joins',
+  'nested',
+]
+const UpdateAcceptParams = [
+  'query',
+  'data',
+  'multi',
+  'upsert',
+  'merge',
+  'joins',
+]
 const AddAcceptParams = ['data', 'multi']
 const RemoveAcceptParams = ['query', 'multi', 'joins']
 const CountAcceptParams = ['query', 'joins']
@@ -89,16 +104,40 @@ const DropIndexesParams = ['data']
 const ListIndexesParams = ['data']
 
 const ReadAction: Action = { type: ActionType.READ, fields: ReadAcceptParams }
-const UpdateAction: Action = { type: ActionType.UPDATE, fields: UpdateAcceptParams }
-const RemoveAction: Action = { type: ActionType.REMOVE, fields: RemoveAcceptParams }
+const UpdateAction: Action = {
+  type: ActionType.UPDATE,
+  fields: UpdateAcceptParams,
+}
+const RemoveAction: Action = {
+  type: ActionType.REMOVE,
+  fields: RemoveAcceptParams,
+}
 const AddAction: Action = { type: ActionType.ADD, fields: AddAcceptParams }
-const CountAction: Action = { type: ActionType.COUNT, fields: CountAcceptParams }
+const CountAction: Action = {
+  type: ActionType.COUNT,
+  fields: CountAcceptParams,
+}
 const WatchAction: Action = { type: ActionType.WATCH, fields: ReadAcceptParams }
-const AggregateAction: Action = { type: ActionType.AGGREGATE, fields: AggregateAcceptParams }
-const CreateIndexAction: Action = { type: ActionType.CREATE_INDEX, fields: CreateIndexParams }
-const DropIndexAction: Action = { type: ActionType.DROP_INDEX, fields: DropIndexParams }
-const DropIndexesAction: Action = { type: ActionType.DROP_INDEXES, fields:DropIndexesParams }
-const ListIndexesAction: Action = { type: ActionType.LIST_INDEXES, fields: ListIndexesParams }
+const AggregateAction: Action = {
+  type: ActionType.AGGREGATE,
+  fields: AggregateAcceptParams,
+}
+const CreateIndexAction: Action = {
+  type: ActionType.CREATE_INDEX,
+  fields: CreateIndexParams,
+}
+const DropIndexAction: Action = {
+  type: ActionType.DROP_INDEX,
+  fields: DropIndexParams,
+}
+const DropIndexesAction: Action = {
+  type: ActionType.DROP_INDEXES,
+  fields: DropIndexesParams,
+}
+const ListIndexesAction: Action = {
+  type: ActionType.LIST_INDEXES,
+  fields: ListIndexesParams,
+}
 
 export function getAction(actionName: ActionType): Action | null {
   let action: Action
@@ -157,14 +196,14 @@ export const UPDATE_COMMANDS = {
   ADD_TO_SET: '$addToSet',
   RENAME: '$rename',
   MAX: '$max',
-  MIN: '$min'
+  MIN: '$min',
 }
 
 export const LOGIC_COMMANDS = {
   AND: '$and',
   OR: '$or',
   NOT: '$not',
-  NOR: '$nor'
+  NOR: '$nor',
 }
 
 export const QUERY_COMMANDS = {
@@ -187,5 +226,5 @@ export const QUERY_COMMANDS = {
   LIKE: '$like', // only for SQL query
   EXPR: '$expr',
   TEXT: '$text',
-  SEARCH: '$search'
+  SEARCH: '$search',
 }

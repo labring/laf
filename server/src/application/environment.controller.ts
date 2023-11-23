@@ -5,6 +5,7 @@ import {
   Get,
   Logger,
   Param,
+  ParseArrayPipe,
   Patch,
   Post,
   UseGuards,
@@ -47,21 +48,9 @@ export class EnvironmentVariableController {
   })
   async updateAll(
     @Param('appid') appid: string,
-    @Body() dto: CreateEnvironmentDto[],
+    @Body(new ParseArrayPipe({ items: CreateEnvironmentDto, whitelist: true }))
+    dto: CreateEnvironmentDto[],
   ) {
-    // check env name and value (since validation decorator not work if dto is array)
-    for (const item of dto) {
-      if (/^[a-zA-Z_][a-zA-Z0-9_]{1,64}$/g.test(item.name) === false) {
-        return ResponseUtil.error(
-          'name must match /^[a-zA-Z_][a-zA-Z0-9_]{1,64}$/ : ' + item.name,
-        )
-      }
-
-      if (item.value.length > 4096) {
-        return ResponseUtil.error('value must less than 4096: ' + item.name)
-      }
-    }
-
     // app secret can not missing or empty
     const secret = dto.find((item) => item.name === APPLICATION_SECRET_KEY)
     if (!secret || !secret.value) {

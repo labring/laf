@@ -37,7 +37,6 @@ export default class Config {
     return (process.env['LOG_LEVEL'] as any) || 'debug'
   }
 
-
   /**
    * the object depth limit when logging
    */

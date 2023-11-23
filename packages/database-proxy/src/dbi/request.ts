@@ -1,12 +1,10 @@
-
-import { Proxy } from "../proxy"
+import { Proxy } from '../proxy'
 import { RequestInterface } from 'database-ql'
-import { AccessorInterface } from ".."
-import { QueryParam, ResponseStruct } from "database-ql/dist/commonjs/interface"
-import { ActionType } from "database-ql/dist/commonjs/constant"
+import { AccessorInterface } from '..'
+import { QueryParam, ResponseStruct } from 'database-ql/dist/commonjs/interface'
+import { ActionType } from 'database-ql/dist/commonjs/constant'
 
 export class Request implements RequestInterface {
-
   private accessor: AccessorInterface
 
   constructor(accessor: AccessorInterface) {
@@ -22,7 +20,7 @@ export class Request implements RequestInterface {
       code: 0,
       data: ret,
       error: undefined,
-      requestId: undefined
+      requestId: undefined,
     }
   }
 }
