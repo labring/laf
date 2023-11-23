@@ -5,13 +5,14 @@ import { Console } from '.'
 import * as vm from 'vm'
 import { createRequire } from 'node:module'
 
-
 const CUSTOM_DEPENDENCY_NODE_MODULES_PATH = `${Config.CUSTOM_DEPENDENCY_BASE_PATH}/node_modules/`
 
 export class FunctionModule {
   protected static cache: Map<string, any> = new Map()
 
-  private  static customRequire = createRequire(CUSTOM_DEPENDENCY_NODE_MODULES_PATH)
+  private static customRequire = createRequire(
+    CUSTOM_DEPENDENCY_NODE_MODULES_PATH,
+  )
 
   static get(functionName: string): any {
     const moduleName = `@/${functionName}`
