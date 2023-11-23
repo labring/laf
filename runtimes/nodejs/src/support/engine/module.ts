@@ -81,7 +81,7 @@ export class FunctionModule {
     }
 
     ${code}
-    exports;
+    module.exports;
     `
   }
 
