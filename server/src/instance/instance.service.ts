@@ -1,5 +1,4 @@
 import {
-  Config,
   V1Deployment,
   V1DeploymentSpec,
   V1ServiceSpec,
