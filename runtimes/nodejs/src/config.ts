@@ -112,6 +112,6 @@ export default class Config {
   }
 
   static get CUSTOM_DEPENDENCY_BASE_PATH(): string {
-    return process.env.CUSTOM_DEPENDENCY_BASE_PATH || '/data/custom_dependency'
+    return process.env.CUSTOM_DEPENDENCY_BASE_PATH || '/tmp/custom_dependency'
   }
 }
