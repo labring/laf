@@ -137,9 +137,7 @@ export class FunctionModule {
       clearInterval: clearInterval,
       setTimeout: setTimeout,
       clearTimeout: clearTimeout,
-      process: {
-        env: { ...process.env },
-      },
+      process: process,
       URL: URL,
       fetch: globalThis.fetch,
       global: null,
