@@ -27,9 +27,7 @@ export interface FunctionModuleGlobalContext {
   Float32Array: typeof Float32Array
   __filename: string
   URL: typeof URL
-  process: {
-    env: { [key: string]: string }
-  }
+  process: NodeJS.Process
   global: FunctionModuleGlobalContext
   __from_modules: string[]
   fetch: typeof globalThis.fetch

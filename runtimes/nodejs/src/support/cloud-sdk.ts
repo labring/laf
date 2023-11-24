@@ -33,9 +33,7 @@ function createCloudSdk() {
     sockets: WebSocketAgent.clients,
     appid: Config.APPID,
     get env() {
-      return {
-        ...process.env,
-      }
+      return process.env
     },
   }
 
