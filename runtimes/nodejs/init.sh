@@ -2,10 +2,6 @@
 
 set -e
 
-# npm init
-# echo "npm init -y"
-# npm init -y
-
 # skip init if $DEPENDENCIES is empty
 if [ -z "$DEPENDENCIES" ]; then
   echo "No dependencies to install."

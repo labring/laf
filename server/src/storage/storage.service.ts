@@ -10,6 +10,7 @@ import {
   StorageUser,
 } from './entities/storage-user'
 import { StorageBucket } from './entities/storage-bucket'
+import { CloudBinBucketService } from './cloud-bin-bucket.service'
 
 @Injectable()
 export class StorageService {
@@ -19,6 +20,7 @@ export class StorageService {
   constructor(
     private readonly minioService: MinioService,
     private readonly regionService: RegionService,
+    private readonly cloudBinBucketService: CloudBinBucketService,
   ) {}
 
   async create(appid: string) {
@@ -61,6 +63,9 @@ export class StorageService {
       updatedAt: new Date(),
       createdAt: new Date(),
     })
+
+    // ensure cloud-bin bucket
+    await this.cloudBinBucketService.ensureCloudBinBucket(appid)
 
     return await this.findOne(appid)
   }
