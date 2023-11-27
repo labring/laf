@@ -1,11 +1,10 @@
 #!/bin/sh
 
 set -e
-# node ./dist/init.js
 
 # npm init
-echo "npm init -y"
-npm init -y
+# echo "npm init -y"
+# npm init -y
 
 # skip init if $DEPENDENCIES is empty
 if [ -z "$DEPENDENCIES" ]; then
@@ -13,5 +12,81 @@ if [ -z "$DEPENDENCIES" ]; then
   exit 0
 fi
 
+# if $NODE_MODULES_URL is not empty
+if [ -n "$NODE_MODULES_PULL_URL" ]; then
+  echo "Downloading node_modules from $NODE_MODULES_PULL_URL"
+
+  # get start time
+  start_time=$(date +%s)
+
+  # temporarily disable set -e
+  set +e
+
+  # download node_modules.tar and untar to `node_modules`
+  curl -sSfL $NODE_MODULES_PULL_URL | tar -xf - -C .
+
+  # re-enable set -e
+  set -e
+
+  # if error
+  if [ $? -ne 0 ]; then
+    echo "Failed to download node_modules cache."
+  else
+    end_time=$(date +%s)
+    elapsed_time=$(expr $end_time - $start_time)
+    echo "Downloaded and extracted node_modules in $elapsed_time seconds."
+  fi
+fi
+
+CACHED_DEPENDENCIES=""
+# if node_modules/.dependencies exists
+if [ -f "node_modules/.dependencies" ]; then
+  $CACHED_DEPENDENCIES=`cat node_modules/.dependencies`
+fi
+
+# if $CACHED_DEPENDENCIES is not empty and $CACHED_DEPENDENCIES is equal to $DEPENDENCIES
+if [ -n "$CACHED_DEPENDENCIES" ] && [ "$CACHED_DEPENDENCIES" = "$DEPENDENCIES" ]; then
+  echo "No dependencies changed since last cache build."
+  exit 0
+fi
+
+
+# npm install $DEPENDENCIES
+start_time=$(date +%s)
 echo "npm install $DEPENDENCIES $NPM_INSTALL_FLAGS"
 npm install $DEPENDENCIES $NPM_INSTALL_FLAGS
+end_time=$(date +%s)
+elapsed_time=$(expr $end_time - $start_time)
+echo "Installed dependencies in $elapsed_time seconds."
+
+# if $NODE_MODULES_PUSH_URL is not empty
+if [ -n "$NODE_MODULES_PUSH_URL" ]; then
+  # temporarily disable set -e
+  set +e
+
+  start_time=$(date +%s)
+  echo $DEPENDENCIES > node_modules/.dependencies
+  echo "Uploading node_modules to $NODE_MODULES_PUSH_URL"
+
+  # tar `node_modules` to node_modules.tar
+  tar -cf node_modules.tar ./node_modules
+
+  end_time_1=$(date +%s)
+  elapsed_time=$(expr $end_time_1 - $start_time)
+  echo "Compressed node_modules in $elapsed_time seconds."
+
+  # upload node_modules.tar to $NODE_MODULES_PUSH_URL
+  curl -sSfL -X PUT -T node_modules.tar $NODE_MODULES_PUSH_URL
+
+  # re-enable set -e
+  set -e
+
+  if [ $? -ne 0 ]; then
+    echo "Failed to upload node_modules cache."
+  else
+    end_time_2=$(date +%s)
+    elapsed_time_2=$(expr $end_time_2 - $end_time)
+    echo "Uploaded node_modules.tar in $elapsed_time_2 seconds."
+    echo "Uploaded node_modules cache."
+  fi
+fi
