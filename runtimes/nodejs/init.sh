@@ -29,20 +29,21 @@ if [ -n "$NODE_MODULES_PULL_URL" ]; then
   else
     elapsed_time=$(expr $end_time - $start_time)
     echo "Downloaded node_modules.tar in $elapsed_time seconds."
+
+    # untar node_modules.tar
+    tar -xf node_modules.tar -C .
+
+    # check tar exit code
+    if [ $? -ne 0 ]; then
+      echo "Failed to extract node_modules cache."
+    else
+      end_time_2=$(date +%s)
+      elapsed_time_2=$(expr $end_time_2 - $end_time)
+      echo "Extracted node_modules cache in $elapsed_time_2 seconds."
+    fi
   fi
 
-  # untar node_modules.tar
-  tar -xf node_modules.tar -C .
-
-  # check tar exit code
-  if [ $? -ne 0 ]; then
-    echo "Failed to extract node_modules cache."
-  else
-    end_time_2=$(date +%s)
-    elapsed_time_2=$(expr $end_time_2 - $end_time)
-    echo "Extracted node_modules cache in $elapsed_time_2 seconds."
-  fi
-
+  
   # re-enable set -e
   set -e
 else
