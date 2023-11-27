@@ -109,4 +109,8 @@ export default class Config {
   static get DISABLE_MODULE_CACHE(): boolean {
     return process.env.DISABLE_MODULE_CACHE === 'true'
   }
+
+  static get CUSTOM_DEPENDENCY_BASE_PATH(): string {
+    return process.env.CUSTOM_DEPENDENCY_BASE_PATH || '/tmp/custom_dependency'
+  }
 }

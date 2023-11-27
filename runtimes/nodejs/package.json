@@ -44,7 +44,6 @@
     "express-xml-bodyparser": "^0.3.0",
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
-    "log4js": "^6.7.1",
     "minio": "^7.0.32",
     "mongodb": "^4.12.1",
     "mongodb-uri": "^0.9.7",

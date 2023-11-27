@@ -169,7 +169,7 @@ export class MinioService {
     const cmd = new CreateBucketCommand({
       Bucket: bucket,
       CreateBucketConfiguration: {
-        LocationConstraint: region.name,
+        LocationConstraint: region.name as any,
       },
     })
     const res = await s3.send(cmd)

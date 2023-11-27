@@ -1,3 +1,7 @@
-FROM lafyun/runtime-node:latest
+FROM node:20
+
+WORKDIR /app
+
+COPY ./init.sh /app/init.sh
 
 CMD [ "sh", "/app/init.sh" ]

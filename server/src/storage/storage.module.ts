@@ -9,6 +9,7 @@ import { BucketTaskService } from './bucket-task.service'
 import { BundleService } from 'src/application/bundle.service'
 import { StorageUsageCaptureTaskService } from './storage-usage-capture-task.service'
 import { StorageUsageLimitTaskService } from './storage-usage-limit-task.service'
+import { CloudBinBucketService } from './cloud-bin-bucket.service'
 
 @Module({
   imports: [GatewayModule],
@@ -22,7 +23,8 @@ import { StorageUsageLimitTaskService } from './storage-usage-limit-task.service
     BundleService,
     StorageUsageCaptureTaskService,
     StorageUsageLimitTaskService,
+    CloudBinBucketService,
   ],
-  exports: [StorageService, MinioService, BucketService],
+  exports: [StorageService, MinioService, BucketService, CloudBinBucketService],
 })
 export class StorageModule {}

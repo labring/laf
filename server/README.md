@@ -10,6 +10,10 @@
 - app storage management
 - app log management
 - app instance management
+- app billing management
+- app domain management
+- app certificate management
+- app metrics management
 
 # Development
 
@@ -21,8 +25,6 @@
 - [Telepresence](https://www.telepresence.io) for local development
 - [MongoDb](https://docs.mongodb.com) basic use
 - [MinIO](https://min.io) object storage
-- [APISIX](https://apisix.apache.org) gateway
-- [nestjs-i18n](https://nestjs-i18n.com/) i18n
 
 ## Prerequisites
 
@@ -44,7 +46,7 @@ telepresence connect -n laf-system
 telepresence intercept laf-server  -p 3000:3000 -e $(pwd)/.env
 
 npm install
-npm run watch
+npm run dev
 ```
 
 > Clean up
@@ -52,7 +54,3 @@ npm run watch
 ```bash
 telepresence leave laf-server
 ```
-
-## Troubleshooting
-
-- `telepresence helm install` failed for `arm64 / Apple Chip` cluster, please upgrade your telepresence to `v2.11.1` or later.
