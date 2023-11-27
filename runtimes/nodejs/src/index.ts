@@ -21,6 +21,10 @@ import xmlparser from 'express-xml-bodyparser'
 import './support/cloud-sdk'
 import storageServer from './storage-server'
 import { DatabaseChangeStream } from './support/database-change-stream'
+import { createCloudSdk } from './support/cloud-sdk'
+
+// hack: set createCloudSdk to global object to make it available in @lafjs/cloud package
+globalThis.createCloudSdk = createCloudSdk
 
 const app = express()
 
