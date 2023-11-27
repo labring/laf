@@ -49,6 +49,8 @@ if [ -n "$NODE_MODULES_PULL_URL" ]; then
 
   # re-enable set -e
   set -e
+else
+  echo "No node_modules cache found, continuing installation."
 fi
 
 CACHED_DEPENDENCIES=""
@@ -57,8 +59,11 @@ if [ -f "node_modules/.dependencies" ]; then
   CACHED_DEPENDENCIES=`cat node_modules/.dependencies`
 fi
 
-# if $CACHED_DEPENDENCIES is not empty and $CACHED_DEPENDENCIES is equal to $DEPENDENCIES
-if [ -n "$CACHED_DEPENDENCIES" ] && [ "$CACHED_DEPENDENCIES" = "$DEPENDENCIES" ]; then
+echo "Cached dependencies: $CACHED_DEPENDENCIES"
+echo "Dependencies to install: $DEPENDENCIES"
+
+# if $CACHED_DEPENDENCIES is equal to $DEPENDENCIES
+if [ "$CACHED_DEPENDENCIES" = "$DEPENDENCIES" ]; then
   echo "No dependencies changed since last cache build."
   exit 0
 else
