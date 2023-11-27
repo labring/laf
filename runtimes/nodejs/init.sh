@@ -54,13 +54,15 @@ fi
 CACHED_DEPENDENCIES=""
 # if node_modules/.dependencies exists
 if [ -f "node_modules/.dependencies" ]; then
-  $CACHED_DEPENDENCIES=`cat node_modules/.dependencies`
+  CACHED_DEPENDENCIES=`cat node_modules/.dependencies`
 fi
 
 # if $CACHED_DEPENDENCIES is not empty and $CACHED_DEPENDENCIES is equal to $DEPENDENCIES
 if [ -n "$CACHED_DEPENDENCIES" ] && [ "$CACHED_DEPENDENCIES" = "$DEPENDENCIES" ]; then
   echo "No dependencies changed since last cache build."
   exit 0
+else
+  echo "Dependencies changed since last cache build."
 fi
 
 
