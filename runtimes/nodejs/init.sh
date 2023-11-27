@@ -23,19 +23,32 @@ if [ -n "$NODE_MODULES_PULL_URL" ]; then
   set +e
 
   # download node_modules.tar and untar to `node_modules`
-  curl -sSfL $NODE_MODULES_PULL_URL || true | tar -xf - -C .
+  curl -sSfL $NODE_MODULES_PULL_URL -o node_modules.tar
 
-  # re-enable set -e
-  set -e
+  end_time=$(date +%s)
 
   # if error
   if [ $? -ne 0 ]; then
     echo "Failed to download node_modules cache."
   else
-    end_time=$(date +%s)
     elapsed_time=$(expr $end_time - $start_time)
-    echo "Downloaded and extracted node_modules in $elapsed_time seconds."
+    echo "Downloaded node_modules.tar in $elapsed_time seconds."
   fi
+
+  # untar node_modules.tar
+  tar -xf node_modules.tar -C .
+
+  # check tar exit code
+  if [ $? -ne 0 ]; then
+    echo "Failed to extract node_modules cache."
+  else
+    end_time_2=$(date +%s)
+    elapsed_time_2=$(expr $end_time_2 - $end_time)
+    echo "Extracted node_modules cache in $elapsed_time_2 seconds."
+  fi
+
+  # re-enable set -e
+  set -e
 fi
 
 CACHED_DEPENDENCIES=""
@@ -78,8 +91,6 @@ if [ -n "$NODE_MODULES_PUSH_URL" ]; then
   # upload node_modules.tar to $NODE_MODULES_PUSH_URL
   curl -sSfL -X PUT -T node_modules.tar $NODE_MODULES_PUSH_URL
 
-  # re-enable set -e
-  set -e
 
   if [ $? -ne 0 ]; then
     echo "Failed to upload node_modules cache."
@@ -87,6 +98,8 @@ if [ -n "$NODE_MODULES_PUSH_URL" ]; then
     end_time_2=$(date +%s)
     elapsed_time_2=$(expr $end_time_2 - $end_time)
     echo "Uploaded node_modules.tar in $elapsed_time_2 seconds."
-    echo "Uploaded node_modules cache."
   fi
+
+  # re-enable set -e
+  set -e
 fi
