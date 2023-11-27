@@ -23,7 +23,7 @@ if [ -n "$NODE_MODULES_PULL_URL" ]; then
   set +e
 
   # download node_modules.tar and untar to `node_modules`
-  curl -sSfL $NODE_MODULES_PULL_URL | tar -xf - -C .
+  curl -sSfL $NODE_MODULES_PULL_URL || true | tar -xf - -C .
 
   # re-enable set -e
   set -e
