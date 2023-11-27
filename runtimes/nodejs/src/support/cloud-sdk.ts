@@ -7,7 +7,9 @@ import Config from '../config'
 import { FunctionContext } from './engine'
 import { FunctionModule } from './engine/module'
 
-Cloud.create = createCloudSdk
+if (!Cloud.create) {
+  Cloud.create = createCloudSdk
+}
 
 /**
  * object shared cross all functions & requests
@@ -19,7 +21,7 @@ const _shared_preference = new Map<string, any>()
  *
  * @returns
  */
-function createCloudSdk() {
+export function createCloudSdk() {
   const cloud: CloudSdkInterface = {
     database: () => getDb(DatabaseAgent.accessor),
     invoke: invokeInFunction,
