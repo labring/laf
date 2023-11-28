@@ -3,11 +3,7 @@ import { Request, Response } from 'express'
 import { ObjectId } from 'mongodb'
 import WebSocket = require('ws')
 
-export type RequireFuncType = (
-  module: string,
-  fromModules: string[],
-  ctx: FunctionContext,
-) => any
+export type RequireFuncType = (module: string, fromModules: string[]) => any
 
 /**
  * vm run context (global)

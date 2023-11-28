@@ -19,40 +19,41 @@ export class FunctionModule {
     return this.require(moduleName, [])
   }
 
-  static require(name: string, fromModule: string[]): any {
-    if (name === '@/cloud-sdk') {
+  static require(moduleName: string, fromModule: string[]): any {
+    if (moduleName === '@/cloud-sdk') {
       return require('@lafjs/cloud')
-    } else if (name.startsWith('@/')) {
-      name = name.replace('@/', '')
+    } else if (moduleName.startsWith('@/')) {
+      // function name
+      const fn = moduleName.replace('@/', '')
 
       // check cache
-      if (FunctionModule.cache.has(name)) {
-        return FunctionModule.cache.get(name)
+      if (FunctionModule.cache.has(fn)) {
+        return FunctionModule.cache.get(fn)
       }
 
       // check circular dependency
-      if (fromModule?.indexOf(name) !== -1) {
+      if (fromModule?.indexOf(fn) !== -1) {
         throw new Error(
-          `circular dependency detected: ${fromModule.join(' -> ')} -> ${name}`,
+          `circular dependency detected: ${fromModule.join(' -> ')} -> ${fn}`,
         )
       }
 
       // build function module
-      const data = FunctionCache.get(name)
-      const mod = this.compile(name, data.source.compiled, fromModule)
+      const data = FunctionCache.get(fn)
+      const mod = this.compile(fn, data.source.compiled, fromModule)
 
       // cache module
       if (!Config.DISABLE_MODULE_CACHE) {
-        FunctionModule.cache.set(name, mod)
+        FunctionModule.cache.set(fn, mod)
       }
       return mod
     }
 
     // load custom dependency from custom dependency path first
     try {
-      return FunctionModule.customRequire(name)
+      return FunctionModule.customRequire(moduleName)
     } catch (e) {
-      return require(name)
+      return require(moduleName)
     }
   }
 
