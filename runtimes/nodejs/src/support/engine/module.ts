@@ -4,6 +4,7 @@ import Config from '../../config'
 import { Console } from '.'
 import * as vm from 'vm'
 import { createRequire } from 'node:module'
+import * as path from 'node:path'
 
 const CUSTOM_DEPENDENCY_NODE_MODULES_PATH = `${Config.CUSTOM_DEPENDENCY_BASE_PATH}/node_modules/`
 
@@ -19,12 +20,23 @@ export class FunctionModule {
     return this.require(moduleName, [])
   }
 
-  static require(moduleName: string, fromModule: string[]): any {
+  static require(moduleName: string, fromModule: string[], filename = ''): any {
     if (moduleName === '@/cloud-sdk') {
       return require('@lafjs/cloud')
-    } else if (moduleName.startsWith('@/')) {
-      // function name
-      const fn = moduleName.replace('@/', '')
+    } else if (
+      moduleName.startsWith('@/') ||
+      moduleName.startsWith('./') ||
+      moduleName.startsWith('../')
+    ) {
+      // get function name
+      let fn = ''
+      if (moduleName.startsWith('@/')) {
+        fn = moduleName.replace('@/', '')
+      } else {
+        const dirname = '/'
+        const filePath = path.join(path.dirname(dirname + filename), moduleName)
+        fn = filePath.slice(dirname.length)
+      }
 
       // check cache
       if (FunctionModule.cache.has(fn)) {
@@ -93,7 +105,7 @@ export class FunctionModule {
     return `
     const require = (name) => {
       __from_modules.push(__filename)
-      return __require(name, __from_modules)
+      return __require(name, __from_modules, __filename)
     }
 
     ${code}
