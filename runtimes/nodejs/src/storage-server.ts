@@ -46,9 +46,6 @@ const websiteHostingPathHandler = async (
 
 const storageServer = http.createServer(
   async (req: http.IncomingMessage, res: http.ServerResponse) => {
-    console.log(req.method)
-    console.log(req.url)
-    console.log(req.headers.origin)
     const headers = {
       'Access-Control-Allow-Origin': req.headers.origin || '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
@@ -62,12 +59,9 @@ const storageServer = http.createServer(
       return
     }
 
-    console.log(1112222)
+    const proxyReqUrl = new URL(Config.OSS_INTERNAL_ENDPOINT)
 
     const path = await websiteHostingPathHandler(req.headers.host, req.url)
-    console.log(path)
-    console.log('============')
-    const proxyReqUrl = new URL(Config.OSS_INTERNAL_ENDPOINT)
 
     const proxyReq = http.request({
       host: proxyReqUrl.hostname,
