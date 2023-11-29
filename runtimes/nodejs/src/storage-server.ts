@@ -108,8 +108,6 @@ const storageServer = http.createServer(
         res.writeHead(500)
         res.end('Internal Server Error')
         res.destroy()
-      } else {
-        res.destroy()
       }
     })
   },
