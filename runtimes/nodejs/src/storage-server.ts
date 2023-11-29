@@ -4,6 +4,7 @@ import { logger } from './support/logger'
 import './support/cloud-sdk'
 import { WebsiteHostingChangeStream } from './support/database-change-stream/website-hosting-change-stream'
 import axios, { AxiosError } from 'axios'
+import * as zlib from 'zlib'
 
 const tryPath = (bucket: string, path: string): string[] => {
   return path.endsWith('/')
@@ -85,7 +86,6 @@ const storageServer = http.createServer(
       })
 
       proxyReq.on('close', () => {
-        logger.info('Proxy request closed')
         proxyReq.removeAllListeners()
         proxyReq.destroy()
       })
@@ -100,7 +100,6 @@ const storageServer = http.createServer(
       })
 
       req.on('close', () => {
-        logger.info('Source request closed')
         req.removeAllListeners()
         req.destroy()
       })

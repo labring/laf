@@ -52,7 +52,8 @@
     "nodemailer": "^6.6.3",
     "pako": "^2.1.0",
     "validator": "^13.7.0",
-    "ws": "^8.11.0"
+    "ws": "^8.11.0",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
