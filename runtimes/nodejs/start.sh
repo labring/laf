@@ -1,5 +1,5 @@
 #!/bin/sh
 
 # source .env
-echo "****** start service: node $FLAGS --experimental-fetch ./dist/index.js *******"
-exec node $FLAGS ./dist/index.js
+echo "****** start service: node $FLAGS --experimental-vm-modules  --experimental-fetch ./dist/index.js *******"
+exec node $FLAGS --experimental-vm-modules  --experimental-fetch ./dist/index.js

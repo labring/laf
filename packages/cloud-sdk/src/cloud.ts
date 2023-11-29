@@ -19,6 +19,10 @@ export class Cloud implements CloudSdkInterface {
   private _cloud: CloudSdkInterface
 
   private get cloud(): CloudSdkInterface {
+    if (globalThis.createCloudSdk && !Cloud.create) {
+      Cloud.create = globalThis.createCloudSdk
+    }
+
     if (!this._cloud) {
       this._cloud = Cloud.create()
     }

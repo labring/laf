@@ -41,6 +41,7 @@
     "Chakra",
     "chatgpt",
     "ciphertext",
+    "cloudbin",
     "clsx",
     "coll",
     "compat",
@@ -105,6 +106,7 @@
     "statefulset",
     "storageclass",
     "Streamable",
+    "stylelint",
     "tailwindcss",
     "tanstack",
     "telepresence",
@@ -125,8 +127,7 @@
     "withs",
     "xmlparser",
     "zcube",
-    "zustand",
-    "stylelint"
+    "zustand"
   ],
   "i18n-ally.localesPaths": "web/public/locales",
   "i18n-ally.enabledParsers": [

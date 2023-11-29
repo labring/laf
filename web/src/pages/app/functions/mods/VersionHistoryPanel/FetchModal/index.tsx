@@ -1,6 +1,8 @@
 import React from "react";
 import {
   Button,
+  Grid,
+  GridItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -19,7 +21,7 @@ import useFunctionStore from "../../../store";
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useGlobalStore from "@/pages/globalStore";
 
-export default function FetchButton(props: { children: React.ReactElement; functionCode: string }) {
+export default function FetchModal(props: { children: React.ReactElement; functionCode: string }) {
   const { children, functionCode } = props;
   const functionCache = useFunctionCache();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -43,12 +45,16 @@ export default function FetchButton(props: { children: React.ReactElement; funct
             <ModalHeader>Code Diff</ModalHeader>
             <ModalCloseButton />
             <ModalBody borderBottom={"1px"} borderBottomColor="gray.200">
+              <Grid templateColumns="repeat(2, 1fr)" gap={6} mb={2} mt={-4}>
+                <GridItem>{t("FunctionPanel.HistoryVersion")}</GridItem>
+                <GridItem>{t("FunctionPanel.CurrentVersion")}</GridItem>
+              </Grid>
               <CommonDiffEditor
-                modified={functionCode}
-                original={functionCache.getCache(
+                modified={functionCache.getCache(
                   currentFunction?._id,
                   currentFunction?.source?.code,
                 )}
+                original={functionCode}
               />
             </ModalBody>
 

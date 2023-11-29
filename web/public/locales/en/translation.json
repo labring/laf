@@ -133,7 +133,9 @@
     "Restore": "Restore",
     "Invite": "Invite",
     "HistoryTips": "No historical versions available",
-    "NoDesc": "No Description"
+    "NoDesc": "No Description",
+    "CurrentVersion": "Current Version",
+    "HistoryVersion": "History version"
   },
   "HomePanel": {
     "APP": "Android or iOS app",

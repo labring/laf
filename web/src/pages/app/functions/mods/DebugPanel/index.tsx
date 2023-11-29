@@ -344,7 +344,7 @@ export default function DebugPanel(props: { containerRef: any }) {
                         </Center>
                       </div>
                     ) : null}
-                    {runningResData ? (
+                    {runningResData !== undefined ? (
                       <JSONViewer
                         colorMode={colorMode}
                         code={JSON.stringify(runningResData, null, 2)}
