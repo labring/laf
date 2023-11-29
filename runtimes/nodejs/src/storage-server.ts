@@ -72,47 +72,11 @@ const storageServer = http.createServer(
     })
 
     proxyReq.on('response', (proxyRes: http.IncomingMessage) => {
-      console.log(3)
       res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
       proxyRes.pipe(res)
     })
 
     req.pipe(proxyReq)
-
-    finished(proxyReq, (err) => {
-      if (err) {
-        logger.error('Proxy request stream error:', err)
-        res.writeHead(500)
-        res.end('Internal Server Error')
-        proxyReq.removeAllListeners()
-        proxyReq.destroy()
-      } else {
-        console.log(2)
-        proxyReq.removeAllListeners()
-        proxyReq.destroy()
-      }
-    })
-
-    finished(req, (err) => {
-      if (err) {
-        logger.error('Request stream error:', err)
-        res.writeHead(500)
-        res.end('Internal Server Error')
-        req.destroy()
-      } else {
-        console.log(1)
-        req.destroy()
-      }
-    })
-
-    finished(res, (err) => {
-      if (err) {
-        logger.error('Response stream error:', err)
-        res.writeHead(500)
-        res.end('Internal Server Error')
-        res.destroy()
-      }
-    })
   },
 )
 
