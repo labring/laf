@@ -325,7 +325,7 @@ await db.collection("users").where(
 
 ## 正则表达式查询
 
-`db.RegExp` 根据正则表达式进行筛选
+`new RegExp` 根据正则表达式进行筛选
 
 例如下面可以筛选出 `version` 字段开头是 "数字+s" 的记录，并且忽略大小写：
 
@@ -337,10 +337,7 @@ await db.collection('articles').where({
 
 // 或者
 await db.collection('articles').where({
-  version: new db.RegExp({
-    regex: '^\\ds'   // 正则表达式为 /^\ds/，转义后变成 '^\\ds'
-    options: 'i'    // i 表示忽略大小写
-  })
+  version: new RegExp('^\\ds','i')
 })
 ```
 

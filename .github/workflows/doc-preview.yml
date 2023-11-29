@@ -73,7 +73,7 @@ jobs:
         with:
           message: |
             Laf Doc Preview:
-            ${{ steps.create-bucket-and-website.outputs.website_url_message }}
+            https://${{ steps.create-bucket-and-website.outputs.website_url_message }}
 
   delete-doc-preview:
     if: github.event_name == 'pull_request_target' && github.event.action == 'closed'
