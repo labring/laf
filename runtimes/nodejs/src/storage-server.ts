@@ -4,7 +4,6 @@ import { logger } from './support/logger'
 import './support/cloud-sdk'
 import { WebsiteHostingChangeStream } from './support/database-change-stream/website-hosting-change-stream'
 import axios, { AxiosError } from 'axios'
-import { finished } from 'stream'
 
 const tryPath = (bucket: string, path: string): string[] => {
   return path.endsWith('/')
@@ -72,6 +71,7 @@ const storageServer = http.createServer(
     })
 
     proxyReq.on('response', (proxyRes: http.IncomingMessage) => {
+      console.log('test')
       res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
       proxyRes.pipe(res)
     })
