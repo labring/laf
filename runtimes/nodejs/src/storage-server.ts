@@ -57,26 +57,72 @@ const storageServer = http.createServer(
       res.end()
       return
     }
+    try {
+      const proxyReqUrl = new URL(Config.OSS_INTERNAL_ENDPOINT)
+      const path = await websiteHostingPathHandler(req.headers.host, req.url)
 
-    const proxyReqUrl = new URL(Config.OSS_INTERNAL_ENDPOINT)
+      const proxyReq = http.request({
+        host: proxyReqUrl.hostname,
+        port: proxyReqUrl.port,
+        headers: req.headers,
+        method: req.method,
+        path: path,
+      })
 
-    const path = await websiteHostingPathHandler(req.headers.host, req.url)
+      proxyReq.on('response', (proxyRes: http.IncomingMessage) => {
+        res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
+        proxyRes.pipe(res)
+      })
 
-    const proxyReq = http.request({
-      host: proxyReqUrl.hostname,
-      port: proxyReqUrl.port,
-      headers: req.headers,
-      method: req.method,
-      path: path,
-    })
+      proxyReq.on('error', (err) => {
+        req.emit('close')
+        proxyReq.emit('close')
+        logger.error('Proxy request error:', err)
+        if (!res.headersSent) {
+          res.writeHead(500)
+          res.end('Internal Server Error')
+        }
+      })
 
-    proxyReq.on('response', (proxyRes: http.IncomingMessage) => {
-      console.log('test')
-      res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
-      proxyRes.pipe(res)
-    })
+      proxyReq.on('close', () => {
+        logger.info('Proxy request closed')
+        proxyReq.removeAllListeners()
+        proxyReq.destroy()
+      })
 
-    req.pipe(proxyReq)
+      req.on('aborted', () => {
+        proxyReq.emit('close')
+        req.emit('close')
+        if (!res.headersSent) {
+          res.writeHead(504)
+        }
+        res.end()
+      })
+
+      req.on('close', () => {
+        logger.info('Source request closed')
+        req.removeAllListeners()
+        req.destroy()
+      })
+
+      req.on('error', (err) => {
+        req.emit('close')
+        proxyReq.emit('close')
+        logger.error('Source request error:', err)
+        if (!res.headersSent) {
+          res.writeHead(500)
+          res.end('Internal Server Error')
+        }
+      })
+
+      req.pipe(proxyReq)
+    } catch (err) {
+      logger.error('Error handling request:', err)
+      if (!res.headersSent) {
+        res.writeHead(500)
+        res.end('Internal Server Error')
+      }
+    }
   },
 )
 
