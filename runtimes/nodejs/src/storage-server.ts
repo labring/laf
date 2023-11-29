@@ -72,6 +72,7 @@ const storageServer = http.createServer(
     })
 
     proxyReq.on('response', (proxyRes: http.IncomingMessage) => {
+      console.log(3)
       res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
       proxyRes.pipe(res)
     })
@@ -86,6 +87,7 @@ const storageServer = http.createServer(
         proxyReq.removeAllListeners()
         proxyReq.destroy()
       } else {
+        console.log(2)
         proxyReq.removeAllListeners()
         proxyReq.destroy()
       }
@@ -98,6 +100,7 @@ const storageServer = http.createServer(
         res.end('Internal Server Error')
         req.destroy()
       } else {
+        console.log(1)
         req.destroy()
       }
     })
