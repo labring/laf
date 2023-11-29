@@ -4,6 +4,7 @@ import { logger } from './support/logger'
 import './support/cloud-sdk'
 import { WebsiteHostingChangeStream } from './support/database-change-stream/website-hosting-change-stream'
 import axios, { AxiosError } from 'axios'
+import * as zlib from 'zlib'
 
 const tryPath = (bucket: string, path: string): string[] => {
   return path.endsWith('/')
@@ -70,8 +71,15 @@ const storageServer = http.createServer(
       })
 
       proxyReq.on('response', (proxyRes: http.IncomingMessage) => {
-        res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
-        proxyRes.pipe(res)
+        if (req.headers['accept-encoding']?.includes('gzip')) {
+          proxyRes.headers['content-encoding'] = 'gzip'
+          const gzip = zlib.createGzip()
+          res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
+          proxyRes.pipe(gzip).pipe(res)
+        } else {
+          res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
+          proxyRes.pipe(res)
+        }
       })
 
       proxyReq.on('error', (err) => {
