@@ -71,15 +71,8 @@ const storageServer = http.createServer(
       })
 
       proxyReq.on('response', (proxyRes: http.IncomingMessage) => {
-        if (req.headers['accept-encoding']?.includes('gzip')) {
-          proxyRes.headers['content-encoding'] = 'gzip'
-          const gzip = zlib.createGzip()
-          res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
-          proxyRes.pipe(gzip).pipe(res)
-        } else {
-          res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
-          proxyRes.pipe(res)
-        }
+        res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
+        proxyRes.pipe(res)
       })
 
       proxyReq.on('error', (err) => {
