@@ -61,19 +61,18 @@ function mergeArrays(arrays: any) {
   const newArrays = arrays.map((arr: any) => {
     let frontPadding = 0;
     let endPadding = 0;
+    const lastTime = new Date(arr[arr.length - 1].xData);
+    lastTime.setSeconds(0);
+    lastTime.setMilliseconds(0);
+    const firstTime = new Date(arr[0].xData);
+    firstTime.setSeconds(0);
+    firstTime.setMilliseconds(0);
     for (let i = 0; i < longestArray.length; i++) {
-      const lastTime = new Date(arr[arr.length - 1].xData);
-      lastTime.setSeconds(0);
-      lastTime.setMilliseconds(0);
-      const firstTime = new Date(arr[0].xData);
-      firstTime.setSeconds(0);
-      firstTime.setMilliseconds(0);
-
       if (longestArray[i].xData === firstTime.getTime()) {
         frontPadding = i;
       }
       if (longestArray[i].xData === lastTime.getTime()) {
-        endPadding = longestArray.length - i - 1;
+        endPadding = longestArray.length - 1 - i;
       }
     }
     return [
