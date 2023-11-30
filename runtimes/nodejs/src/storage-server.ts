@@ -74,45 +74,6 @@ const storageServer = http.createServer(
         proxyRes.pipe(res)
       })
 
-      proxyReq.on('error', (err) => {
-        req.emit('close')
-        proxyReq.emit('close')
-        logger.error('Proxy request error:', err)
-        if (!res.headersSent) {
-          res.writeHead(500)
-          res.end('Internal Server Error')
-        }
-      })
-
-      proxyReq.on('close', () => {
-        proxyReq.removeAllListeners()
-        proxyReq.destroy()
-      })
-
-      req.on('aborted', () => {
-        proxyReq.emit('close')
-        req.emit('close')
-        if (!res.headersSent) {
-          res.writeHead(504)
-        }
-        res.end()
-      })
-
-      req.on('close', () => {
-        req.removeAllListeners()
-        req.destroy()
-      })
-
-      req.on('error', (err) => {
-        req.emit('close')
-        proxyReq.emit('close')
-        logger.error('Source request error:', err)
-        if (!res.headersSent) {
-          res.writeHead(500)
-          res.end('Internal Server Error')
-        }
-      })
-
       req.pipe(proxyReq)
     } catch (err) {
       logger.error('Error handling request:', err)
