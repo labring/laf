@@ -42,7 +42,7 @@ const websiteHostingPathHandler = async (
   }
   return url // If all paths are unavailable, the original URL is returned.
 }
-console.log('test10')
+
 const storageServer = http.createServer(
   async (req: http.IncomingMessage, res: http.ServerResponse) => {
     const headers = {
@@ -72,6 +72,45 @@ const storageServer = http.createServer(
       proxyReq.on('response', (proxyRes: http.IncomingMessage) => {
         res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
         proxyRes.pipe(res)
+      })
+
+      proxyReq.on('error', (err) => {
+        req.emit('close')
+        proxyReq.emit('close')
+        logger.error('Proxy request error:', err)
+        if (!res.headersSent) {
+          res.writeHead(500)
+          res.end('Internal Server Error')
+        }
+      })
+
+      proxyReq.on('close', () => {
+        proxyReq.removeAllListeners()
+        proxyReq.destroy()
+      })
+
+      req.on('aborted', () => {
+        proxyReq.emit('close')
+        req.emit('close')
+        if (!res.headersSent) {
+          res.writeHead(504)
+        }
+        res.end()
+      })
+
+      req.on('close', () => {
+        req.removeAllListeners()
+        req.destroy()
+      })
+
+      req.on('error', (err) => {
+        req.emit('close')
+        proxyReq.emit('close')
+        logger.error('Source request error:', err)
+        if (!res.headersSent) {
+          res.writeHead(500)
+          res.end('Internal Server Error')
+        }
       })
 
       req.pipe(proxyReq)
