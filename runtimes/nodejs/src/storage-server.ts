@@ -42,7 +42,7 @@ const websiteHostingPathHandler = async (
   }
   return url // If all paths are unavailable, the original URL is returned.
 }
-
+console.log('test10')
 const storageServer = http.createServer(
   async (req: http.IncomingMessage, res: http.ServerResponse) => {
     const headers = {
