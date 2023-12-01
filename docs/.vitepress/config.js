@@ -247,6 +247,7 @@ const guideSiderbarConfig = [
     items: [
       { text: "云存储简介", link: "/guide/oss/" },
       { text: "云函数调用云存储", link: "/guide/oss/oss-by-function" },
+      { text: "使用云函数生成上传和下载地址", link: "/guide/oss/gen-oss-url" },
       { text: "前端通过云函数上传文件", link: "/guide/oss/upload-by-function" },
       { text: "生成云存储临时令牌 (STS)", link: "/guide/oss/get-sts" },
       {

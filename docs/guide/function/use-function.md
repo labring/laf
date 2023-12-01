@@ -74,15 +74,15 @@ return ("Sorry, we cannot find that!"); // 字符串
 
 ### 方法 2: ctx.response 设置响应头、状态码和响应体等信息
 
-这里`ctx.response`对齐`express`框架的`Response`实例
+这里 `ctx.response` 对齐 `express` 框架的 `Response` 实例
 
-以下是一些常见的 res 对象方法：
+以下是一些常见的 response 对象方法：
 
 ```js
+ctx.response.setHeader(name, value) // 设置一个响应头
 ctx.response.send(body) // 发送响应体，可以是一个字符串、一个 Buffer 对象、一个 JSON 对象、一个数组等
 ctx.response.json(body) // 发送一个 JSON 响应
 ctx.response.status(statusCode) // 设置 HTTP 响应的状态码
-ctx.response.setHeader(name, value) // 设置一个响应头
 ...
 ```
 
