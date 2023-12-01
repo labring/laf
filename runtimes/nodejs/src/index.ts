@@ -12,7 +12,7 @@ import { parseToken, splitBearerToken } from './support/token'
 import Config from './config'
 import { router } from './handler/router'
 import { logger } from './support/logger'
-import { generateUUID } from './support/utils'
+import { GetClientIPFromRequest, generateUUID } from './support/utils'
 import { WebSocketAgent } from './support/ws'
 import { DatabaseAgent } from './db'
 import xmlparser from 'express-xml-bodyparser'
@@ -41,6 +41,14 @@ app.use(
     maxAge: 86400,
   }),
 )
+
+// fix x-real-ip while gateway not set
+app.use((req, _res, next) => {
+  if (!req.headers['x-real-ip']) {
+    req.headers['x-real-ip'] = GetClientIPFromRequest(req)
+  }
+  next()
+})
 
 app.use(express.json({ limit: Config.REQUEST_LIMIT_SIZE }) as any)
 app.use(

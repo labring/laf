@@ -1,4 +1,5 @@
 import * as crypto from 'crypto'
+import { IRequest } from './types'
 
 /**
  * Generate UUID v4
@@ -114,4 +115,21 @@ export function uint8ArrayToBase64(buffer: Uint8Array) {
 export function base64ToUint8Array(base64: string) {
   const buffer = Buffer.from(base64, 'base64')
   return new Uint8Array(buffer)
+}
+
+export function GetClientIPFromRequest(req: IRequest) {
+  // try to get ip from x-forwarded-for
+  const ips_str = req.headers['x-forwarded-for'] as string
+  if (ips_str) {
+    const ips = ips_str.split(',')
+    return ips[0]
+  }
+
+  // try to get ip from x-real-ip
+  const ip = req.headers['x-real-ip'] as string
+  if (ip) {
+    return ip
+  }
+
+  return null
 }
