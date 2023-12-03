@@ -28,6 +28,23 @@ export default async function(ctx: FunctionContext) {
 }
 ```
 
+如果用新版拦截器写法，本示例写法如下：
+
+```typescript
+export default async function(ctx: FunctionContext, next) {
+  // 获取请求的实际 IP
+  const ip = ctx.headers['x-forwarded-for']
+  if(ip === '111.111.111.111'){
+    return await next(ctx)
+  }else{
+    return {
+      code: 500
+      msg: "暂无访问权限"
+    }
+  }
+}
+```
+
 ## 新版写法
 
 ```typescript
