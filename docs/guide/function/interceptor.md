@@ -36,8 +36,8 @@ export default async function (ctx: FunctionContext, next: Function) {
 
 ### 旧版写法
 
-::: warning
-旧版用法已废弃，不推荐使用，仅作为兼容旧版的云函数。
+::: danger
+DEPRECATED: 旧版用法已废弃，不推荐使用，仅作为兼容旧版的云函数。
 :::
 
 
