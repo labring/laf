@@ -164,21 +164,8 @@ const guideSiderbarConfig = [
         ],
       },
       {
-        text: "调用云函数",
-        items: [
-          {
-            text: "在客户端中调用",
-            link: "/guide/function/call-function-in-client",
-          },
-          {
-            text: "在云函数中调用",
-            link: "/guide/function/call-function",
-          },
-          {
-            text: "HTTP 调用",
-            link: "/guide/function/call-function-in-http",
-          },
-        ],
+        text: "HTTP 调用云函数",
+        link: "/guide/function/call-function-in-http",
       },
       {
         text: "函数市场",
