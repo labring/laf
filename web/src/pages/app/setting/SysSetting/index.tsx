@@ -18,6 +18,7 @@ import AppInfoList from "./AppInfoList";
 import AppMonitor from "./AppMonitor";
 import CommonSetting from "./CommonSetting";
 import CustomDomain from "./CustomDomain";
+import DatabaseMonitor from "./DatabaseMonitor";
 
 import { TApplicationDetail } from "@/apis/typing";
 import SettingModal from "@/pages/app/setting";
@@ -42,12 +43,6 @@ export default function SysSetting(props: {
               icon: <TextIcon boxSize={4} />,
             },
             {
-              key: APP_SETTING_KEY.MONITOR,
-              name: t("SettingPanel.AppMonitor"),
-              component: <AppMonitor />,
-              icon: <MonitorIcon boxSize={4} />,
-            },
-            {
               key: APP_SETTING_KEY.ENV,
               name: t("SettingPanel.AppEnv"),
               component: <AppEnvList />,
@@ -65,6 +60,23 @@ export default function SysSetting(props: {
               component: <LogsPage />,
               icon: <OldLogsIcon />,
               status: t("Deprecated"),
+            },
+          ],
+        },
+        {
+          title: t("SettingPanel.MonitorSetting"),
+          items: [
+            {
+              key: APP_SETTING_KEY.MONITOR_RUNTIME,
+              name: t("SettingPanel.RuntimeMonitor"),
+              component: <AppMonitor />,
+              icon: <MonitorIcon boxSize={4} />,
+            },
+            {
+              key: APP_SETTING_KEY.MONITOR_DATABASE,
+              name: t("SettingPanel.DataBaseMonitor"),
+              component: <DatabaseMonitor />,
+              icon: <MonitorIcon boxSize={4} />,
             },
           ],
         },

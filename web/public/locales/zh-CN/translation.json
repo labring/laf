@@ -224,16 +224,18 @@
     "CostTrend": "成本趋势",
     "Balance": "余额",
     "Pause": "暂停应用",
-    "AppMonitor": "资源监控",
     "PauseTips": "确定要暂停此应用吗？",
     "RestartTips": "确定要重启此应用吗？",
     "CommonSetting": "常用设置",
-    "ClientSetting": "客户端设置",
     "EditorFont": "编辑器字体",
     "FontSize": "字体大小",
     "FuncListDisplay": "函数列表显示",
     "ListDisplay": "列表显示",
-    "OldLogs": "旧版日志"
+    "OldLogs": "旧版日志",
+    "MonitorSetting": "资源监控",
+    "DataBaseMonitor": "数据库监控",
+    "RuntimeMonitor": "运行时监控",
+    "ClientSetting": "客户端设置"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -354,7 +356,8 @@
     "RAM": "内存",
     "Database": "数据库",
     "Storage": "云存储",
-    "NetworkTraffic": "出网流量"
+    "NetworkTraffic": "出网流量",
+    "QueryOperand": "查询操作数"
   },
   "Price": {
     "Free": "免费"
@@ -692,5 +695,12 @@
     "logs": "日志"
   },
   "Deprecated": "已弃用",
-  "All": "全部"
+  "All": "全部",
+  "DatabaseMonitor": {
+    "Connections": "连接数",
+    "DocumentOperand": "文档操作数",
+    "PageError": "页错误(ops/s)",
+    "Resource": "资源",
+    "Performance": "性能"
+  }
 }

@@ -81,11 +81,10 @@ const SettingModal = (props: {
             onOpen();
           },
         })}
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent maxW={"80%"} width={"auto"} minW={1024}>
-          <ModalBody py={2} flex="none" minH={500} className="relative">
+          <ModalBody py={2} flex="none" minH={550} className="relative">
             <ModalCloseButton />
             <Box className="flex h-full" borderColor={borderColor}>
               <SectionList
@@ -98,6 +97,7 @@ const SettingModal = (props: {
                   {headerTitle || t("SettingPanel.Setting")}
                 </span>
                 <div className="relative left-6 top-6">
+                  {/* settings */}
                   {tabMatch.map((tab) => {
                     return (
                       <div key={tab.title}>
@@ -131,6 +131,7 @@ const SettingModal = (props: {
                       </div>
                     );
                   })}
+                  {/*  */}
                 </div>
               </SectionList>
               <div className="ml-[236px] w-full overflow-hidden p-2">

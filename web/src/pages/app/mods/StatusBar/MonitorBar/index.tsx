@@ -87,7 +87,7 @@ export default function MonitorBar() {
   };
 
   return (
-    <SysSetting currentTab="monitor">
+    <SysSetting currentTab="monitorRuntime">
       <div className="flex items-center">
         <span
           className={clsx(
@@ -96,7 +96,7 @@ export default function MonitorBar() {
           )}
         >
           <MonitorIcon className="mr-1" />
-          {t("SettingPanel.AppMonitor") + " :"}
+          {t("SettingPanel.RuntimeMonitor") + " :"}
         </span>
         <Center className="w-52 space-x-2">
           {resources.length !== 0 ? (
