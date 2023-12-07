@@ -107,12 +107,12 @@ await db.collection("user").where({
 
 ```typescript
 // 查询 user 集合中 _id 为 '644148fd1eeb2b524dba499e' 的文档
-await db.collection("user").doc('644148fd1eeb2b524dba499e');
+await db.collection("user").doc('644148fd1eeb2b524dba499e').get();
 
 // 其实等同于 where 的筛选条件只有 _id
 await db.collection("user").where({
   _id: '644148fd1eeb2b524dba499e'
-});
+}).getOne();
 ```
 
 ```typescript
