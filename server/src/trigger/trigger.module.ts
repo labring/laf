@@ -12,6 +12,7 @@ import { DatabaseService } from 'src/database/database.service'
 import { MongoService } from 'src/database/mongo.service'
 import { BundleService } from 'src/application/bundle.service'
 import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/function-recycle-bin.service'
+import { DedicatedDatabaseService } from 'src/database/dedicated-database/dedicated-database.service'
 
 @Module({
   imports: [StorageModule, HttpModule],
@@ -25,6 +26,7 @@ import { FunctionRecycleBinService } from 'src/recycle-bin/cloud-function/functi
     TriggerTaskService,
     FunctionService,
     DatabaseService,
+    DedicatedDatabaseService,
     MongoService,
     BundleService,
   ],

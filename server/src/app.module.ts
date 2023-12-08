@@ -30,6 +30,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core'
 import { AppInterceptor } from './app.interceptor'
 import { InterceptorModule } from './interceptor/interceptor.module'
 import { MonitorModule } from './monitor/monitor.module'
+import { EventEmitterModule } from '@nestjs/event-emitter'
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { MonitorModule } from './monitor/monitor.module'
     GroupModule,
     InterceptorModule,
     MonitorModule,
+    EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [

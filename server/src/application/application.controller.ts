@@ -83,7 +83,7 @@ export class ApplicationController {
   @ApiResponseObject(ApplicationWithRelations)
   @Post()
   async create(@Body() dto: CreateApplicationDto, @InjectUser() user: User) {
-    const error = dto.autoscaling.validate()
+    const error = dto.validate() || dto.autoscaling.validate()
     if (error) {
       return ResponseUtil.error(error)
     }
@@ -360,6 +360,23 @@ export class ApplicationController {
       origin.resource.limitMemory !== doc.resource.limitMemory
     const isAutoscalingCanceled =
       !doc.autoscaling.enable && origin.autoscaling.enable
+    const isDedicatedDatabaseChanged =
+      !isEqual(
+        origin.resource['dedicatedDatabase.limitCPU'],
+        doc.resource['dedicatedDatabase.limitCPU'],
+      ) ||
+      !isEqual(
+        origin.resource['dedicatedDatabase.limitMemory'],
+        doc.resource['dedicatedDatabase.limitMemory'],
+      ) ||
+      !isEqual(
+        origin.resource['dedicatedDatabase.replicas'],
+        doc.resource['dedicatedDatabase.replicas'],
+      ) ||
+      !isEqual(
+        origin.resource['dedicatedDatabase.capacity'],
+        doc.resource['dedicatedDatabase.capacity'],
+      )
 
     if (!isEqual(doc.autoscaling, origin.autoscaling)) {
       const { hpa, app } = await this.instance.get(appid)
@@ -368,7 +385,10 @@ export class ApplicationController {
 
     if (
       isRunning &&
-      (isCpuChanged || isMemoryChanged || isAutoscalingCanceled)
+      (isCpuChanged ||
+        isMemoryChanged ||
+        isAutoscalingCanceled ||
+        isDedicatedDatabaseChanged)
     ) {
       await this.application.updateState(appid, ApplicationState.Restarting)
     }
@@ -489,15 +509,39 @@ export class ApplicationController {
         case 'memory':
           return option.specs.some((spec) => spec.value === dto.memory)
         case 'databaseCapacity':
+          if (!dto.databaseCapacity) return true
           return option.specs.some(
             (spec) => spec.value === dto.databaseCapacity,
           )
         case 'storageCapacity':
           return option.specs.some((spec) => spec.value === dto.storageCapacity)
+        // dedicated database
+        case 'dedicatedDatabase.cpu':
+          return (
+            !dto.dedicatedDatabase ||
+            option.specs.some(
+              (spec) => spec.value === dto.dedicatedDatabase.cpu,
+            )
+          )
+        case 'dedicatedDatabase.memory':
+          return (
+            !dto.dedicatedDatabase ||
+            option.specs.some(
+              (spec) => spec.value === dto.dedicatedDatabase.memory,
+            )
+          )
+        case 'dedicatedDatabase.capacity':
+          return (
+            !dto.dedicatedDatabase ||
+            option.specs.some(
+              (spec) => spec.value === dto.dedicatedDatabase.capacity,
+            )
+          )
         default:
           return true
       }
     })
+
     return checkSpec
   }
 }

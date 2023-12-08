@@ -1,8 +1,10 @@
+import { CreateDedicatedDatabaseDto } from '../../database/dto/create-dedicated-database.dto'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
   IsIn,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Length,
   ValidateNested,
@@ -65,9 +67,9 @@ export class UpdateApplicationBundleDto {
   memory: number
 
   @ApiProperty({ example: 2048 })
-  @IsNotEmpty()
   @IsInt()
-  databaseCapacity: number
+  @IsOptional()
+  databaseCapacity?: number
 
   @ApiProperty({ example: 4096 })
   @IsNotEmpty()
@@ -78,4 +80,20 @@ export class UpdateApplicationBundleDto {
   @ValidateNested()
   @Type(() => CreateAutoscalingDto)
   autoscaling: CreateAutoscalingDto
+
+  @ApiProperty({ type: CreateDedicatedDatabaseDto })
+  @ValidateNested()
+  @IsOptional()
+  @Type(() => CreateDedicatedDatabaseDto)
+  dedicatedDatabase?: CreateDedicatedDatabaseDto
+
+  validate() {
+    if (!this.dedicatedDatabase && !this.databaseCapacity) {
+      return 'databaseCapacity or dedicatedDatabase must be provided'
+    }
+    if (this.databaseCapacity && this.dedicatedDatabase) {
+      return 'databaseCapacity or dedicatedDatabase must be specified only one'
+    }
+    return null
+  }
 }

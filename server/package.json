@@ -35,6 +35,7 @@
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.2.1",
+    "@nestjs/event-emitter": "^2.0.3",
     "@nestjs/jwt": "^10.0.1",
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^9.0.0",

@@ -39,6 +39,21 @@ export class ApplicationBundleResource {
   limitDatabaseTPS: number
   limitStorageTPS: number
 
+  @ApiProperty({ example: 500 })
+  'dedicatedDatabase.limitCPU': number
+
+  @ApiProperty({ example: 1024 })
+  'dedicatedDatabase.limitMemory': number
+
+  'dedicatedDatabase.requestCPU': number
+  'dedicatedDatabase.requestMemory': number
+
+  @ApiProperty({ example: 4 })
+  'dedicatedDatabase.capacity': number
+
+  @ApiProperty({ example: 1 })
+  'dedicatedDatabase.replicas': number
+
   constructor(partial: Partial<ApplicationBundleResource>) {
     Object.assign(this, partial)
   }

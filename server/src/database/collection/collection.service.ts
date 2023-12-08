@@ -3,11 +3,15 @@ import { CreateCollectionDto } from '../dto/create-collection.dto'
 import { UpdateCollectionDto } from '../dto/update-collection.dto'
 import * as assert from 'node:assert'
 import { DatabaseService } from '../database.service'
+import { DedicatedDatabaseService } from '../dedicated-database/dedicated-database.service'
 
 @Injectable()
 export class CollectionService {
   private readonly logger = new Logger(CollectionService.name)
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly dedicatedDatabaseService: DedicatedDatabaseService,
+  ) {}
 
   /**
    * Create collection in database
@@ -16,7 +20,9 @@ export class CollectionService {
    * @returns
    */
   async create(appid: string, dto: CreateCollectionDto) {
-    const { client, db } = await this.databaseService.findAndConnect(appid)
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(appid)) ||
+      (await this.databaseService.findAndConnect(appid))
     assert(db, 'Database not found')
     try {
       await db.createCollection(dto.name)
@@ -35,7 +41,9 @@ export class CollectionService {
    * @returns
    */
   async findAll(appid: string) {
-    const { client, db } = await this.databaseService.findAndConnect(appid)
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(appid)) ||
+      (await this.databaseService.findAndConnect(appid))
     assert(db, 'Database not found')
     try {
       const collections = await db.listCollections().toArray()
@@ -67,7 +75,9 @@ export class CollectionService {
    * @returns
    */
   async update(appid: string, name: string, dto: UpdateCollectionDto) {
-    const { client, db } = await this.databaseService.findAndConnect(appid)
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(appid)) ||
+      (await this.databaseService.findAndConnect(appid))
     assert(db, 'Database not found')
 
     const command = {
@@ -105,7 +115,9 @@ export class CollectionService {
    * @returns
    */
   async remove(appid: string, name: string) {
-    const { client, db } = await this.databaseService.findAndConnect(appid)
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(appid)) ||
+      (await this.databaseService.findAndConnect(appid))
     assert(db, 'Database not found')
     try {
       const res = await db.dropCollection(name)

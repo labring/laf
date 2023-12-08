@@ -10,13 +10,17 @@ import {
   DatabasePolicyWithRules,
 } from '../entities/database-policy'
 import * as assert from 'assert'
+import { DedicatedDatabaseService } from '../dedicated-database/dedicated-database.service'
 
 @Injectable()
 export class PolicyService {
   private readonly logger = new Logger(PolicyService.name)
   private readonly db = SystemDatabase.db
 
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly dedicatedDatabaseService: DedicatedDatabaseService,
+  ) {}
 
   async create(appid: string, dto: CreatePolicyDto) {
     await this.db.collection<DatabasePolicy>('DatabasePolicy').insertOne({
@@ -141,9 +145,10 @@ export class PolicyService {
     const policy = await this.findOne(appid, name)
     assert(policy, `policy ${name} not found`)
 
-    const { db, client } = await this.databaseService.findAndConnect(
-      policy.appid,
-    )
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(appid)) ||
+      (await this.databaseService.findAndConnect(appid))
+
     const session = client.startSession()
 
     const rules = {}
@@ -166,7 +171,9 @@ export class PolicyService {
   }
 
   async unpublish(appid: string, name: string) {
-    const { db, client } = await this.databaseService.findAndConnect(appid)
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(appid)) ||
+      (await this.databaseService.findAndConnect(appid))
     try {
       const coll = db.collection(CN_PUBLISHED_POLICIES)
       await coll.deleteOne({ name })

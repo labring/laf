@@ -9,6 +9,7 @@ import { MongoService } from 'src/database/mongo.service'
 import { RegionService } from 'src/region/region.service'
 import { ApplicationService } from 'src/application/application.service'
 import { HttpModule } from '@nestjs/axios'
+import { DedicatedDatabaseService } from 'src/database/dedicated-database/dedicated-database.service'
 
 @Module({
   imports: [HttpModule],
@@ -16,6 +17,7 @@ import { HttpModule } from '@nestjs/axios'
   providers: [
     ApplicationService,
     DatabaseService,
+    DedicatedDatabaseService,
     JwtService,
     TriggerService,
     FunctionRecycleBinService,

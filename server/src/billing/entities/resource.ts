@@ -7,6 +7,9 @@ export enum ResourceType {
   DatabaseCapacity = 'databaseCapacity',
   StorageCapacity = 'storageCapacity',
   NetworkTraffic = 'networkTraffic',
+  DedicatedDatabaseCPU = 'dedicatedDatabase.cpu',
+  DedicatedDatabaseMemory = 'dedicatedDatabase.memory',
+  DedicatedDatabaseCapacity = 'dedicatedDatabase.capacity',
 }
 
 export class ResourceSpec {

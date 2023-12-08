@@ -24,6 +24,7 @@ import { HttpService } from '@nestjs/axios'
 import { RegionService } from 'src/region/region.service'
 import { GetApplicationNamespace } from 'src/utils/getter'
 import { Region } from 'src/region/entities/region'
+import { DedicatedDatabaseService } from 'src/database/dedicated-database/dedicated-database.service'
 
 @Injectable()
 export class FunctionService {
@@ -32,6 +33,7 @@ export class FunctionService {
 
   constructor(
     private readonly databaseService: DatabaseService,
+    private readonly dedicatedDatabaseService: DedicatedDatabaseService,
     private readonly jwtService: JwtService,
     private readonly triggerService: TriggerService,
     private readonly functionRecycleBinService: FunctionRecycleBinService,
@@ -234,7 +236,10 @@ export class FunctionService {
   }
 
   async publish(func: CloudFunction, oldFuncName?: string) {
-    const { db, client } = await this.databaseService.findAndConnect(func.appid)
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(func.appid)) ||
+      (await this.databaseService.findAndConnect(func.appid))
+
     const session = client.startSession()
     try {
       await session.withTransaction(async () => {
@@ -252,9 +257,10 @@ export class FunctionService {
   }
 
   async publishMany(funcs: CloudFunction[]) {
-    const { db, client } = await this.databaseService.findAndConnect(
-      funcs[0].appid,
-    )
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(funcs[0].appid)) ||
+      (await this.databaseService.findAndConnect(funcs[0].appid))
+
     const session = client.startSession()
     try {
       await session.withTransaction(async () => {
@@ -270,9 +276,10 @@ export class FunctionService {
   }
 
   async publishFunctionTemplateItems(funcs: CloudFunction[]) {
-    const { db, client } = await this.databaseService.findAndConnect(
-      funcs[0].appid,
-    )
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(funcs[0].appid)) ||
+      (await this.databaseService.findAndConnect(funcs[0].appid))
+
     const session = client.startSession()
     try {
       await session.withTransaction(async () => {
@@ -287,7 +294,9 @@ export class FunctionService {
   }
 
   async unpublish(appid: string, name: string) {
-    const { db, client } = await this.databaseService.findAndConnect(appid)
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(appid)) ||
+      (await this.databaseService.findAndConnect(appid))
     try {
       const coll = db.collection(CN_PUBLISHED_FUNCTIONS)
       await coll.deleteOne({ name })

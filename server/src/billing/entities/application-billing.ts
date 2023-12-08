@@ -29,7 +29,16 @@ export class ApplicationBillingDetail {
   [ResourceType.StorageCapacity]: ApplicationBillingDetailItem;
 
   @ApiProperty()
-  [ResourceType.NetworkTraffic]?: ApplicationBillingDetailItem
+  [ResourceType.NetworkTraffic]?: ApplicationBillingDetailItem;
+
+  @ApiProperty()
+  [ResourceType.DedicatedDatabaseCPU]?: ApplicationBillingDetailItem;
+
+  @ApiProperty()
+  [ResourceType.DedicatedDatabaseMemory]?: ApplicationBillingDetailItem;
+
+  @ApiProperty()
+  [ResourceType.DedicatedDatabaseCapacity]?: ApplicationBillingDetailItem
 }
 
 export class ApplicationBilling {
