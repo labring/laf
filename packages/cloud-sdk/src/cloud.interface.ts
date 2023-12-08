@@ -3,6 +3,7 @@ import * as mongodb from 'mongodb'
 import { Db } from 'database-proxy'
 import { WebSocket } from 'ws'
 import { FunctionContext } from './function.interface'
+import { CloudStorage } from './storage'
 
 export type InvokeFunctionType = (
   name: string,
@@ -22,7 +23,7 @@ export interface MongoDriverObject {
 export interface CloudSdkInterface {
   /**
    * Sending an HTTP request is actually an Axios instance. You can refer to the Axios documentation directly.
-   *  @deprecated this is deprecated and will be removed in future, use the global `fetch()` directly @see https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+   * @deprecated this is deprecated and will be removed in future, use the global `fetch()` directly @see https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
    * @see https://axios-http.com/docs/intro
    */
   fetch?: AxiosStatic
@@ -101,4 +102,9 @@ export interface CloudSdkInterface {
    * @deprecated this is deprecated and will be removed in future, use `process.env` instead
    */
   env: any
+
+  /**
+   * Cloud storage instance
+   */
+  storage: CloudStorage
 }
