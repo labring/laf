@@ -73,6 +73,55 @@ helm install minio -n ${NAMESPACE} \
 ## 5. install laf-server
 SERVER_JWT_SECRET=$PASSWD_OR_SECRET
 RUNTIME_EXPORTER_SECRET=$PASSWD_OR_SECRET
+DEPLOY_MANIFEST='{
+    "database": "
+apiVersion: apps.kubeblocks.io/v1alpha1
+kind: Cluster
+metadata:
+  finalizers:
+    - cluster.kubeblocks.io/finalizer
+  labels:
+    clusterdefinition.kubeblocks.io/name: mongodb
+    clusterversion.kubeblocks.io/name: mongodb-5.0
+    sealos-db-provider-cr: <%- name %>
+  annotations: {}
+  name: <%- name %>
+  namespace: {namespace}
+spec:
+  affinity:
+    nodeLabels: {}
+    podAntiAffinity: Preferred
+    tenancy: SharedNode
+    topologyKeys: []
+  clusterDefinitionRef: mongodb
+  clusterVersionRef: mongodb-5.0
+  componentSpecs:
+    - componentDefRef: mongodb
+      monitor: true
+      name: mongodb
+      replicas: <%- replicas %>
+      resources:
+        limits:
+          cpu: <%- limitCPU %>m
+          memory: <%- limitMemory %>Mi
+        requests:
+          cpu: <%- requestCPU %>m
+          memory: <%- requestMemory %>Mi
+      serviceAccountName: <%- name %>
+      volumeClaimTemplates:
+        - name: data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: <%- capacity %>Gi
+  terminationPolicy: Delete
+  tolerations: []
+"
+}'
+DEPLOY_MANIFEST=$(echo "$DEPLOY_MANIFEST" | sed "s/{namespace}/$NAMESPACE/g")
+
 helm install server -n ${NAMESPACE} \
     --set databaseUrl=${DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
@@ -91,6 +140,7 @@ helm install server -n ${NAMESPACE} \
     --set default_region.tls.enabled=false \
     --set default_region.runtime_exporter_secret=${RUNTIME_EXPORTER_SECRET} \
     $([ "$ENABLE_MONITOR" = "true" ] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}") \
+    --set default_region.deploy_manifest=${DEPLOY_MANIFEST}
     ./charts/laf-server
 
 ## 6. install laf-web
