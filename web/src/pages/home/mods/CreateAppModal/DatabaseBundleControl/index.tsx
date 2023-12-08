@@ -50,7 +50,7 @@ export default function DatabaseBundleControl(props: {
       onBundleItemChange("dedicatedDatabase", undefined);
       onBundleItemChange("databaseCapacity", defaultDatabaseCapacity);
     }
-  }, [databaseType, onBundleItemChange, defaultDatabaseCapacity, defaultDedicatedDatabaseBundle]);
+  }, [databaseType]);
 
   const buildSlider = (props: {
     type: string;

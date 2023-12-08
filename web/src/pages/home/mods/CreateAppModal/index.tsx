@@ -193,7 +193,7 @@ const CreateAppModal = (props: {
     return () => {
       debouncedBillingQuery.cancel();
     };
-  }, [isOpen, bundle, autoscaling, billingQuery]);
+  }, [isOpen, bundle, autoscaling]);
 
   const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdateName(params));
   const createAppMutation = useMutation((params: any) => ApplicationControllerCreate(params));
