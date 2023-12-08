@@ -124,6 +124,7 @@ export default function DatabaseBundleControl(props: {
               className={clsx("cursor-pointer rounded-md pl-4", {
                 "text-[#219BF4]": databaseType === option,
               })}
+              key={option}
               onClick={() => {
                 setDatabaseType(option);
               }}
