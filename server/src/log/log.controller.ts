@@ -113,7 +113,14 @@ export class LogController {
     ).podNameList
 
     if (!podNameList.includes(podName) && podName !== 'all') {
-      return ResponseUtil.error('podName not exist')
+      return new Observable<MessageEvent>((subscriber) => {
+        subscriber.next(
+          JSON.stringify({
+            error: 'podName not exist',
+          }) as unknown as MessageEvent,
+        )
+        subscriber.complete()
+      })
     }
 
     if (podName !== 'all') {
