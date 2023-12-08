@@ -71,6 +71,9 @@ export type TSpec = {
   databaseCapacity: DatabaseCapacity;
   storageCapacity: StorageCapacity;
   networkTraffic: NetworkTraffic;
+  "dedicatedDatabase.cpu": Cpu;
+  "dedicatedDatabase.memory": Memory;
+  "dedicatedDatabase.capacity": DatabaseCapacity;
 };
 
 export type Cpu = {
@@ -381,6 +384,10 @@ export type TApplicationItem = {
       limitDatabaseTPS: number;
       limitStorageTPS: number;
       reservedTimeAfterExpired: number;
+      "dedicatedDatabase.limitCPU": number;
+      "dedicatedDatabase.limitMemory": number;
+      "dedicatedDatabase.capacity": number;
+      "dedicatedDatabase.replicas": number;
     };
     autoscaling: {
       enable: boolean;

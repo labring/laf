@@ -7,65 +7,66 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from "@/utils/request";
+import request from '@/utils/request';
 import useGlobalStore from "@/pages/globalStore";
 
 /**
- * Get billings of an application
- */
+* Get billings of an application
+*/
 export async function BillingControllerFindAll(
   params: Paths.BillingControllerFindAll.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.BillingControllerFindAll.Responses;
+    error: string;
+    data: Paths.BillingControllerFindAll.Responses
 }> {
   // /v1/billings
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/billings`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Get my total amount
- */
+* Get my total amount
+*/
 export async function BillingControllerGetExpense(
   params: Paths.BillingControllerGetExpense.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.Number;
+    error: string;
+    data: Definitions.Number
 }> {
   // /v1/billings/amount
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/billings/amount`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Get my total amount by day
- */
+* Get my total amount by day
+*/
 export async function BillingControllerGetExpenseByDay(
   params: Paths.BillingControllerGetExpenseByDay.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.BillingControllerGetExpenseByDay.Responses;
+    error: string;
+    data: Paths.BillingControllerGetExpenseByDay.Responses
 }> {
   // /v1/billings/amounts
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/billings/amounts`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
+

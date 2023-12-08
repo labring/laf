@@ -7,201 +7,206 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from "@/utils/request";
+import request from '@/utils/request';
 import useGlobalStore from "@/pages/globalStore";
 
 /**
- * Get account info
- */
+* Get account info
+*/
 export async function AccountControllerFindOne(
   params: Paths.AccountControllerFindOne.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.Account;
+    error: string;
+    data: Definitions.Account
 }> {
   // /v1/accounts
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/accounts`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Get charge order total amount
- */
+* Get charge order total amount
+*/
 export async function AccountControllerGetChargeOrderAmount(
   params: Paths.AccountControllerGetChargeOrderAmount.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.Number;
+    error: string;
+    data: Definitions.Number
 }> {
   // /v1/accounts/charge-order/amount
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/accounts/charge-order/amount`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Get charge order
- */
+* Get charge order
+*/
 export async function AccountControllerGetChargeOrder(
   params: Paths.AccountControllerGetChargeOrder.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.AccountChargeOrder;
+    error: string;
+    data: Definitions.AccountChargeOrder
 }> {
   // /v1/accounts/charge-order/{id}
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/accounts/charge-order/${_params.id}`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * get all charge order
- */
+* get all charge order
+*/
 export async function AccountControllerGetChargeRecords(
   params: Paths.AccountControllerGetChargeRecords.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.AccountControllerGetChargeRecords.Responses;
+    error: string;
+    data: Paths.AccountControllerGetChargeRecords.Responses
 }> {
   // /v1/accounts/charge-orders
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/accounts/charge-orders`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Create charge order
- */
-export async function AccountControllerCharge(params: Definitions.CreateChargeOrderDto): Promise<{
-  error: string;
-  data: Definitions.CreateChargeOrderOutDto;
+* Create charge order
+*/
+export async function AccountControllerCharge(
+  params: Definitions.CreateChargeOrderDto,
+): Promise<{
+    error: string;
+    data: Definitions.CreateChargeOrderOutDto
 }> {
   // /v1/accounts/charge-order
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/accounts/charge-order`, {
-    method: "POST",
-    data: params,
+    method: 'POST',
+    data : params,
   });
 }
 
 /**
- * Get charge reward list
- */
+* Get charge reward list
+*/
 export async function AccountControllerGetChargeRewardList(
   params: Paths.AccountControllerGetChargeRewardList.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.AccountControllerGetChargeRewardList.Responses;
+    error: string;
+    data: Paths.AccountControllerGetChargeRewardList.Responses
 }> {
   // /v1/accounts/charge-reward
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/accounts/charge-reward`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- *
- */
+* 
+*/
 export async function AccountControllerWechatNotify(
   params: Paths.AccountControllerWechatNotify.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.AccountControllerWechatNotify.Responses;
+    error: string;
+    data: Paths.AccountControllerWechatNotify.Responses
 }> {
   // /v1/accounts/payment/wechat-notify
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/accounts/payment/wechat-notify`, {
-    method: "POST",
-    data: params,
+    method: 'POST',
+    data : params,
   });
 }
 
 /**
- * Use a gift code
- */
-export async function AccountControllerGiftCode(params: Definitions.UseGiftCodeDto): Promise<{
-  error: string;
-  data: Definitions.Account;
+* Use a gift code
+*/
+export async function AccountControllerGiftCode(
+  params: Definitions.UseGiftCodeDto,
+): Promise<{
+    error: string;
+    data: Definitions.Account
 }> {
   // /v1/accounts/gift-code
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/accounts/gift-code`, {
-    method: "POST",
-    data: params,
+    method: 'POST',
+    data : params,
   });
 }
 
 /**
- * get a invite code
- */
+* get a invite code
+*/
 export async function AccountControllerInviteCode(
   params: Paths.AccountControllerInviteCode.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.InviteCode;
+    error: string;
+    data: Definitions.InviteCode
 }> {
   // /v1/accounts/invite-code
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/accounts/invite-code`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * get invite code profit
- */
+* get invite code profit
+*/
 export async function AccountControllerInviteCodeProfit(
   params: Paths.AccountControllerInviteCodeProfit.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.AccountControllerInviteCodeProfit.Responses;
+    error: string;
+    data: Paths.AccountControllerInviteCodeProfit.Responses
 }> {
   // /v1/accounts/invite-profit
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/accounts/invite-profit`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
+

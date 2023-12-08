@@ -165,7 +165,9 @@
     "cpu": "CPU",
     "memory": "内存",
     "databaseCapacity": "数据库",
-    "storageCapacity": "云存储"
+    "storageCapacity": "云存储",
+    "capacity": "容量",
+    "replicas": "实例数"
   },
   "LogPanel": {
     "Detail": "日志详情",
@@ -563,7 +565,10 @@
     "ChooseSpecifications": "选择规格",
     "autoscaling": "弹性伸缩",
     "Number of Instances": "实例数",
-    "CPU Threshold": "CPU 阈值"
+    "CPU Threshold": "CPU 阈值",
+    "DatabaseSpecification": "数据库规格",
+    "DedicatedType": "专用型",
+    "SharedType": "共享型"
   },
   "Storage Threshold": "内存阈值",
   "Yesterday": "昨天",

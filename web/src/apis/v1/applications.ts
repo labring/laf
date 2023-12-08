@@ -7,205 +7,206 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from "@/utils/request";
+import request from '@/utils/request';
 import useGlobalStore from "@/pages/globalStore";
 
 /**
- * Create application
- */
+* Create application
+*/
 export async function ApplicationControllerCreate(
   params: Definitions.CreateApplicationDto,
 ): Promise<{
-  error: string;
-  data: Definitions.ApplicationWithRelations;
+    error: string;
+    data: Definitions.ApplicationWithRelations
 }> {
   // /v1/applications
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/applications`, {
-    method: "POST",
-    data: params,
+    method: 'POST',
+    data : params,
   });
 }
 
 /**
- * Get user application list
- */
+* Get user application list
+*/
 export async function ApplicationControllerFindAll(
   params: Paths.ApplicationControllerFindAll.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.ApplicationControllerFindAll.Responses;
+    error: string;
+    data: Paths.ApplicationControllerFindAll.Responses
 }> {
   // /v1/applications
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/applications`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Get an application by appid
- */
+* Get an application by appid
+*/
 export async function ApplicationControllerFindOne(
   params: Paths.ApplicationControllerFindOne.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.ApplicationControllerFindOne.Responses;
+    error: string;
+    data: Paths.ApplicationControllerFindOne.Responses
 }> {
   // /v1/applications/{appid}
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/applications/${_params.appid}`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Delete an application
- */
+* Delete an application
+*/
 export async function ApplicationControllerDelete(
   params: Paths.ApplicationControllerDelete.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.Application;
+    error: string;
+    data: Definitions.Application
 }> {
   // /v1/applications/{appid}
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/applications/${_params.appid}`, {
-    method: "DELETE",
-    data: params,
+    method: 'DELETE',
+    data : params,
   });
 }
 
 /**
- * Update application name
- */
+* Update application name
+*/
 export async function ApplicationControllerUpdateName(
   params: Definitions.UpdateApplicationNameDto,
 ): Promise<{
-  error: string;
-  data: Definitions.Application;
+    error: string;
+    data: Definitions.Application
 }> {
   // /v1/applications/{appid}/name
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/applications/${_params.appid}/name`, {
-    method: "PATCH",
-    data: params,
+    method: 'PATCH',
+    data : params,
   });
 }
 
 /**
- * Update application state
- */
+* Update application state
+*/
 export async function ApplicationControllerUpdateState(
   params: Definitions.UpdateApplicationStateDto,
 ): Promise<{
-  error: string;
-  data: Definitions.Application;
+    error: string;
+    data: Definitions.Application
 }> {
   // /v1/applications/{appid}/state
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/applications/${_params.appid}/state`, {
-    method: "PATCH",
-    data: params,
+    method: 'PATCH',
+    data : params,
   });
 }
 
 /**
- * Update application bundle
- */
+* Update application bundle
+*/
 export async function ApplicationControllerUpdateBundle(
   params: Definitions.UpdateApplicationBundleDto,
 ): Promise<{
-  error: string;
-  data: Definitions.ApplicationBundle;
+    error: string;
+    data: Definitions.ApplicationBundle
 }> {
   // /v1/applications/{appid}/bundle
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/applications/${_params.appid}/bundle`, {
-    method: "PATCH",
-    data: params,
+    method: 'PATCH',
+    data : params,
   });
 }
 
 /**
- * Bind custom domain to application
- */
+* Bind custom domain to application
+*/
 export async function ApplicationControllerBindDomain(
   params: Definitions.BindCustomDomainDto,
 ): Promise<{
-  error: string;
-  data: Definitions.RuntimeDomain;
+    error: string;
+    data: Definitions.RuntimeDomain
 }> {
   // /v1/applications/{appid}/domain
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/applications/${_params.appid}/domain`, {
-    method: "PATCH",
-    data: params,
+    method: 'PATCH',
+    data : params,
   });
 }
 
 /**
- * Remove custom domain of application
- */
+* Remove custom domain of application
+*/
 export async function ApplicationControllerRemove(
   params: Paths.ApplicationControllerRemove.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.RuntimeDomain;
+    error: string;
+    data: Definitions.RuntimeDomain
 }> {
   // /v1/applications/{appid}/domain
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/applications/${_params.appid}/domain`, {
-    method: "DELETE",
-    data: params,
+    method: 'DELETE',
+    data : params,
   });
 }
 
 /**
- * Check if domain is resolved
- */
+* Check if domain is resolved
+*/
 export async function ApplicationControllerCheckResolved(
   params: Definitions.BindCustomDomainDto,
 ): Promise<{
-  error: string;
-  data: Paths.ApplicationControllerCheckResolved.Responses;
+    error: string;
+    data: Paths.ApplicationControllerCheckResolved.Responses
 }> {
   // /v1/applications/{appid}/domain/resolved
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/applications/${_params.appid}/domain/resolved`, {
-    method: "POST",
-    data: params,
+    method: 'POST',
+    data : params,
   });
 }
+

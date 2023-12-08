@@ -165,7 +165,9 @@
     "cpu": "CPU",
     "memory": "Memory",
     "databaseCapacity": "Database",
-    "storageCapacity": "Storage"
+    "storageCapacity": "Storage",
+    "capacity": "Capacity",
+    "replicas": "Replicas"
   },
   "LogPanel": {
     "Detail": "Log Details",
@@ -514,7 +516,10 @@
     "ChooseSpecifications": "Choose Specifications",
     "autoscaling": "AutoScaling",
     "Number of Instances": "Number of Instances",
-    "CPU Threshold": "CPU Threshold"
+    "CPU Threshold": "CPU Threshold",
+    "DatabaseSpecification": "Database specification",
+    "DedicatedType": "Dedicated",
+    "SharedType": "Shared"
   },
   "Storage Threshold": "Storage Threshold",
   "Template": {
