@@ -25,12 +25,14 @@ import { TypeBundle } from "..";
 export default function DatabaseBundleControl(props: {
   bundle: TypeBundle;
   resourceOptions: any;
+  disabledChangeType: boolean;
   defaultDatabaseCapacity?: number;
   defaultDedicatedDatabaseBundle?: any;
   onBundleItemChange: (k: string, v?: number) => any;
 }) {
   const {
     bundle,
+    disabledChangeType,
     onBundleItemChange,
     resourceOptions,
     defaultDatabaseCapacity,
@@ -121,11 +123,14 @@ export default function DatabaseBundleControl(props: {
         <HStack>
           {(["dedicated", "shared"] as const).map((option) => (
             <div
-              className={clsx("cursor-pointer rounded-md pl-4", {
+              className={clsx("rounded-md pl-4", {
                 "text-[#219BF4]": databaseType === option,
+                "cursor-pointer": !disabledChangeType,
+                "cursor-not-allowed": disabledChangeType,
               })}
               key={option}
               onClick={() => {
+                if (disabledChangeType) return;
                 setDatabaseType(option);
               }}
             >
