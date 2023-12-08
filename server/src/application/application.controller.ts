@@ -334,6 +334,14 @@ export class ApplicationController {
       }
     }
 
+    const origin = app.bundle
+    if (
+      (origin.resource['dedicatedDatabase.limitCPU'] && dto.databaseCapacity) ||
+      (origin.resource.databaseCapacity && dto.dedicatedDatabase.cpu)
+    ) {
+      return ResponseUtil.error('cannot change database type')
+    }
+
     const checkSpec = await this.checkResourceSpecification(dto, regionId)
     if (!checkSpec) {
       return ResponseUtil.error('invalid resource specification')
@@ -353,7 +361,6 @@ export class ApplicationController {
     const doc = await this.application.updateBundle(appid, dto, isTrialTier)
 
     // restart running application if cpu or memory changed
-    const origin = app.bundle
     const isRunning = app.phase === ApplicationPhase.Started
     const isCpuChanged = origin.resource.limitCPU !== doc.resource.limitCPU
     const isMemoryChanged =
