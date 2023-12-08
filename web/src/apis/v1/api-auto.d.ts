@@ -316,53 +316,53 @@ declare namespace Definitions {
   }
 
   export type ApplicationBundleResource = {
-    limitCPU?: number; limitMemory?: number; databaseCapacity?: number; storageCapacity?: number; limitCountOfCloudFunction?: number; limitCountOfBucket?: number; limitCountOfDatabasePolicy?: number; limitCountOfTrigger?: number; limitCountOfWebsiteHosting?: number; reservedTimeAfterExpired?: number; dedicatedDatabase.limitCPU ?: number; dedicatedDatabase.limitMemory ?: number; dedicatedDatabase.capacity ?: number; dedicatedDatabase.replicas ?: number;
-}
+    limitCPU?: number; limitMemory?: number; databaseCapacity?: number; storageCapacity?: number; limitCountOfCloudFunction?: number; limitCountOfBucket?: number; limitCountOfDatabasePolicy?: number; limitCountOfTrigger?: number; limitCountOfWebsiteHosting?: number; reservedTimeAfterExpired?: number; "dedicatedDatabase.limitCPU"?: number; "dedicatedDatabase.limitMemory"?: number; "dedicatedDatabase.capacity"?: number; "dedicatedDatabase.replicas"?: number;
+  }
 
-export type Autoscaling = {
-  enable?: boolean; minReplicas?: number; maxReplicas?: number; targetCPUUtilizationPercentage?: number; targetMemoryUtilizationPercentage?: number;
-}
+  export type Autoscaling = {
+    enable?: boolean; minReplicas?: number; maxReplicas?: number; targetCPUUtilizationPercentage?: number; targetMemoryUtilizationPercentage?: number;
+  }
 
-export type Runtime = {
-  _id?: string; name?: string; type?: string; image?: Definitions.RuntimeImageGroup; state?: string; version?: string; latest?: boolean;
-}
+  export type Runtime = {
+    _id?: string; name?: string; type?: string; image?: Definitions.RuntimeImageGroup; state?: string; version?: string; latest?: boolean;
+  }
 
-export type RuntimeImageGroup = {
-  main?: string; init?: string; sidecar?: string;
-}
+  export type RuntimeImageGroup = {
+    main?: string; init?: string; sidecar?: string;
+  }
 
-export type ApplicationConfiguration = {
-  _id?: string; appid?: string; environments?: Definitions.EnvironmentVariable[]; dependencies?: string[]; createdAt?: string; updatedAt?: string;
-}
+  export type ApplicationConfiguration = {
+    _id?: string; appid?: string; environments?: Definitions.EnvironmentVariable[]; dependencies?: string[]; createdAt?: string; updatedAt?: string;
+  }
 
-export type EnvironmentVariable = {
-  name?: string; value?: string;
-}
+  export type EnvironmentVariable = {
+    name?: string; value?: string;
+  }
 
-export type WeChatPaymentCreateOrderResult = {
-  code_url?: string;
-}
+  export type WeChatPaymentCreateOrderResult = {
+    code_url?: string;
+  }
 
-export type UserProfile = {
-  _id?: string; uid?: string; openData?: {}; avatar?: string; name?: string; idVerified?: Definitions.IdVerified; idCard?: string; createdAt?: string; updatedAt?: string;
-}
+  export type UserProfile = {
+    _id?: string; uid?: string; openData?: {}; avatar?: string; name?: string; idVerified?: Definitions.IdVerified; idCard?: string; createdAt?: string; updatedAt?: string;
+  }
 
-export type IdVerified = {
-  isVerified?: boolean; idVerifyFailedTimes?: number;
-}
+  export type IdVerified = {
+    isVerified?: boolean; idVerifyFailedTimes?: number;
+  }
 
-export type CreateDependencyDto = {
-  name?: string; spec?: string;
-}
+  export type CreateDependencyDto = {
+    name?: string; spec?: string;
+  }
 
-export type FunctionTemplateItemDto = {
-  name?: string; /* FunctionTemplate item name */
-  description?: string; methods?: string[]; code?: string; /* The source code of the function */
-}
+  export type FunctionTemplateItemDto = {
+    name?: string; /* FunctionTemplate item name */
+    description?: string; methods?: string[]; code?: string; /* The source code of the function */
+  }
 
-export type User = {
-  _id?: string; username?: string; email?: string; phone?: string; github?: number; createdAt?: string; updatedAt?: string;
-}
+  export type User = {
+    _id?: string; username?: string; email?: string; phone?: string; github?: number; createdAt?: string; updatedAt?: string;
+  }
 
 }
 
