@@ -519,7 +519,8 @@
     "CPU Threshold": "CPU Threshold",
     "DatabaseSpecification": "Database specification",
     "DedicatedType": "Dedicated",
-    "SharedType": "Shared"
+    "SharedType": "Shared",
+    "ApplicationSecification": "Application specification"
   },
   "Storage Threshold": "Storage Threshold",
   "Template": {

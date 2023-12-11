@@ -568,7 +568,8 @@
     "CPU Threshold": "CPU 阈值",
     "DatabaseSpecification": "数据库规格",
     "DedicatedType": "专用型",
-    "SharedType": "共享型"
+    "SharedType": "共享型",
+    "ApplicationSecification": "应用规格"
   },
   "Storage Threshold": "内存阈值",
   "Yesterday": "昨天",
