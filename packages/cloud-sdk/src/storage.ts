@@ -22,7 +22,6 @@ export interface SdkStreamMixin {
   transformToString: (encoding?: string) => Promise<string>
   transformToWebStream: () => ReadableStream
 }
-/**
 
 /**
  * `ICloudStorage` is an interface for cloud storage services.
@@ -36,7 +35,29 @@ export class CloudStorage {
     return process.env.APPID
   }
 
-  protected getExternalClient() {
+  public get externalEndpoint() {
+    assert(
+      process.env.OSS_EXTERNAL_ENDPOINT,
+      'OSS_EXTERNAL_ENDPOINT is required'
+    )
+    return process.env.OSS_EXTERNAL_ENDPOINT
+  }
+
+  public get internalEndpoint() {
+    assert(
+      process.env.OSS_INTERNAL_ENDPOINT,
+      'OSS_INTERNAL_ENDPOINT is required'
+    )
+    return process.env.OSS_INTERNAL_ENDPOINT
+  }
+
+  /**
+   * Get external S3 client of `@aws-sdk/client-s3`.
+   * You can use this client to access the bucket through the external endpoint.
+   * @see https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/
+   * @returns
+   */
+  public getExternalS3Client() {
     if (!this._externalS3Client) {
       assert(
         process.env.OSS_EXTERNAL_ENDPOINT,
@@ -60,7 +81,12 @@ export class CloudStorage {
     return this._externalS3Client
   }
 
-  protected getInternalClient() {
+  /**
+   * Get internal S3 client of `@aws-sdk/client-s3`.
+   * You can use this client to access the bucket through the internal endpoint.
+   * @see https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/
+   */
+  public getInternalS3Client() {
     if (!this._internalS3Client) {
       assert(
         process.env.OSS_INTERNAL_ENDPOINT,
@@ -87,16 +113,17 @@ export class CloudStorage {
   /**
    * Get S3 client of `@aws-sdk/client-s3`, by default it returns the internal access client.
    * @see https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/
+   * @deprecated use `getInternalS3Client()` or `getExternalS3Client()` instead
    */
-  public getS3Client(options: { external?: boolean } = { external: false }) {
-    return options.external
-      ? this.getExternalClient()
-      : this.getInternalClient()
-  }
+  // public getS3Client(options: { external?: boolean } = { external: false }) {
+  //   return options.external
+  //     ? this.getExternalS3Client()
+  //     : this.getInternalS3Client()
+  // }
 
   /**
    * Get bucket by short name
-   * @param bucketShortName it is the short name of the bucket, e.g. `images`, NOT `{appid}-images`
+   * @param bucketShortName it is the short name of the bucket, e.g. `images`, NOT `{appid}-images`.
    * @returns
    */
   bucket(bucketShortName: string): CloudStorageBucket {
@@ -107,7 +134,7 @@ export class CloudStorage {
 }
 
 export class CloudStorageBucket {
-  readonly storage: CloudStorage
+  protected readonly storage: CloudStorage
   readonly name: string
 
   constructor(storage: CloudStorage, name: string) {
@@ -130,7 +157,7 @@ export class CloudStorageBucket {
     options?: Omit<GetObjectCommandInput, 'Bucket' | 'Key'>
   ): Promise<NodeJsRuntimeStreamingBlobPayloadOutputTypes> {
     assert(filename, 'filename is required')
-    const internal = this.storage.getS3Client()
+    const internal = this.storage.getInternalS3Client()
 
     const args: GetObjectCommandInput = {
       Bucket: this.name,
@@ -156,7 +183,7 @@ export class CloudStorageBucket {
   ) {
     assert(filename, 'key is required')
     assert(body, 'body is required')
-    const external = this.storage.getS3Client()
+    const external = this.storage.getInternalS3Client()
 
     const args: PutObjectCommandInput = {
       Bucket: this.name,
@@ -180,7 +207,7 @@ export class CloudStorageBucket {
     options?: Omit<DeleteObjectCommandInput, 'Bucket' | 'Key'>
   ) {
     assert(filename, 'filename is required')
-    const external = this.storage.getS3Client()
+    const external = this.storage.getInternalS3Client()
 
     const args: DeleteObjectCommandInput = {
       Bucket: this.name,
@@ -202,7 +229,7 @@ export class CloudStorageBucket {
     prefix?: string,
     options?: Omit<ListObjectsCommandInput, 'Bucket' | 'Prefix'>
   ) {
-    const internal = this.storage.getS3Client()
+    const internal = this.storage.getInternalS3Client()
 
     const args: ListObjectsCommandInput = {
       Bucket: this.name,
@@ -211,6 +238,30 @@ export class CloudStorageBucket {
     }
     const res = await internal.listObjects(args)
     return res
+  }
+
+  /**
+   * Get external url of the file.
+   * You can ONLY use this url to access file from `readonly` bucket or `public` bucket.
+   * Use `getDownloadUrl()` to get a signed url for `private` bucket.
+   * @param filename filename is the key of the object, it can contain subdirectories, e.g. `a/b/c.txt`
+   * @returns
+   */
+  public externalUrl(filename: string) {
+    assert(filename, 'filename is required')
+    return `${this.storage.externalEndpoint}/${this.name}/${filename}`
+  }
+
+  /**
+   * Get internal url of the file.
+   * You can ONLY use this url to access file from `readonly` bucket or `public` bucket.
+   * Use `getDownloadUrl()` to get a signed url for `private` bucket.
+   * @param filename filename is the key of the object, it can contain subdirectories, e.g. `a/b/c.txt`
+   * @returns
+   */
+  public internalUrl(filename: string) {
+    assert(filename, 'filename is required')
+    return `${this.storage.internalEndpoint}/${this.name}/${filename}`
   }
 
   /**
@@ -226,7 +277,7 @@ export class CloudStorageBucket {
     options?: Omit<PutObjectCommandInput, 'Bucket' | 'Key'>
   ) {
     assert(filename, 'filename is required')
-    const external = this.storage.getS3Client({ external: true })
+    const external = this.storage.getExternalS3Client()
 
     const args = new PutObjectCommand({
       Bucket: this.name,
@@ -251,7 +302,7 @@ export class CloudStorageBucket {
     options?: Omit<GetObjectCommandInput, 'Bucket' | 'Key'>
   ) {
     assert(filename, 'filename is required')
-    const external = this.storage.getS3Client({ external: true })
+    const external = this.storage.getExternalS3Client()
 
     const args = new GetObjectCommand({
       Bucket: this.name,
