@@ -16,16 +16,20 @@ interface File {
 }
 
 /**
- * Params of cloud function
+ * The input parameters of cloud function calls
  */
 interface FunctionContext {
-  /**
-   * payload object parsed from JWT token
-   */
-  user?: any
+  __function_name: string
 
   /**
-   * files uploaded
+   * This object is parsed from JWT Token Payload
+   */
+  user?: {
+    [key: string]: any
+  }
+
+  /**
+   * Uploaded file, the file object array
    */
   files?: File[]
 
@@ -35,49 +39,46 @@ interface FunctionContext {
   headers?: IncomingHttpHeaders
 
   /**
-   * HTTP query params
-   * @see https://expressjs.com/en/4x/api.html#req.query
+   * HTTP Query parameter (URL parameter), JSON object
    */
-  query?: {
-    [key: string]: string
-  }
+  query?: any
 
   /**
-   * HTTP body data
-   * @see https://expressjs.com/en/4x/api.html#req.body
+   * HTTP Body
    */
   body?: any
 
   /**
-   * HTTP request id
+   *
+   */
+  params?: any
+
+  /**
+   * HTTP Request ID
    */
   requestId?: string
 
   /**
-   * HTTP methods
+   * HTTP Method
    */
-  method?:
-    | 'GET'
-    | 'POST'
-    | 'PUT'
-    | 'PATCH'
-    | 'DELETE'
-    | 'WebSocket:connection'
-    | 'WebSocket:close'
-    | 'WebSocket:message'
-    | 'WebSocket:error'
+  method?: string
 
   /**
-   * Response object of express
-   * @see https://expressjs.com/en/4x/api.html#res
+   * Express request object
    */
-  response: HttpResponse
+  request?: HttpRequest
+
+  /**
+   * Express response object
+   */
+  response?: HttpResponse
 
   /**
    * WebSocket object
-   * @see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket
    */
   socket?: WebSocket
+
+  [key: string]: any
 }
 
 interface IModule {
@@ -86,17 +87,25 @@ interface IModule {
 
 interface IExports {
   /**
-   * 主函数，云函数的入口函数
+   * The main function, entry of the cloud function
    */
   main: (ctx: FunctionContext) => any
+}
+
+interface IProcess {
+  /**
+   * Environment
+   */
+  env: any
 }
 
 declare const module: IModule
 declare const exports: IExports
 declare const console: FunctionConsole
 declare const global: typeof globalThis
+declare const process: IProcess
 
 /**
- * 主函数，云函数的入口函数
+ *  The main function, entry of the cloud function
  */
 declare function main(ctx: FunctionContext): any
