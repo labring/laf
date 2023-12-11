@@ -111,9 +111,6 @@ export class InstanceTaskService {
     if (!res.value) return
     const app = res.value
 
-    // create instance
-    await this.instanceService.create(app.appid)
-
     // if waiting time is more than 5 minutes, stop the application
     const waitingTime = Date.now() - app.updatedAt.getTime()
     if (waitingTime > 1000 * 60 * 5) {
@@ -132,6 +129,9 @@ export class InstanceTaskService {
       this.logger.log(`${app.appid} updated to state Stopped due to timeout`)
       return
     }
+
+    // create instance
+    await this.instanceService.create(app.appid)
 
     const appid = app.appid
 
