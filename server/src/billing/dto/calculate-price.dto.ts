@@ -1,5 +1,4 @@
-import { OmitType } from '@nestjs/mapped-types'
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, OmitType } from '@nestjs/swagger'
 import { IsNotEmpty, IsString } from 'class-validator'
 import { UpdateApplicationBundleDto } from 'src/application/dto/update-application.dto'
 
