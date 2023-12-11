@@ -10,28 +10,20 @@ import Config from './config'
 import * as mongodb_uri from 'mongodb-uri'
 import { logger } from './support/logger'
 
-
 // Define a noop logger for mongo accessor
 class AccessorLogger implements LoggerInterface {
-  level: number = 0
-  trace(..._params: any[]): void {
-  }
+  level = 0
+  trace(..._params: any[]): void {}
 
-  debug(..._params: any[]): void {
-  }
+  debug(..._params: any[]): void {}
 
-  info(..._params: any[]): void {
-  }
+  info(..._params: any[]): void {}
 
-  warn(..._params: any[]): void {
-  }
+  warn(..._params: any[]): void {}
 
-  error(..._params: any[]): void {
-  }
+  error(..._params: any[]): void {}
 
-  fatal(..._params: any[]): void {
-  }
-
+  fatal(..._params: any[]): void {}
 }
 
 /**

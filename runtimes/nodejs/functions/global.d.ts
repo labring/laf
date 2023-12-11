@@ -56,7 +56,16 @@ interface FunctionContext {
   /**
    * HTTP methods
    */
-  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'WebSocket:connection' | 'WebSocket:close' | 'WebSocket:message' | 'WebSocket:error'
+  method?:
+    | 'GET'
+    | 'POST'
+    | 'PUT'
+    | 'PATCH'
+    | 'DELETE'
+    | 'WebSocket:connection'
+    | 'WebSocket:close'
+    | 'WebSocket:message'
+    | 'WebSocket:error'
 
   /**
    * Response object of express
