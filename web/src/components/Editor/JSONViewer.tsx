@@ -1,8 +1,10 @@
-import SyntaxHighlighter from "react-syntax-highlighter";
+import SyntaxHighlighter, { Prism } from "react-syntax-highlighter";
 import { FixedSizeList as List } from "react-window";
 import SimpleBar from "simplebar-react";
 
 import { COLOR_MODE } from "@/constants";
+
+import "./index.scss";
 
 type JSONViewerProps = {
   code: string;
@@ -239,9 +241,10 @@ const JSONViewerDarkStyle: any = {
     fontWeight: "bold",
   },
 };
+
 export default function JSONViewer(props: JSONViewerProps) {
   const { code, language = "json", colorMode = COLOR_MODE.light, ...rest } = props;
-  const lightTheme = { background: "#fdfdfe" };
+  const lightTheme = { background: "#fdfdfe", padding: 0 };
   const darkTheme = {
     background: "#202631",
     color: "#f0f0f0",
@@ -250,18 +253,18 @@ export default function JSONViewer(props: JSONViewerProps) {
   const rowHeight = 22;
 
   const renderRow = ({ index, style }: { index: number; style: any }) => (
-    <div style={style}>
-      <SyntaxHighlighter
+    <div style={style} className="code">
+      <Prism
         language={language}
         style={colorMode === COLOR_MODE.dark ? JSONViewerDarkStyle : JSONViewerStyle}
         customStyle={colorMode === COLOR_MODE.dark ? darkTheme : lightTheme}
       >
         {code.split(`\n`)[index]}
-      </SyntaxHighlighter>
+      </Prism>
     </div>
   );
 
-  if (code.split(`\n`).length <= 120) {
+  if (code.split(`\n`).length <= 100) {
     return (
       <SimpleBar
         style={{

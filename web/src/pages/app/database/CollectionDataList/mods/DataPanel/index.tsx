@@ -29,7 +29,7 @@ import RightPanelList from "../../../RightComponent/List";
 import { useDeleteDataMutation, useEntryDataQuery, useUpdateDataMutation } from "../../../service";
 import useDBMStore from "../../../store";
 
-import "./index.css";
+import "./index.scss";
 
 import useGlobalStore from "@/pages/globalStore";
 
