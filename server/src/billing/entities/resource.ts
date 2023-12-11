@@ -80,6 +80,9 @@ export class ResourceBundle {
     [ResourceType.DatabaseCapacity]: ResourceSpec
     [ResourceType.StorageCapacity]: ResourceSpec
     [ResourceType.NetworkTraffic]?: ResourceSpec
+    [ResourceType.DedicatedDatabaseCPU]: ResourceSpec
+    [ResourceType.DedicatedDatabaseMemory]: ResourceSpec
+    [ResourceType.DedicatedDatabaseCapacity]: ResourceSpec
   }
 
   @ApiPropertyOptional()
