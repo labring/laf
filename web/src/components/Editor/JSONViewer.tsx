@@ -1,4 +1,5 @@
 import SyntaxHighlighter from "react-syntax-highlighter";
+import { FixedSizeList as List } from "react-window";
 import SimpleBar from "simplebar-react";
 
 import { COLOR_MODE } from "@/constants";
@@ -246,20 +247,51 @@ export default function JSONViewer(props: JSONViewerProps) {
     color: "#f0f0f0",
   };
 
-  return (
-    <SimpleBar
-      style={{
-        maxHeight: 390,
-      }}
-      {...rest}
-    >
+  const rowHeight = 22;
+
+  const renderRow = ({ index, style }: { index: number; style: any }) => (
+    <div style={style}>
       <SyntaxHighlighter
         language={language}
         style={colorMode === COLOR_MODE.dark ? JSONViewerDarkStyle : JSONViewerStyle}
         customStyle={colorMode === COLOR_MODE.dark ? darkTheme : lightTheme}
       >
-        {code}
+        {code.split(`\n`)[index]}
       </SyntaxHighlighter>
-    </SimpleBar>
+    </div>
   );
+
+  if (code.split(`\n`).length <= 120) {
+    return (
+      <SimpleBar
+        style={{
+          maxHeight: 390,
+        }}
+        {...rest}
+      >
+        <SyntaxHighlighter
+          language={language}
+          style={colorMode === COLOR_MODE.dark ? JSONViewerDarkStyle : JSONViewerStyle}
+          customStyle={colorMode === COLOR_MODE.dark ? darkTheme : lightTheme}
+        >
+          {code}
+        </SyntaxHighlighter>
+      </SimpleBar>
+    );
+  } else {
+    return (
+      <List
+        height={390}
+        itemCount={code.split(`\n`).length}
+        itemSize={rowHeight}
+        width="100%"
+        style={{
+          paddingTop: 0,
+        }}
+        {...rest}
+      >
+        {renderRow}
+      </List>
+    );
+  }
 }

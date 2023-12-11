@@ -13,8 +13,8 @@ import StatusBar from "../mods/StatusBar";
 import CollectionDataList from "./CollectionDataList";
 import CollectionListPanel from "./CollectionListPanel";
 import PolicyDataList from "./PolicyDataList";
-import PolicyListPanel from "./PolicyListPanel";
 
+// import PolicyListPanel from "./PolicyListPanel";
 import useDBMStore from "./store";
 
 import useCustomSettingStore from "@/pages/customSetting";
@@ -27,7 +27,7 @@ function DatabasePage() {
       <Row className="flex-grow" ref={containerRef}>
         <Col {...settingStore.layoutInfo.collectionPage.SideBar}>
           <CollectionListPanel />
-          <Resize
+          {/* <Resize
             type="y"
             pageId="collectionPage"
             panelId="PolicyPanel"
@@ -36,7 +36,7 @@ function DatabasePage() {
           />
           <Row {...settingStore.layoutInfo.collectionPage.PolicyPanel}>
             <PolicyListPanel />
-          </Row>
+          </Row> */}
         </Col>
         <Resize type="x" pageId="collectionPage" panelId="SideBar" containerRef={containerRef} />
         <Col>
