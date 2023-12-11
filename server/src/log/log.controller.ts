@@ -7,6 +7,7 @@ import {
   UseGuards,
   Sse,
 } from '@nestjs/common'
+import http from 'http'
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { FunctionService } from '../function/function.service'
 import { ApiResponsePagination, ResponseUtil } from '../utils/response'
@@ -19,6 +20,7 @@ import { GetApplicationNamespace } from 'src/utils/getter'
 import { RegionService } from 'src/region/region.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 import { Observable } from 'rxjs'
+import { PodService } from 'src/application/pod.service'
 
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/logs')
@@ -29,6 +31,7 @@ export class LogController {
     private readonly funcService: FunctionService,
     private readonly regionService: RegionService,
     private readonly clusterService: ClusterService,
+    private readonly podService: PodService,
   ) {}
 
   /**
@@ -98,59 +101,112 @@ export class LogController {
   @Sse(':podName')
   async streamLogs(
     @Param('podName') podName: string,
+    @Query('containerName') containerName: string,
     @Param('appid') appid: string,
   ) {
+    if (!containerName) {
+      containerName = appid
+    }
+
+    let podNameList: string[] = (
+      await this.podService.getPodNameListByAppid(appid)
+    ).podNameList
+
+    if (!podNameList.includes(podName) && podName !== 'all') {
+      return new Observable<MessageEvent>((subscriber) => {
+        subscriber.next(
+          JSON.stringify({
+            error: 'podName not exist',
+          }) as unknown as MessageEvent,
+        )
+        subscriber.complete()
+      })
+    }
+
+    if (podName !== 'all') {
+      podNameList = undefined
+    }
+
     const region = await this.regionService.findByAppId(appid)
     const namespaceOfApp = GetApplicationNamespace(region, appid)
     const kc = this.clusterService.loadKubeConfig(region)
+
     return new Observable<MessageEvent>((subscriber) => {
-      const logStream = new PassThrough()
+      const combinedLogStream = new PassThrough()
       const logs = new Log(kc)
-      let k8sResponse
+
+      const streamsEnded = new Set<string>()
 
       const destroyStream = () => {
-        if (k8sResponse) {
-          k8sResponse?.destroy()
-        }
-        logStream?.removeAllListeners()
-        logStream?.destroy()
+        combinedLogStream?.removeAllListeners()
+        combinedLogStream?.destroy()
       }
 
-      logStream.on('data', (chunk) => {
+      combinedLogStream.on('data', (chunk) => {
         subscriber.next(chunk.toString() as MessageEvent)
       })
 
-      logStream.on('error', (error) => {
-        this.logger.error('stream error', error)
+      combinedLogStream.on('error', (error) => {
+        this.logger.error('Combined stream error', error)
         subscriber.error(error)
         destroyStream()
       })
 
-      logStream.on('end', () => {
+      combinedLogStream.on('end', () => {
         subscriber.complete()
         destroyStream()
       })
-      ;(async () => {
+
+      const fetchLog = async (podName: string) => {
+        let k8sResponse: http.IncomingMessage | undefined
+        const podLogStream = new PassThrough()
+        streamsEnded.add(podName)
+
         try {
           k8sResponse = await logs.log(
             namespaceOfApp,
             podName,
-            appid,
-            logStream,
+            containerName,
+            podLogStream,
             {
               follow: true,
+              previous: false,
               pretty: false,
               timestamps: false,
               tailLines: 1000,
             },
           )
+          podLogStream.pipe(combinedLogStream, { end: false })
+
+          podLogStream.on('error', (error) => {
+            combinedLogStream.emit('error', error)
+            podLogStream.removeAllListeners()
+            podLogStream.destroy()
+          })
+
+          podLogStream.once('end', () => {
+            streamsEnded.delete(podName)
+            if (streamsEnded.size === 0) {
+              combinedLogStream.end()
+            }
+          })
         } catch (error) {
-          this.logger.error('Failed to get logs', error)
+          this.logger.error(`Failed to get logs for pod ${podName}`, error)
           subscriber.error(error)
+          k8sResponse?.destroy()
+          podLogStream.removeAllListeners()
+          podLogStream.destroy()
           destroyStream()
         }
-      })()
+      }
 
+      if (podNameList && podNameList.length > 0) {
+        podNameList.forEach((podName) => {
+          fetchLog(podName)
+        })
+      } else {
+        fetchLog(podName)
+      }
       // Clean up when the client disconnects
       return () => destroyStream()
     })

@@ -1,11 +1,10 @@
 import { AccessorInterface } from './accessor/accessor'
-import { Params, ActionType, getAction } from "./types"
+import { Params, ActionType, getAction } from './types'
 import assert = require('assert')
 import { DefaultLogger, LoggerInterface } from './logger'
 import { PolicyInterface } from './policy'
 
 export class Proxy {
-
   private _accessor: AccessorInterface
   private _policy: PolicyInterface
   private _logger: LoggerInterface
@@ -38,7 +37,7 @@ export class Proxy {
 
   /**
    * @deprecated
-   * @param accessor 
+   * @param accessor
    */
   async setAccessor(accessor: AccessorInterface) {
     this.logger.info(`change proxy's accessor: ` + accessor.type)
@@ -52,7 +51,7 @@ export class Proxy {
   /**
    * set policy
    * @deprecated
-   * @param ruler 
+   * @param ruler
    */
   async setPolicy(policy: PolicyInterface) {
     this.logger.info(`change proxy's policy`)
@@ -61,8 +60,8 @@ export class Proxy {
 
   /**
    * perform data request
-   * @param params 
-   * @returns 
+   * @param params
+   * @returns
    */
   async execute(params: Params) {
     this.logger.info(`entry before executing`)
@@ -72,9 +71,9 @@ export class Proxy {
 
   /**
    * perform validation on request
-   * @param params 
-   * @param injections 
-   * @returns 
+   * @param params
+   * @param injections
+   * @returns
    */
   async validate(params: Params, injections: object) {
     this.logger.info(`entry validating`)
@@ -84,7 +83,7 @@ export class Proxy {
   /**
    * Parse request params
    * @param reqParams req.body
-   * @returns 
+   * @returns
    */
   parseParams(reqParams: any): Params {
     const { action } = reqParams
@@ -96,21 +95,21 @@ export class Proxy {
 
   /**
    * Parse request params
-   * @param actionType 
-   * @param reqParams 
-   * @returns 
+   * @param actionType
+   * @param reqParams
+   * @returns
    */
   static parse(actionType: ActionType, reqParams: any): Params {
     const { collectionName: collection } = reqParams
 
-    let params: Params = { action: actionType, collection }
-    let action = getAction(actionType)
+    const params: Params = { action: actionType, collection }
+    const action = getAction(actionType)
     if (!action) {
       throw new Error(`unknown action: ${actionType}`)
     }
 
     // copy the params
-    action.fields.forEach(field => {
+    action.fields.forEach((field) => {
       if (reqParams[field]) params[field] = reqParams[field]
     })
 

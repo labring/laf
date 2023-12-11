@@ -56,6 +56,10 @@ export class InitializerService {
         npmInstallFlags: '',
         runtimeAffinity: {},
       },
+      bundleConf: {
+        cpuRequestLimitRatio: 0.1,
+        memoryRequestLimitRatio: 0.5,
+      },
       databaseConf: {
         driver: 'mongodb',
         connectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
@@ -284,7 +288,7 @@ export class InitializerService {
           [ResourceType.StorageCapacity]: { value: 1024 },
           [ResourceType.NetworkTraffic]: { value: 0 },
         },
-        enableFreeTier: true,
+        enableFreeTier: false,
         limitCountOfFreeTierPerUser: 20,
         createdAt: new Date(),
         updatedAt: new Date(),

@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express'
+import express, { Request, Response } from 'express'
 import Config from './config'
 import { logger } from './logger'
 import getRuntimeMetrics from './handler/get-runtime-metrics'
@@ -17,7 +17,7 @@ app.get('/runtime/metrics/:token', getRuntimeMetrics)
 app.get('/healthz', (_, res: Response) => res.send('ok'))
 
 // express error capture middleware
-app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+app.use((err: Error, _req: Request, res: Response) => {
   logger.error('Caught error:', err)
   res.status(500).send('Internal Server Error')
 })

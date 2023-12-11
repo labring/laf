@@ -29,7 +29,7 @@
     "EmptyDataText": "No data information,",
     "EmptyPolicyTip": "You have not created a policy",
     "EmptyRuleTip": "This policy has no rules yet,",
-    "Query": "Please enter the ID or Mongo where statement, press Enter to query. For example: {_id: {$eq: 'document id'}}.",
+    "Query": "Please input the MongoDb query statement, press Enter to query. For example: { _id: ObjectId('') }.",
     "Search": "Please enter ID to search",
     "CreateTagTip": "Press \"Enter\" to separate tags, each tag can be up to 16 characters",
     "CollectionNameRule": "The collection name can only start with a letter and consist of 3 to 32 characters including letters, _ or -",
@@ -133,7 +133,9 @@
     "Restore": "Restore",
     "Invite": "Invite",
     "HistoryTips": "No historical versions available",
-    "NoDesc": "No Description"
+    "NoDesc": "No Description",
+    "CurrentVersion": "Current Version",
+    "HistoryVersion": "History version"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
@@ -708,5 +710,6 @@
     "EditorSettings": "Editor Settings",
     "FunctionListSettings": "Function list settings"
   },
-  "Deprecated": "Deprecated"
+  "Deprecated": "Deprecated",
+  "All": "All"
 }

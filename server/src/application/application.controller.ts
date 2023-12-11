@@ -104,7 +104,7 @@ export class ApplicationController {
       return ResponseUtil.error(`runtime ${dto.runtimeId} not found`)
     }
 
-    const regionId = new ObjectId(dto.regionId)
+    const regionId = region._id
 
     // check if trial tier
     const isTrialTier = await this.resource.isTrialBundle(dto)
@@ -143,7 +143,7 @@ export class ApplicationController {
 
     // create application
     const appid = await this.application.tryGenerateUniqueAppid()
-    await this.application.create(user._id, appid, dto, isTrialTier)
+    await this.application.create(regionId, user._id, appid, dto, isTrialTier)
 
     const app = await this.application.findOne(appid)
     return ResponseUtil.ok(app)

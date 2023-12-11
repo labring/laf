@@ -8,6 +8,7 @@ import {
   InputLeftElement,
   useColorMode,
 } from "@chakra-ui/react";
+import { EJSON } from "bson";
 import { t } from "i18next";
 import { throttle } from "lodash";
 
@@ -32,6 +33,19 @@ import useDBMStore from "../../../store";
 import "./index.css";
 
 import useGlobalStore from "@/pages/globalStore";
+
+function stringifyEJSONAndFormat(data: any) {
+  // get stringified EJSON
+  const ejson = EJSON.stringify(data);
+
+  // parse ejson string to json object
+  const parsed = JSON.parse(ejson);
+
+  // format json object
+  const formatted = JSON.stringify(parsed, null, 2);
+
+  return formatted;
+}
 
 export default function DataPanel() {
   const [currentData, setCurrentData] = useState<any>({ data: undefined, record: "{}" });
@@ -133,7 +147,7 @@ export default function DataPanel() {
   const handleData = async () => {
     let params = {};
     try {
-      params = JSON.parse(currentData.record);
+      params = EJSON.parse(currentData.record) as any;
       if (Object.keys(params).length === 0) {
         globalStore.showError(t("DataEntry.CreateError"));
         return;
@@ -273,21 +287,18 @@ export default function DataPanel() {
               }}
               deleteRuleMutation={deleteDataMutation}
               component={(item: any) => {
-                return (
-                  <JSONViewer
-                    colorMode={colorMode}
-                    code={JSON.stringify(item, null, 2)}
-                    className="dataList"
-                  />
-                );
+                const code = JSON.stringify(item, null, 2);
+                return <JSONViewer colorMode={colorMode} code={code} className="dataList" />;
               }}
               toolComponent={(item: any) => {
                 const newData = { ...item };
                 delete newData._id;
+
+                const text = stringifyEJSONAndFormat(newData);
                 return (
                   <CopyText
                     hideToolTip
-                    text={JSON.stringify(newData, null, 2)}
+                    text={text}
                     tip={String(t("Copied"))}
                     className="ml-2 hover:bg-gray-200"
                   >
@@ -312,7 +323,7 @@ export default function DataPanel() {
               <div className="mb-4 flex-1 rounded">
                 <JSONEditor
                   colorMode={colorMode}
-                  value={JSON.stringify(currentData.data || {}, null, 2)}
+                  value={stringifyEJSONAndFormat(currentData.data || {})}
                   onChange={(values) => {
                     setCurrentData((pre: any) => {
                       return {

@@ -10,6 +10,7 @@ import { UserService } from 'src/user/user.service'
 import { AuthBindingType, AuthProviderBinding } from '../entities/types'
 import { SmsVerifyCodeType } from '../entities/sms-verify-code'
 import { SmsService } from './sms.service'
+import { GetClientIPFromRequest } from 'src/utils/getter'
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -31,7 +32,7 @@ export class PhoneController {
   @Post('phone/sms/code')
   async sendCode(@Req() req: IRequest, @Body() dto: SendPhoneCodeDto) {
     const { phone, type } = dto
-    const ip = req.headers['x-real-ip'] as string
+    const ip = GetClientIPFromRequest(req)
 
     const err = await this.phoneService.sendCode(phone, type, ip)
     if (err) {

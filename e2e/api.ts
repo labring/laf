@@ -2,14 +2,12 @@ import axios from 'axios'
 import { Config } from './config'
 import { getDbClient } from './system-db'
 
-
 export const api = axios.create({
   baseURL: Config.API_ENDPOINT,
   validateStatus: (status) => {
     return status >= 200 && status <= 430
-  }
+  },
 })
-
 
 export async function EnsureTestToken() {
   const res = await api.post('/v1/auth/passwd/signin', {
@@ -31,14 +29,19 @@ export async function EnsureTestToken() {
   return token2
 }
 
-
 export async function GetTestApplication() {
   const client = await getDbClient()
   const db = client.db()
   try {
-    const user = await db.collection('User').findOne({ username: Config.TEST_USERNAME })
-    const app = await db.collection('Application')
-      .findOne({ createdBy: user._id, state: 'Running', phase: 'Started', name: Config.TEST_APP_NAME })
+    const user = await db
+      .collection('User')
+      .findOne({ username: Config.TEST_USERNAME })
+    const app = await db.collection('Application').findOne({
+      createdBy: user._id,
+      state: 'Running',
+      phase: 'Started',
+      name: Config.TEST_APP_NAME,
+    })
     return app
   } finally {
     await client.close()
@@ -48,11 +51,14 @@ export async function GetTestApplication() {
 export async function ClearTestApplications() {
   const client = await getDbClient()
   const db = client.db()
-  const user = await db.collection('User').findOne({ username: Config.TEST_USERNAME })
+  const user = await db
+    .collection('User')
+    .findOne({ username: Config.TEST_USERNAME })
 
   try {
-    if(!user) return
-    await db.collection('Application')
+    if (!user) return
+    await db
+      .collection('Application')
       .updateMany({ createdBy: user._id }, { $set: { state: 'Deleted' } })
   } finally {
     await client.close()

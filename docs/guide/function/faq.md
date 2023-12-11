@@ -118,8 +118,8 @@ function verifySignature(signature, timestamp, nonce, token) {
 
 // 返回组装 xml
 function toXML(payload, content) {
-  const timestamp = Date.now();
-  const { tousername: fromUserName, fromusername: toUserName } = payload;
+  const timestamp = Date.now()
+  const { tousername: fromUserName, fromusername: toUserName } = payload
   return `
   <xml>
     <ToUserName><![CDATA[${toUserName}]]></ToUserName>

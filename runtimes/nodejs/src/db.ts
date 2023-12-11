@@ -8,8 +8,31 @@
 import { LoggerInterface, MongoAccessor } from 'database-proxy'
 import Config from './config'
 import * as mongodb_uri from 'mongodb-uri'
-import * as log4js from 'log4js'
 import { logger } from './support/logger'
+
+
+// Define a noop logger for mongo accessor
+class AccessorLogger implements LoggerInterface {
+  level: number = 0
+  trace(..._params: any[]): void {
+  }
+
+  debug(..._params: any[]): void {
+  }
+
+  info(..._params: any[]): void {
+  }
+
+  warn(..._params: any[]): void {
+  }
+
+  error(..._params: any[]): void {
+  }
+
+  fatal(..._params: any[]): void {
+  }
+
+}
 
 /**
  * Database Management
@@ -39,16 +62,15 @@ export class DatabaseAgent {
     const { database } = mongodb_uri.parse(Config.DB_URI)
     const accessor = new MongoAccessor(database, Config.DB_URI)
 
-    const accessorLogger: any = log4js.getLogger('accessor')
-    accessorLogger.level = 'warning'
-    accessor.setLogger(accessorLogger as LoggerInterface)
+    const accessorLogger = new AccessorLogger()
+    accessor.setLogger(accessorLogger)
     accessor
       .init()
       .then(async () => {
         logger.info('db connected')
       })
       .catch((error) => {
-        accessorLogger.error(error)
+        logger.error(error)
         setTimeout(() => process.exit(101), 0)
       })
 

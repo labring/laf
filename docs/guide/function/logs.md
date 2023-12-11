@@ -1,23 +1,29 @@
 ---
-title: 云函数历史日志
+title: 云函数日志
 ---
 
 # {{ $frontmatter.title }}
 
+日志服务全新升级，极大的优化了性能，让整个云函数性能提升约为 50%
+
+## 旧版日志下线
+
 :::warning
-只有在云函数中加 `console` 打印才会保存日志！
+旧版日志已下线，重启升级过的 Laf 应用将不会打印新的日志到旧版日志中。较长时间未重启的过的应用日志仍会打印日志到该区域。
 :::
 
-云函数的全部历史日志，全部都自动保存到了日志板块中，日志会保留最新的 10000 条
+![function-log](/doc-images/old-logs.jpg)
 
-暂不支持手动删除日志
+## 全新日志入口
 
-可根据请求 ID `requestId` 和云函数名筛选
+全新日志采用 K8s 原生日志服务，极大的降低了应用在运行时的性能问题。
 
-![function-log](/doc-images/function-log.png)
+![function-log](/doc-images/new-logs-1.jpg)
 
-1、点击日志，切换到日志板块
+环境变量中新增 `LOG_LEVEL=WARN`，可以忽略 INFO 日志；`LOG_LEVEL=ERROR` 可忽略 INFO 和 WARN 日志
 
-2、可根据 `requestId` 和云函数名搜索指定日志
+## 自定义日志
 
-3、点击单个日志，可查看详细内容
+旧版日志是通过写数据库实现，虽然已经下线了，关键的日志仍旧可以自己实现日志服务，下面是一个保存日志的例子。
+
+<https://laf.dev/market/templates/654e3740c55209816a74a9be>

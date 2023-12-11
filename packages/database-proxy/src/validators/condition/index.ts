@@ -3,7 +3,7 @@ import { Handler } from '../../processor'
 import { AccessorInterface } from '../../accessor'
 
 interface QueryResultPair {
-  query: [string, any],
+  query: [string, any]
   result: any
 }
 
@@ -21,17 +21,16 @@ export const ConditionHandler: Handler = async function (config, context) {
 
     const prepared: QueryResultPair[] = []
 
-    for (let query of queries) {
+    for (const query of queries) {
       const [target, value] = query
       const result = await doQuery(target, value, ruler.accessor)
       prepared.push({ query, result })
     }
 
     function GetFunc(target: string, value: any) {
-      for (let el of prepared) {
+      for (const el of prepared) {
         const [t, v] = el.query
-        if (t === target && v === value)
-          return el.result
+        if (t === target && v === value) return el.result
       }
       return null
     }
@@ -47,11 +46,15 @@ export const ConditionHandler: Handler = async function (config, context) {
   }
 }
 
-async function doQuery(target: string, value: any, accessor: AccessorInterface): Promise<any> {
+async function doQuery(
+  target: string,
+  value: any,
+  accessor: AccessorInterface
+): Promise<any> {
   // target like '/users/_id'
   const [, collection, field] = target.split('/')
   const query = {
-    [field]: value
+    [field]: value,
   }
   const result = await accessor.get(collection, query)
   return result

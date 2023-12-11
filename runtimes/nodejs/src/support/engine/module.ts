@@ -1,99 +1,181 @@
 import { RunningScriptOptions } from 'vm'
-import { FunctionCache, FunctionContext } from '.'
+import { FunctionCache, FunctionModuleGlobalContext } from '.'
 import Config from '../../config'
-import { buildSandbox, createScript } from './utils'
+import { Console } from '.'
+import * as vm from 'vm'
+import { createRequire } from 'node:module'
+import * as path from 'node:path'
+
+const CUSTOM_DEPENDENCY_NODE_MODULES_PATH = `${Config.CUSTOM_DEPENDENCY_BASE_PATH}/node_modules/`
 
 export class FunctionModule {
-  private static cache: Map<string, any> = new Map()
+  protected static cache: Map<string, any> = new Map()
+
+  private static customRequire = createRequire(
+    CUSTOM_DEPENDENCY_NODE_MODULES_PATH,
+  )
 
   static get(functionName: string): any {
     const moduleName = `@/${functionName}`
-    return FunctionModule.require(moduleName, [])
+    return this.require(moduleName, [])
   }
 
-  static require(name: string, fromModule: string[]): any {
-    if (name === '@/cloud-sdk') {
+  static require(moduleName: string, fromModule: string[], filename = ''): any {
+    if (moduleName === '@/cloud-sdk') {
       return require('@lafjs/cloud')
-    } else if (name.startsWith('@/')) {
-      name = name.replace('@/', '')
+    } else if (
+      moduleName.startsWith('@/') ||
+      moduleName.startsWith('./') ||
+      moduleName.startsWith('../')
+    ) {
+      // get function name
+      let fn = ''
+      if (moduleName.startsWith('@/')) {
+        fn = moduleName.replace('@/', '')
+      } else {
+        const dirname = '/'
+        const filePath = path.join(path.dirname(dirname + filename), moduleName)
+        fn = filePath.slice(dirname.length)
+      }
 
       // check cache
-      if (FunctionModule.cache.has(name)) {
-        return FunctionModule.cache.get(name)
+      if (FunctionModule.cache.has(fn)) {
+        return FunctionModule.cache.get(fn)
       }
 
       // check circular dependency
-      if (fromModule?.indexOf(name) !== -1) {
+      if (fromModule?.indexOf(fn) !== -1) {
         throw new Error(
-          `circular dependency detected: ${fromModule.join(' -> ')} -> ${name}`,
+          `circular dependency detected: ${fromModule.join(' -> ')} -> ${fn}`,
         )
       }
 
-      // build function context
-      const functionContext: FunctionContext = {
-        requestId: '',
-        __function_name: name,
-      }
-
       // build function module
-      const data = FunctionCache.get(name)
-      const functionModule = FunctionModule.build(
-        data.source.compiled,
-        functionContext,
-        fromModule,
-      )
+      const data = FunctionCache.get(fn)
+      const mod = this.compile(fn, data.source.compiled, fromModule)
 
       // cache module
       if (!Config.DISABLE_MODULE_CACHE) {
-        FunctionModule.cache.set(name, functionModule)
+        FunctionModule.cache.set(fn, mod)
       }
-      return functionModule
+      return mod
     }
-    return require(name)
+
+    // load custom dependency from custom dependency path first
+    try {
+      return FunctionModule.customRequire(moduleName)
+    } catch (e) {
+      return require(moduleName)
+    }
   }
 
   /**
-   * build function module
-   * @param code
-   * @param functionContext
-   * @param fromModule
-   * @returns
+   * Compile function module
    */
-  private static build(
+  static compile(
+    functionName: string,
     code: string,
-    functionContext: FunctionContext,
-    fromModule: string[],
+    fromModules: string[],
+    consoleInstance?: Console,
   ): any {
-    code = FunctionModule.wrap(code)
-    const sandbox = buildSandbox(functionContext, fromModule)
+    const wrapped = this.wrap(code)
+    const sandbox = this.buildSandbox(
+      functionName,
+      fromModules,
+      consoleInstance,
+    )
     const options: RunningScriptOptions = {
-      filename: `CloudFunction.${functionContext.__function_name}`,
+      filename: `FunctionModule.${functionName}`,
       displayErrors: true,
       contextCodeGeneration: {
-        strings: false,
+        strings: true,
+        wasm: true,
       },
     } as any
-    const script = createScript(code, {})
+
+    const script = this.createScript(wrapped, {})
     return script.runInNewContext(sandbox, options)
   }
 
-  static deleteCache(name: string): void {
-    FunctionModule.cache.delete(name)
-  }
-
-  static deleteAllCache(): void {
+  static deleteCache(): void {
     FunctionModule.cache.clear()
   }
 
-  private static wrap(code: string): string {
+  protected static wrap(code: string): string {
     return `
     const require = (name) => {
-      fromModule.push(__filename)
-      return requireFunc(name, fromModule)
+      __from_modules.push(__filename)
+      return __require(name, __from_modules, __filename)
     }
-    const exports = {};
+
     ${code}
-    exports;
+    module.exports;
     `
+  }
+
+  /**
+   * Create vm.Script
+   */
+  protected static createScript(
+    code: string,
+    options: vm.RunningScriptOptions,
+  ): vm.Script {
+    const _options = {
+      ...options,
+      importModuleDynamically: async (
+        specifier: string,
+        _: vm.Script,
+        _importAssertions: any,
+      ) => {
+        try {
+          const resolvedPath = FunctionModule.customRequire.resolve(specifier)
+          return await import(resolvedPath)
+        } catch (e) {
+          return await import(specifier)
+        }
+      },
+    } as any
+
+    const script = new vm.Script(code, _options)
+    return script
+  }
+
+  /**
+   * Build function module global sandbox
+   */
+  protected static buildSandbox(
+    functionName: string,
+    fromModules: string[],
+    consoleInstance?: Console,
+  ): FunctionModuleGlobalContext {
+    const _module = {
+      exports: {},
+    }
+
+    const fConsole = consoleInstance || new Console(functionName)
+    const __from_modules = fromModules || []
+
+    const sandbox: FunctionModuleGlobalContext = {
+      __filename: functionName,
+      module: _module,
+      exports: _module.exports,
+      console: fConsole,
+      __require: this.require.bind(this),
+      Buffer: Buffer,
+      setImmediate: setImmediate,
+      clearImmediate: clearImmediate,
+      Float32Array: Float32Array,
+      setInterval: setInterval,
+      clearInterval: clearInterval,
+      setTimeout: setTimeout,
+      clearTimeout: clearTimeout,
+      process: process,
+      URL: URL,
+      fetch: globalThis.fetch,
+      global: null,
+      __from_modules: [...__from_modules],
+    }
+    sandbox.global = sandbox
+    return sandbox
   }
 }

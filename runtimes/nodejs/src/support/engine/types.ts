@@ -6,18 +6,17 @@ import WebSocket = require('ws')
 export type RequireFuncType = (
   module: string,
   fromModules: string[],
-  ctx: FunctionContext,
+  filename?: string,
 ) => any
 
 /**
  * vm run context (global)
  */
-export interface RuntimeContext {
-  __context__: FunctionContext
-  module: { exports: Object }
-  exports: Object
+export interface FunctionModuleGlobalContext {
+  module: { exports: object }
+  exports: object
   console: any
-  requireFunc: RequireFuncType
+  __require: RequireFuncType
   Buffer: typeof Buffer
   setTimeout: typeof setTimeout
   clearTimeout: typeof clearTimeout
@@ -25,12 +24,13 @@ export interface RuntimeContext {
   clearInterval: typeof clearInterval
   setImmediate: typeof setImmediate
   clearImmediate: typeof clearImmediate
+  Float32Array: typeof Float32Array
   __filename: string
-  process: {
-    env: { [key: string]: string }
-  }
-  global: RuntimeContext
-  fromModule: string[]
+  URL: typeof URL
+  process: NodeJS.Process
+  global: FunctionModuleGlobalContext
+  __from_modules: string[]
+  fetch: typeof globalThis.fetch
 }
 
 /**
@@ -41,19 +41,13 @@ export interface FunctionContext {
   headers?: IncomingHttpHeaders
   query?: any
   body?: any
-  params?: any
-  /**
-   * @deprecated use user instead
-   */
-  auth?: any
   user?: any
-  requestId: string
+  requestId?: string
   method?: string
   socket?: WebSocket
   request?: Request
   response?: Response
   __function_name?: string
-  __is_required?: boolean
   [key: string]: any
 }
 

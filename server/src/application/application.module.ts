@@ -58,6 +58,7 @@ import { PodController } from './pod.controller'
     ApplicationConfigurationService,
     EnvironmentVariableService,
     BundleService,
+    PodService,
   ],
 })
 export class ApplicationModule {}

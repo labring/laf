@@ -20,9 +20,9 @@ export class PackageInfo {
   rootPath: string
 
   /**
-  * entry file
-  * 为 main / module 指定的入口文件
-  */
+   * entry file
+   * 为 main / module 指定的入口文件
+   */
   entryFile: string
 
   /**
@@ -39,7 +39,7 @@ export class PackageInfo {
     return this.info?.version
   }
 
-  get dependencies(): Object {
+  get dependencies(): object {
     return this.info?.dependencies
   }
 
@@ -63,7 +63,7 @@ export class PackageInfo {
   }
 
   /**
-   * 
+   *
    * @param importPath 引入的包路径，如 `less-api`, `axios/index`
    * @param nodeModulesRoot node_modules 所在目录
    */
@@ -86,7 +86,7 @@ export class PackageInfo {
 
   /**
    * 解析包信息 package.json
-   * @returns 
+   * @returns
    */
   async parsePackageInfo() {
     let pkg_path = this.abs_path(this.importPath)
@@ -135,9 +135,9 @@ export class PackageInfo {
   }
 
   /**
-   * 读取 package.json 
-   * @param dir 
-   * @returns 
+   * 读取 package.json
+   * @param dir
+   * @returns
    */
   async readPackageJson(file_path: string) {
     const found = await this.exists(file_path)
@@ -151,8 +151,8 @@ export class PackageInfo {
 
   /**
    * 转绝对路径，基于 node_modules 路径
-   * @param pathInPackage 
-   * @returns 
+   * @param pathInPackage
+   * @returns
    */
   abs_path(pathInPackage: string) {
     return path.join(this.nodeModulesRoot, pathInPackage)
@@ -160,8 +160,8 @@ export class PackageInfo {
 
   /**
    * 转相对路径，基于 node_modules 路径
-   * @param absPath 
-   * @returns 
+   * @param absPath
+   * @returns
    */
   relative_path(absPath: string) {
     return path.relative(this.nodeModulesRoot, absPath)
@@ -169,7 +169,7 @@ export class PackageInfo {
 
   /**
    * 文件或文件是否存在
-   * @param p 
+   * @param p
    */
   async exists(p: string) {
     try {

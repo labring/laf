@@ -50,7 +50,8 @@ const CreateModal = (props: {
   const navigate = useNavigate();
   const [searchKey, setSearchKey] = useState("");
   const [templateOpen, setTemplateOpen] = useState(false);
-  const { recentFunctionList, setRecentFunctionList } = useFunctionStore();
+  const { recentFunctionList, setRecentFunctionList, setCurrentFunction, currentFunction } =
+    useFunctionStore();
   const { setShowTemplateItem } = useTemplateStore();
 
   const defaultValues = {
@@ -116,6 +117,7 @@ const CreateModal = (props: {
           return item;
         }),
       );
+      setCurrentFunction({ ...currentFunction, name: data.name });
     } else if (isEdit && functionItem.name === data.name) {
       res = await updateFunctionMutation.mutateAsync(data);
     } else {

@@ -28,14 +28,12 @@ import cloud from "@lafjs/cloud";
 | --------------- | ----------------------------------------------------------------------------------- |
 | `cloud.appid` | 当前 Laf 应用的 appid                                                                  |
 | `cloud.database()`    | 当前应用的数据库对象                                                     |
-| `cloud.env`   | 当前应用的环境变量，也可用 `process.env`                                                                 |
 | `cloud.fetch`      | 可在云函数中发起 HTTP 请求，基于`axios`封装                                    |
 | `cloud.getToken`     |  生成 JWT Token                                                               |
 | `cloud.parseToken`      |  解密 JWT Token                                                                |
-| `cloud.invoke`  | 请求其他云函数                                      |
 | `cloud.shared`  |  当前应用的全局缓存                                      |
 | `cloud.mongo`    | 当前应用的原生 MongoDB 实例      |
-| `cloud.sockets`     | 当前应用的socket实例|
+| `cloud.sockets`     | 当前应用的所有 socket 连接|
 
 ## 发送网络请求
 
@@ -91,39 +89,13 @@ export async function main(ctx: FunctionContext) {
 };
 ```
 
-## 调用其他云函数
+## 云函数鉴权
 
-通过`cloud.invoke()` 调用本应用内的其他云函数。
-
-::: info
-该方法已不推荐使用，现可直接[引入云函数](/guide/function/use-function.html#云函数引入))
-:::
+云函数鉴权可以使用 JWT Token，下方是生成和解密 JWT token 的方法
 
 ```typescript
-import cloud from '@lafjs/cloud'
-
-export async function main(ctx: FunctionContext) {
-   // 调用 hello 云函数
-   await cloud.invoke('hello')
-}
-```
-
-如果调用的云函数需要用到 ctx 里面的东西，我们可以通过这样的方式传入。
-
-```typescript
-import cloud from '@lafjs/cloud'
-
-export async function main(ctx: FunctionContext) {
-   // 调用云函数 hello 并传入 ctx
-   await cloud.invoke('hello',ctx)
-}
-```
-
-## 生成和解密 JWT token
-
-```typescript
-cloud.getToken(payload); // payload 可参考下方的示例代码
-cloud.parseToken(token); // token 为前端请求时 header 里的 authorization 中的 token
+cloud.getToken(payload)   // payload 可参考下方的示例代码
+cloud.parseToken(token)   // token 为前端请求时 header 里的 authorization 中的 token
 ```
 
 以下实现简单的生成和解密 JWT token
@@ -140,6 +112,7 @@ export async function main(ctx: FunctionContext)  {
   // 生成 access_token
   const access_token = cloud.getToken(payload);
   console.log("云函数生成的 token：", access_token)
+  
   // ctx.user 会自动解密
   console.log(ctx.user)
   const authHeader = ctx.headers.authorization;

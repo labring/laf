@@ -64,7 +64,7 @@ export default function SysSetting(props: {
               name: t("SettingPanel.OldLogs"),
               component: <LogsPage />,
               icon: <OldLogsIcon />,
-              status: t("Deprecated")
+              status: t("Deprecated"),
             },
           ],
         },

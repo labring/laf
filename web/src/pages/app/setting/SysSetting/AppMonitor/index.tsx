@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Center } from "@chakra-ui/react";
+import { Center, Spinner } from "@chakra-ui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ErrorIcon } from "@/components/CommonIcon";
@@ -21,7 +21,7 @@ export default function AppMonitor() {
   const [dataNumber, setDataNumber] = useState(0);
   const queryClient = useQueryClient();
 
-  const { data: monitorData } = useQuery(
+  const { isLoading, data: monitorData } = useQuery(
     ["useGetMonitorDataQuery"],
     () => {
       return MonitorControllerGetData({
@@ -36,15 +36,20 @@ export default function AppMonitor() {
   );
 
   const podsArray = useMemo(() => {
-    return monitorData?.data?.cpuUsage?.map((item: any) => item.metric.pod).length >
-      monitorData?.data?.memoryUsage?.map((item: any) => item.metric.pod).length
-      ? monitorData?.data?.cpuUsage?.map((item: any) => item.metric.pod)
-      : monitorData?.data?.memoryUsage?.map((item: any) => item.metric.pod);
-  }, [monitorData?.data?.cpuUsage, monitorData?.data?.memoryUsage]);
+    const cpuData = monitorData?.data?.cpuUsage?.map((item: any) => item.metric.pod);
+    const memoryData = monitorData?.data?.memoryUsage?.map((item: any) => item.metric.pod);
+    if (!cpuData) return [t("All")];
+    if (cpuData.length === 1 && memoryData.length === 1) return cpuData;
+    return cpuData.length > memoryData.length ? [t("All"), ...cpuData] : [t("All"), ...memoryData];
+  }, [monitorData, t]);
 
   return (
     <div className="flex w-full">
-      {monitorData?.data && Object.keys(monitorData?.data).length !== 0 ? (
+      {isLoading ? (
+        <Center className="h-[400px] w-full">
+          <Spinner />
+        </Center>
+      ) : monitorData?.data && Object.keys(monitorData?.data).length !== 0 ? (
         <>
           <div className="mr-4 mt-10 h-[413px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
             <AreaCard
@@ -65,6 +70,7 @@ export default function AppMonitor() {
               fillColor="#F2F1FB"
               title={t("Spec.RAM")}
               unit="MB"
+              podsArray={podsArray}
               maxValue={limitMemory}
               dataNumber={dataNumber}
               className="h-1/2 p-4"

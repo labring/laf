@@ -1,29 +1,29 @@
-
-const { Actions, getDb  } = require('../_utils')
+const { Actions, getDb } = require('../_utils')
 const assert = require('assert')
 const { ObjectId } = require('bson')
 
 describe('db-ql(unit): db::aggregate()', () => {
   it('aggregate() with raw pipeline should be ok', async () => {
     const { db, req } = getDb()
-    const res = await db.collection('tasks')
+    const res = await db
+      .collection('tasks')
       .aggregate([
         {
           $match: {
-            name: 'laf'
-          }
+            name: 'laf',
+          },
         },
         {
           $lookup: {
             from: 'users',
             localField: 'uid',
             foreignField: '_id',
-            as: 'user'
-          }
-        }
+            as: 'user',
+          },
+        },
       ])
       .end()
-    
+
     // console.log(res, req.params)
     assert.strictEqual(req.action, Actions.aggregate)
     assert.strictEqual(req.params.collectionName, 'tasks')
@@ -35,11 +35,12 @@ describe('db-ql(unit): db::aggregate()', () => {
 
   it('aggregate() with empty should be rejected', async () => {
     const { db, req } = getDb()
-    await db.collection('tasks')
+    await db
+      .collection('tasks')
       .aggregate([])
       .end()
-      .catch(err => {
-        assert.equal(err.toString(),'Error: Aggregation stage cannot be empty' )
-       })
+      .catch((err) => {
+        assert.equal(err.toString(), 'Error: Aggregation stage cannot be empty')
+      })
   })
 })

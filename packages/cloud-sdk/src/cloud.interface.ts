@@ -3,15 +3,16 @@ import * as mongodb from 'mongodb'
 import { Db } from 'database-proxy'
 import { WebSocket } from 'ws'
 import { FunctionContext } from './function.interface'
+import { CloudStorage } from './storage'
 
 export type InvokeFunctionType = (
   name: string,
-  param?: FunctionContext,
+  param?: FunctionContext
 ) => Promise<any>
 export type GetTokenFunctionType = (payload: any, secret?: string) => string
 export type ParseTokenFunctionType = (
   token: string,
-  secret?: string,
+  secret?: string
 ) => any | null
 
 export interface MongoDriverObject {
@@ -22,12 +23,14 @@ export interface MongoDriverObject {
 export interface CloudSdkInterface {
   /**
    * Sending an HTTP request is actually an Axios instance. You can refer to the Axios documentation directly.
+   * @deprecated this is deprecated and will be removed in future, use the global `fetch()` directly @see https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
    * @see https://axios-http.com/docs/intro
    */
   fetch?: AxiosStatic
 
   /**
    * Get a database-ql instance
+   * @deprecated use `mongo.db` instead
    */
   database(): Db
 
@@ -42,6 +45,7 @@ export interface CloudSdkInterface {
    * 1. Some global configurations can be initialized into `shared`, such as 3rd-party API configuration
    * 2. You can share some common methods, such as checkPermission(), to improve the performance of cloud functions
    * 3. It can cache hot data and is recommended to use it in a small amount (this object is allocated in the node VM heap because of the memory limit of the node VM heap)
+   * @deprecated this is deprecated and will be removed in future
    */
   shared: Map<string, any>
 
@@ -57,10 +61,9 @@ export interface CloudSdkInterface {
 
   /**
    * The mongodb instance of MongoDB node.js native driver.
+   * @see https://www.mongodb.com/docs/drivers/node/current/quick-reference/
    *
-   * Because the laf.js database-QL has only partial data manipulation capability,
-   * expose this `mongo` object to the cloud function, so that the cloud function has full database manipulation capability:
-   * 1. Transaction operations
+   * #### Transaction operations
    * ```js
    *  const session = mongo.client.startSession()
    *  try {
@@ -72,11 +75,11 @@ export interface CloudSdkInterface {
    *       await session.endSession()
    *  }
    * ```
-   * 2. Indexes operations
+   * #### Indexes operations
    * ```js
    *    await mongo.db.collection('users').createIndex('username', { unique: true })
    * ```
-   * 3. Aggregation operations
+   * #### Aggregation operations
    * ```js
    *    await mongo.db.collection('users')
    *      .aggregate([])
@@ -95,5 +98,13 @@ export interface CloudSdkInterface {
    */
   appid: string
 
+  /**
+   * @deprecated this is deprecated and will be removed in future, use `process.env` instead
+   */
   env: any
+
+  /**
+   * Cloud storage instance
+   */
+  storage: CloudStorage
 }

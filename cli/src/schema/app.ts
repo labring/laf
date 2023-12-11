@@ -38,7 +38,7 @@ export class AppSchema {
   static async refresh() {
     const appSchema = this.read()
     const app = await applicationControllerFindOne(appSchema.appid)
-    let timestamp = Date.parse(new Date().toString()) / 1000
+    const timestamp = Date.parse(new Date().toString()) / 1000
 
     appSchema.function = {
       developToken: app.develop_token,

@@ -12,7 +12,7 @@ import { parseToken, splitBearerToken } from './support/token'
 import Config from './config'
 import { router } from './handler/router'
 import { logger } from './support/logger'
-import { generateUUID } from './support/utils'
+import { GetClientIPFromRequest, generateUUID } from './support/utils'
 import { WebSocketAgent } from './support/ws'
 import { DatabaseAgent } from './db'
 import xmlparser from 'express-xml-bodyparser'
@@ -21,6 +21,10 @@ import xmlparser from 'express-xml-bodyparser'
 import './support/cloud-sdk'
 import storageServer from './storage-server'
 import { DatabaseChangeStream } from './support/database-change-stream'
+import { createCloudSdk } from './support/cloud-sdk'
+
+// hack: set createCloudSdk to global object to make it available in @lafjs/cloud package
+globalThis.createCloudSdk = createCloudSdk
 
 const app = express()
 
@@ -28,13 +32,23 @@ DatabaseAgent.accessor.ready.then(() => {
   DatabaseChangeStream.initialize()
 })
 
-app.use(cors({
-  origin: true,
-  methods: '*',
-  exposedHeaders: '*',
-  credentials: true,
-  maxAge: 86400,
-}))
+app.use(
+  cors({
+    origin: true,
+    methods: '*',
+    exposedHeaders: '*',
+    credentials: true,
+    maxAge: 86400,
+  }),
+)
+
+// fix x-real-ip while gateway not set
+app.use((req, _res, next) => {
+  if (!req.headers['x-real-ip']) {
+    req.headers['x-real-ip'] = GetClientIPFromRequest(req)
+  }
+  next()
+})
 
 app.use(express.json({ limit: Config.REQUEST_LIMIT_SIZE }) as any)
 app.use(

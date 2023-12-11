@@ -16,13 +16,13 @@ describe('db-proxy(unit): class Proxy', () => {
 
     const reqParams = {
       collectionName: 'test-name',
-      query: { _id: 'test-id'},
+      query: { _id: 'test-id' },
       other: 'test',
-      action: 'database.queryDocument'
+      action: 'database.queryDocument',
     }
 
-    let r = entry.parseParams(reqParams)
-    
+    const r = entry.parseParams(reqParams)
+
     assert.equal(r.action, 'database.queryDocument')
     assert.equal(r.collection, 'test-name')
     assert.ok(r.query)
@@ -34,7 +34,7 @@ describe('db-proxy(unit): class Proxy', () => {
     const entry = new Proxy(accessor)
 
     try {
-      entry.parseParams({ action: 'database.unknowAction'})
+      entry.parseParams({ action: 'database.unknowAction' })
       throw new Error('should get an error but not')
     } catch (error) {
       assert.ok(error)

@@ -8,7 +8,7 @@ import { formatDate } from "@/utils/format";
 import { useFunctionHistoryQuery } from "../../service";
 import useFunctionStore from "../../store";
 
-import FetchButton from "./FetchButton";
+import FetchModal from "./FetchModal";
 
 export default function VersionHistoryPanel() {
   const { currentFunction } = useFunctionStore((state) => state);
@@ -29,7 +29,7 @@ export default function VersionHistoryPanel() {
       ) : history.data?.data.length !== 0 ? (
         history.data?.data.map((item: any, index: number) => {
           return (
-            <FetchButton key={index} functionCode={item.source.code}>
+            <FetchModal key={index} functionCode={item.source.code}>
               <div
                 className={clsx(
                   "text-12px mx-3 flex h-10 cursor-pointer items-center justify-between rounded",
@@ -65,7 +65,7 @@ export default function VersionHistoryPanel() {
                   #{history.data?.data.length - index}
                 </span>
               </div>
-            </FetchButton>
+            </FetchModal>
           );
         })
       ) : (
