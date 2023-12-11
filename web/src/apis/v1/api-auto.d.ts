@@ -116,6 +116,16 @@ declare namespace Definitions {
     value?: string;
   };
 
+  export type PodNameListDto = {
+    appid?: string;
+    podNameList?: string[] /* List of pod identifiers */;
+  };
+
+  export type ContainerNameListDto = {
+    podName?: string;
+    containerNameList?: string[] /* List of container identifiers */;
+  };
+
   export type CreateBucketDto = {
     shortName?: string /* The short name of the bucket which not contain the appid */;
     policy?: string;
@@ -733,7 +743,15 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace PodControllerGet {
+  namespace PodControllerGetPodNameList {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace PodControllerGetContainerNameList {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

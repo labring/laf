@@ -6,14 +6,18 @@ const { dbconfig } = require('./_db')
 const TEST_DATA = [
   { title: 'title-1', content: 'content-1' },
   { title: 'title-2', content: 'content-2' },
-  { title: 'title-3', content: 'content-3' }
+  { title: 'title-3', content: 'content-3' },
 ]
 
 describe('db-proxy(mongo): db.get()', function () {
   this.timeout(10000)
 
-  const accessor = new MongoAccessor(dbconfig.dbName, dbconfig.url, dbconfig.connSettings)
-  let entry = new Proxy(accessor, new Policy)
+  const accessor = new MongoAccessor(
+    dbconfig.dbName,
+    dbconfig.url,
+    dbconfig.connSettings
+  )
+  const entry = new Proxy(accessor, new Policy())
   let coll = null
 
   before(async () => {
@@ -27,9 +31,9 @@ describe('db-proxy(mongo): db.get()', function () {
   })
 
   it('read all without query should be ok', async () => {
-    let params = {
+    const params = {
       collection: 'test_read',
-      action: ActionType.READ
+      action: ActionType.READ,
     }
     const data = await entry.execute(params)
     assert.ok(data.list instanceof Array)
@@ -37,10 +41,10 @@ describe('db-proxy(mongo): db.get()', function () {
   })
 
   it('read with query should be ok', async () => {
-    let params = {
+    const params = {
       collection: 'test_read',
       action: ActionType.READ,
-      query: { title: TEST_DATA[0].title }
+      query: { title: TEST_DATA[0].title },
     }
     const data = await entry.execute(params)
     assert.ok(data.list instanceof Array)
@@ -49,11 +53,11 @@ describe('db-proxy(mongo): db.get()', function () {
   })
 
   it('read with order(desc) should be ok', async () => {
-    let params = {
+    const params = {
       collection: 'test_read',
       action: ActionType.READ,
       query: {},
-      order: [{ field: 'title', direction: 'desc' }]
+      order: [{ field: 'title', direction: 'desc' }],
     }
     const data = await entry.execute(params)
     assert.ok(data.list instanceof Array)
@@ -63,11 +67,11 @@ describe('db-proxy(mongo): db.get()', function () {
   })
 
   it('read with order(asc) should be ok', async () => {
-    let params = {
+    const params = {
       collection: 'test_read',
       action: ActionType.READ,
       query: {},
-      order: [{ field: 'title', direction: 'asc' }]
+      order: [{ field: 'title', direction: 'asc' }],
     }
     const data = await entry.execute(params)
     assert.ok(data.list instanceof Array)
@@ -76,11 +80,11 @@ describe('db-proxy(mongo): db.get()', function () {
   })
 
   it('read with offset should be ok', async () => {
-    let params = {
+    const params = {
       collection: 'test_read',
       action: ActionType.READ,
       query: {},
-      offset: 1
+      offset: 1,
     }
     const data = await entry.execute(params)
     assert.ok(data.list instanceof Array)
@@ -89,11 +93,11 @@ describe('db-proxy(mongo): db.get()', function () {
   })
 
   it('read with exceed offset should be ok', async () => {
-    let params = {
+    const params = {
       collection: 'test_read',
       action: ActionType.READ,
       query: {},
-      offset: 99999
+      offset: 99999,
     }
     const data = await entry.execute(params)
     assert.ok(data.list instanceof Array)
@@ -101,12 +105,12 @@ describe('db-proxy(mongo): db.get()', function () {
   })
 
   it('read with limit = 0 should be ok', async () => {
-    let params = {
+    const params = {
       collection: 'test_read',
       action: ActionType.READ,
       query: {},
       order: [{ field: 'title', direction: 'asc' }],
-      limit: 0
+      limit: 0,
     }
     const data = await entry.execute(params)
     assert.ok(data.list instanceof Array)
@@ -115,11 +119,11 @@ describe('db-proxy(mongo): db.get()', function () {
   })
 
   it('read with limit should be ok', async () => {
-    let params = {
+    const params = {
       collection: 'test_read',
       action: ActionType.READ,
       query: {},
-      limit: 1
+      limit: 1,
     }
     const data = await entry.execute(params)
     assert.ok(data.list instanceof Array)
@@ -128,11 +132,11 @@ describe('db-proxy(mongo): db.get()', function () {
   })
 
   it('read with count should be ok', async () => {
-    let params = {
+    const params = {
       collection: 'test_read',
       action: ActionType.READ,
       query: {},
-      count: true
+      count: true,
     }
     const data = await entry.execute(params)
     assert.ok(data.list instanceof Array)
@@ -141,11 +145,11 @@ describe('db-proxy(mongo): db.get()', function () {
   })
 
   it('read with projection should be ok', async () => {
-    let params = {
+    const params = {
       collection: 'test_read',
       action: ActionType.READ,
       query: {},
-      projection: { title: 1 }
+      projection: { title: 1 },
     }
     const data = await entry.execute(params)
     assert.ok(data.list instanceof Array)
@@ -156,7 +160,6 @@ describe('db-proxy(mongo): db.get()', function () {
   })
 
   after(async () => {
-
     await coll.deleteMany({})
     if (entry) accessor.conn.close()
   })

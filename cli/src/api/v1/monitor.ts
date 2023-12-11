@@ -1,5 +1,5 @@
-import { request, RequestParams } from "../../util/request";
-import { MonitorControllerGetDataParams } from "./data-contracts";
+import { request, RequestParams } from '../../util/request'
+import { MonitorControllerGetDataParams } from './data-contracts'
 
 /**
  * No description
@@ -16,8 +16,8 @@ export async function monitorControllerGetData(
 ): Promise<any> {
   return request({
     url: `/v1/monitor/${appid}/metrics`,
-    method: "GET",
+    method: 'GET',
     params: query,
     ...configParams,
-  });
+  })
 }

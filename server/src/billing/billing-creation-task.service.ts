@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
-import { Application } from 'src/application/entities/application'
+import {
+  Application,
+  ApplicationState,
+} from 'src/application/entities/application'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
 import {
@@ -15,7 +18,8 @@ import { BundleService } from 'src/application/bundle.service'
 @Injectable()
 export class BillingCreationTaskService {
   private readonly logger = new Logger(BillingCreationTaskService.name)
-  private readonly lockTimeout = 60 * 60 // in second
+  private readonly lockTimeout = 15 // in second
+  private readonly billingInterval = 60 * 60 // in second
   private lastTick = TASK_LOCK_INIT_TIME
 
   constructor(
@@ -23,9 +27,6 @@ export class BillingCreationTaskService {
     private readonly bundleService: BundleService,
   ) {}
 
-  /**
-   * Cron job method that runs every 10 minute
-   */
   @Cron(CronExpression.EVERY_MINUTE)
   async tick() {
     // If billing creation task is disabled, return
@@ -58,8 +59,12 @@ export class BillingCreationTaskService {
           billingLockedAt: {
             $lt: new Date(Date.now() - 1000 * this.lockTimeout),
           },
+          latestBillingTime: {
+            $lt: new Date(Date.now() - 1000 * this.billingInterval),
+          },
+          state: ApplicationState.Running,
         },
-        { $set: { billingLockedAt: this.getHourTime() } },
+        { $set: { billingLockedAt: new Date() } },
       )
 
     if (!res.value) {
@@ -78,17 +83,29 @@ export class BillingCreationTaskService {
       }
 
       // unlock billing if billing time is not the latest
-      if (Date.now() - billingTime.getTime() > 1000 * this.lockTimeout) {
+      if (Date.now() - billingTime.getTime() > 1000 * this.billingInterval) {
         this.logger.warn(
           `Unlocking billing for application: ${app.appid} since billing time is not the latest`,
         )
 
-        await db
-          .collection<Application>('Application')
-          .updateOne(
-            { appid: app.appid },
-            { $set: { billingLockedAt: TASK_LOCK_INIT_TIME } },
-          )
+        await db.collection<Application>('Application').updateOne(
+          { appid: app.appid },
+          {
+            $set: {
+              billingLockedAt: TASK_LOCK_INIT_TIME,
+              latestBillingTime: billingTime,
+            },
+          },
+        )
+      } else {
+        await db.collection<Application>('Application').updateOne(
+          { appid: app.appid },
+          {
+            $set: {
+              latestBillingTime: billingTime,
+            },
+          },
+        )
       }
     } catch (err) {
       this.logger.error(
@@ -101,16 +118,19 @@ export class BillingCreationTaskService {
     }
   }
 
-  private async createApplicationBilling(app: Application) {
+  private async createApplicationBilling(app: Application): Promise<Date> {
     this.logger.debug(`Start creating billing for application: ${app.appid}`)
 
     const appid = app.appid
     const db = SystemDatabase.db
 
     // determine latest billing time & next metering time
-    const latestBillingTime = await this.getLatestBillingTime(appid)
+    const latestBillingTime =
+      app.latestBillingTime > TASK_LOCK_INIT_TIME
+        ? app.latestBillingTime
+        : await this.getLatestBillingTime(appid)
     const nextMeteringTime = new Date(
-      latestBillingTime.getTime() + 1000 * 60 * 60,
+      latestBillingTime.getTime() + 1000 * this.billingInterval,
     )
 
     if (nextMeteringTime > new Date()) {
@@ -124,7 +144,7 @@ export class BillingCreationTaskService {
     )
     if (!meteringData) {
       this.logger.warn(`No metering data found for application: ${appid}`)
-      return
+      return nextMeteringTime
     }
 
     // get application bundle
@@ -145,7 +165,9 @@ export class BillingCreationTaskService {
     }
 
     // create billing
-    const startAt = new Date(nextMeteringTime.getTime() - 1000 * 60 * 60)
+    const startAt = new Date(
+      nextMeteringTime.getTime() - 1000 * this.billingInterval,
+    )
     const inserted = await db
       .collection<ApplicationBilling>('ApplicationBilling')
       .insertOne({

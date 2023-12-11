@@ -8,6 +8,10 @@ title: laf-client-sdk
 
 laf 为前端提供了 `laf-client-sdk` 适用于前端 js 运行环境。
 
+:::warning
+优先推荐使用 HTTP 的方式请求云函数
+:::
+
 ## 安装
 
 ```bash

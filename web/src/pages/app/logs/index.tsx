@@ -21,7 +21,6 @@ import {
 import { useQuery } from "@tanstack/react-query";
 
 import { RefreshIcon } from "@/components/CommonIcon";
-import Content from "@/components/Content";
 import CopyText from "@/components/CopyText";
 import JSONViewer from "@/components/Editor/JSONViewer";
 import EmptyBox from "@/components/EmptyBox";
@@ -29,8 +28,6 @@ import Pagination from "@/components/Pagination";
 import Panel from "@/components/Panel";
 import { formatDate } from "@/utils/format";
 import getPageInfo from "@/utils/getPageInfo";
-
-import StatusBar from "../mods/StatusBar";
 
 import { queryKeys } from "./service";
 
@@ -85,7 +82,7 @@ export default function LogsPage() {
   };
 
   return (
-    <Content>
+    <div className="h-[80vh]">
       <Panel className="h-[98%]">
         <form
           onSubmit={(event) => {
@@ -95,7 +92,7 @@ export default function LogsPage() {
         >
           <Panel.Header className="my-2">
             <HStack spacing={2}>
-              <InputGroup width={300}>
+              <InputGroup width={200}>
                 <Input
                   borderRadius="4"
                   size="sm"
@@ -105,7 +102,7 @@ export default function LogsPage() {
               </InputGroup>
 
               <Input
-                width={200}
+                width={120}
                 size="sm"
                 placeholder={t("FunctionPanel.FunctionName").toString()}
                 {...register("functionName")}
@@ -220,7 +217,6 @@ export default function LogsPage() {
           </ModalContent>
         </Modal>
       </Panel>
-      <StatusBar />
-    </Content>
+    </div>
   );
 }

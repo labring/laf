@@ -35,14 +35,6 @@ interface FunctionContext {
   
   /**
    * This object is parsed from JWT Token Payload
-   * @deprecated use user instead 
-   */
-  auth?: {
-    uid?: string
-  }
-
-  /**
-   * This object is parsed from JWT Token Payload
    */
   user?: {
     [key: string]: any

@@ -71,6 +71,13 @@ export class ServerConfig {
     return parseInt(process.env.APPID_LENGTH || '6')
   }
 
+  static get RUNTIME_CUSTOM_DEPENDENCY_BASE_PATH() {
+    return (
+      process.env.RUNTIME_CUSTOM_DEPENDENCY_BASE_PATH ||
+      '/tmp/custom_dependency'
+    )
+  }
+
   static get DEFAULT_RUNTIME_IMAGE() {
     const image =
       process.env.DEFAULT_RUNTIME_IMAGE ||

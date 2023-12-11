@@ -10,6 +10,10 @@
 - app storage management
 - app log management
 - app instance management
+- app billing management
+- app domain management
+- app certificate management
+- app metrics management
 
 # Development
 
@@ -21,37 +25,32 @@
 - [Telepresence](https://www.telepresence.io) for local development
 - [MongoDb](https://docs.mongodb.com) basic use
 - [MinIO](https://min.io) object storage
-- [APISIX](https://apisix.apache.org) gateway
-- [nestjs-i18n](https://nestjs-i18n.com/) i18n
 
 ## Prerequisites
 
 - laf cluster installed locally or remotely (~/.kube/config)
-- telepresence installed (see https://www.telepresence.io/reference/install)
-- minio client installed (see https://min.io/download#)
+- telepresence installed (see <https://www.telepresence.io/reference/install>)
+- minio client installed (see <https://min.io/download#>)
 
 ## Start service locally
 
 ```bash
 cd server/
 
-# Install telepresence traffic manager (only 
+# telepresence version v2.16.1
+# Install telepresence traffic manager 
 telepresence helm install
-# Connect your computer to laf-dev cluster
-telepresence connect
-# Connect local server  to laf server cluster
-telepresence intercept laf-server -n laf-system -p 3000:3000 -e $(pwd)/.env
+# Connect your computer to laf-dev cluster (namespace laf-system)
+telepresence connect -n laf-system
+# Connect local server to laf server cluster (namespace laf-system)
+telepresence intercept laf-server  -p 3000:3000 -e $(pwd)/.env
 
 npm install
-npm run watch
+npm run dev
 ```
 
 > Clean up
 
 ```bash
-telepresence leave laf-server-laf-system
+telepresence leave laf-server
 ```
-
-## Troubleshooting
-
-- `telepresence helm install` failed for `arm64 / Apple Chip` cluster, please upgrade your telepresence to `v2.11.1` or later.

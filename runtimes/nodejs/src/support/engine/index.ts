@@ -1,6 +1,6 @@
 export * from './cache'
 
-export * from './function'
+export * from './executor'
 
 export * from './types'
 

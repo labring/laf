@@ -6,4 +6,4 @@ export * from './cloud'
 
 const cloud = new Cloud()
 
-export default cloud 
+export default cloud

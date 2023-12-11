@@ -5,7 +5,6 @@ import {
   DeleteBucketPolicyCommand,
   HeadBucketCommand,
   PutBucketPolicyCommand,
-  PutBucketVersioningCommand,
   S3,
 } from '@aws-sdk/client-s3'
 import * as assert from 'node:assert'
@@ -170,7 +169,7 @@ export class MinioService {
     const cmd = new CreateBucketCommand({
       Bucket: bucket,
       CreateBucketConfiguration: {
-        LocationConstraint: region.name,
+        LocationConstraint: region.name as any,
       },
     })
     const res = await s3.send(cmd)

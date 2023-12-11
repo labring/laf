@@ -19,6 +19,11 @@ export type RegionClusterConf = {
   runtimeAffinity: any
 }
 
+export type RegionResourceBundleConf = {
+  cpuRequestLimitRatio: number
+  memoryRequestLimitRatio: number
+}
+
 export type RegionDatabaseConf = {
   driver: string
   connectionUri: string
@@ -74,6 +79,7 @@ export class Region {
 
   namespaceConf: RegionNamespaceConf
   clusterConf: RegionClusterConf
+  bundleConf: RegionResourceBundleConf
   databaseConf: RegionDatabaseConf
   gatewayConf: RegionGatewayConf
   storageConf: RegionStorageConf

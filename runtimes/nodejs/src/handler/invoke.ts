@@ -3,18 +3,22 @@ import { IRequest } from '../support/types'
 import { DEFAULT_FUNCTION_NAME, INTERCEPTOR_FUNCTION_NAME } from '../constants'
 import { parseToken } from '../support/token'
 import {
-  CloudFunction,
+  FunctionExecutor,
   Console,
   DebugConsole,
   FunctionCache,
   FunctionContext,
   ICloudFunctionData,
+  FunctionDebugExecutor,
 } from '../support/engine'
 import pako from 'pako'
 import { base64ToUint8Array, uint8ArrayToBase64 } from '../support/utils'
 
 export async function handleInvokeFunction(req: IRequest, res: Response) {
+  const name = req.params?.name
+
   const ctx: FunctionContext = {
+    __function_name: name,
     requestId: req.requestId,
     query: req.query,
     files: req.files as any,
@@ -53,26 +57,25 @@ async function invokeFunction(
     isTrigger = true
   }
 
-  let func = FunctionCache.getEngine(ctx.request.params?.name)
+  const name = ctx.__function_name
+
+  let func = FunctionCache.get(name)
   if (!func) {
-    func = FunctionCache.getEngine(DEFAULT_FUNCTION_NAME)
+    func = FunctionCache.get(DEFAULT_FUNCTION_NAME)
     if (!func) {
       return ctx.response.status(404).send('Function Not Found')
     }
   }
   // reject while no HTTP enabled
-  if (
-    !func.data.methods.includes(ctx.request.method.toUpperCase()) &&
-    !isTrigger
-  ) {
+  if (!func.methods.includes(ctx.request.method.toUpperCase()) && !isTrigger) {
     return ctx.response.status(405).send('Method Not Allowed')
   }
 
-  const logger = new Console(func.data.name)
+  const logger = new Console(func.name)
   try {
     // execute the func
-    ctx.__function_name = func.data.name
-    const result = await func.execute(ctx, useInterceptor)
+    const executor = new FunctionExecutor(func)
+    const result = await executor.invoke(ctx, useInterceptor)
 
     if (result.error) {
       logger.error(result.error)
@@ -84,9 +87,8 @@ async function invokeFunction(
 
     // reject request if interceptor return false
     if (
-      typeof result.data === 'object' &&
-      result.data.__type__ === '__interceptor__' &&
-      result.data.__res__ == false
+      result.data?.__type__ === '__interceptor__' &&
+      result.data?.__res__ == false
     ) {
       return ctx.response.status(403).send({ error: 'Forbidden', requestId })
     }
@@ -159,32 +161,37 @@ async function invokeDebug(
       requestId,
     })
   }
-
-  const func = new CloudFunction(funcData)
   const debugConsole = new DebugConsole(funcName)
+  const executor = new FunctionDebugExecutor(funcData, debugConsole)
 
   try {
     // execute the func
     ctx.__function_name = funcName
-    const result = await func.execute(ctx, useInterceptor, debugConsole)
+    const result = await executor.invoke(ctx, useInterceptor)
 
     // set logs to response header
     if (result.error) {
       debugConsole.error(result.error)
     }
 
-    const logs = debugConsole.getLogs()
-    if (ctx.request.get('x-laf-debug-data')) {
-      const compressed = pako.gzip(logs)
-      const base64Encoded = uint8ArrayToBase64(compressed)
-      ctx.response.set('x-laf-debug-logs', base64Encoded)
-    } else if (ctx.request.get('x-laf-func-data')) {
-      // keep compatible for old version clients(laf web & laf cli)
-      const encoded = encodeURIComponent(logs)
-      ctx.response.set('x-laf-func-logs', encoded)
+    // In the http module of Node.js, the chunkedEncoding property is used to
+    // indicate whether to use chunked transfer encoding.
+    // If set to true, Node.js automatically handles the splitting and sending of data chunks.
+    // If set to false, the headers have been sent, so do not send logs headers after that, otherwise an error will be reported.
+    if (ctx.response.chunkedEncoding === false) {
+      const logs = debugConsole.getLogs()
+      if (ctx.request.get('x-laf-debug-data')) {
+        const compressed = pako.gzip(logs)
+        const base64Encoded = uint8ArrayToBase64(compressed)
+        ctx.response.set('x-laf-debug-logs', base64Encoded)
+      } else if (ctx.request.get('x-laf-func-data')) {
+        // keep compatible for old version clients(laf web & laf cli)
+        const encoded = encodeURIComponent(logs)
+        ctx.response.set('x-laf-func-logs', encoded)
+      }
+
+      ctx.response.set('x-laf-debug-time-usage', result.time_usage.toString())
     }
-    
-    ctx.response.set('x-laf-debug-time-usage', result.time_usage.toString())
 
     if (result.error) {
       return ctx.response.status(500).send({
@@ -195,14 +202,13 @@ async function invokeDebug(
 
     // reject request if interceptor return false
     if (
-      typeof result.data === 'object' &&
-      result.data.__type__ === '__interceptor__' &&
-      result.data.__res__ == false
+      result.data?.__type__ === '__interceptor__' &&
+      result.data?.__res__ === false
     ) {
       return ctx.response.status(403).send({ error: 'Forbidden', requestId })
     }
 
-    if (ctx.response.writableEnded === false) {
+    if (ctx.response.chunkedEncoding === false) {
       let data = result.data
       if (typeof result.data === 'number') {
         data = Number(result.data).toString()

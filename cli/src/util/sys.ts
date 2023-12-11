@@ -1,4 +1,4 @@
-import { ProjectSchema } from "../schema/project"
+import { ProjectSchema } from '../schema/project'
 
 export function getAppPath(): string {
   return process.cwd()

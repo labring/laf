@@ -1,5 +1,5 @@
-import { request, RequestParams } from "../../util/request";
-import { CreateBucketDto, UpdateBucketDto } from "./data-contracts";
+import { request, RequestParams } from '../../util/request'
+import { CreateBucketDto, UpdateBucketDto } from './data-contracts'
 
 /**
  * No description
@@ -17,10 +17,10 @@ export async function bucketControllerCreate(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/buckets`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -34,9 +34,9 @@ export async function bucketControllerCreate(
 export async function bucketControllerFindAll(appid: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/buckets`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -54,9 +54,9 @@ export async function bucketControllerFindOne(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/buckets/${name}`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -75,10 +75,10 @@ export async function bucketControllerUpdate(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/buckets/${name}`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -96,7 +96,7 @@ export async function bucketControllerRemove(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/buckets/${name}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }

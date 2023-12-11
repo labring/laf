@@ -60,7 +60,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    namespace: {{ .Release.Namespace }}
+    {{- include "runtime-exporter.labels" . | nindent 4 }}
     release: prometheus
   name: runtime-exporter
 spec:
@@ -68,9 +68,27 @@ spec:
     - interval: 60s
       path: "/runtime/metrics/{{ .Values.default_region.runtime_exporter_secret}}"
       scrapeTimeout: 10s
+      honorLabels: true
   namespaceSelector:
     matchNames:
       - {{ .Release.Namespace }}
   selector:
     matchLabels:
       {{- include "runtime-exporter.labels" . | nindent 6 }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    {{- include "runtime-exporter.labels" . | nindent 4 }}
+    release: prometheus
+  name: prometheus-laf-billing.rules
+spec:
+  groups:
+    - name: prometheus-laf-billing.rules
+      interval: 60s
+      rules:
+        - record: laf:billing:cpu
+          expr: max_over_time(sum by (appid) (laf_runtime_cpu_limit{container!=""})[1h:])
+        - record: laf:billing:memory
+          expr: max_over_time(sum by (appid) (laf_runtime_memory_limit{container!=""})[1h:])

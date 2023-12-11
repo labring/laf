@@ -1,17 +1,15 @@
 {
   "name": "web",
   "private": true,
-  "version": "1.0.0-beta.12",
+  "version": "1.0.0-beta.13",
   "scripts": {
     "dev": "vite",
     "build": "tsc && node --max_old_space_size=32768 ./node_modules/vite/bin/vite.js build",
     "tsc": "tsc",
     "preview": "vite preview",
     "lint": "eslint src --fix",
-    "prettier": "prettier --write ./src",
     "intercept": "telepresence intercept laf-web -n laf-system -p 3001:80",
-    "leave": "telepresence leave laf-web-laf-system",
-    "lint-staged": "lint-staged"
+    "leave": "telepresence leave laf-web-laf-system"
   },
   "dependencies": {
     "@chakra-ui/anatomy": "^2.1.1",
@@ -25,10 +23,11 @@
     "@tanstack/react-query": "^4.29.7",
     "ansi_up": "^6.0.2",
     "axios": "^1.4.0",
+    "bson": "^4.6.3",
     "clsx": "^1.2.1",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
-    "ejson-shell-parser": "^1.2.4",
+    "ejson-shell-parser": "^2.0.0",
     "focus-visible": "^5.2.0",
     "framer-motion": "^10.12.16",
     "i18next": "^22.5.0",
@@ -71,14 +70,9 @@
     "@vitejs/plugin-react-swc": "^3.3.1",
     "autoprefixer": "^10.4.14",
     "click-to-react-component": "^1.0.8",
-    "eslint": "^8.41.0",
-    "eslint-config-react-app": "^7.0.1",
-    "eslint-plugin-simple-import-sort": "^10.0.0",
-    "install": "^0.13.0",
-    "lint-staged": "^13.2.2",
     "postcss": "^8.4.23",
-    "prettier": "^2.8.8",
-    "prettier-plugin-tailwindcss": "^0.3.0",
+    "stylelint": "^15.11.0",
+    "stylelint-config-standard": "^34.0.0",
     "tailwindcss": "^3.3.2",
     "typescript": "5.0.4",
     "vite": "^4.3.8",
@@ -86,9 +80,8 @@
     "vite-plugin-rewrite-all": "^1.0.1"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "*.{ts,tsx,js}": "eslint --fix",
+    "*.css": "stylelint --fix",
+    "*.scss": "stylelint --syntax=scss --fix"
   }
 }

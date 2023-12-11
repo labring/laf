@@ -1,8 +1,6 @@
 import { IncomingMessage } from 'http'
 import { WebSocket, WebSocketServer } from 'ws'
-import {
-   WEBSOCKET_FUNCTION_NAME,
-} from '../constants'
+import { WEBSOCKET_FUNCTION_NAME } from '../constants'
 import { logger } from './logger'
 import { generateUUID } from './utils'
 import { FunctionModule } from './engine/module'
@@ -68,7 +66,6 @@ async function handleWebSocketEvent(
   socket: WebSocket,
   request?: IncomingMessage,
 ) {
-
   const param: any = {
     params: data,
     method: event,
@@ -80,7 +77,7 @@ async function handleWebSocketEvent(
 
   const module = FunctionModule.get(WEBSOCKET_FUNCTION_NAME)
   const handler = module.default || module.main || module
-  if(typeof handler === 'function') {
+  if (typeof handler === 'function') {
     await handler(param)
   } else {
     logger.error(`default function not found in ${WEBSOCKET_FUNCTION_NAME}`)

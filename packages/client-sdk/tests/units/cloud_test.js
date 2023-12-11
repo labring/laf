@@ -1,16 +1,15 @@
 const assert = require('assert')
 const client = require('../../dist/commonjs/index')
-const { Request } = require('../../dist/commonjs/request')
 const Db = client.Db
 
-function getAccessToken(){
+function getAccessToken() {
   return 'test-token-xxx'
 }
 
 describe('client-sdk(unit): Cloud', function () {
   const config = {
     dbProxyUrl: 'http://localhost:8080/entry',
-    getAccessToken
+    getAccessToken,
   }
 
   it('init() should be ok', () => {

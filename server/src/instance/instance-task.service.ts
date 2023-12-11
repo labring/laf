@@ -194,6 +194,7 @@ export class InstanceTaskService {
           state: toState,
           phase: ApplicationPhase.Started,
           lockedAt: TASK_LOCK_INIT_TIME,
+          latestBillingTime: this.getHourTime(),
           updatedAt: new Date(),
         },
       },
@@ -374,5 +375,14 @@ export class InstanceTaskService {
     await db
       .collection<Application>('Application')
       .updateOne({ appid: appid }, { $set: { lockedAt } })
+  }
+
+  private getHourTime() {
+    const latestTime = new Date()
+    latestTime.setMinutes(0)
+    latestTime.setSeconds(0)
+    latestTime.setMilliseconds(0)
+    latestTime.setHours(latestTime.getHours())
+    return latestTime
   }
 }

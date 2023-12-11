@@ -1,5 +1,4 @@
 import { ICloudFunctionData } from './types'
-import { CloudFunction } from './function'
 import { logger } from '../logger'
 import { DatabaseAgent } from '../../db'
 import { CLOUD_FUNCTION_COLLECTION } from '../../constants'
@@ -37,7 +36,9 @@ export class FunctionCache {
    * @param change
    * @returns
    */
-  private static async streamChange(change: ChangeStreamDocument<ICloudFunctionData>): Promise<void> {
+  private static async streamChange(
+    change: ChangeStreamDocument<ICloudFunctionData>,
+  ): Promise<void> {
     if (change.operationType === 'insert') {
       const func = await DatabaseAgent.db
         .collection<ICloudFunctionData>(CLOUD_FUNCTION_COLLECTION)
@@ -46,7 +47,7 @@ export class FunctionCache {
       // add func in map
       FunctionCache.cache.set(func.name, func)
     } else if (change.operationType == 'delete') {
-      FunctionModule.deleteAllCache()
+      FunctionModule.deleteCache()
       // remove this func
       for (const [funcName, func] of this.cache) {
         if (change.documentKey._id.equals(func._id)) {
@@ -58,11 +59,5 @@ export class FunctionCache {
 
   static get(name: string): ICloudFunctionData {
     return FunctionCache.cache.get(name)
-  }
-
-  static getEngine(name: string): CloudFunction {
-    const func = FunctionCache.get(name)
-    if (!func) return null
-    return new CloudFunction(func)
   }
 }

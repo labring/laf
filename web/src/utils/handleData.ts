@@ -1,4 +1,4 @@
-import pako from 'pako';
+import pako from "pako";
 
 function uint8ArrayToBase64(buffer: Iterable<number>) {
   let binary = "";
