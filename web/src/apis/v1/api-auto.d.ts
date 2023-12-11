@@ -237,7 +237,7 @@ declare namespace Definitions {
   }
 
   export type CalculatePriceDto = {
-    regionId?: string;
+    cpu?: number; memory?: number; databaseCapacity?: number; storageCapacity?: number; autoscaling?: Definitions.CreateAutoscalingDto; dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto; regionId?: string;
   }
 
   export type CalculatePriceResultDto = {
@@ -1463,4 +1463,6 @@ declare namespace Paths {
 
     export type Responses = any;
   }
+
+
 }
