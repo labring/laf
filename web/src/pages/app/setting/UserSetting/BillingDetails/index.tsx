@@ -16,6 +16,7 @@ import {
   Td,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useColorMode,
 } from "@chakra-ui/react";
@@ -242,7 +243,35 @@ export default function BillingDetails() {
                     <Td className="text-grayModern-600">{formatDate(item.endAt)}</Td>
                     <Td className="text-grayModern-600">{item.detail?.cpu?.amount}</Td>
                     <Td className="text-grayModern-600">{item.detail?.memory?.amount}</Td>
-                    <Td className="text-grayModern-600">{item.detail?.databaseCapacity?.amount}</Td>
+                    {item.detail?.["dedicatedDatabase.cpu"]?.usage ? (
+                      <Tooltip
+                        label={
+                          <div>
+                            <div>
+                              {t("SpecItem.cpu")}: {item.detail["dedicatedDatabase.cpu"]?.amount}
+                            </div>
+                            <div>
+                              {t("SpecItem.memory")}:{" "}
+                              {item.detail["dedicatedDatabase.memory"]?.amount}
+                            </div>
+                            <div>
+                              {t("SpecItem.capacity")}:{" "}
+                              {item.detail["dedicatedDatabase.capacity"]?.amount}
+                            </div>
+                          </div>
+                        }
+                      >
+                        <Td className="text-grayModern-600">
+                          {item.detail["dedicatedDatabase.cpu"].amount +
+                            item.detail["dedicatedDatabase.memory"].amount +
+                            item.detail["dedicatedDatabase.capacity"].amount}
+                        </Td>
+                      </Tooltip>
+                    ) : (
+                      <Td className="text-grayModern-600">
+                        {item.detail?.databaseCapacity?.amount}
+                      </Td>
+                    )}
                     <Td className="text-grayModern-600">{item.detail?.storageCapacity?.amount}</Td>
                     <Td
                       className={clsx(
