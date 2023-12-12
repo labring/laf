@@ -114,6 +114,7 @@ export default async function (ctx: FunctionContext) {
 
 ::: tip
 `listFiles` 返回的 res 对象中包含 `NextMarker` 和 `IsTruncated` 两个属性，用于分页获取下一页文件列表：
-`IsTruncated` 用于判断是否还有下一页文件列表，如果为 `true`，则表示还有下一页文件列表，否则表示已经是最后一页文件列表。
-`NextMarker` 用于指定下一页文件列表的起始位置，如果 `IsTruncated` 为 `true`，则可以使用 `NextMarker` 作为 `Marker` 参数，获取下一页文件列表。
+
+- `IsTruncated` 用于判断是否还有下一页文件列表，如果为 `true`，则表示还有下一页文件列表，否则表示已经是最后一页文件列表。
+- `NextMarker` 用于指定下一页文件列表的起始位置，如果 `IsTruncated` 为 `true`，则可以使用 `NextMarker` 作为 `Marker` 参数，获取下一页文件列表。
 :::
