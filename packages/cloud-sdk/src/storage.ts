@@ -9,6 +9,7 @@ import {
   ListObjectsCommandInput,
   PutObjectCommand,
   GetObjectCommand,
+  GetObjectCommandOutput,
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
@@ -21,6 +22,10 @@ export interface SdkStreamMixin {
   transformToByteArray: () => Promise<Uint8Array>
   transformToString: (encoding?: string) => Promise<string>
   transformToWebStream: () => ReadableStream
+}
+
+export interface ExtendGetObjectCommandOutput extends GetObjectCommandOutput {
+  Body: NodeJsRuntimeStreamingBlobPayloadOutputTypes
 }
 
 /**
@@ -144,7 +149,7 @@ export class CloudStorageBucket {
   public async readFile(
     filename: string,
     options?: Omit<GetObjectCommandInput, 'Bucket' | 'Key'>
-  ): Promise<NodeJsRuntimeStreamingBlobPayloadOutputTypes> {
+  ) {
     assert(filename, 'filename is required')
     const internal = this.storage.getInternalS3Client()
 
@@ -153,8 +158,9 @@ export class CloudStorageBucket {
       Key: filename,
       ...options,
     }
+
     const res = await internal.getObject(args)
-    return res.Body as NodeJsRuntimeStreamingBlobPayloadOutputTypes
+    return res as ExtendGetObjectCommandOutput
   }
 
   /**
