@@ -18,19 +18,16 @@ interface File {
 }
 
 
-/**
- * 云函数调用入参
- */
 interface FunctionContext {
   /**
-   * auth 对象解析自 JWT Token Payload
+   * Parsed bearer JWT payload
    */
   auth?: {
     uid?: string
   }
 
   /**
-   * 上传到云函数的文件
+   * Files uploaded by HTTP Request
    */
   files?: File[];
 
@@ -40,37 +37,32 @@ interface FunctionContext {
   headers?: IncomingHttpHeaders;
 
   /**
-   * HTTP Query 参数 （URL 参数），JSON 对象
+   * HTTP query object parsed by Express
    */
   query?: any;
 
   /**
-   * HTTP Body 参数， JSON 对象
+   * HTTP body object parsed by Express
    */
   body?: any;
 
   /**
-   * Trigger 调用时为触发器所带参数
-   */
-  params?: any;
-
-  /**
-   * HTTP Request ID
+   * HTTP request ID
    */
   requestId?: string;
 
   /**
-   * 调用方法：GET | POST | PUT | DELETE | TRIGGER
+   * HTTP method
    */
   method?: string;
 
   /**
-   * Express Response 对象
+   * Express response object
    */
   response: HttpResponse
 
   /**
-   * WebSocket 对象
+   * WebSocket object
    */
   socket?: WebSocket
 }
@@ -80,9 +72,6 @@ interface IModule {
 }
 
 interface IExports {
-  /**
-   * 主函数，云函数的入口函数
-   */
   main: (ctx: FunctionContext) => any
 }
 
@@ -91,8 +80,6 @@ declare const exports: IExports
 declare const console: FunctionConsole
 declare const global: typeof globalThis
 
-/**
- * 主函数，云函数的入口函数
- */
+
 declare function main(ctx: FunctionContext): any;
 `;

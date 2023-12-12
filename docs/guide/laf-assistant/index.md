@@ -1,5 +1,5 @@
 ---
-title: laf assistant
+title: laf assistant (非官方维护)
 ---
 
 # {{ $frontmatter.title }}

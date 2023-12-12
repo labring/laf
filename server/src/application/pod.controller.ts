@@ -52,6 +52,13 @@ export class PodController {
     if (!podName) {
       return ResponseUtil.error('no podName')
     }
+    const podNames: PodNameListDto =
+      await this.podService.getPodNameListByAppid(appid)
+
+    if (!podNames.podNameList.includes(podName)) {
+      return ResponseUtil.error('podName not exist')
+    }
+
     const containerNames: ContainerNameListDto =
       await this.podService.getContainerNameListByPodName(appid, podName)
     return ResponseUtil.ok(containerNames)

@@ -56,8 +56,8 @@ console.log(ctx.files)
 还可以使用 nodejs 自带的 `fs`库 来获取文件对象
 
 ```javascript
-var fs = require("fs");
-var data = await fs.readFileSync(ctx.files[0].path);
+import { readFile } from 'fs/promises'
+const data = await readFile(ctx.files[0].path)
 ```
 
 - data 里面就是文件对象
@@ -69,9 +69,11 @@ var data = await fs.readFileSync(ctx.files[0].path);
 如：`uploadFile`,代码如下：
 
 ```typescript
-import cloud from "@lafjs/cloud";
-import { GetObjectCommand, S3 } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import cloud from "@lafjs/cloud"
+import { GetObjectCommand, S3 } from "@aws-sdk/client-s3"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import { readFile } from 'fs/promises'
+
 const s3Client = new S3({
   endpoint: process.env.OSS_EXTERNAL_ENDPOINT,
   region: process.env.OSS_REGION,
@@ -81,18 +83,18 @@ const s3Client = new S3({
   },
   forcePathStyle: true,
 })
-var fs = require("fs");
+
 const bucketName = 'bucketName' // 不带 Laf 应用 appid
 
 //拼接文件桶名字
 function getInternalBucketName() {
-  const appid = process.env.APP_ID;
-  return `${appid}-${bucketName}`;
+  const appid = process.env.APP_ID
+  return `${appid}-${bucketName}`
 }
 
 //上传文件
 async function uploadAppFile(key, body, contentType) {
-  const bucket = getInternalBucketName();
+  const bucket = getInternalBucketName()
   const res = await s3Client
     .putObject({
       Bucket: bucket,
@@ -100,7 +102,8 @@ async function uploadAppFile(key, body, contentType) {
       ContentType: contentType,
       Body: body,
     })
-  return res;
+
+  return res
 }
 
 //获取文件 url
@@ -109,21 +112,22 @@ async function getAppFileUrl(key) {
   const res = await getSignedUrl(s3Client, new GetObjectCommand({
     Bucket: bucket,
     Key: key,
-  }));
-  return res;
+  }))
+
+  return res
 }
 
 export default async function (ctx: FunctionContext) {
   //获取上传文件的对象
-  var data = await fs.readFileSync(ctx.files[0].path);
+  const data = await readFile(ctx.files[0].path);
   const res = await uploadAppFile(
     ctx.files[0].filename,
     data,
     ctx.files[0].mimetype
   );
   const fileUrl = await getAppFileUrl(ctx.files[0].filename);
-  return fileUrl;
-};
+  return fileUrl
+}
 ```
 
 ## 测试上传
@@ -152,8 +156,8 @@ const bucketName = 'bucketName' // 不带 Laf 应用 appid
 
 //拼接文件桶名字
 function getInternalBucketName() {
-  const appid = process.env.APP_ID;
-  return `${appid}-${bucketName}`;
+  const appid = process.env.APPID
+  return `${appid}-${bucketName}`
 }
 
 export default async function (ctx: FunctionContext) {

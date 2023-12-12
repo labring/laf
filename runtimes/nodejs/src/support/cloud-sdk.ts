@@ -37,6 +37,7 @@ export function createCloudSdk() {
     get env() {
       return process.env
     },
+    storage: null,
   }
 
   /**

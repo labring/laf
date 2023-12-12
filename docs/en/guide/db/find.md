@@ -325,7 +325,7 @@ await db.collection("users").where(
 
 ## Regular Expression Query
 
-`db.RegExp` filters based on regular expressions.
+`new RegExp` filters based on regular expressions.
 
 For example, the following code can filter out records where the `version` field starts with a "number + s" and ignore case sensitivity:
 
@@ -337,10 +337,7 @@ await db.collection('articles').where({
 
 // Or
 await db.collection('articles').where({
-  version: new db.RegExp({
-    regex: '^\\ds',   // Regular expression is /^\ds/, escaped as '^\\ds'
-    options: 'i'    // i indicates ignore case
-  })
+  version: new RegExp('^\\ds','i')
 })
 ```
 
