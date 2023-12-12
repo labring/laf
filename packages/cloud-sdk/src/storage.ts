@@ -111,17 +111,6 @@ export class CloudStorage {
   }
 
   /**
-   * Get S3 client of `@aws-sdk/client-s3`, by default it returns the internal access client.
-   * @see https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/
-   * @deprecated use `getInternalS3Client()` or `getExternalS3Client()` instead
-   */
-  // public getS3Client(options: { external?: boolean } = { external: false }) {
-  //   return options.external
-  //     ? this.getExternalS3Client()
-  //     : this.getInternalS3Client()
-  // }
-
-  /**
    * Get bucket by short name
    * @param bucketShortName it is the short name of the bucket, e.g. `images`, NOT `{appid}-images`.
    * @returns
