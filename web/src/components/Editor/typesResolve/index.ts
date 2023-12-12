@@ -104,10 +104,10 @@ export class AutoImportTypings {
       this.loadDeclaration("ws", monaco);
     }
     if (!this.isLoaded("@aws-sdk/client-s3")) {
-      this.loadDeclaration("@aws-sdk/client-s3");
+      this.loadDeclaration("@aws-sdk/client-s3", monaco);
     }
     if (!this.isLoaded("@aws-sdk/s3-request-presigner")) {
-      this.loadDeclaration("@aws-sdk/s3-request-presigner");
+      this.loadDeclaration("@aws-sdk/s3-request-presigner", monaco);
     }
   }
 
