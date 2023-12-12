@@ -8,7 +8,7 @@ export const NavItemsInEnglish: DefaultTheme.NavItem[] = [
 
 export const SidebarItemsInEnglish: DefaultTheme.SidebarItem[] = [
   {
-    text: 'Intro',
+    text: 'Getting Started',
     items: [
       { text: 'Overview', link: '/en/' },
       { text: 'Architecture', link: '/en/architecture' },
