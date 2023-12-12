@@ -13,10 +13,10 @@ export default async function (ctx: FunctionContext) {
   const bucket = cloud.storage.bucket('data')
 
   // 读文件
-  const stream = await bucket.readFile('index.html')
+  const res = await bucket.readFile('index.html')
 
   // 转换为字符串
-  const data = await stream.transformToString()
+  const data = await res.Body.transformToString()
 
   console.log(data)
 }
@@ -32,34 +32,12 @@ export default async function (ctx: FunctionContext) {
   const bucket = cloud.storage.bucket('data')
 
   // 读文件
-  const stream = await bucket.readFile('index.html')
+  const res = await bucket.readFile('index.html')
 
   // 转换为 Buffer
-  const bytes = await stream.transformToByteArray()
+  const bytes = await res.Body.transformToByteArray()
   const buffer = Buffer.from(bytes)
 
   console.log(buffer)
 }
 ```
-
-## 读文件并通过 HTTP 响应
-
-```ts
-import cloud from '@lafjs/cloud'
-
-export default async function (ctx: FunctionContext) {
-  // 获取存储桶
-  const bucket = cloud.storage.bucket('data')
-
-  // 读文件
-  const stream = await bucket.readFile('index.html')
-
-  // 通过 HTTP 流式响应
-  ctx.response.chunkedEncoding = true
-  ctx.response.setHeader('Content-Type', 'octet/stream')
-  ctx.response.setHeader('Content-Disposition', 'attachment; filename="index.html"')
-
-  stream.pipe(ctx.response)
-}
-```
-

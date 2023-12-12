@@ -17,23 +17,10 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
       },
       {
         text: '快速开始',
-        link: '/zh/quick-start'
+        link: '/zh/quick-start/login'
       }
     ],
   },
-  // {
-  //   text: "三分钟示例",
-  //   items: [
-  //     {
-  //       text: "三分钟实现「Todo List」",
-  //       link: "/zh/quick-start/Todo",
-  //     },
-  //     {
-  //       text: "三分钟实现「用户登录/注册」",
-  //       link: "/zh/quick-start/login",
-  //     },
-  //   ],
-  // },
   {
     text: "云函数",
     collapsed: false,
@@ -154,7 +141,8 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
       { text: '云函数中读取文件', link: '/zh/cloud-storage/read' },
       { text: '云函数中删除文件', link: '/zh/cloud-storage/delete' },
       { text: '云函数中获取文件列表', link: '/zh/cloud-storage/list' },
-      { text: '云函数中生成上传和下载地址', link: '/zh/cloud-storage/gen-url' },
+      { text: '生成文件上传地址', link: '/zh/cloud-storage/gen-upload-url' },
+      { text: '生成文件下载地址', link: '/zh/cloud-storage/gen-download-url' },
       { text: "前端通过云函数上传文件", link: "/zh/cloud-storage/upload-by-function" },
       { text: "网站托管", link: "/zh/cloud-storage/website-hosting" },
     ],
