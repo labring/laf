@@ -30,7 +30,7 @@ import RightPanelList from "../../../RightComponent/List";
 import { useDeleteDataMutation, useEntryDataQuery, useUpdateDataMutation } from "../../../service";
 import useDBMStore from "../../../store";
 
-import "./index.css";
+import "./index.scss";
 
 import useGlobalStore from "@/pages/globalStore";
 
@@ -62,6 +62,7 @@ export default function DataPanel() {
   };
 
   const [queryData, setQueryData] = useState<QueryData>();
+  const darkMode = colorMode === COLOR_MODE.dark;
 
   useEffect(() => {
     if (store.currentDB !== undefined) {
@@ -300,7 +301,7 @@ export default function DataPanel() {
                     hideToolTip
                     text={text}
                     tip={String(t("Copied"))}
-                    className="ml-2 hover:bg-gray-200"
+                    className={darkMode ? "ml-2 hover:bg-gray-600" : "ml-2 hover:bg-gray-200"}
                   >
                     <IconWrap
                       showBg
@@ -308,7 +309,7 @@ export default function DataPanel() {
                       size={32}
                       className="group/icon"
                     >
-                      <OutlineCopyIcon size="14" color="#24282C" />
+                      <OutlineCopyIcon size="14" color={darkMode ? "#ffffff" : "#24282C"} />
                     </IconWrap>
                   </CopyText>
                 );
