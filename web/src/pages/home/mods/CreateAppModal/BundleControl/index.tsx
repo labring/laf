@@ -107,7 +107,7 @@ export default function BundleControl(props: {
       >
         <div className="flex items-center">
           <TextIcon boxSize={4} mr={2} color={darkMode ? "" : "grayModern.600"} />
-          <span className="text-lg font-semibold">{t("application.ChooseSpecifications")}</span>
+          <span className="text-lg font-semibold">{t("application.ApplicationSecification")}</span>
         </div>
         <div className="flex items-center">
           <RecommendIcon boxSize={"14px"} mr={2} color={"primary.600"} />

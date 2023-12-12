@@ -262,9 +262,11 @@ export default function BillingDetails() {
                         }
                       >
                         <Td className="text-grayModern-600">
-                          {item.detail["dedicatedDatabase.cpu"].amount +
+                          {(
+                            item.detail["dedicatedDatabase.cpu"].amount +
                             item.detail["dedicatedDatabase.memory"].amount +
-                            item.detail["dedicatedDatabase.capacity"].amount}
+                            item.detail["dedicatedDatabase.capacity"].amount
+                          ).toFixed(6)}
                         </Td>
                       </Tooltip>
                     ) : (
