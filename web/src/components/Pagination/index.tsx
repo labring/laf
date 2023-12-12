@@ -55,8 +55,10 @@ export default function Pagination(props: {
           <Button
             variant="link"
             className={clsx(
-              "!h-6 !w-6 !rounded-full bg-lafWhite-600 !p-0",
-              darkMode ? "" : "!text-[#262A32]",
+              "!h-6 !w-6 !rounded-full !p-0",
+              darkMode
+                ? "hover:bg-grayModern-600"
+                : "bg-lafWhite-600 !text-[#262A32] hover:bg-grayModern-200",
             )}
             style={{ minWidth: "24px" }}
             isDisabled={page === 1 || maxPage === -1}
@@ -74,8 +76,10 @@ export default function Pagination(props: {
           <Button
             variant="link"
             className={clsx(
-              "!h-6 !w-6 !rounded-full bg-lafWhite-600 !p-0",
-              darkMode ? "" : "!text-[#262A32]",
+              "!h-6 !w-6 !rounded-full !p-0",
+              darkMode
+                ? "hover:bg-grayModern-600"
+                : "bg-lafWhite-600 !text-[#262A32] hover:bg-grayModern-200",
             )}
             style={{ minWidth: "24px" }}
             isDisabled={page === 1 || maxPage === -1}
@@ -97,8 +101,10 @@ export default function Pagination(props: {
             variant="link"
             isDisabled={maxPage === page || maxPage === -1}
             className={clsx(
-              "!h-6 !w-6 !rounded-full bg-lafWhite-600 !p-0",
-              darkMode ? "" : "!text-[#262A32]",
+              "!h-6 !w-6 !rounded-full !p-0",
+              darkMode
+                ? "hover:bg-grayModern-600"
+                : "bg-lafWhite-600 !text-[#262A32] hover:bg-grayModern-200",
             )}
             style={{ minWidth: "24px" }}
             onClick={() => {
@@ -115,8 +121,10 @@ export default function Pagination(props: {
           <Button
             variant="link"
             className={clsx(
-              "!h-6 !w-6 !rounded-full bg-lafWhite-600 !p-0",
-              darkMode ? "" : "!text-[#262A32]",
+              "!h-6 !w-6 !rounded-full !p-0",
+              darkMode
+                ? "hover:bg-grayModern-600"
+                : "bg-lafWhite-600 !text-[#262A32] hover:bg-grayModern-200",
             )}
             style={{ minWidth: "24px" }}
             isDisabled={maxPage === page || maxPage === -1}

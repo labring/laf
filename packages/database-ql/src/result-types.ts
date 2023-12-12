@@ -13,7 +13,7 @@ export interface GetRes<T> extends BaseResult {
 }
 
 export interface GetOneRes<T> extends BaseResult {
-  data: T
+  data: T | null
 }
 
 export interface UpdateRes extends BaseResult {
