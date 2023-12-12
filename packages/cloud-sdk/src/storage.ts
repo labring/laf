@@ -267,15 +267,11 @@ export class CloudStorageBucket {
    * @returns
    * @see https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjects.html
    */
-  public async listFiles(
-    prefix?: string,
-    options?: Omit<ListObjectsCommandInput, 'Bucket' | 'Prefix'>
-  ) {
+  public async listFiles(options?: Omit<ListObjectsCommandInput, 'Bucket'>) {
     const internal = this.storage.getInternalS3Client()
 
     const args: ListObjectsCommandInput = {
       Bucket: this.name,
-      Prefix: prefix,
       ...options,
     }
     const res = await internal.listObjects(args)
