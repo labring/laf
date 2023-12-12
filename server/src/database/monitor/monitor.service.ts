@@ -24,7 +24,7 @@ export class DedicatedDatabaseMonitorService {
     )
     const dataSize = await this.query(
       region,
-      `sum(mongodb_dbstats_dataSize{app_kubernetes_io_instance="${dbName}"}) by (database)`,
+      `sum(mongodb_dbstats_dataSize{pod=~"${dbName}-mongo.+"}) by (database)`,
       {
         labels: ['database'],
       },
@@ -39,7 +39,7 @@ export class DedicatedDatabaseMonitorService {
 
   async getConnection(appid: string, region: Region) {
     const dbName = this.getDBName(appid)
-    const query = `mongodb_connections{app_kubernetes_io_instance="${dbName}",state="current"}`
+    const query = `mongodb_connections{pod=~"${dbName}-mongo.+",state="current"}`
     const connections = await this.queryRange(region, query, {
       labels: ['pod'],
     })
@@ -50,9 +50,9 @@ export class DedicatedDatabaseMonitorService {
   async getPerformance(appid: string, region: Region) {
     const dbName = this.getDBName(appid)
     const queries = {
-      documentOperations: `rate(mongodb_mongod_metrics_document_total{app_kubernetes_io_instance="${dbName}"}[1m])`,
-      queryOperations: `rate(mongodb_op_counters_total{app_kubernetes_io_instance="${dbName}"}[5m]) or irate(mongodb_op_counters_total{app_kubernetes_io_instance="${dbName}"}[5m])`,
-      pageFaults: `rate(mongodb_extra_info_page_faults_total{app_kubernetes_io_instance="${dbName}"}[5m]) or irate(mongodb_extra_info_page_faults_total{app_kubernetes_io_instance="${dbName}"}[5m])`,
+      documentOperations: `rate(mongodb_mongod_metrics_document_total{pod=~"${dbName}-mongo.+"}[1m])`,
+      queryOperations: `rate(mongodb_op_counters_total{pod=~"${dbName}-mongo.+"}[5m]) or irate(mongodb_op_counters_total{pod=~"${dbName}-mongo.+"}[5m])`,
+      pageFaults: `rate(mongodb_extra_info_page_faults_total{pod=~"${dbName}-mongo.+"}[5m]) or irate(mongodb_extra_info_page_faults_total{pod=~"${dbName}-mongo.+"}[5m])`,
     }
 
     const res = await Promise.all(
