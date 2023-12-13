@@ -1,129 +1,82 @@
----
-title: 更新数据
----
 
-# {{ $frontmatter.title }}
+# 云数据库 - 更新文档
 
-Laf 云数据库更新数据，实际上就是针对集合中的文档进行修改，通过 `where` 等操作符设置查询条件，然后通过 `update` 或 `set` 等更新操作符进行修改。
+## 概述
 
-## 更新文档
+你可以使用更新和替换操作修改集合中的文档。
 
-### 更新指定文档
+更新操作修改文档的字段和值，同时保持其他字段和值不变。替换操作将现有文档中的所有字段和值替换为指定的字段和值，同时保持 _id 字段值不变。
 
-我们这里把 jack 的名字改为 Tom。
+Node.js 驱动程序提供了以下方法来更改文档：
 
-```typescript
-await db.collection('user')
-.where({ name: 'jack' })
-.update({ name: "Tom" })
-```
+- `updateOne()`
+- `updateMany()`
+- `replaceOne()`
 
-同样我们也可以一次更新同一个文档的多个属性，比如：更改名字的同时也更改年龄。
+## 更新单个文档
 
 ```typescript
-await db.collection('user')
-.where({ name: 'jack' })
-.update({ name: "Tom", age: "18" })
+import cloud from '@lafjs/cloud'
+const db = cloud.mongo.db
+
+export default async function () {
+  const ret = await db.collection('users').updateOne({
+    name: '王小波'
+  }, {
+    $set: { age: 1000 }
+  })
+
+  console.log(ret)
+}
 ```
 
-### 批量更新文档
-
-这里我们没有加条件限制，直接把 `user` 表中的所有 `name` 都改成了 `Tom` ，操作和之前一样只需要多传入一个对像 `{multi:true}` 即可。
-
-```typescript
-await db.collection('user')
-.update({ name: "Tom" },{ multi:true })
+::: details 查看输出
+```js
+{
+  acknowledged: true,
+  modifiedCount: 1,
+  upsertedId: null,
+  upsertedCount: 0,
+  matchedCount: 1
+}
 ```
 
-## 更新指令
 
-### set
-
-更新指令。如果数据不存在，则会新增一个文档。
-
-::: warning
-注意：使用 `set` 需要使用 `doc` 去根据 ID 查询文档，然后进行更新，如果查询不到文档，则会新增一个文档，
-`doc` [使用文档](/guide/db/find.html#根据id查询数据)
+::: info API 文档
+- [db.collection.updateOne()](https://www.mongodb.com/docs/manual/reference/method/db.collection.updateOne/)
+- [Collection.updateOne()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#updateOne)
 :::
 
-```typescript
-await collection.doc('644148fd1eeb2b524dba499e').set({
-  name: "Hey"
-})
-```
 
-### inc
-
-更新指令。用于指示字段自增某个值，需要是正整数或者负整数。这是个原子操作，使用这个操作指令而不是先读数据、再加、再写回的好处是：
-
-1. 原子性：多个用户同时写，对数据库来说都是将字段加一，不会有后来者覆写前者的情况
-2. 减少一次网络请求：不需先读再写
-
-之后的 mul 指令同理。
-
-如给收藏的商品数量加一：
+## 更新多条文档
 
 ```typescript
-const _ = db.command;
-await db.collection("user")
-  .where({
-    _openid: "my-open-id",
+import cloud from '@lafjs/cloud'
+const db = cloud.mongo.db
+
+export default async function () {
+  const ret = await db.collection('users').updateMany({
+    createdAt: { $exists: false }
+  }, {
+    $set: { createdAt: new Date() }
   })
-  .update({
-    count: {
-      favorites: _.inc(1),
-    },
-  })
+
+  console.log(ret)
+}
 ```
 
-### mul
-
-更新指令。用于指示字段自乘某个值。需要是正整数或者负整数或者 0。
-
-### remove
-
-更新指令。用于表示删除某个字段。如某人删除了自己一条商品评价中的评分：
-
-```typescript
-const _ = db.command;
-await db.collection("comments")
-  .doc("comment-id")
-  .update({
-    rating: _.remove(),
-  })
+::: details 查看输出
+```js
+{
+  acknowledged: true,
+  modifiedCount: 2,
+  upsertedId: null,
+  upsertedCount: 0,
+  matchedCount: 2
+}
 ```
 
-### push
-
-向数组尾部追加元素，支持传入单个元素或数组
-
-```typescript
-const _ = db.command;
-await db.collection("comments")
-  .doc("comment-id")
-  .update({
-    // users: _.push('aaa')
-    users: _.push(["aaa", "bbb"]),
-  })
-```
-
-### pop
-
-删除数组尾部元素
-
-```typescript
-const _ = db.command;
-await db.collection("comments")
-  .doc("comment-id")
-  .update({
-    users: _.pop(),
-  })
-```
-
-### unshift
-
-向数组头部添加元素，支持传入单个元素或数组。使用同 push
-
-### shift
-
-删除数组头部元素。使用同 pop
+::: info API 文档
+- [db.collection.updateMany()](https://www.mongodb.com/docs/manual/reference/method/db.collection.updateMany/)
+- [Collection.updateMany()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#updateMany)
+:::
