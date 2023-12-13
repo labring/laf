@@ -1,17 +1,13 @@
----
-title: 快速开始
----
 
-# {{ $frontmatter.title }}
+# 快速开始
 
-我们将在 [laf.run](https://laf.run) 上，通过开发一个简单的「用户登录/注册」的功能，快速体验 `laf` 云开发。
+本文将指引你开发一个简单的「用户登录/注册」的功能，快速体验 `laf` 云开发，预计完成时间 5 分钟。
 
-下面代码对于初学者来说可能难以理解，不过可以先体验一下云函数，后面再详细了解云函数的具体内容。
 
-## 准备工作
+## 创建应用
 
 1. 你需要在 [laf.run](https://laf.run) 上注册一个账户
-2. 登录到 [laf.run 控制台](https://laf.run)，点击左上角的 `新建` 按钮，创建一个空应用
+2. 在 [laf 控制台](https://laf.run)，点击左上角的 `新建` 按钮，创建一个新应用
 3. 待应用成功启动后，点击右侧「开发」按钮，进入应用的「开发控制台」，接下来，我们将在「开发控制台」进行第一个 `laf` 应用的功能开发
 
 ## 编写云函数
@@ -36,8 +32,10 @@ export default async function (ctx: FunctionContext) {
   const password = ctx.body?.password || "";
 
   // check param
-  if (!/^[a-zA-Z0-9]{3,16}$/.test(username)) return { error: "invalid username" };
-  if (!/^[a-zA-Z0-9]{3,16}$/.test(password)) return { error: "invalid password" };
+  if (!/^[a-zA-Z0-9]{3,16}$/.test(username))
+    return { error: "invalid username" };
+  if (!/^[a-zA-Z0-9]{3,16}$/.test(password))
+    return { error: "invalid password" };
 
   // check username existed
   const db = cloud.database();
@@ -104,7 +102,7 @@ export default async function (ctx: FunctionContext) {
 
 点击右上角的「发布」函数即发布上线！
 
-## 使用 curl 调用云函数
+::: details 使用 curl 调用云函数
 
 你可以在右上方复制云函数的调用地址，
 或将以下 curl 命令中的 `APPID` 替换成你的 APPID 后执行：
@@ -116,66 +114,21 @@ curl -X POST -H "Content-Type: application/json" -d '{"username": "admin", "pass
 # 用户登录
 curl -X POST -H "Content-Type: application/json" -d '{"username": "admin", "password": "admin"}' https://APPID.laf.run/login
 
-
 ```
+:::
 
-## 在前端项目中用 SDK 调用云函数
 
-在你的前端项目中安装 laf client sdk:
-
-```bash
-npm install laf-client-sdk
-```
-
-然后填写下面的代码：
-
-```typescript
-// user.ts
-
-import { Cloud } from "laf-client-sdk";
-
-const cloud = new Cloud({
-  baseUrl: "https://APPID.laf.run",
-  getAccessToken: () => localStorage.getItem("access_token"),
-});
-
-// register function
-export async function register(username: string, password: string) {
-  const res = await cloud.invoke("register", {
-    username: username,
-    password: password,
-  });
-
-  return res;
-}
-
-// login function
-export async function login(username: string, password: string) {
-  const res = await cloud.invoke("login", {
-    username: username,
-    password: password,
-  });
-
-  if (res.access_token) {
-    // save token
-    localStorage.setItem("access_token", res.access_token);
-  }
-
-  return res;
-}
-```
-
-## 在前端项目中用 HTTP 请求调用云函数
+::: details 在前端项目中用 HTTP 请求调用云函数
 
 ```js
 import axios from 'axios'
 
-const url = 'https://APPID.laf.run'
+const baseUrl = 'https://APPID.laf.run'
 
 // register
 async function register(username, password) {
   try {
-    const response = await axios.post(url + "register", {
+    const response = await axios.post(baseUrl + "/register", {
       username: username,
       password: password
     });
@@ -188,15 +141,16 @@ async function register(username, password) {
 // login
 async function register(username, password) {
   try {
-    const response = await axios.post(url + "login", {
+    const response = await axios.post(baseUrl + "/login", {
       username: username,
       password: password
-    });
-    console.log(response);
+    })
+    console.log(response)
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
 }
 ```
 
-最后，可以在你的 Vue/React/Angular/小程序 页面中调用这两个云函数完成具体的登录注册功能！
+可以在你的 Vue/React/Angular/小程序 页面中调用这两个云函数完成具体的登录注册功能！
+:::

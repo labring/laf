@@ -5,7 +5,7 @@
     "vue": {
       "src": "../../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
       "file": "vue.js",
-      "fileHash": "1490cb83",
+      "fileHash": "eea96529",
       "needsInterop": false
     },
     "vitepress > @vue/devtools-api": {
@@ -17,7 +17,7 @@
     "@theme/index": {
       "src": "../../../node_modules/vitepress/dist/client/theme-default/index.js",
       "file": "@theme_index.js",
-      "fileHash": "ba16c8a4",
+      "fileHash": "48f5268a",
       "needsInterop": false
     }
   },

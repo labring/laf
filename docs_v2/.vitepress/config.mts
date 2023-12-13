@@ -4,6 +4,10 @@ import { NavItemsInZh, SidebarItemsInZh } from './zh.mts'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  lastUpdated: true,
+  markdown: {
+    lineNumbers: true,
+  },
   locales: {
     root: {
       label: '简单中文',
@@ -41,7 +45,7 @@ export default defineConfig({
         nav: NavItemsInZh,
 
         sidebar: SidebarItemsInZh,
-      }
+      },
     },
     en: {
       label: 'English',

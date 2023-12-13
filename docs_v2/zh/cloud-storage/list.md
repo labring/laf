@@ -20,20 +20,20 @@ export default async function (ctx: FunctionContext) {
 
 返回结果 `res.Contents` 格式如下：
 
-```js
+```json
  [
-  {
-    Key: 'laf.jpg',
-    LastModified: 2023-12-12T12:03:36.154Z,
-    ETag: '"f0ce41411bdec6212f0836ebfbc56375"',
-    Size: 49425
-  },
-  {
-    Key: 'test.html',
-    LastModified: 2023-12-12T11:38:53.117Z,
-    ETag: '"08ba5fadaac344913c216bcd26348263"',
-    Size: 10
-  }
+    {
+      "Key": "laf.jpg",
+      "LastModified": "2023-12-12T12:03:36.154Z",
+      "ETag": "f0ce41411bdec6212f0836ebfbc56375",
+      "Size": 49425
+    },
+    {
+      "Key": "test.html",
+      "LastModified": "2023-12-12T11:38:53.117Z",
+      "ETag": "08ba5fadaac344913c216bcd26348263",
+      "Size": 10
+    }
 ]
 ```
 

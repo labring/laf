@@ -3,7 +3,9 @@ import { DefaultTheme } from 'vitepress'
 
 export const NavItemsInZh: DefaultTheme.NavItem[] = [
   { text: '开发指南', link: '/zh/' },
-  { text: '示例', link: '/zh/examples' }
+  {
+    text: '使用实例', link: '/zh/examples/'
+  }
 ]
 
 export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
@@ -145,10 +147,10 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
       { text: '生成文件下载地址', link: '/zh/cloud-storage/gen-download-url' },
       { text: "网站托管", link: "/zh/cloud-storage/website-hosting" },
       {
-        text: '更多示例',
+        text: '更多例子',
         collapsed: true,
         items: [
-          { text: "前端通过云函数上传文件", link: "/zh/cloud-storage/upload-by-function" },
+          { text: "微信小程序上传文件", link: "/zh/examples/wxmp-upload" },
           { text: 'Web 前端上传文件(TBD)' },
           { text: '微信小程序上传文件(TBD)' },
         ]
