@@ -8,11 +8,6 @@
 
 ![](./overview-ide.png)
 
-## 🚀 Quick Start
-
-[三分钟体验使用 laf 写一个自己的 ChatGPT (开发到上线)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)  
-[三分钟体验使用 laf 开发一个简单的「Todo List」](./quick-start/Todo.md)
-
 ## 🖥 在线体验
 
 🎉 [laf.run](https://laf.run) （国内版）<br/>

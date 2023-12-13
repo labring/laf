@@ -138,19 +138,20 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
     text: "云存储",
     collapsed: false,
     items: [
-      { text: "云存储简介", link: "/zh/cloud-storage/" },
+      { text: '云存储简介', link: '/zh/cloud-storage/' },
       { text: '上传文件', link: '/zh/cloud-storage/upload' },
       { text: '读取文件', link: '/zh/cloud-storage/read' },
       { text: '删除文件', link: '/zh/cloud-storage/delete' },
       { text: '获取文件列表', link: '/zh/cloud-storage/list' },
-      { text: '生成文件上传地址', link: '/zh/cloud-storage/gen-upload-url' },
-      { text: '生成文件下载地址', link: '/zh/cloud-storage/gen-download-url' },
-      { text: "网站托管", link: "/zh/cloud-storage/website-hosting" },
+      { text: '生成文件上传地址', link: '/zh/cloud-storage/upload-url' },
+      { text: '生成文件下载地址', link: '/zh/cloud-storage/download-url' },
+      { text: '网站托管', link: '/zh/cloud-storage/website-hosting' },
       {
         text: '更多例子',
         collapsed: true,
         items: [
-          { text: "微信小程序上传文件", link: "/zh/examples/wxmp-upload" },
+          { text: '微信小程序上传文件', link: '/zh/examples/wxmp-upload' },
+          { text: 'GitHub Action 持续集成网站托管', link: '/zh/examples/website-hosting-ci-cd.md' },
           { text: 'Web 前端上传文件(TBD)' },
           { text: '微信小程序上传文件(TBD)' },
         ]
