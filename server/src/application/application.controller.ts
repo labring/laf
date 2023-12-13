@@ -337,7 +337,7 @@ export class ApplicationController {
     const origin = app.bundle
     if (
       (origin.resource['dedicatedDatabase.limitCPU'] && dto.databaseCapacity) ||
-      (origin.resource.databaseCapacity && dto.dedicatedDatabase.cpu)
+      (origin.resource.databaseCapacity && dto.dedicatedDatabase)
     ) {
       return ResponseUtil.error('cannot change database type')
     }
