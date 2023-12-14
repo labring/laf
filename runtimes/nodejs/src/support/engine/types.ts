@@ -31,6 +31,7 @@ export interface FunctionModuleGlobalContext {
   global: FunctionModuleGlobalContext
   __from_modules: string[]
   fetch: typeof globalThis.fetch
+  ObjectId: typeof ObjectId
 }
 
 /**
