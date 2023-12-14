@@ -45,7 +45,7 @@
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
     "minio": "^7.0.32",
-    "mongodb": "^4.12.1",
+    "mongodb": "^5.9.2",
     "mongodb-uri": "^0.9.7",
     "multer": "^1.4.5-lts.1",
     "node-modules-utils": "^0.8.2",

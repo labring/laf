@@ -34,7 +34,7 @@
     "@types/ws": "^8.5.3",
     "axios": "^1.2.1",
     "database-proxy": "^1.0.0-beta.12",
-    "mongodb": "^4.12.1",
+    "mongodb": "^5.9.2",
     "ws": "^8.11.0"
   },
   "lint-staged": {
