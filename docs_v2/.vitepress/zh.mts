@@ -134,9 +134,9 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
           { text: '条件查询', link: '/zh/cloud-database/query/condition' },
           { text: '排序查询', link: '/zh/cloud-database/query/sort' },
           { text: '分页查询', link: '/zh/cloud-database/query/pagination' },
-          { text: '正则模糊查询' },
-          { text: '嵌套文档查询' },
-          { text: '数组查询' },
+          { text: '嵌套文档查询', link: '/zh/cloud-database/query/nested' },
+          { text: '正则模糊查询', link: '/zh/cloud-database/query/regex' },
+          { text: '数组查询', link: '/zh/cloud-database/query/array' },
         ]
       },
       { text: '更新文档', link: '/zh/cloud-database/update' },

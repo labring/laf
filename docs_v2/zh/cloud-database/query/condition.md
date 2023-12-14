@@ -99,13 +99,12 @@ export default async function () {
 }
 ```
 
+## 更多用法
 
-
-::: info 更多参考
+::: info 引用链接
 - [查询条件](https://www.mongodb.com/docs/drivers/node/v5.0/fundamentals/crud/query-document/)
 - [逻辑操作符](https://www.mongodb.com/docs/manual/reference/operator/query-logical/)
 - [比较操作符](https://www.mongodb.com/docs/manual/reference/operator/query-comparison/)
 - [元素操作符](https://www.mongodb.com/docs/manual/reference/operator/query-element/)
 - [数组操作符](https://www.mongodb.com/docs/manual/reference/operator/query-array/)
-- [Evaluation Query Operators](https://www.mongodb.com/docs/manual/reference/operator/query-evaluation/)
 :::
