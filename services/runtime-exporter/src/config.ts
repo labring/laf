@@ -37,6 +37,9 @@ export default class Config {
   static get NAMESPACE(): string {
     return process.env.NAMESPACE || ''
   }
+  static get DB_NAMESPACE(): string {
+    return process.env.DB_NAMESPACE || ''
+  }
 
   static get API_SECRET(): string {
     if (!process.env.API_SECRET) {
