@@ -131,12 +131,12 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
         link: '/zh/cloud-database/find',
         collapsed: true,
         items: [
-          { text: '排序查询' },
-          { text: '分页查询' },
-          { text: '嵌套文档查询' },
-          { text: '条件表达式' },
-          { text: '数组查询' },
+          { text: '条件查询', link: '/zh/cloud-database/query/condition' },
+          { text: '排序查询', link: '/zh/cloud-database/query/sort' },
+          { text: '分页查询', link: '/zh/cloud-database/query/pagination' },
           { text: '正则模糊查询' },
+          { text: '嵌套文档查询' },
+          { text: '数组查询' },
         ]
       },
       { text: '更新文档', link: '/zh/cloud-database/update' },
@@ -145,12 +145,12 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
         text: '进阶使用',
         collapsed: true,
         items: [
-          { text: '聚合查询', link: '/zh/cloud-database/aggregation' },
-          { text: '事务', link: '/zh/cloud-database/transactions' },
-          { text: '组合操作', link: '/zh/cloud-database/compound' },
-          { text: '索引', link: '/zh/cloud-database/indexes' },
-          { text: '时序集合', link: '/zh/cloud-database/time-series' },
-          { text: '变更流', link: '/zh/cloud-database/change-stream' },
+          { text: '聚合查询(TBD)' },
+          { text: '事务(TBD)' },
+          { text: '组合操作(TBD)' },
+          { text: '索引(TBD)' },
+          { text: '时序集合(TBD)' },
+          { text: '变更流(TBD)' },
         ]
       },
       {

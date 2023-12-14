@@ -44,9 +44,9 @@ export default async function () {
 ```
 :::
 
-::: info API 文档
-- [db.collection.insertOne()](https://www.mongodb.com/docs/manual/reference/method/db.collection.insertOne/)
-- [Collection.insertOne()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#insertOne)
+::: info 更多参考
+- [db.collection.insertOne() 完整说明](https://www.mongodb.com/docs/manual/reference/method/db.collection.insertOne/)
+- [API: Collection.insertOne()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#insertOne)
 :::
 
 
@@ -93,7 +93,7 @@ export default async function () {
 ```
 :::
 
-::: info API 文档
-- [db.collection.insertMany()](https://www.mongodb.com/docs/manual/reference/method/db.collection.insertMany/)
-- [Collection.insertMany()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#insertMany)
+::: info 更多参考
+- [db.collection.insertMany() 完整说明](https://www.mongodb.com/docs/manual/reference/method/db.collection.insertMany/)
+- [API: Collection.insertMany()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#insertMany)
 :::

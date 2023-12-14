@@ -39,9 +39,9 @@ export default async function () {
 ```
 :::
 
-::: info API 文档
-- [db.collection.findOne()](https://www.mongodb.com/docs/manual/reference/method/db.collection.findOne/)
-- [Collection.findOne()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#findOne)
+::: info 更多参考
+- [db.collection.findOne() 完整说明](https://www.mongodb.com/docs/manual/reference/method/db.collection.findOne/)
+- [API: Collection.findOne()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#findOne)
 :::
 
 ## 查找多个文档
@@ -80,9 +80,9 @@ export default async function () {
 ```
 :::
 
-::: info API 文档
-- [db.collection.find()](https://www.mongodb.com/docs/manual/reference/method/db.collection.find/)
-- [Collection.find()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#find)
+::: info 更多参考
+- [db.collection.find() 完整说明](https://www.mongodb.com/docs/manual/reference/method/db.collection.find/)
+- [API: Collection.find()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#find)
 :::
 
 
@@ -100,7 +100,7 @@ export default async function () {
 }
 ```
 
-::: info API 文档
-- [db.collection.countDocuments()](https://www.mongodb.com/docs/manual/reference/method/db.collection.count/)
-- [Collection.countDocuments()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#countDocuments)
+::: info 更多参考
+- [db.collection.countDocuments() 完整说明](https://www.mongodb.com/docs/manual/reference/method/db.collection.count/)
+- [API: Collection.countDocuments()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#countDocuments)
 :::
