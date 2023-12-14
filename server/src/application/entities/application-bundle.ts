@@ -48,7 +48,7 @@ export class ApplicationBundleResource {
   'dedicatedDatabase.requestCPU': number
   'dedicatedDatabase.requestMemory': number
 
-  @ApiProperty({ example: 4 })
+  @ApiProperty({ example: 4096 })
   'dedicatedDatabase.capacity': number
 
   @ApiProperty({ example: 1 })

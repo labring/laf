@@ -115,7 +115,7 @@ spec:
               - ReadWriteOnce
             resources:
               requests:
-                storage: <%- capacity %>Gi
+                storage: <%- capacity %>Mi
   terminationPolicy: Delete
   tolerations: []
 "

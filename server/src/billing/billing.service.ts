@@ -235,8 +235,7 @@ export class BillingService {
       groupedOptions[ResourceType.DedicatedDatabaseCapacity]
     const ddbCapacityPrice = dto.dedicatedDatabase
       ? new Decimal(ddbCapacityOption.price)
-          .mul(dto.dedicatedDatabase.capacity) // Gi
-          .mul(1000)
+          .mul(dto.dedicatedDatabase.capacity)
           .mul(dto.dedicatedDatabase.replicas)
       : new Decimal(0)
 

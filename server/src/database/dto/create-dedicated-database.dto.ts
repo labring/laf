@@ -12,7 +12,7 @@ export class CreateDedicatedDatabaseDto {
   @IsInt()
   memory: number
 
-  @ApiProperty({ example: 1 })
+  @ApiProperty({ example: 1024 })
   @IsNotEmpty()
   @IsInt()
   capacity: number
