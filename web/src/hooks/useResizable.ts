@@ -6,6 +6,7 @@ type Resizable = {
   position: number;
   isDragging: boolean;
   separatorProps: SeparatorProps;
+  handleClick: (e: React.MouseEvent | React.TouchEvent, isCollapsed: boolean) => void;
 };
 type UseResizableProps = {
   axis: "x" | "y";
@@ -72,13 +73,25 @@ const useResizable = ({
         }
       })();
 
-      if (currentPosition <= 4) return setPosition(4);
-
       if (min <= currentPosition && currentPosition <= max) {
         setPosition(currentPosition);
       }
     },
     [axis, disabled, max, min, reverse, containerRef],
+  );
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent | React.TouchEvent, isCollapsed: boolean) => {
+      if (disabled) return;
+      e.stopPropagation();
+      e.preventDefault();
+      if (!isCollapsed) {
+        setPosition(4);
+      } else {
+        setPosition(min);
+      }
+    },
+    [disabled, min],
   );
 
   const handleUp = useCallback(
@@ -116,6 +129,7 @@ const useResizable = ({
       onMouseDown: handleDown,
       onTouchStart: handleDown,
     },
+    handleClick,
   };
 };
 

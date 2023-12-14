@@ -1,6 +1,6 @@
 import { useState } from "react";
 import React from "react";
-import { AddIcon, DeleteIcon, Search2Icon } from "@chakra-ui/icons";
+import { AddIcon, Search2Icon } from "@chakra-ui/icons";
 import {
   Button,
   Center,
@@ -27,6 +27,7 @@ import {
 } from "@chakra-ui/react";
 import { t } from "i18next";
 
+import { RecycleDeleteIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import EmptyBox from "@/components/EmptyBox";
 import IconWrap from "@/components/IconWrap";
@@ -133,7 +134,7 @@ export default function TriggerModal(props: { children: React.ReactElement }) {
                                       bodyText={t("TriggerPanel.DeleteConfirm")}
                                     >
                                       <IconWrap tooltip={String(t("Delete"))}>
-                                        <DeleteIcon fontSize={15} />
+                                        <RecycleDeleteIcon fontSize={15} />
                                       </IconWrap>
                                     </ConfirmButton>
                                   </HStack>

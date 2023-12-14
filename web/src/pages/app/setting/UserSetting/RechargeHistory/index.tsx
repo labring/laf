@@ -84,11 +84,18 @@ export default function RechargeHistory() {
             <Thead>
               <Tr className={clsx("h-8", !darkMode && "bg-[#F4F6F8]")}>
                 <Th className="!pr-0">
-                  <span className="mr-1 font-normal !text-grayModern-700">{t("OrderNumber")}</span>
+                  <span className={clsx("mr-1 font-normal", darkMode ? "" : "text-grayModern-700")}>
+                    {t("OrderNumber")}
+                  </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
                   <span className="flex items-center">
-                    <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
+                    <span
+                      className={clsx(
+                        "mr-1 border-l pl-2 font-normal",
+                        darkMode ? "" : "!text-grayModern-700",
+                      )}
+                    >
                       {t("Duration")}
                     </span>
                     <Popover>
@@ -119,7 +126,12 @@ export default function RechargeHistory() {
                 </Th>
                 <Th className="!px-0 !pl-2">
                   <span className="flex items-center">
-                    <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
+                    <span
+                      className={clsx(
+                        "mr-1 border-l pl-2 font-normal",
+                        darkMode ? "" : "!text-grayModern-700",
+                      )}
+                    >
                       {t("State")}
                     </span>
                     <Popover>
@@ -152,17 +164,32 @@ export default function RechargeHistory() {
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="border-l pl-2 font-normal !text-grayModern-700">
+                  <span
+                    className={clsx(
+                      "border-l pl-2 font-normal",
+                      darkMode ? "" : "!text-grayModern-700",
+                    )}
+                  >
                     {t("Recharge amount")}
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="border-l pl-2 font-normal !text-grayModern-700">
+                  <span
+                    className={clsx(
+                      "border-l pl-2 font-normal",
+                      darkMode ? "" : "!text-grayModern-700",
+                    )}
+                  >
                     {t("Bonus amount")}
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="border-l pl-2 font-normal !text-grayModern-700">
+                  <span
+                    className={clsx(
+                      "border-l pl-2 font-normal",
+                      darkMode ? "" : "!text-grayModern-700",
+                    )}
+                  >
                     {t("Total payment amount")}
                   </span>
                 </Th>
@@ -180,10 +207,18 @@ export default function RechargeHistory() {
                     >
                       {item._id}
                     </Td>
-                    <Td className="text-grayModern-600">{formatDate(item.createdAt)}</Td>
+                    <Td
+                      className={
+                        darkMode
+                          ? "!border-b-grayModern-600 !text-grayModern-200"
+                          : "text-grayModern-600"
+                      }
+                    >
+                      {formatDate(item.createdAt)}
+                    </Td>
                     <Td
                       className={clsx(
-                        darkMode ? "border-b-grayModern-600" : "",
+                        darkMode ? "!border-b-grayModern-600" : "",
                         item.phase === "Paid" ? "text-primary-600" : "text-error-600",
                       )}
                     >
