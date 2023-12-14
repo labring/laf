@@ -5,6 +5,7 @@ import { Console } from '.'
 import * as vm from 'vm'
 import { createRequire } from 'node:module'
 import * as path from 'node:path'
+import { ObjectId } from 'mongodb'
 
 const CUSTOM_DEPENDENCY_NODE_MODULES_PATH = `${Config.CUSTOM_DEPENDENCY_BASE_PATH}/node_modules/`
 
@@ -174,6 +175,7 @@ export class FunctionModule {
       fetch: globalThis.fetch,
       global: null,
       __from_modules: [...__from_modules],
+      ObjectId: ObjectId,
     }
     sandbox.global = sandbox
     return sandbox
