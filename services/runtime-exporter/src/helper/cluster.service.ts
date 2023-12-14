@@ -79,29 +79,49 @@ export class ClusterService {
     }
 
     const metricsList: Metric[] = []
-    for (const item of res.items) {
-      let appid: string
-      if (app === 'RUNTIME') {
-        appid = item.metadata.labels[ClusterService.LABEL_KEY_APP_ID]
-      } else {
-        appid = item.metadata.labels['app.kubernetes.io/instance']
-      }
-      const podName = item.metadata.name
-      for (const container of item.containers) {
-        const containerName = container.name
-        // millicores
-        const cpu = Number(quantityToScalar(container.usage.cpu || 0))
-        // bytes
-        const memory = Number(quantityToScalar(container.usage.memory || 0))
 
-        const metric: Metric = {
-          cpu: cpu,
-          memory: memory,
-          appid: appid,
-          containerName: containerName,
-          podName: podName,
+    if (app === 'RUNTIME') {
+      for (const item of res.items) {
+        const appid: string =
+          item.metadata.labels[ClusterService.LABEL_KEY_APP_ID]
+        const podName = item.metadata.name
+        for (const container of item.containers) {
+          // millicores
+          const cpu = Number(quantityToScalar(container.usage.cpu || 0))
+          // bytes
+          const memory = Number(quantityToScalar(container.usage.memory || 0))
+
+          const metric: Metric = {
+            cpu: cpu,
+            memory: memory,
+            appid: appid,
+            containerName: container.name,
+            podName: podName,
+          }
+          metricsList.push(metric)
         }
-        metricsList.push(metric)
+      }
+    } else {
+      for (const item of res.items) {
+        const appid: string = item.metadata.labels['app.kubernetes.io/instance']
+        const podName = item.metadata.name
+        for (const container of item.containers) {
+          if (container.name === 'mongodb') {
+            // millicores
+            const cpu = Number(quantityToScalar(container.usage.cpu || 0))
+            // bytes
+            const memory = Number(quantityToScalar(container.usage.memory || 0))
+
+            const metric: Metric = {
+              cpu: cpu,
+              memory: memory,
+              appid: appid,
+              containerName: container.name,
+              podName: podName,
+            }
+            metricsList.push(metric)
+          }
+        }
       }
     }
 
