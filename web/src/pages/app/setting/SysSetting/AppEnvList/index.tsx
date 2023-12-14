@@ -11,6 +11,7 @@ import useGlobalStore from "@/pages/globalStore";
 
 const AppEnvList = (props: { onClose?: () => {} }) => {
   const [env, setEnv] = useState<Array<{ name: string; value: string }>>([]);
+  const [pureEnv, setPureEnv] = useState("");
   const { isLoading, data } = useEnvironmentQuery((data) => {
     setEnv(data || []);
   });
@@ -25,7 +26,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
             <Spinner />
           </Center>
         ) : (
-          <ENVEditor env={env} setEnv={setEnv} />
+          <ENVEditor env={env} setEnv={setEnv} setPureEnv={setPureEnv} />
         )}
         <ButtonGroup className="mt-4 h-8 space-x-4 self-end">
           <Button
@@ -42,10 +43,28 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
             w={24}
             variant="secondary"
             onClick={async () => {
-              const res = await updateEnvironmentMutation.mutateAsync(env);
-              if (!res.error) {
-                props.onClose && props.onClose();
-                globalStore.showSuccess(t("UpdateSuccess"));
+              if (pureEnv) {
+                const newEnv = pureEnv
+                  ?.split("\n")
+                  .map((item) => {
+                    const [name, ...value] = item.split("=");
+                    return {
+                      name,
+                      value: value.join("="),
+                    };
+                  })
+                  .filter((item) => item.name !== "");
+                const res = await updateEnvironmentMutation.mutateAsync(newEnv);
+                if (!res.error) {
+                  props.onClose && props.onClose();
+                  globalStore.showSuccess(t("UpdateSuccess"));
+                }
+              } else {
+                const res = await updateEnvironmentMutation.mutateAsync(env);
+                if (!res.error) {
+                  props.onClose && props.onClose();
+                  globalStore.showSuccess(t("UpdateSuccess"));
+                }
               }
             }}
           >

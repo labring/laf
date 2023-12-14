@@ -1,42 +1,94 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Spinner, Tooltip } from "@chakra-ui/react";
 
 import { createUrl, createWebSocketAndStartClient } from "@/components/Editor/LanguageClient";
 
 import useFunctionStore from "@/pages/app/functions/store";
+import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
+
 export default function LSPBar() {
   const { t } = useTranslation();
   const { LSPStatus, setLSPStatus } = useFunctionStore();
   const { currentApp } = useGlobalStore();
   const baseUrl = currentApp.host;
   const url = useMemo(() => createUrl(baseUrl, "/_/lsp"), [baseUrl]);
+  const { commonSettings } = useCustomSettingStore();
+  const [lspWebSocket, setLspWebSocket] = useState<WebSocket>();
+
+  useEffect(() => {
+    if (!commonSettings.useLSP) {
+      lspWebSocket?.close();
+    }
+  }, [commonSettings.useLSP, lspWebSocket]);
+
+  const handleWebSocketClick = () => {
+    const newLspWebSocket = createWebSocketAndStartClient(url, currentApp.develop_token);
+    setLspWebSocket(newLspWebSocket);
+    setLSPStatus("initializing");
+
+    newLspWebSocket.addEventListener("message", (event) => {
+      const message = JSON.parse(event.data);
+      if (message.method === "textDocument/publishDiagnostics") {
+        setLSPStatus("ready");
+        return;
+      }
+    });
+
+    newLspWebSocket.addEventListener("close", () => {
+      setLSPStatus("closed");
+    });
+
+    newLspWebSocket.addEventListener("error", () => {
+      setLSPStatus("error");
+      lspWebSocket?.close();
+    });
+
+    window.onbeforeunload = () => {
+      // On page reload/exit, close web socket connection
+      newLspWebSocket.close();
+      setLSPStatus("closed");
+    };
+
+    return () => {
+      // Cleanup function for component unmount or page unload
+      newLspWebSocket.close();
+      setLSPStatus("closed");
+    };
+  };
 
   return (
     <div>
-      {LSPStatus === "ready" && null}
-      {LSPStatus === "initializing" && (
+      {!commonSettings.useLSP && (
+        <Tooltip label={t("LSP.EnableLanguageServer")}>
+          <div className="flex items-center text-warn-600">
+            <span>{t("LSP.LanguageServerNotEnable")}</span>
+          </div>
+        </Tooltip>
+      )}
+      {commonSettings.useLSP && LSPStatus === "ready" && null}
+      {commonSettings.useLSP && LSPStatus === "initializing" && (
         <div className="flex items-center text-grayModern-600">
           <Spinner size="xs" className="mr-2" />
           <span>{t("LSP.InitializingLanguageServer")}</span>
         </div>
       )}
-      {LSPStatus === "closed" && (
-        <Tooltip label={t("LSP.StartLanguageServer")}>
-          <div className="flex items-center text-warn-600">
+      {commonSettings.useLSP && LSPStatus === "closed" && (
+        <Tooltip label={t("LSP.InitLanguageServer")}>
+          <div
+            className="flex cursor-pointer items-center text-warn-600"
+            onClick={handleWebSocketClick}
+          >
             <span>{t("LSP.LanguageServerClosed")}</span>
           </div>
         </Tooltip>
       )}
-      {LSPStatus === "error" && (
+      {commonSettings.useLSP && LSPStatus === "error" && (
         <Tooltip label={t("LSP.InitLanguageServer")}>
           <div
             className="flex cursor-pointer items-center text-red-600"
-            onClick={() => {
-              createWebSocketAndStartClient(url, currentApp.develop_token);
-              setLSPStatus("initializing");
-            }}
+            onClick={handleWebSocketClick}
           >
             <span>{t("LSP.LanguageServerError")}</span>
           </div>

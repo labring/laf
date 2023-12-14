@@ -41,11 +41,11 @@ const AddEnvironmentsModal = (props: {
 
           <ModalBody>
             <div
-              className={clsx("min-h-[200px] flex-1 rounded border", {
+              className={clsx("min-h-[200px] flex-1 rounded", {
                 "border-frostyNightfall-200": !(colorMode === "dark"),
               })}
             >
-              <ENVEditor env={environments} setEnv={setEnvironments} />
+              <ENVEditor env={environments} setEnv={setEnvironments} showSwitch={false} />
             </div>
           </ModalBody>
           <ModalFooter>

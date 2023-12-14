@@ -42,7 +42,7 @@ function FunctionEditor(props: {
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
   const globalStore = useGlobalStore((state) => state);
-  const { allFunctionList, setLSPStatus } = useFunctionStore((state) => state);
+  const { allFunctionList, setLSPStatus, LSPStatus } = useFunctionStore((state) => state);
   const functionCache = useFunctionCache();
   const [functionList, setFunctionList] = useState(allFunctionList);
   const baseUrl = globalStore.currentApp.host;
@@ -70,20 +70,24 @@ function FunctionEditor(props: {
       }
     });
 
-    lspWebSocket.addEventListener("error", (error) => {
-      console.log("error", error);
+    lspWebSocket.addEventListener("close", () => {
+      setLSPStatus("closed");
+    });
+
+    lspWebSocket.addEventListener("error", () => {
       setLSPStatus("error");
       lspWebSocket?.close();
     });
 
     window.onbeforeunload = () => {
       // On page reload/exit, close web socket connection
-      lspWebSocket?.close();
+      lspWebSocket.close();
       setLSPStatus("closed");
     };
+
     return () => {
       // On component unmount, close web socket connection
-      lspWebSocket?.close();
+      lspWebSocket.close();
       setLSPStatus("closed");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -100,7 +104,7 @@ function FunctionEditor(props: {
     return () => {
       window.removeEventListener("unhandledrejection", listener);
     };
-  }, []);
+  }, [LSPStatus]);
 
   useEffect(() => {
     if (monacoEl && !editorRef.current) {

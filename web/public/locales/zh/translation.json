@@ -237,7 +237,8 @@
     "isOpenLanguageServer": "是否开启语言服务（开启后会占用更多的 CPU 和内存）",
     "Editor": "编辑器",
     "FuncList": "函数列表",
-    "OldLogs": "旧版日志"
+    "OldLogs": "旧版日志",
+    "EditorMode": "使用编辑器模式"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -700,10 +701,12 @@
   "AddENV": "新增环境变量",
   "LSP": {
     "InitLanguageServer": "点击以重新连接语言服务器",
-    "LanguageServerClosed": "语言服务器关闭",
+    "LanguageServerClosed": "语言服务器断开",
     "LanguageServerError": "语言服务器错误",
     "InitializingLanguageServer": "正在初始化语言服务",
-    "StartLanguageServer": "点击左侧”设置”启用语言服务器"
+    "StartLanguageServer": "点击左侧”设置”启用语言服务器",
+    "EnableLanguageServer": "点击左侧”设置”启用语言服务器",
+    "LanguageServerNotEnable": "未启用语言服务"
   },
   "KeyAlreadyExists": "key 已经存在",
   "SettingPanal": {

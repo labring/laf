@@ -237,7 +237,8 @@
     "isOpenLanguageServer": "Enable or Close Language server (Note that enabling this feature may consume more CPU and memory)",
     "Editor": "Editor",
     "FuncList": "Function List",
-    "OldLogs": "Old Logs"
+    "OldLogs": "Old Logs",
+    "EditorMode": "Editor Mode"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -700,10 +701,12 @@
   "AddENV": "Add ENV",
   "LSP": {
     "InitLanguageServer": "Click to reconnect to language server",
-    "LanguageServerClosed": "Language Server Closed",
+    "LanguageServerClosed": "Language Server Disconnected",
     "LanguageServerError": "Language Server Error",
     "InitializingLanguageServer": "Initializing Language Server",
-    "StartLanguageServer": "Click on 'Settings' on the left to enable the language server."
+    "StartLanguageServer": "Click on 'Settings' on the left to enable the language server.",
+    "EnableLanguageServer": "Click on 'Settings' on the left to enable the language server.",
+    "LanguageServerNotEnable": "Language server not enabled"
   },
   "KeyAlreadyExists": "Key already exists",
   "SettingPanal": {

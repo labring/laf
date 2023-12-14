@@ -28,7 +28,7 @@ function EditorPanel() {
   return (
     <Panel className="flex-1 flex-grow !rounded-tl-none !px-0">
       {!functionListQuery.isFetching && functionListQuery.data?.data?.length === 0 && (
-        <EmptyBox className="mt-24">
+        <EmptyBox className="h-full w-full">
           <>
             <div className="flex items-center justify-center">
               <span className="text-[#828289]">{t("NoFunctionYet")}</span>
@@ -39,30 +39,32 @@ function EditorPanel() {
           </>
         </EmptyBox>
       )}
-      {commonSettings.useLSP ? (
-        <FunctionEditor
-          colorMode={colorMode}
-          className="flex-grow"
-          path={`${RUNTIMES_PATH}/${currentFunction?.name}.ts`}
-          onChange={(code, pos) => {
-            updateFunctionCode(currentFunction, code || "");
-            functionCache.setCache(currentFunction!._id, code || "");
-            functionCache.setPositionCache(currentFunction!.name, JSON.stringify(pos));
-          }}
-          fontSize={commonSettings.fontSize}
-        />
-      ) : (
-        <TSEditor
-          value={functionCache.getCache(currentFunction!._id, currentFunction!.source?.code)}
-          path={`${RUNTIMES_PATH}/${currentFunction?.name}.ts`}
-          onChange={(value) => {
-            updateFunctionCode(currentFunction, value || "");
-            functionCache.setCache(currentFunction!._id, value || "");
-          }}
-          fontSize={commonSettings.fontSize}
-          colorMode={colorMode}
-        />
-      )}
+      <div className={functionListQuery.data?.data?.length !== 0 ? "h-full" : "hidden"}>
+        {commonSettings.useLSP ? (
+          <FunctionEditor
+            colorMode={colorMode}
+            className="h-full flex-grow"
+            path={`${RUNTIMES_PATH}/${currentFunction?.name}.ts`}
+            onChange={(code, pos) => {
+              updateFunctionCode(currentFunction, code || "");
+              functionCache.setCache(currentFunction!._id, code || "");
+              functionCache.setPositionCache(currentFunction!.name, JSON.stringify(pos));
+            }}
+            fontSize={commonSettings.fontSize}
+          />
+        ) : (
+          <TSEditor
+            value={functionCache.getCache(currentFunction!._id, currentFunction!.source?.code)}
+            path={`${RUNTIMES_PATH}/${currentFunction?.name}.ts`}
+            onChange={(value) => {
+              updateFunctionCode(currentFunction, value || "");
+              functionCache.setCache(currentFunction!._id, value || "");
+            }}
+            fontSize={commonSettings.fontSize}
+            colorMode={colorMode}
+          />
+        )}
+      </div>
     </Panel>
   );
 }

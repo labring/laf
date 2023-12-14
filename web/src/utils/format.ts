@@ -65,8 +65,7 @@ export function formatLimitCPU(cpu: number) {
 }
 
 export function formatLimitMemory(memory: number) {
-  // if memory > 1024, return GB, else return MB
-  return memory > 1024 ? memory / 1024 + t("Unit.GB") : memory + t("Unit.MB");
+  return memory >= 1024 ? memory / 1024 + t("Unit.GB") : memory + t("Unit.MB");
 }
 
 export function formatLimitCapacity(capacity: number) {
