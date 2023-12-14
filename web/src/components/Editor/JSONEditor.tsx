@@ -1,5 +1,5 @@
 import Editor from "@monaco-editor/react";
-import { LineNumbersType } from "vscode/vscode/src/vs/editor/common/config/editorOptions";
+import { LineNumbersType } from "vscode/vscode/vs/editor/common/config/editorOptions";
 
 import { COLOR_MODE } from "@/constants";
 

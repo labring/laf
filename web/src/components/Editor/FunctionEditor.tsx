@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import {
   RegisteredFileSystemProvider,
   RegisteredMemoryFile,
   registerFileSystemOverlay,
-} from "vscode/service-override/files";
-import { Position } from "vscode/vscode/src/vs/editor/common/core/position";
+} from "@codingame/monaco-vscode-files-service-override";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 import { COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
 
@@ -31,7 +30,7 @@ const updateModel = (path: string, editorRef: any) => {
 
 function FunctionEditor(props: {
   className?: string;
-  onChange?: (code: string | undefined, pos: Position | undefined) => void;
+  onChange?: (code: string | undefined, pos: any) => void;
   path: string;
   colorMode?: string;
   fontSize?: number;
@@ -163,7 +162,7 @@ function FunctionEditor(props: {
     subscriptionRef.current?.dispose();
     if (onChange) {
       subscriptionRef.current = editorRef.current?.onDidChangeModelContent((event) => {
-        onChange(editorRef.current?.getValue(), editorRef.current?.getPosition() || undefined);
+        onChange(editorRef.current?.getValue(), editorRef.current?.getPosition());
       });
     }
   }, [onChange]);

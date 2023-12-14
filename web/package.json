@@ -17,14 +17,15 @@
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.6.1",
     "@codingame/monaco-vscode-configuration-service-override": "~1.82.3",
+    "@codingame/monaco-vscode-files-service-override": "^1.83.2",
     "@codingame/monaco-vscode-textmate-service-override": "~1.82.3",
     "@codingame/monaco-vscode-theme-defaults-default-extension": "~1.82.3",
     "@codingame/monaco-vscode-theme-service-override": "~1.82.3",
     "@codingame/monaco-vscode-typescript-basics-default-extension": "~1.82.3",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
-    "@patternfly/react-log-viewer": "^5.0.0",
     "@monaco-editor/react": "^4.6.0",
+    "@patternfly/react-log-viewer": "^5.0.0",
     "@sentry/integrations": "^7.73.0",
     "@sentry/react": "^7.73.0",
     "@tanstack/react-query": "^4.29.7",
@@ -43,9 +44,9 @@
     "immer": "^10.0.2",
     "laf-client-sdk": "^1.0.0-beta.12",
     "lodash": "^4.17.21",
-    "pako": "^2.1.0",
     "monaco-editor": "~0.43.0",
     "monaco-languageclient": "~6.5.1",
+    "pako": "^2.1.0",
     "qrcode.react": "^3.1.0",
     "react": "18.2.0",
     "react-datepicker": "^4.11.0",
@@ -97,5 +98,13 @@
     "*.{ts,tsx,js}": "eslint --fix",
     "*.css": "stylelint --fix",
     "*.scss": "stylelint --syntax=scss --fix"
+  },
+  "overrides": {
+    "monaco-editor": "$monaco-editor",
+    "vscode": "$vscode"
+  },
+  "resolutions": {
+    "monaco-editor": "npm:@codingame/monaco-editor-treemended@>=1.82.3 <1.83.0",
+    "vscode": "npm:@codingame/monaco-vscode-api@>=1.82.3 <1.83.0"
   }
 }
