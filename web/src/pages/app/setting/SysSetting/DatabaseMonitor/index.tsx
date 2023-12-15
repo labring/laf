@@ -6,28 +6,34 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ErrorIcon } from "@/components/CommonIcon";
 
-import { MonitorDataType } from "../../../mods/StatusBar/MonitorBar";
-
 import AreaCard from "./AreaCard";
-import { dataAll } from "./data";
 import PieCard from "./PieCard";
 
-import { MonitorControllerGetData } from "@/apis/v1/monitor";
+import {
+  DedicatedDatabaseMonitorControllerGetConnection,
+  DedicatedDatabaseMonitorControllerGetPerformance,
+  DedicatedDatabaseMonitorControllerGetResource,
+} from "@/apis/v1/apps";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function AppMonitor() {
   const { t } = useTranslation();
   const { currentApp } = useGlobalStore();
-  const { limitCPU, limitMemory, databaseCapacity, storageCapacity } = currentApp.bundle.resource;
+  const {
+    "dedicatedDatabase.limitCPU": limitCPU,
+    "dedicatedDatabase.limitMemory": limitMemory,
+    "dedicatedDatabase.capacity": databaseCapacity,
+  } = currentApp.bundle.resource;
 
-  const [lineNumber, setLineNumber] = useState(0);
+  const appid = currentApp.bundle.appid;
+
+  const [podName, setPodName] = useState(t("All"));
   const queryClient = useQueryClient();
 
-  const { isLoading, data: monitorData } = useQuery(
-    ["useGetMonitorDataQuery"],
+  const { isLoading: isConnectionLoading, data: connectionData } = useQuery(
+    ["dedicatedDatabaseMonitorControllerGetConnection"],
     () => {
-      return MonitorControllerGetData({
-        q: MonitorDataType,
+      return DedicatedDatabaseMonitorControllerGetConnection({
         step: 60,
         type: "range",
       });
@@ -37,68 +43,119 @@ export default function AppMonitor() {
     },
   );
 
-  const chartLines = useMemo(() => {
-    const cpuData = monitorData?.data?.cpuUsage?.map((item: any) => item.metric.pod);
-    const memoryData = monitorData?.data?.memoryUsage?.map((item: any) => item.metric.pod);
-    if (!cpuData) return [t("All")];
-    if (cpuData.length === 1 && memoryData.length === 1) return cpuData;
-    return cpuData.length > memoryData.length ? [t("All"), ...cpuData] : [t("All"), ...memoryData];
-  }, [monitorData, t]);
+  const { isLoading: isResourceLoading, data: resourceData } = useQuery(
+    ["dedicatedDatabaseMonitorControllerGetResource"],
+    () => {
+      return DedicatedDatabaseMonitorControllerGetResource({
+        step: 60,
+        type: "range",
+      });
+    },
+    {
+      refetchInterval: 60000,
+    },
+  );
+
+  const { isLoading: isPerformanceLoading, data: performanceData } = useQuery(
+    ["dedicatedDatabaseMonitorControllerGetPerformance"],
+    () => {
+      return DedicatedDatabaseMonitorControllerGetPerformance({
+        step: 60,
+        type: "range",
+      });
+    },
+    {
+      refetchInterval: 60000,
+    },
+  );
+
+  const cpuData: {
+    metric: Record<string, string>;
+    values: Array<[number, string]>;
+  }[] = resourceData?.data?.cpu;
+  const memoryData: {
+    metric: Record<string, string>;
+    values: Array<[number, string]>;
+  }[] = resourceData?.data?.memory;
+  const podList = useMemo(() => {
+    const cpuPods = cpuData.map((item) => item.metric.pod);
+    const memoryPods = memoryData.map((item) => item.metric.pod);
+
+    const combinedPods = [...cpuPods, ...memoryPods];
+    const uniquePods = [...new Set(combinedPods)];
+    if (!uniquePods || uniquePods.length === 0) return [t("All")];
+    return [t("All"), ...uniquePods];
+  }, [cpuData, memoryData, t]);
 
   return (
     <Tabs variant="enclosed">
       <TabList>
         <Tab>{t("DatabaseMonitor.Resource")}</Tab>
         <Tab>{t("DatabaseMonitor.Performance")}</Tab>
-        <Tab>Three</Tab>
       </TabList>
       <TabPanels>
         <TabPanel>
           <div className="flex w-full">
-            {isLoading ? (
-              <Center className="h-[400px] w-full">
+            {isConnectionLoading || isResourceLoading ? (
+              <Center className="h-[430px] w-full">
                 <Spinner />
               </Center>
-            ) : monitorData?.data && Object.keys(monitorData?.data).length !== 0 ? (
+            ) : connectionData?.data &&
+              Object.keys(connectionData?.data).length !== 0 &&
+              resourceData?.data &&
+              Object.keys(resourceData?.data).length !== 0 &&
+              limitCPU !== 0 ? (
               <>
-                <div className="mr-4 mt-10 h-[413px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
+                <div className="mr-3 mt-5 h-[430px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
                   <AreaCard
-                    data={monitorData?.data?.cpuUsage}
+                    data={resourceData?.data?.cpu}
                     strokeColor="#47C8BF"
                     fillColor="#E6F6F6"
-                    setLineNumber={setLineNumber}
-                    lineNumber={lineNumber}
-                    chartLines={chartLines}
+                    setPodName={setPodName}
+                    podName={podName}
+                    podList={podList}
                     title="CPU"
-                    unit="Core"
+                    unit="core"
                     maxValue={limitCPU / 1000}
-                    className="h-1/2 p-4"
+                    className="h-1/3 p-4"
                   />
                   <AreaCard
-                    data={monitorData?.data?.memoryUsage}
+                    data={resourceData?.data?.memory}
                     strokeColor="#9A8EE0"
                     fillColor="#F2F1FB"
                     title={t("Spec.RAM")}
                     unit="MB"
-                    chartLines={chartLines}
+                    podList={podList}
                     maxValue={limitMemory}
-                    lineNumber={lineNumber}
-                    className="h-1/2 p-4"
+                    podName={podName}
+                    className="h-1/3 p-4"
+                  />
+                  <AreaCard
+                    data={connectionData?.data?.connections}
+                    strokeColor="#9A8EE0"
+                    fillColor="#F2F1FB"
+                    title={t("DatabaseMonitor.Connections")}
+                    unit=""
+                    podList={podList}
+                    maxValue={0}
+                    podName={podName}
+                    className="h-1/3 p-4"
                   />
                 </div>
 
-                {/* <div className="mr-4 mt-10 h-[413px] w-full rounded-xl border bg-[#F8FAFB] pb-4"> */}
-                <div className="mr-4 mt-10 h-[413px] w-full rounded-xl border bg-[#F8FAFB] pb-0">
+                <div className="mt-5 h-[430px] w-full rounded-xl pb-0">
                   <PieCard
-                    data={monitorData?.data?.databaseUsage}
+                    data={resourceData?.data?.dataSize || []}
+                    // data={resourceData?.data?.databaseUsage}
                     maxValue={databaseCapacity}
-                    title={t("Spec.Database")}
+                    title={t("DatabaseMonitor.DataSize")}
                     colors={["#47C8BF", "#D5D6E1"]}
+                    appid={appid}
                   />
                 </div>
               </>
             ) : (
-              <Center className="h-[400px] w-full">
+              <Center className="h-[430px] w-full">
                 <span className="flex flex-col items-center">
                   <ErrorIcon boxSize={16} />
                   <span className="flex pt-2 text-xl">
@@ -107,7 +164,11 @@ export default function AppMonitor() {
                       className="cursor-pointer text-primary-600"
                       onClick={async () => {
                         await queryClient.invalidateQueries({
-                          queryKey: ["useGetMonitorDataQuery"],
+                          queryKey: [
+                            "dedicatedDatabaseMonitorControllerGetResource",
+                            "dedicatedDatabaseMonitorControllerGetPerformance",
+                            "dedicatedDatabaseMonitorControllerGetConnection",
+                          ],
                           refetchType: "all",
                         });
                       }}
@@ -122,50 +183,51 @@ export default function AppMonitor() {
         </TabPanel>
         <TabPanel>
           <div className="flex w-full">
-            {isLoading ? (
+            {isPerformanceLoading ? (
               <Center className="h-[400px] w-full">
                 <Spinner />
               </Center>
-            ) : monitorData?.data && Object.keys(monitorData?.data).length !== 0 ? (
-              <div className="mr-4 mt-10 h-[413px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
+            ) : performanceData?.data &&
+              Object.keys(performanceData?.data).length !== 0 &&
+              limitCPU !== 0 ? (
+              <div className="mt-6 h-[430px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
                 <AreaCard
-                  data={monitorData?.data?.cpuUsage}
+                  data={performanceData?.data?.documentOperations}
                   strokeColor="#47C8BF"
                   fillColor="#E6F6F6"
-                  setLineNumber={setLineNumber}
-                  lineNumber={lineNumber}
-                  chartLines={chartLines}
-                  title="CPU"
-                  // title={t("DatabaseMonitor.DocumentOperand")}
-                  unit="Core"
-                  maxValue={undefined}
+                  setPodName={setPodName}
+                  podName={podName}
+                  podList={podList}
+                  title={t("DatabaseMonitor.DocumentOperand")}
+                  unit=""
+                  maxValue={0}
                   className="h-1/3 p-4"
                 />
                 <AreaCard
-                  data={monitorData?.data?.memoryUsage}
+                  data={performanceData?.data?.queryOperations}
                   strokeColor="#9A8EE0"
                   fillColor="#F2F1FB"
                   title={t("Spec.QueryOperand")}
-                  unit="MB"
-                  chartLines={chartLines}
-                  maxValue={undefined}
-                  lineNumber={lineNumber}
+                  unit=""
+                  podList={podList}
+                  maxValue={0}
+                  podName={podName}
                   className="h-1/3 p-4"
                 />
                 <AreaCard
-                  data={monitorData?.data?.memoryUsage}
+                  data={performanceData?.data?.pageFaults}
                   strokeColor="#9A8EE0"
                   fillColor="#F2F1FB"
                   title={t("DatabaseMonitor.PageError")}
-                  unit="MB"
-                  chartLines={chartLines}
-                  maxValue={undefined}
-                  lineNumber={lineNumber}
+                  unit=""
+                  podList={podList}
+                  maxValue={0}
+                  podName={podName}
                   className="h-1/3 p-4"
                 />
               </div>
             ) : (
-              <Center className="h-[400px] w-full">
+              <Center className="h-[430px] w-full">
                 <span className="flex flex-col items-center">
                   <ErrorIcon boxSize={16} />
                   <span className="flex pt-2 text-xl">
@@ -174,7 +236,11 @@ export default function AppMonitor() {
                       className="cursor-pointer text-primary-600"
                       onClick={async () => {
                         await queryClient.invalidateQueries({
-                          queryKey: ["useGetMonitorDataQuery"],
+                          queryKey: [
+                            "dedicatedDatabaseMonitorControllerGetResource",
+                            "dedicatedDatabaseMonitorControllerGetPerformance",
+                            "dedicatedDatabaseMonitorControllerGetConnection",
+                          ],
                           refetchType: "all",
                         });
                       }}
@@ -186,9 +252,6 @@ export default function AppMonitor() {
               </Center>
             )}
           </div>
-        </TabPanel>
-        <TabPanel>
-          <p>three!</p>
         </TabPanel>
       </TabPanels>
     </Tabs>

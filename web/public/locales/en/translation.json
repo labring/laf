@@ -701,6 +701,7 @@
     "DocumentOperand": "Document operands",
     "PageError": "Page Error(oops/s)",
     "Resource": "Resources",
-    "Performance": "Performances"
+    "Performance": "Performances",
+    "DataSize": "Capacity"
   }
 }

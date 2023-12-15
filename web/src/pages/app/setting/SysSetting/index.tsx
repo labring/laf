@@ -22,11 +22,32 @@ import DatabaseMonitor from "./DatabaseMonitor";
 
 import { TApplicationDetail } from "@/apis/typing";
 import SettingModal from "@/pages/app/setting";
+import useGlobalStore from "@/pages/globalStore";
+
 export default function SysSetting(props: {
   children: React.ReactElement;
   setApp?: TApplicationDetail;
   currentTab?: string;
 }) {
+  const { currentApp } = useGlobalStore();
+
+  const monitorItems = [
+    {
+      key: APP_SETTING_KEY.MONITOR_RUNTIME,
+      name: t("SettingPanel.RuntimeMonitor"),
+      component: <AppMonitor />,
+      icon: <MonitorIcon boxSize={4} />,
+    },
+  ];
+  if (currentApp.bundle.resource["dedicatedDatabase.limitCPU"] !== 0) {
+    monitorItems.push({
+      key: APP_SETTING_KEY.MONITOR_DATABASE,
+      name: t("SettingPanel.DataBaseMonitor"),
+      component: <DatabaseMonitor />,
+      icon: <MonitorIcon boxSize={4} />,
+    });
+  }
+
   return (
     <SettingModal
       setApp={props.setApp}
@@ -65,20 +86,7 @@ export default function SysSetting(props: {
         },
         {
           title: t("SettingPanel.MonitorSetting"),
-          items: [
-            {
-              key: APP_SETTING_KEY.MONITOR_RUNTIME,
-              name: t("SettingPanel.RuntimeMonitor"),
-              component: <AppMonitor />,
-              icon: <MonitorIcon boxSize={4} />,
-            },
-            {
-              key: APP_SETTING_KEY.MONITOR_DATABASE,
-              name: t("SettingPanel.DataBaseMonitor"),
-              component: <DatabaseMonitor />,
-              icon: <MonitorIcon boxSize={4} />,
-            },
-          ],
+          items: monitorItems,
         },
         {
           title: t("SettingPanel.ClientSetting"),

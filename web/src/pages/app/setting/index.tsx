@@ -97,7 +97,6 @@ const SettingModal = (props: {
                   {headerTitle || t("SettingPanel.Setting")}
                 </span>
                 <div className="relative left-6 top-6">
-                  {/* settings */}
                   {tabMatch.map((tab) => {
                     return (
                       <div key={tab.title}>
@@ -131,10 +130,10 @@ const SettingModal = (props: {
                       </div>
                     );
                   })}
-                  {/*  */}
                 </div>
               </SectionList>
-              <div className="ml-[236px] w-full overflow-hidden p-2">
+              {/* <div className="ml-[236px] w-full overflow-hidden p-2"> */}
+              <div className="ml-[236px] w-full  p-2">
                 {React.cloneElement(item?.component || <></>, {
                   onClose,
                 })}

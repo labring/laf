@@ -7,45 +7,46 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from "@/utils/request";
+import request from '@/utils/request';
 import useGlobalStore from "@/pages/globalStore";
 
 /**
- * Get site settings
- */
+* Get site settings
+*/
 export async function SettingControllerGetSettings(
   params: Paths.SettingControllerGetSettings.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.SettingControllerGetSettings.Responses;
+    error: string;
+    data: Paths.SettingControllerGetSettings.Responses
 }> {
   // /v1/settings
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/settings`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Get one site setting by key
- */
+* Get one site setting by key
+*/
 export async function SettingControllerGetSettingByKey(
   params: Paths.SettingControllerGetSettingByKey.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.SettingControllerGetSettingByKey.Responses;
+    error: string;
+    data: Paths.SettingControllerGetSettingByKey.Responses
 }> {
   // /v1/settings/{key}
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/settings/${_params.key}`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
+

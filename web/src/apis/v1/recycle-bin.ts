@@ -7,85 +7,86 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from "@/utils/request";
+import request from '@/utils/request';
 import useGlobalStore from "@/pages/globalStore";
 
 /**
- * Delete function Recycle bin items
- */
+* Delete function Recycle bin items
+*/
 export async function FunctionRecycleBinControllerDeleteRecycleBinItems(
   params: Definitions.DeleteRecycleBinItemsDto,
 ): Promise<{
-  error: string;
-  data: Definitions.Number;
+    error: string;
+    data: Definitions.Number
 }> {
   // /v1/recycle-bin/{appid}/functions/delete
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/recycle-bin/${_params.appid}/functions/delete`, {
-    method: "POST",
-    data: params,
+    method: 'POST',
+    data : params,
   });
 }
 
 /**
- * Empty function Recycle bin items
- */
+* Empty function Recycle bin items
+*/
 export async function FunctionRecycleBinControllerEmptyRecycleBin(
   params: Paths.FunctionRecycleBinControllerEmptyRecycleBin.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.Number;
+    error: string;
+    data: Definitions.Number
 }> {
   // /v1/recycle-bin/{appid}/functions
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/recycle-bin/${_params.appid}/functions`, {
-    method: "DELETE",
-    data: params,
+    method: 'DELETE',
+    data : params,
   });
 }
 
 /**
- * Get cloud function recycle bin
- */
+* Get cloud function recycle bin
+*/
 export async function FunctionRecycleBinControllerGetRecycleBin(
   params: Paths.FunctionRecycleBinControllerGetRecycleBin.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.FunctionRecycleBinControllerGetRecycleBin.Responses;
+    error: string;
+    data: Paths.FunctionRecycleBinControllerGetRecycleBin.Responses
 }> {
   // /v1/recycle-bin/{appid}/functions
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/recycle-bin/${_params.appid}/functions`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * restore function Recycle bin items
- */
+* restore function Recycle bin items
+*/
 export async function FunctionRecycleBinControllerRestoreRecycleBinItems(
   params: Definitions.RestoreRecycleBinItemsDto,
 ): Promise<{
-  error: string;
-  data: Definitions.Number;
+    error: string;
+    data: Definitions.Number
 }> {
   // /v1/recycle-bin/{appid}/functions/restore
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/recycle-bin/${_params.appid}/functions/restore`, {
-    method: "POST",
-    data: params,
+    method: 'POST',
+    data : params,
   });
 }
+

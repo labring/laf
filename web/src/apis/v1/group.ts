@@ -7,301 +7,306 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from "@/utils/request";
+import request from '@/utils/request';
 import useGlobalStore from "@/pages/globalStore";
 
 /**
- * Find internal group of the application
- */
+* Find internal group of the application
+*/
 export async function GroupControllerFindGroupByAppId(
   params: Paths.GroupControllerFindGroupByAppId.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.Group;
+    error: string;
+    data: Definitions.Group
 }> {
   // /v1/group/application/{appid}/group
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/application/${_params.appid}/group`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Get group by invite code
- */
+* Get group by invite code
+*/
 export async function GroupControllerFindGroupByInviteCode(
   params: Paths.GroupControllerFindGroupByInviteCode.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.GetGroupInviteCodeDetailDto;
+    error: string;
+    data: Definitions.GetGroupInviteCodeDetailDto
 }> {
   // /v1/group/invite/code/{code}/group
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/invite/code/${_params.code}/group`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Get group list of the user
- */
+* Get group list of the user
+*/
 export async function GroupControllerFindAll(
   params: Paths.GroupControllerFindAll.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.GroupControllerFindAll.Responses;
+    error: string;
+    data: Paths.GroupControllerFindAll.Responses
 }> {
   // /v1/group
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Create group for the user
- */
-export async function GroupControllerCreate(params: Definitions.CreateGroupDto): Promise<{
-  error: string;
-  data: Definitions.Group;
+* Create group for the user
+*/
+export async function GroupControllerCreate(
+  params: Definitions.CreateGroupDto,
+): Promise<{
+    error: string;
+    data: Definitions.Group
 }> {
   // /v1/group
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group`, {
-    method: "POST",
-    data: params,
+    method: 'POST',
+    data : params,
   });
 }
 
 /**
- * Delete a group
- */
+* Delete a group
+*/
 export async function GroupControllerDelete(
   params: Paths.GroupControllerDelete.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.Group;
+    error: string;
+    data: Definitions.Group
 }> {
   // /v1/group/{groupId}
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/${_params.groupId}`, {
-    method: "DELETE",
-    data: params,
+    method: 'DELETE',
+    data : params,
   });
 }
 
 /**
- * Get detail of a group
- */
+* Get detail of a group
+*/
 export async function GroupControllerFindOne(
   params: Paths.GroupControllerFindOne.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.Group;
+    error: string;
+    data: Definitions.Group
 }> {
   // /v1/group/{groupId}
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/${_params.groupId}`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Update group
- */
-export async function GroupControllerUpdateGroup(params: Definitions.UpdateGroupDto): Promise<{
-  error: string;
-  data: Definitions.Group;
+* Update group
+*/
+export async function GroupControllerUpdateGroup(
+  params: Definitions.UpdateGroupDto,
+): Promise<{
+    error: string;
+    data: Definitions.Group
 }> {
   // /v1/group/{groupId}
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/${_params.groupId}`, {
-    method: "PATCH",
-    data: params,
+    method: 'PATCH',
+    data : params,
   });
 }
 
 /**
- * Get group invite code
- */
+* Get group invite code
+*/
 export async function GroupInviteControllerGetInviteCode(
   params: Paths.GroupInviteControllerGetInviteCode.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.GroupInviteControllerGetInviteCode.Responses;
+    error: string;
+    data: Paths.GroupInviteControllerGetInviteCode.Responses
 }> {
   // /v1/group/{groupId}/invite/code
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/${_params.groupId}/invite/code`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Update group invite code
- */
+* Update group invite code
+*/
 export async function GroupInviteControllerGenerateInviteCode(
   params: Definitions.GenerateGroupInviteCodeDto,
 ): Promise<{
-  error: string;
-  data: Definitions.GroupInviteCode;
+    error: string;
+    data: Definitions.GroupInviteCode
 }> {
   // /v1/group/{groupId}/invite/code
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/${_params.groupId}/invite/code`, {
-    method: "POST",
-    data: params,
+    method: 'POST',
+    data : params,
   });
 }
 
 /**
- * Delete group invite code
- */
+* Delete group invite code
+*/
 export async function GroupInviteControllerDeleteInviteCode(
   params: Paths.GroupInviteControllerDeleteInviteCode.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.GroupInviteCode;
+    error: string;
+    data: Definitions.GroupInviteCode
 }> {
   // /v1/group/{groupId}/invite/code/{code}
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/${_params.groupId}/invite/code/${_params.code}`, {
-    method: "DELETE",
-    data: params,
+    method: 'DELETE',
+    data : params,
   });
 }
 
 /**
- * Get members of a group
- */
+* Get members of a group
+*/
 export async function GroupMemberControllerFindMembers(
   params: Paths.GroupMemberControllerFindMembers.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.GroupMemberControllerFindMembers.Responses;
+    error: string;
+    data: Paths.GroupMemberControllerFindMembers.Responses
 }> {
   // /v1/group/{groupId}/member
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/${_params.groupId}/member`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Join a group
- */
+* Join a group
+*/
 export async function GroupMemberControllerAddMember(
   params: Paths.GroupMemberControllerAddMember.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.GroupMember;
+    error: string;
+    data: Definitions.GroupMember
 }> {
   // /v1/group/{code}/member/join
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/${_params.code}/member/join`, {
-    method: "POST",
-    data: params,
+    method: 'POST',
+    data : params,
   });
 }
 
 /**
- * Remove a group member
- */
+* Remove a group member
+*/
 export async function GroupMemberControllerRemoveMember(
   params: Paths.GroupMemberControllerRemoveMember.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.GroupMember;
+    error: string;
+    data: Definitions.GroupMember
 }> {
   // /v1/group/{groupId}/member/{userId}
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/${_params.groupId}/member/${_params.userId}`, {
-    method: "DELETE",
-    data: params,
+    method: 'DELETE',
+    data : params,
   });
 }
 
 /**
- * Update the role of a member
- */
+* Update the role of a member
+*/
 export async function GroupMemberControllerUpdateMemberRole(
   params: Definitions.UpdateGroupMemberRoleDto,
 ): Promise<{
-  error: string;
-  data: Definitions.GroupMember;
+    error: string;
+    data: Definitions.GroupMember
 }> {
   // /v1/group/{groupId}/member/{userId}/role
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/${_params.groupId}/member/${_params.userId}/role`, {
-    method: "PATCH",
-    data: params,
+    method: 'PATCH',
+    data : params,
   });
 }
 
 /**
- * Leave a group
- */
+* Leave a group
+*/
 export async function GroupMemberControllerLeaveGroup(
   params: Paths.GroupMemberControllerLeaveGroup.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Definitions.GroupMember;
+    error: string;
+    data: Definitions.GroupMember
 }> {
   // /v1/group/{groupId}/member/leave
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/group/${_params.groupId}/member/leave`, {
-    method: "POST",
-    data: params,
+    method: 'POST',
+    data : params,
   });
 }
+

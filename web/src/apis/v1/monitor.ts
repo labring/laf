@@ -7,25 +7,26 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from "@/utils/request";
+import request from '@/utils/request';
 import useGlobalStore from "@/pages/globalStore";
 
 /**
- * Get monitor metrics data
- */
+* Get monitor metrics data
+*/
 export async function MonitorControllerGetData(
   params: Paths.MonitorControllerGetData.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.MonitorControllerGetData.Responses;
+    error: string;
+    data: Paths.MonitorControllerGetData.Responses
 }> {
   // /v1/monitor/{appid}/metrics
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/monitor/${_params.appid}/metrics`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
+

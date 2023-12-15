@@ -7,85 +7,86 @@
 //                                                                   //
 ///////////////////////////////////////////////////////////////////////
 /// <reference path = "api-auto.d.ts" />
-import request from "@/utils/request";
+import request from '@/utils/request';
 import useGlobalStore from "@/pages/globalStore";
 
 /**
- * Calculate pricing
- */
+* Calculate pricing
+*/
 export async function ResourceControllerCalculatePrice(
   params: Definitions.CalculatePriceDto,
 ): Promise<{
-  error: string;
-  data: Definitions.CalculatePriceResultDto;
+    error: string;
+    data: Definitions.CalculatePriceResultDto
 }> {
   // /v1/resources/price
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/resources/price`, {
-    method: "POST",
-    data: params,
+    method: 'POST',
+    data : params,
   });
 }
 
 /**
- * Get resource option list
- */
+* Get resource option list
+*/
 export async function ResourceControllerGetResourceOptions(
   params: Paths.ResourceControllerGetResourceOptions.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.ResourceControllerGetResourceOptions.Responses;
+    error: string;
+    data: Paths.ResourceControllerGetResourceOptions.Responses
 }> {
   // /v1/resources/resource-options
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/resources/resource-options`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Get resource option list by region id
- */
+* Get resource option list by region id
+*/
 export async function ResourceControllerGetResourceOptionsByRegionId(
   params: Paths.ResourceControllerGetResourceOptionsByRegionId.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.ResourceControllerGetResourceOptionsByRegionId.Responses;
+    error: string;
+    data: Paths.ResourceControllerGetResourceOptionsByRegionId.Responses
 }> {
   // /v1/resources/resource-options/{regionId}
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/resources/resource-options/${_params.regionId}`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
 
 /**
- * Get resource template list
- */
+* Get resource template list
+*/
 export async function ResourceControllerGetResourceBundles(
   params: Paths.ResourceControllerGetResourceBundles.BodyParameters,
 ): Promise<{
-  error: string;
-  data: Paths.ResourceControllerGetResourceBundles.Responses;
+    error: string;
+    data: Paths.ResourceControllerGetResourceBundles.Responses
 }> {
   // /v1/resources/resource-bundles
   let _params: { [key: string]: any } = {
-    appid: useGlobalStore.getState().currentApp?.appid || "",
+    appid: useGlobalStore.getState().currentApp?.appid || '',
     ...params,
   };
   return request(`/v1/resources/resource-bundles`, {
-    method: "GET",
-    params: params,
+    method: 'GET',
+    params : params,
   });
 }
+

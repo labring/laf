@@ -701,6 +701,7 @@
     "DocumentOperand": "文档操作数",
     "PageError": "页错误(ops/s)",
     "Resource": "资源",
-    "Performance": "性能"
+    "Performance": "性能",
+    "DataSize": "容量"
   }
 }
