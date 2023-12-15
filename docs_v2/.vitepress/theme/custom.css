@@ -1,0 +1,27 @@
+:root {
+  --vp-c-text-1: rgb(35, 35, 39);
+  --vp-c-text-2: rgba(65, 71, 86, 0.866);
+  --vp-c-text-3: rgba(60, 60, 67, 0.56);
+}
+
+.VPSidebar::-webkit-scrollbar {
+  display: none;
+}
+
+
+.VPDocAside .outline-link {
+  color: rgb(6, 63, 148);
+}
+
+.VPDocAside .outline-link {
+  font-size: 14px;
+}
+
+.VPDocAside .outline-link.active {
+  color: rgb(82, 7, 234);
+}
+
+
+.VPDocAside .outline-link:hover {
+  color: rgb(82, 7, 234);
+}

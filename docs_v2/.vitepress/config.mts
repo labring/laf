@@ -8,6 +8,7 @@ export default defineConfig({
   markdown: {
     lineNumbers: true,
   },
+
   locales: {
     root: {
       label: '简单中文',
