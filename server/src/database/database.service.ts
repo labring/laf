@@ -119,16 +119,8 @@ export class DatabaseService {
    * Get database accessor that used for `database-proxy`
    */
   async getDatabaseAccessor(appid: string) {
-    const region = await this.regionService.findByAppId(appid)
-    const database = await this.findOne(appid)
-    assert(database, 'Database not found')
-
-    const dbName = database.name
-    const connectionUri = this.getControlConnectionUri(region, database)
-    assert(connectionUri, 'Database connection uri not found')
-
-    const accessor = new MongoAccessor(dbName, connectionUri)
-    await accessor.init()
+    const { client } = await this.findAndConnect(appid)
+    const accessor = new MongoAccessor(client)
     return accessor
   }
 
@@ -255,6 +247,7 @@ export class DatabaseService {
         .collection<DatabaseSyncRecord>('DatabaseSyncRecord')
         .insertOne({ uid, createdAt: new Date() })
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(`failed to import db to ${appid}:`, error)
       throw error
     }

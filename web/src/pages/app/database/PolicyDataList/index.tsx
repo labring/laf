@@ -157,7 +157,7 @@ export default function PolicyDataList() {
                       size={32}
                       className="group/icon"
                     >
-                      <OutlineCopyIcon size="14" color="#24282C" />
+                      <OutlineCopyIcon size="14" color={darkMode ? "#ffffff" : "#24282C"} />
                     </IconWrap>
                   </CopyText>
                 );

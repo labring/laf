@@ -59,6 +59,7 @@
     "react-markdown": "^8.0.7",
     "react-router-dom": "^6.11.2",
     "react-syntax-highlighter": "^15.5.0",
+    "react-window": "^1.8.10",
     "recharts": "^2.7.2",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
@@ -78,6 +79,7 @@
     "@types/react-datepicker": "^4.11.2",
     "@types/react-dom": "^18.2.4",
     "@types/react-syntax-highlighter": "^15.5.6",
+    "@types/react-window": "^1.8.8",
     "@types/uuid": "^9.0.1",
     "@types/vscode": "~1.82.0",
     "@typescript-eslint/eslint-plugin": "~6.7.4",
@@ -96,15 +98,6 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js}": "eslint --fix",
-    "*.css": "stylelint --fix",
-    "*.scss": "stylelint --syntax=scss --fix"
-  },
-  "overrides": {
-    "monaco-editor": "$monaco-editor",
-    "vscode": "$vscode"
-  },
-  "resolutions": {
-    "monaco-editor": "npm:@codingame/monaco-editor-treemended@>=1.82.3 <1.83.0",
-    "vscode": "npm:@codingame/monaco-vscode-api@>=1.82.3 <1.83.0"
+    "*.{css,scss}": "stylelint --fix"
   }
 }

@@ -1,79 +1,47 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-16 15:29:15
- * @LastEditTime: 2022-02-03 00:42:33
- * @Description:
  */
 
-import { LoggerInterface, MongoAccessor } from 'database-proxy'
+import { MongoAccessor } from 'database-proxy'
 import Config from './config'
-import * as mongodb_uri from 'mongodb-uri'
-import { logger } from './support/logger'
-
-
-// Define a noop logger for mongo accessor
-class AccessorLogger implements LoggerInterface {
-  level: number = 0
-  trace(..._params: any[]): void {
-  }
-
-  debug(..._params: any[]): void {
-  }
-
-  info(..._params: any[]): void {
-  }
-
-  warn(..._params: any[]): void {
-  }
-
-  error(..._params: any[]): void {
-  }
-
-  fatal(..._params: any[]): void {
-  }
-
-}
+import { MongoClient } from 'mongodb'
 
 /**
  * Database Management
  */
 export class DatabaseAgent {
-  private static _accessor: MongoAccessor = DatabaseAgent._createAccessor()
+  private static _accessor: MongoAccessor
+  private static _client: MongoClient
+  static ready = this.initialize()
 
   /**
-   * MongoAccessor instance
+   * Mongo client
    */
-  static get accessor() {
-    return this._accessor
+  static get client() {
+    return this._client
   }
 
   /**
    * Database instance
    */
   static get db() {
-    return this._accessor?.db
+    return this.client.db()
+  }
+
+  static initialize() {
+    this._client = new MongoClient(Config.DB_URI)
+    return this._client.connect()
   }
 
   /**
-   * Create MongoAccessor instance
-   * @returns
+   * MongoAccessor instance of database-proxy
    */
-  private static _createAccessor() {
-    const { database } = mongodb_uri.parse(Config.DB_URI)
-    const accessor = new MongoAccessor(database, Config.DB_URI)
-
-    const accessorLogger = new AccessorLogger()
-    accessor.setLogger(accessorLogger)
-    accessor
-      .init()
-      .then(async () => {
-        logger.info('db connected')
-      })
-      .catch((error) => {
-        logger.error(error)
-        setTimeout(() => process.exit(101), 0)
-      })
-
-    return accessor
+  static get accessor() {
+    if (!this._accessor) {
+      this._accessor = new MongoAccessor(this.client)
+      this._accessor.logger.level = 0
+    }
+    return this._accessor
   }
 }

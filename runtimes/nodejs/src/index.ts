@@ -28,7 +28,7 @@ globalThis.createCloudSdk = createCloudSdk
 
 const app = express()
 
-DatabaseAgent.accessor.ready.then(() => {
+DatabaseAgent.ready.then(() => {
   DatabaseChangeStream.initialize()
 })
 
