@@ -42,8 +42,8 @@ const strokeColorArray = [
 
 const generateChartData = () => {
   const now = new Date();
-  now.setSeconds(0, 0); // 整点
-  const startTime = now.getTime() - 59 * 60 * 1000; // 计算起始时间戳
+  now.setSeconds(0, 0);
+  const startTime = now.getTime() - 59 * 60 * 1000;
   return Array(60)
     .fill({ xData: 0 })
     .map((_, i) => ({ xData: startTime + i * 60 * 1000 }));

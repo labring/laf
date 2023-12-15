@@ -1,4 +1,5 @@
 import React from "react";
+import { useMemo } from "react";
 import { t } from "i18next";
 
 import {
@@ -30,23 +31,27 @@ export default function SysSetting(props: {
   currentTab?: string;
 }) {
   const { currentApp } = useGlobalStore();
+  const dedicatedDatabaseLimit = currentApp.bundle.resource["dedicatedDatabase.limitCPU"];
 
-  const monitorItems = [
-    {
-      key: APP_SETTING_KEY.MONITOR_RUNTIME,
-      name: t("SettingPanel.RuntimeMonitor"),
-      component: <AppMonitor />,
-      icon: <MonitorIcon boxSize={4} />,
-    },
-  ];
-  if (currentApp.bundle.resource["dedicatedDatabase.limitCPU"] !== 0) {
-    monitorItems.push({
-      key: APP_SETTING_KEY.MONITOR_DATABASE,
-      name: t("SettingPanel.DataBaseMonitor"),
-      component: <DatabaseMonitor />,
-      icon: <MonitorIcon boxSize={4} />,
-    });
-  }
+  const monitorItems = useMemo(() => {
+    const items = [
+      {
+        key: APP_SETTING_KEY.MONITOR_RUNTIME,
+        name: t("SettingPanel.RuntimeMonitor"),
+        component: <AppMonitor />,
+        icon: <MonitorIcon boxSize={4} />,
+      },
+    ];
+    if (dedicatedDatabaseLimit !== 0) {
+      items.push({
+        key: APP_SETTING_KEY.MONITOR_DATABASE,
+        name: t("SettingPanel.DataBaseMonitor"),
+        component: <DatabaseMonitor />,
+        icon: <MonitorIcon boxSize={4} />,
+      });
+    }
+    return items;
+  }, [dedicatedDatabaseLimit]);
 
   return (
     <SettingModal

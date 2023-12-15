@@ -50,11 +50,7 @@ export default function MonitorBar() {
       },
       {
         queryKey: ["dedicatedDatabaseMonitorControllerGetResource"],
-        queryFn: () =>
-          DedicatedDatabaseMonitorControllerGetResource({
-            step: 60,
-            type: "range",
-          }),
+        queryFn: () => DedicatedDatabaseMonitorControllerGetResource({}),
         refetchInterval: 60000,
       },
     ],

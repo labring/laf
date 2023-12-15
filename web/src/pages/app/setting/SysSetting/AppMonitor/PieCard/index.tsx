@@ -44,17 +44,13 @@ export default function PieCard(props: {
       </ul>
     );
   };
-  const className = clsx(
-    "mb-2",
-    heightClass || "h-1/2",
-    "rounded-xl",
-    "border",
-    "border-grayModern-200",
-    "bg-[#F8FAFB]",
-    "p-4",
-  );
   return (
-    <div className={className}>
+    <div
+      className={clsx(
+        heightClass || "h-1/2",
+        "mb-2 rounded-xl border border-grayModern-200 bg-[#F8FAFB] p-4",
+      )}
+    >
       <span className={clsx("flex items-center font-medium text-grayModern-900")}>
         <div className="mr-2 h-3 w-1 whitespace-nowrap rounded-xl bg-primary-600" />
         {title}

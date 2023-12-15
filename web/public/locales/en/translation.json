@@ -697,11 +697,11 @@
   "Deprecated": "Deprecated",
   "All": "All",
   "DatabaseMonitor": {
-    "Connections": "connections",
+    "Connections": "Connections",
     "DocumentOperand": "Document operands",
-    "PageError": "Page Error(oops/s)",
-    "Resource": "Resources",
+    "PageError": "Page error(ops/s)",
+    "Resource": "Resource",
     "Performance": "Performances",
-    "DataSize": "Capacity"
+    "Capacity": "Capacity"
   }
 }
