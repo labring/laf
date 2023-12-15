@@ -17,7 +17,6 @@
     "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.6.1",
     "@codingame/monaco-vscode-configuration-service-override": "~1.82.3",
-    "@codingame/monaco-vscode-files-service-override": "^1.83.2",
     "@codingame/monaco-vscode-textmate-service-override": "~1.82.3",
     "@codingame/monaco-vscode-theme-defaults-default-extension": "~1.82.3",
     "@codingame/monaco-vscode-theme-service-override": "~1.82.3",

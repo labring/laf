@@ -10,7 +10,7 @@
   "scripts": {
     "install": "lerna exec npm install --parallel",
     "lint": "lerna run lint --parallel",
-    "lint-staged": "lerna exec --since HEAD --parallel -- lint-staged",
+    "lint-staged": "lerna exec --since HEAD --parallel -- lint-staged --no-stash",
     "build": "lerna run build --parallel",
     "watch": "lerna run watch --parallel",
     "prepublishOnly": "npm run build",

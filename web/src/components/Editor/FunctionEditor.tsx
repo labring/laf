@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import {
   RegisteredFileSystemProvider,
   RegisteredMemoryFile,
   registerFileSystemOverlay,
-} from "@codingame/monaco-vscode-files-service-override";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
+} from "vscode/service-override/files";
 
 import { COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
 
