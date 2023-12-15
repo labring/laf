@@ -17,10 +17,19 @@ export class DedicatedDatabaseMonitorService {
   async getResource(appid: string, region: Region) {
     const dbName = this.getDBName(appid)
 
-    const cpu = await this.queryRange(region, `laf_mongo_cpu{appid="${appid}"}`)
+    const cpu = await this.queryRange(
+      region,
+      `laf_mongo_cpu{appid="${appid}"}`,
+      {
+        labels: ['pod'],
+      },
+    )
     const memory = await this.queryRange(
       region,
       `laf_mongo_memory{appid="${appid}"}`,
+      {
+        labels: ['pod'],
+      },
     )
     const dataSize = await this.query(
       region,
