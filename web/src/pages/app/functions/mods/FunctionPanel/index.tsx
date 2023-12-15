@@ -9,13 +9,9 @@ import { Badge, HStack, Input, InputGroup, InputLeftElement, useColorMode } from
 import { clsx } from "clsx";
 import { t } from "i18next";
 
-import {
-  EditIconLine,
-  RecycleBinIcon,
-  RecycleDeleteIcon,
-  TriggerIcon,
-} from "@/components/CommonIcon";
+import { EditIconLine, LinkIcon, RecycleBinIcon, TriggerIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
+import CopyText from "@/components/CopyText";
 import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import IconText from "@/components/IconText";
@@ -52,6 +48,7 @@ export default function FunctionList() {
     allFunctionList,
     recentFunctionList,
     setRecentFunctionList,
+    getFunctionUrl,
   } = useFunctionStore((store) => store);
 
   const functionCache = useFunctionCache();
@@ -76,6 +73,8 @@ export default function FunctionList() {
   const [tagsList, setTagsList] = useState<TagItem[]>([]);
 
   const [currentTag, setCurrentTag] = useState<TagItem | null>(null);
+
+  const [contextMenuActiveItem, setContextMenuActiveItem] = useState("");
 
   const filterFunctions = useMemo(() => {
     return allFunctionList.filter((item: any) => {
@@ -277,6 +276,11 @@ export default function FunctionList() {
                 setFunctionRoot({ ...functionRoot });
               }
             }}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              setContextMenuActiveItem(item?.name);
+            }}
+            onBlur={() => setContextMenuActiveItem("")}
           >
             <div
               className={clsx(
@@ -295,8 +299,22 @@ export default function FunctionList() {
                   (item as any)?.source?.code && (
                   <span className="mt-[1px] inline-block h-1 w-1 flex-none rounded-full bg-rose-500"></span>
                 )}
-                <MoreButton isHidden={item.name !== currentFunction?.name} label={t("Operation")}>
+                <MoreButton
+                  isHidden={item.name !== currentFunction?.name}
+                  label={t("Operation")}
+                  isClicked={contextMenuActiveItem === item.name}
+                >
                   <>
+                    <CopyText text={getFunctionUrl(item.name)}>
+                      <IconText
+                        icon={
+                          <div className="flex h-full items-center">
+                            <LinkIcon fontSize={22} />
+                          </div>
+                        }
+                        text="API"
+                      />
+                    </CopyText>
                     <CreateModal functionItem={item} tagList={tagsList}>
                       <IconText
                         icon={
@@ -318,7 +336,11 @@ export default function FunctionList() {
                       bodyText={String(t("FunctionPanel.DeleteConfirm"))}
                     >
                       <IconText
-                        icon={<RecycleDeleteIcon fontSize={16} />}
+                        icon={
+                          <div className="flex h-full items-center">
+                            <RecycleBinIcon fontSize={16} />
+                          </div>
+                        }
                         text={t("Delete")}
                         className="hover:!text-error-600"
                       />

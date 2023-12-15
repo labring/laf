@@ -32,7 +32,8 @@ export default function CopyText(props: {
     <Tooltip label={hideToolTip ? "" : t("Copy")} placement="top">
       {React.cloneElement(children, {
         className: clsx("cursor-pointer", className),
-        onClick: () => {
+        onClick: (e: MouseEvent) => {
+          e.stopPropagation();
           onCopy();
           showSuccess(tip || t("Copied"));
         },

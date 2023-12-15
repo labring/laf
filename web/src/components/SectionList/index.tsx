@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import clsx from "clsx";
 import SimpleBar from "simplebar-react";
 
@@ -26,15 +26,19 @@ function Item(props: {
   key: string;
   size?: "small" | "default";
   onClick?: () => void;
+  onContextMenu?: MouseEventHandler<HTMLLIElement>;
+  onBlur?: () => void;
 }) {
-  const { children, isActive, onClick, className, size = "default" } = props;
+  const { children, isActive, onClick, onContextMenu, className, size = "default", onBlur } = props;
   return (
     <li
       className={clsx(className, {
         [styles.active]: isActive,
         [styles.small]: size === "small",
       })}
-      onClick={onClick && onClick}
+      onClick={onClick}
+      onContextMenu={onContextMenu}
+      onBlur={onBlur}
     >
       {children}
     </li>

@@ -14,7 +14,7 @@ type State = {
   currentFuncTimeUsage: string;
   functionCodes: { [key: string]: string };
   isFetchButtonClicked: Boolean;
-  getFunctionUrl: () => string;
+  getFunctionUrl: (functionName?: string) => string;
   setCurrentRequestId: (requestId: string | undefined) => void;
   setCurrentFuncLogs: (logs: string) => void;
   setCurrentFuncTimeUsage: (timeUsage: string) => void;
@@ -37,13 +37,15 @@ const useFunctionStore = create<State>()(
       currentFuncLogs: "",
       currentFuncTimeUsage: "",
 
-      getFunctionUrl: () => {
+      getFunctionUrl: (functionName?: string) => {
         const currentApp = useGlobalStore.getState().currentApp;
+        const origin = currentApp?.origin;
+
+        if (functionName) return `${origin}/${functionName}`;
+
         const currentFunctionName = get().currentFunction?.name;
 
         if (!currentFunctionName) return "";
-
-        const origin = currentApp?.origin;
 
         return `${origin}/${currentFunctionName}`;
       },
