@@ -135,6 +135,7 @@ export class AutoImportTypings {
 
       const rets = r.data || [];
       for (const lib of rets) {
+        if (this.isLoaded(packageName)) continue;
         // 修复包的类型入口文件不为 index.d.ts 的情况
         if (packageName === lib.packageName && lib.path !== `${packageName}/index.d.ts`) {
           const _lib = { ...lib };
@@ -143,8 +144,8 @@ export class AutoImportTypings {
         }
 
         this.addExtraLib({ path: lib.path, content: lib.content, monaco });
+        this._loaded.push(packageName);
       }
-      this._loaded.push(packageName);
     } catch (error) {
       console.error(`failed to load package: ${packageName} :`, error);
     }
