@@ -15,13 +15,14 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
   const { isLoading, data } = useEnvironmentQuery((data) => {
     setEnv(data || []);
   });
+  const [isENVLoading, setIsENVLoading] = useState(false);
   const updateEnvironmentMutation = useUpdateEnvironmentMutation();
   const globalStore = useGlobalStore();
 
   return (
     <>
       <div className="absolute bottom-0 left-[280px] right-6 top-10 mr-6 flex h-full flex-grow flex-col py-4">
-        {isLoading ? (
+        {isLoading || isENVLoading ? (
           <Center className="h-[360px]">
             <Spinner />
           </Center>
@@ -43,6 +44,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
             w={24}
             variant="secondary"
             onClick={async () => {
+              setIsENVLoading(true);
               if (pureEnv) {
                 const newEnv = pureEnv
                   ?.split("\n")
@@ -56,13 +58,13 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
                   .filter((item) => item.name !== "");
                 const res = await updateEnvironmentMutation.mutateAsync(newEnv);
                 if (!res.error) {
-                  props.onClose && props.onClose();
+                  setIsENVLoading(false);
                   globalStore.showSuccess(t("UpdateSuccess"));
                 }
               } else {
                 const res = await updateEnvironmentMutation.mutateAsync(env);
                 if (!res.error) {
-                  props.onClose && props.onClose();
+                  setIsENVLoading(false);
                   globalStore.showSuccess(t("UpdateSuccess"));
                 }
               }

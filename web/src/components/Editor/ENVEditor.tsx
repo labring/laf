@@ -22,7 +22,7 @@ export default function ENVEditor(props: {
   return (
     <div className="h-[80%]">
       {showSwitch && isEditorMode ? (
-        <div className="h-[95%] rounded-lg border px-4 pt-4">
+        <div className="h-[379px] rounded-lg border px-4 pt-4">
           <ENVCodeEditor
             value={env
               .map((item) => {
@@ -66,7 +66,7 @@ export default function ENVEditor(props: {
           ]}
           configuration={{
             key: "name",
-            tableHeight: "310px",
+            tableHeight: "330px",
             hiddenEditButton: false,
             addButtonText: String(t("AddENV")),
             saveButtonText: String(t("Confirm")),

@@ -41,6 +41,7 @@ function ENVCodeEditor(props: {
       value={value}
       options={options}
       onChange={onChange}
+      language={languageId}
       theme={colorMode === COLOR_MODE.dark ? "dotenvDarkTheme" : "dotenvTheme"}
       beforeMount={(monaco) => {
         monaco.languages.register({
