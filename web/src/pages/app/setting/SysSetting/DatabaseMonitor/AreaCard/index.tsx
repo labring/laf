@@ -111,6 +111,7 @@ export default function AreaCard(props: {
   unit: string;
   className?: string;
   syncId: string;
+  tableMarginLeft: number;
 }) {
   const {
     data,
@@ -123,6 +124,7 @@ export default function AreaCard(props: {
     unit,
     className,
     syncId,
+    tableMarginLeft,
   } = props;
   const [chartData, setChartData] = useState<any[]>([]);
   useEffect(() => {
@@ -203,7 +205,7 @@ export default function AreaCard(props: {
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={chartData}
-          margin={{ left: -28, top: 6 }}
+          margin={{ left: tableMarginLeft, top: 6 }}
           {...(syncId !== "" ? { syncId: syncId } : {})}
         >
           <CartesianGrid stroke="#f5f5f5" vertical={false} />
