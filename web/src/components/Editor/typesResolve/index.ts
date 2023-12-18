@@ -154,7 +154,6 @@ export class AutoImportTypings {
     const loaded = defaults.getExtraLibs();
 
     if (fullPath in loaded) {
-      console.log(`${path} already exists in ts extralib`);
       return;
     }
     try {
