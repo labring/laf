@@ -135,17 +135,9 @@ export class AutoImportTypings {
 
       const rets = r.data || [];
       for (const lib of rets) {
-        if (this.isLoaded(packageName)) continue;
-        // 修复包的类型入口文件不为 index.d.ts 的情况
-        if (packageName === lib.packageName && lib.path !== `${packageName}/index.d.ts`) {
-          const _lib = { ...lib };
-          _lib.path = `${packageName}/index.d.ts`;
-          this.addExtraLib({ path: _lib.path, content: _lib.content, monaco });
-        }
-
         this.addExtraLib({ path: lib.path, content: lib.content, monaco });
-        this._loaded.push(packageName);
       }
+      this._loaded.push(packageName);
     } catch (error) {
       console.error(`failed to load package: ${packageName} :`, error);
     }
@@ -160,9 +152,8 @@ export class AutoImportTypings {
     const fullPath = `file:///node_modules/${path}`;
     const defaults = monaco.languages.typescript.typescriptDefaults;
     const loaded = defaults.getExtraLibs();
-    const keys = Object.keys(loaded);
 
-    if (keys.includes(fullPath)) {
+    if (fullPath in loaded) {
       console.log(`${path} already exists in ts extralib`);
       return;
     }
@@ -170,7 +161,7 @@ export class AutoImportTypings {
       defaults.addExtraLib(content, fullPath);
       monaco.editor.createModel(content, "typescript", monaco.Uri.parse(fullPath));
     } catch (error) {
-      console.log(error, fullPath, keys);
+      console.log(error, fullPath);
       throw error;
     }
   }
