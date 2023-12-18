@@ -94,8 +94,7 @@ export default function DatabaseMonitor() {
             ) : connectionData?.data &&
               Object.keys(connectionData?.data).length !== 0 &&
               resourceData?.data &&
-              Object.keys(resourceData?.data).length !== 0 &&
-              limitCPU !== 0 ? (
+              Object.keys(resourceData?.data).length !== 0 ? (
               <>
                 <div className="mr-3 mt-5 h-[430px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
                   <AreaCard
@@ -180,9 +179,7 @@ export default function DatabaseMonitor() {
               <Center className="h-[430px] w-full">
                 <Spinner />
               </Center>
-            ) : performanceData?.data &&
-              Object.keys(performanceData?.data).length !== 0 &&
-              limitCPU !== 0 ? (
+            ) : performanceData?.data && Object.keys(performanceData?.data).length !== 0 ? (
               <div className="mt-6 h-[430px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
                 <AreaCard
                   data={performanceData?.data?.documentOperations}
