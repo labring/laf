@@ -112,6 +112,7 @@ export default function AppMonitor() {
                       unit="core"
                       maxValue={limitCPU / 1000}
                       className="h-1/3 p-4"
+                      syncId="tab1"
                     />
                     <AreaCard
                       data={resourceData?.data?.memory}
@@ -123,6 +124,7 @@ export default function AppMonitor() {
                       maxValue={limitMemory}
                       podName={podName}
                       className="h-1/3 p-4"
+                      syncId="tab1"
                     />
                     <AreaCard
                       data={connectionData?.data?.connections}
@@ -134,6 +136,7 @@ export default function AppMonitor() {
                       maxValue={0}
                       podName={podName}
                       className="h-1/3 p-4"
+                      syncId="tab1"
                     />
                   </div>
 
@@ -197,6 +200,7 @@ export default function AppMonitor() {
                     unit=""
                     maxValue={0}
                     className="h-1/3 p-4"
+                    syncId=""
                   />
                   <AreaCard
                     data={performanceData?.data?.queryOperations}
@@ -208,6 +212,7 @@ export default function AppMonitor() {
                     maxValue={0}
                     podName={podName}
                     className="h-1/3 p-4"
+                    syncId=""
                   />
                   <AreaCard
                     data={performanceData?.data?.pageFaults}
@@ -219,6 +224,7 @@ export default function AppMonitor() {
                     maxValue={0}
                     podName={podName}
                     className="h-1/3 p-4"
+                    syncId=""
                   />
                 </div>
               ) : (

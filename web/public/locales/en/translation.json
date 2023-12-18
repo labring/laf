@@ -233,8 +233,8 @@
     "ListDisplay": "List Display",
     "OldLogs": "Old Logs",
     "MonitorSetting": "Resource Monitor",
-    "DataBaseMonitor": "Database monitoring",
-    "RuntimeMonitor": "Runtime monitoring",
+    "DatabaseMonitor": "Database monitor",
+    "RuntimeMonitor": "Runtime monitor",
     "ClientSetting": "Client settings"
   },
   "StoragePanel": {
@@ -701,7 +701,7 @@
     "DocumentOperand": "Document operands",
     "PageError": "Page error(ops/s)",
     "Resource": "Resource",
-    "Performance": "Performances",
+    "Performance": "Performance",
     "Capacity": "Capacity"
   }
 }

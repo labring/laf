@@ -141,7 +141,7 @@ export default function MonitorBar() {
           )}
         >
           <MonitorIcon className="mr-1" />
-          {t("SettingPanel.RuntimeMonitor") + " :"}
+          {t("SettingPanel.MonitorSetting") + " :"}
         </span>
         <Center className="w-52 space-x-2">
           {resources.length !== 0 ? (

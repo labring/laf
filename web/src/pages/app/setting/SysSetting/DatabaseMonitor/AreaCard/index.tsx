@@ -110,8 +110,20 @@ export default function AreaCard(props: {
   maxValue: number;
   unit: string;
   className?: string;
+  syncId: string;
 }) {
-  const { data, fillColor, setPodName, podName, podList, title, maxValue, unit, className } = props;
+  const {
+    data,
+    fillColor,
+    setPodName,
+    podName,
+    podList,
+    title,
+    maxValue,
+    unit,
+    className,
+    syncId,
+  } = props;
   const [chartData, setChartData] = useState<any[]>([]);
   useEffect(() => {
     if (podName === t("All")) {
@@ -189,8 +201,11 @@ export default function AreaCard(props: {
         )}
       </div>
       <ResponsiveContainer width="100%" height="100%">
-        {/* <AreaChart data={chartData} margin={{ left: -28, top: 6 }} syncId="sync"> */}
-        <AreaChart data={chartData} margin={{ left: -28, top: 6 }}>
+        <AreaChart
+          data={chartData}
+          margin={{ left: -28, top: 6 }}
+          {...(syncId !== "" ? { syncId: syncId } : {})}
+        >
           <CartesianGrid stroke="#f5f5f5" vertical={false} />
           <XAxis
             dataKey="xData"

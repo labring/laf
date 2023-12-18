@@ -45,7 +45,7 @@ export default function SysSetting(props: {
     if (dedicatedDatabaseLimit !== 0) {
       items.push({
         key: APP_SETTING_KEY.MONITOR_DATABASE,
-        name: t("SettingPanel.DataBaseMonitor"),
+        name: t("SettingPanel.DatabaseMonitor"),
         component: <DatabaseMonitor />,
         icon: <MonitorIcon boxSize={4} />,
       });

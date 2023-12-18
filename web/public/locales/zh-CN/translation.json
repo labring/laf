@@ -233,7 +233,7 @@
     "ListDisplay": "列表显示",
     "OldLogs": "旧版日志",
     "MonitorSetting": "资源监控",
-    "DataBaseMonitor": "数据库监控",
+    "DatabaseMonitor": "数据库监控",
     "RuntimeMonitor": "运行时监控",
     "ClientSetting": "客户端设置"
   },

@@ -94,7 +94,7 @@ export enum APP_SETTING_KEY {
   INFO = "info",
   ENV = "env",
   MONITOR_RUNTIME = "monitorRuntime",
-  MONITOR_DATABASE = "monitorDataBase",
+  MONITOR_DATABASE = "monitorDatabase",
   DOMAIN = "domain",
   COMMON = "common",
   OLD_LOGS = "oldLogs",
