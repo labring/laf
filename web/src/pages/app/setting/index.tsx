@@ -16,8 +16,11 @@ import { t } from "i18next";
 
 import SectionList from "@/components/SectionList";
 
+import "./index.css";
+
 import { TApplicationDetail } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
+
 export type TTabItem = {
   key: string;
   name: string;
@@ -81,7 +84,7 @@ const SettingModal = (props: {
             onOpen();
           },
         })}
-      <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="outside">
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent maxW={"80%"} width={"auto"} minW={1024}>
           <ModalBody py={2} flex="none" minH={550} className="relative">
