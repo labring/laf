@@ -94,8 +94,7 @@ export default function DatabaseMonitor() {
             ) : connectionData?.data &&
               Object.keys(connectionData?.data).length !== 0 &&
               resourceData?.data &&
-              Object.keys(resourceData?.data).length !== 0 &&
-              limitCPU !== 0 ? (
+              Object.keys(resourceData?.data).length !== 0 ? (
               <>
                 <div className="mr-3 mt-5 h-[430px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
                   <AreaCard
@@ -110,6 +109,7 @@ export default function DatabaseMonitor() {
                     maxValue={limitCPU / 1000}
                     className="h-1/3 p-4"
                     syncId="tab1"
+                    tableMarginLeft={-28}
                   />
                   <AreaCard
                     data={resourceData?.data?.memory}
@@ -122,6 +122,7 @@ export default function DatabaseMonitor() {
                     podName={podName}
                     className="h-1/3 p-4"
                     syncId="tab1"
+                    tableMarginLeft={-28}
                   />
                   <AreaCard
                     data={connectionData?.data?.connections}
@@ -134,6 +135,7 @@ export default function DatabaseMonitor() {
                     podName={podName}
                     className="h-1/3 p-4"
                     syncId="tab1"
+                    tableMarginLeft={-28}
                   />
                 </div>
 
@@ -180,9 +182,7 @@ export default function DatabaseMonitor() {
               <Center className="h-[430px] w-full">
                 <Spinner />
               </Center>
-            ) : performanceData?.data &&
-              Object.keys(performanceData?.data).length !== 0 &&
-              limitCPU !== 0 ? (
+            ) : performanceData?.data && Object.keys(performanceData?.data).length !== 0 ? (
               <div className="mt-6 h-[430px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
                 <AreaCard
                   data={performanceData?.data?.documentOperations}
@@ -196,6 +196,7 @@ export default function DatabaseMonitor() {
                   maxValue={0}
                   className="h-1/3 p-4"
                   syncId=""
+                  tableMarginLeft={-25}
                 />
                 <AreaCard
                   data={performanceData?.data?.queryOperations}
@@ -208,6 +209,7 @@ export default function DatabaseMonitor() {
                   podName={podName}
                   className="h-1/3 p-4"
                   syncId=""
+                  tableMarginLeft={-26}
                 />
                 <AreaCard
                   data={performanceData?.data?.pageFaults}
@@ -220,6 +222,7 @@ export default function DatabaseMonitor() {
                   podName={podName}
                   className="h-1/3 p-4"
                   syncId=""
+                  tableMarginLeft={-25}
                 />
               </div>
             ) : (
