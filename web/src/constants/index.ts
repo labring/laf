@@ -93,7 +93,8 @@ export default async function (ctx: FunctionContext) {
 export enum APP_SETTING_KEY {
   INFO = "info",
   ENV = "env",
-  MONITOR = "monitor",
+  MONITOR_RUNTIME = "monitorRuntime",
+  MONITOR_DATABASE = "monitorDatabase",
   DOMAIN = "domain",
   COMMON = "common",
   OLD_LOGS = "oldLogs",

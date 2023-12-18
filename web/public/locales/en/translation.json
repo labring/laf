@@ -226,16 +226,18 @@
     "CostTrend": "Cost Trend",
     "Balance": "Balance",
     "Pause": "Pause",
-    "AppMonitor": "Application Monitor",
     "PauseTips": "Are you sure you want to pause this application?",
     "RestartTips": "Are you sure you want to restart this application?",
     "CommonSetting": "Common Settings",
-    "ClientSetting": "Client Settings",
     "EditorFont": "Editor Font",
     "FontSize": "Font Size",
     "FuncListDisplay": "Function List Display",
     "ListDisplay": "List Display",
-    "OldLogs": "Old Logs"
+    "OldLogs": "Old Logs",
+    "MonitorSetting": "Resource Monitor",
+    "DatabaseMonitor": "Database monitor",
+    "RuntimeMonitor": "Runtime monitor",
+    "ClientSetting": "Client settings"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -356,7 +358,8 @@
     "RAM": "RAM",
     "Database": "Database",
     "Storage": "Storage",
-    "NetworkTraffic": "NetworkTraffic"
+    "NetworkTraffic": "NetworkTraffic",
+    "QueryOperand": "Query operands"
   },
   "Price": {
     "Free": "Free"
@@ -698,5 +701,13 @@
     "logs": "Logs"
   },
   "Deprecated": "Deprecated",
-  "All": "All"
+  "All": "All",
+  "DatabaseMonitor": {
+    "Connections": "Connections",
+    "DocumentOperand": "Document operands",
+    "PageError": "Page error(ops/s)",
+    "Resource": "Resource",
+    "Performance": "Performance",
+    "Capacity": "Capacity"
+  }
 }

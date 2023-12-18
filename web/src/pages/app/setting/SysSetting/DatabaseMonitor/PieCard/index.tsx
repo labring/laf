@@ -10,11 +10,12 @@ export default function PieCard(props: {
   maxValue: number;
   title: string;
   colors: string[];
-  heightClass?: string;
+  appid?: string;
 }) {
   const { t } = useTranslation();
-  const { data, maxValue, title, colors, heightClass } = props;
-  const usedData = uniformCapacity(data[0]?.value[1]) || 0;
+  const { data, maxValue, title, colors, appid } = props;
+  const usedData =
+    uniformCapacity(data.find((item) => item.metric.database === appid)?.value[1]) || 0;
   const percentage = (usedData / maxValue) * 100;
   const pieData = useMemo(
     () =>
@@ -44,13 +45,9 @@ export default function PieCard(props: {
       </ul>
     );
   };
+
   return (
-    <div
-      className={clsx(
-        heightClass || "h-1/2",
-        "mb-2 rounded-xl border border-grayModern-200 bg-[#F8FAFB] p-4",
-      )}
-    >
+    <div className="mb-2 h-full  rounded-xl border border-grayModern-200  bg-[#F8FAFB] p-4">
       <span className={clsx("flex items-center font-medium text-grayModern-900")}>
         <div className="mr-2 h-3 w-1 whitespace-nowrap rounded-xl bg-primary-600" />
         {title}
