@@ -61,9 +61,13 @@ export default function Usage() {
   const { data: chargeOrderAmountRes, isLoading: chargeLoading } = useQuery(
     ["chargeOrderAmount", startTime, endTime],
     async () => {
+      const startOfDay = new Date(startTime);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(endTime);
+      endOfDay.setHours(23, 59, 59, 999);
       return AccountControllerGetChargeOrderAmount({
-        startTime: startTime?.getTime(),
-        endTime: endTime?.getTime(),
+        startTime: startOfDay?.getTime(),
+        endTime: endOfDay?.getTime(),
       });
     },
   );
@@ -71,9 +75,13 @@ export default function Usage() {
   const { data: billingAmountByDayRes, isLoading: billingLoading } = useQuery(
     ["billingByDay", startTime, endTime],
     async () => {
+      const startOfDay = new Date(startTime);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(endTime);
+      endOfDay.setHours(23, 59, 59, 999);
       return BillingControllerGetExpenseByDay({
-        startTime: startTime?.getTime(),
-        endTime: endTime?.getTime(),
+        startTime: startOfDay?.getTime(),
+        endTime: endOfDay?.getTime(),
       });
     },
   );
