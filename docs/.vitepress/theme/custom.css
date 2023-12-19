@@ -1,34 +1,27 @@
 :root {
-  --vp-c-brand: #646cff;
-  --vp-c-brand-light: #747bff;
-  --vp-c-brand-dark: #323cf7;
+  --vp-c-text-1: rgb(35, 35, 39);
+  --vp-c-text-2: rgba(65, 71, 86, 0.866);
+  --vp-c-text-3: rgba(60, 60, 67, 0.56);
 }
 
-.inline img {
-  display: inline;
+.VPSidebar::-webkit-scrollbar {
+  display: none;
 }
 
-.search {
-  flex-grow: 1;
-  padding-left: 24px;
+
+.VPDocAside .outline-link {
+  color: rgb(6, 63, 148);
 }
 
-.search button {
-  justify-content: flex-start;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 0 10px 0 12px;
-  width: 100%;
-  height: 40px;
-  margin-right: -20px;
-  background-color: #f6f6f7;
+.VPDocAside .outline-link {
+  font-size: 14px;
 }
 
-.search button:hover {
-  border: 1px solid var(--vp-c-brand);
-  background-color: #f6f6f7;
+.VPDocAside .outline-link.active {
+  color: rgb(82, 7, 234);
 }
 
-.dark .search button {
-  background-color: var(--vp-c-bg);
+
+.VPDocAside .outline-link:hover {
+  color: rgb(82, 7, 234);
 }
