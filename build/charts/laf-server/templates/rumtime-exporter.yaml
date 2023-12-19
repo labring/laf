@@ -69,7 +69,7 @@ spec:
       path: "/runtime/metrics/{{ .Values.default_region.runtime_exporter_secret}}"
       scrapeTimeout: 10s
       honorLabels: true
-    - interval: 60s
+    - interval: 30s
       path: "/database/metrics/{{ .Values.default_region.runtime_exporter_secret}}"
       scrapeTimeout: 10s
       honorLabels: true
