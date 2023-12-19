@@ -136,7 +136,7 @@ export class BillingService {
     const query = { createdBy: userId }
 
     if (condition.endTime) {
-      query['endAt'] = { $lte: condition.endTime }
+      query['startAt'] = { $lte: condition.endTime }
     }
 
     if (condition.startTime) {
