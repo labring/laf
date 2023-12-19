@@ -42,8 +42,7 @@ await db.collection('user')
 更新指令。如果数据不存在，则会新增一个文档。
 
 ::: warning
-注意：使用 `set` 需要使用 `doc` 去根据 ID 查询文档，然后进行更新，如果查询不到文档，则会新增一个文档，
-`doc` [使用文档](/guide/db/find.html#根据id查询数据)
+注意：使用 `set` 需要使用 `doc` 去根据 ID 查询文档，然后进行更新，如果查询不到文档，则会新增一个文档。
 :::
 
 ```typescript

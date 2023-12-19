@@ -36,8 +36,3 @@ const res = await cloud.invoke('get-user-info', { userid })
 console.log(res)     // 这里的 res 是云函数中 return 的内容
 ```
 
-怎么样，是不是很方便，只需简单的配置和一行代码即可实现对云函数的调用。
-
-## laf-client-sdk 详细文档
-
-查看详细文档：[client-sdk](/guide/client-sdk/)

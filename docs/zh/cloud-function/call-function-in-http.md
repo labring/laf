@@ -2,7 +2,7 @@
 
 云函数每个云函数都提供了 API 地址，理论上我们可以在任何能发起 http 请求的地方调用云函数。
 
-![function-url](../../doc-images/function-url.png)
+![function-url](../doc-images/function-url.png)
 
 ## `axios` 调用
 

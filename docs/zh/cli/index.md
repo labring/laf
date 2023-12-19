@@ -9,7 +9,7 @@ title: laf-cli 命令行工具
 `laf-cli` 可以让你实现本地开发同步 Web 端，用你最熟悉的开发工具，更加高效。
 
 我们先预览一下 cli 为我们提供的所有操作。
-![](../../doc-images/cli-mind.png)
+![](../doc-images/cli-mind.png)
 
 ## 安装
 
@@ -24,7 +24,7 @@ cli 的主要功能就是把在 laf web 上的操作集成到命令行里，下�
 
 想要执行登录操作我们需要先拿到我们的 PAT（访问凭证）。
 
-![](../../doc-images/creat-token.png)
+![](../doc-images/creat-token.png)
 
 默认登录 `laf.run`，如果要登录 `laf.dev` 或私有部署的 laf 或其他`laf.run`账号可通过 添加 user：
 

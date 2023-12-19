@@ -6,7 +6,7 @@ title: 快速开始
 
 我们将在 [laf.run](https://laf.run) 上，通过开发一个简单的「Todo」的功能，快速体验 `laf` 云开发。
 
-![todo-demo](../../doc-images/todo-demo.png)
+![todo-demo](../doc-images/todo-demo.png)
 
 ## 准备工作
 
@@ -18,7 +18,7 @@ title: 快速开始
 
 首先需要创建一个云函数。
 
-![create-function](../../doc-images/create-function.png)
+![create-function](../doc-images/create-function.png)
 
 然后在`get-list`云函数中写上以下代码，写完以后记得在右上角找到`发布`两个字，点一下发布。
 
@@ -94,7 +94,7 @@ export async function main(ctx: FunctionContext) {
 
 这里的集合，对应着传统数据库的表，用来存储数据。
 
-![create-gather](../../doc-images/create-gather.png)
+![create-gather](../doc-images/create-gather.png)
 
 ## 前端
 
@@ -110,7 +110,7 @@ npm install laf-client-sdk
 
 这里我们需要用到`<APPID>`，可以在控制台找到。
 
-![AppID](../../doc-images/AppID.png)
+![AppID](../doc-images/AppID.png)
 
 引入并创建 cloud 对象，这里需要注意的是`<APPID>`需要换成自己的。
 

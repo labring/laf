@@ -123,7 +123,6 @@ export async function main(ctx: FunctionContext)  {
 };
 ```
 
-![getToken-parseToken](/doc-images/getToken-parseToken.png)
 
 以下实现简单登录函数，并生成 JWT token
 

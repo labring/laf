@@ -142,7 +142,7 @@ const res = await cloud.invoke("getCode", { phone: phone.value });
 ## 操作数据库
 
 :::tip
-通过 `laf-client-sdk` 我们可以像在云函数中一样操作数据库，更多操作情参考 [云数据库](/guide/db/) 章节。  
+通过 `laf-client-sdk` 我们可以像在云函数中一样操作数据库。
 还有就是需要配合相对应的访问策略。
 :::
 

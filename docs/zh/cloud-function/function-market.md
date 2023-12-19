@@ -10,15 +10,15 @@ title: 函数市场
 
 在左上方找到函数市场点进来就能看到函数模板。
 
-![](../../doc-images/function-market.png)
+![](../doc-images/function-market.png)
 
 想使用我们感兴趣的模板只需要点进去，然后再点击右上方的`使用模板`按钮，选择需要使用的应用，函数既可添加到对应的应用中。
 
-![](../../doc-images/function-template.png)
+![](../doc-images/function-template.png)
 
 ## 贡献
 
 每个人都可以在函数市场分享自己的函数模板，只需要找到`我的模板`然后`新建模板`即可分享自己的云函数。
 
-![](../../doc-images/my-template.png)
+![](../doc-images/my-template.png)
 

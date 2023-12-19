@@ -12,7 +12,7 @@ title: 云函数触发器
 
 ## 创建触发器
 
-![](/doc-images/create-injector.png)
+![](../doc-images/create-injector.png)
 
 第一步：点击函数列表右侧的触发器按钮
 
@@ -68,6 +68,6 @@ export async function main(ctx: FunctionContext) {
 
 2. 使用触发器
 
-![](/doc-images/use-injector.png)
+![](../doc-images/use-injector.png)
 
 还记得刚才创建触发器的过程吗，我们只需选择关联的函数为 `get-access-token`, 并将 Cron 表达式设为 2 小时，即可实现每两小时去请求微信的接口，来刷新 access_token 以保证有效。

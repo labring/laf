@@ -124,8 +124,6 @@ await db.collection("user").doc(ObjectId('644148fd1eeb2b524dba499e'));
 
 ## 高级查询指令
 
-如果要表达更复杂的查询，可使用高级查询指令。这里需要用到数据库操作符。详细使用可看 [数据库操作符](/guide/db/command)
-
 ::: tip
 `where` 结尾不会直接查询，需要后面加 `get` 或 `getOne`
 :::
@@ -599,7 +597,3 @@ const { data } = await db
   .end();
 console.log(data);
 ```
-
-## groupBy 分组查询
-
-分组查询请看 [聚合操作](/guide/db/aggregate.html#bucket) 文档

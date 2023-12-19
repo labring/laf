@@ -12,13 +12,13 @@ Laf 云开发可安装来自 <https://www.npmjs.com/> 的依赖，如果所需�
 
 ## 添加依赖
 
-![add-packages](/doc-images/add-packages.png)
+![add-packages](../doc-images/add-packages.png)
 
 如上图所示，我们依次点击屏幕左下方的 `NPM 依赖`、添加按钮，搜索想要安装的包名（此处以 [moment](https://www.npmjs.com/package/moment) 为例），勾选后点击 `保存并重启` 按钮即可。
 
 > 安装的持续时间会根据包的大小和网络情况而不同，请耐心等待完成。
 
-![package-list](/doc-images/package-list.png)
+![package-list](../doc-images/package-list.png)
 
 安装完成后用户可在界面左下方 `依赖管理` 中查看已安装的依赖和版本。
 
@@ -34,7 +34,7 @@ Laf 云开发可安装来自 <https://www.npmjs.com/> 的依赖，如果所需�
 
 ## 依赖版本选择
 
-![select-package-version](/doc-images/select-package-version.png)
+![select-package-version](../doc-images/select-package-version.png)
 
 为保证用户应用稳定性，`Laf` 不会自动更新应用的 `Npm package` 版本。
 
@@ -69,8 +69,8 @@ export async function main(ctx: FunctionContext) {
 
 ## 切换已安装依赖版本
 
-![change-package-version](/doc-images/change-package-version.png)
+![change-package-version](../doc-images/change-package-version.png)
 
 ## 卸载已安装依赖版本
 
-![delete-package](/doc-images/delete-package.png)
+![delete-package](../doc-images/delete-package.png)

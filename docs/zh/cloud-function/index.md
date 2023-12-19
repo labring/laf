@@ -18,7 +18,7 @@ title: 云函数入门
 
 创建并进入 Laf 应用后，点击页面左上角「函数」按钮，点击加号，添加云函数
 
-![create-function](/doc-images/create-function.png)
+![create-function](../doc-images/create-function.png)
 
 **函数名** : 可使用 `字母` `数字` `-` `_` `.` `/` 六种，函数名不可重复
 
@@ -38,13 +38,13 @@ Laf云函数新增支持文件夹结构，如函数名为 `user/getList`，会�
 
 Laf 自带 `Web IDE`，可直接在浏览器在线编辑、运行（调试）、发布云函数。
 
-![edit-cloudfunction](/doc-images/edit-cloudfunction.png)
+![edit-cloudfunction](../doc-images/edit-cloudfunction.png)
 
 ## 运行云函数
 
 云函数编写后可直接运行调试，未发布的云函数也可以在此进行运行调试。
 
-![run-cloudfunction](/doc-images/run-cloudfunction.png)
+![run-cloudfunction](../doc-images/run-cloudfunction.png)
 
 如在云函数中添加 `console.log` 打印日志的代码，运行后也会直接显示在 Console 控制台，同时也会将云函数的返回值打印在运行结果中。
 
@@ -58,6 +58,6 @@ Laf 自带 `Web IDE`，可直接在浏览器在线编辑、运行（调试）、
 **云函数修改的代码，会自动在当前浏览器中缓存，只有在发布后才是真正的保存以及生效！**
 :::
 
-![publish-cloudfunction](/doc-images/publish-cloudfunction.png)
+![publish-cloudfunction](../doc-images/publish-cloudfunction.png)
 
 发布页面，左边是之前发布的代码，右边是即将发布的代码。可以方便的查看代码的差异，从而检查是否需要发布。

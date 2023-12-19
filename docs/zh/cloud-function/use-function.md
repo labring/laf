@@ -9,7 +9,7 @@ title: 云函数用法
 在 `main` 函数中，可以通过参数 `ctx` 来获取用户传递的请求信息。
 下面的例子可以读取前端传递的 `Query` 参数`username`：
 
-![function-query](/doc-images/function-query.png)
+![function-query](../doc-images/function-query.png)
 
 云函数代码如下：
 
@@ -21,7 +21,7 @@ export function main(ctx: FunctionContext) {
 
 还可以读取前端 HTTP 请求传递的 `body` 参数`username`：
 
-![function-query](/doc-images/function-body.png)
+![function-query](../doc-images/function-body.png)
 
 云函数代码如下：
 
