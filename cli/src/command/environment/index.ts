@@ -12,14 +12,14 @@ export function command(): Command {
 
   cmd
     .command('pull')
-    .description('push environment variables')
+    .description('pull environment variables')
     .action(() => {
       pull()
     })
   
   cmd
     .command('push')
-    .description('pull environment variables')
+    .description('push environment variables')
     .action(() => {
       push()
     })
