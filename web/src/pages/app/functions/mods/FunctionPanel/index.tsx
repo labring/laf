@@ -337,7 +337,7 @@ export default function FunctionList() {
   }
 
   return (
-    <Panel className="min-w-[215px] flex-grow overflow-hidden">
+    <Panel className="flex-grow overflow-hidden">
       <Panel.Header
         title={
           <div className="flex">

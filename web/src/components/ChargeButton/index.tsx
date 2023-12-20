@@ -112,10 +112,11 @@ export default function ChargeButton(props: { amount?: number; children: React.R
                     )}
                     <Button
                       className={clsx(
-                        "w-full !rounded-md !border-2 bg-gray-100 py-10 !text-[24px]",
+                        "w-full !rounded-md !border-2 py-10 !text-[24px]",
                         item.amount === amount * 100
                           ? "!border-primary-400 !text-primary-600"
                           : "!border-transparent",
+                        darkMode ? "bg-gray-500" : "bg-gray-100 ",
                       )}
                       variant={"outline"}
                       key={item.amount}
