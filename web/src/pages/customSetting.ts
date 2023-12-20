@@ -176,7 +176,7 @@ const useCustomSettingStore = create<State>()(
         commonSettings: {
           fontSize: 14,
           funcListDisplay: "name",
-          useLSP: false,
+          useLSP: true,
         },
 
         setCommonSettings: (settings) => {

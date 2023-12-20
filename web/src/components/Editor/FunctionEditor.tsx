@@ -6,7 +6,7 @@ import {
   registerFileSystemOverlay,
 } from "vscode/service-override/files";
 
-import { COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
+import { APP_STATUS, COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
 
 import "./useWorker";
 
@@ -58,39 +58,44 @@ function FunctionEditor(props: {
   );
 
   useEffect(() => {
-    const lspWebSocket = createWebSocketAndStartClient(url, globalStore.currentApp.develop_token);
-    setLSPStatus("initializing");
+    const startLSP = () => {
+      const lspWebSocket = createWebSocketAndStartClient(url, globalStore.currentApp.develop_token);
+      setLSPStatus("initializing");
 
-    lspWebSocket.addEventListener("message", (event) => {
-      const message = JSON.parse(event.data);
-      if (message.method === "textDocument/publishDiagnostics") {
-        setLSPStatus("ready");
-        return;
-      }
-    });
+      lspWebSocket.addEventListener("message", (event) => {
+        const message = JSON.parse(event.data);
+        if (message.method === "textDocument/publishDiagnostics") {
+          setLSPStatus("ready");
+          return;
+        }
+      });
 
-    lspWebSocket.addEventListener("close", () => {
-      setLSPStatus("closed");
-    });
+      lspWebSocket.addEventListener("close", () => {
+        setLSPStatus("closed");
+      });
 
-    lspWebSocket.addEventListener("error", () => {
-      setLSPStatus("error");
-      lspWebSocket?.close();
-    });
+      lspWebSocket.addEventListener("error", () => {
+        setLSPStatus("error");
+        lspWebSocket?.close();
+      });
 
-    window.onbeforeunload = () => {
-      // On page reload/exit, close web socket connection
-      lspWebSocket.close();
-      setLSPStatus("closed");
+      window.onbeforeunload = () => {
+        // On page reload/exit, close web socket connection
+        lspWebSocket.close();
+        setLSPStatus("closed");
+      };
+
+      return () => {
+        // On component unmount, close web socket connection
+        lspWebSocket.close();
+        setLSPStatus("closed");
+      };
     };
-
-    return () => {
-      // On component unmount, close web socket connection
-      lspWebSocket.close();
-      setLSPStatus("closed");
-    };
+    if (globalStore.currentApp.state === APP_STATUS.Running) {
+      startLSP();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [globalStore.currentApp.state]);
 
   useEffect(() => {
     const listener = (event: any) => {

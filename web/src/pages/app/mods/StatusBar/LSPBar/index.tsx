@@ -10,8 +10,8 @@ import useGlobalStore from "@/pages/globalStore";
 
 export default function LSPBar() {
   const { t } = useTranslation();
-  const { LSPStatus, setLSPStatus } = useFunctionStore();
-  const { currentApp } = useGlobalStore();
+  const { LSPStatus, setLSPStatus, allFunctionList } = useFunctionStore();
+  const { currentApp, isLSPEffective } = useGlobalStore();
   const baseUrl = currentApp.host;
   const url = useMemo(() => createUrl(baseUrl, "/_/lsp"), [baseUrl]);
   const { commonSettings } = useCustomSettingStore();
@@ -59,41 +59,45 @@ export default function LSPBar() {
   };
 
   return (
-    <div>
-      {!commonSettings.useLSP && (
-        <Tooltip label={t("LSP.EnableLanguageServer")}>
-          <div className="flex items-center text-warn-600">
-            <span>{t("LSP.LanguageServerNotEnable")}</span>
-          </div>
-        </Tooltip>
-      )}
-      {commonSettings.useLSP && LSPStatus === "ready" && null}
-      {commonSettings.useLSP && LSPStatus === "initializing" && (
-        <div className="flex items-center text-grayModern-600">
-          <Spinner size="xs" className="mr-2" />
-          <span>{t("LSP.InitializingLanguageServer")}</span>
+    <>
+      {!isLSPEffective || allFunctionList.length === 0 ? null : (
+        <div>
+          {!commonSettings.useLSP && (
+            <Tooltip label={t("LSP.EnableLanguageServer")}>
+              <div className="flex items-center text-warn-600">
+                <span>{t("LSP.LanguageServerNotEnable")}</span>
+              </div>
+            </Tooltip>
+          )}
+          {commonSettings.useLSP && LSPStatus === "ready" && null}
+          {commonSettings.useLSP && LSPStatus === "initializing" && (
+            <div className="flex items-center text-grayModern-600">
+              <Spinner size="xs" className="mr-2" />
+              <span>{t("LSP.InitializingLanguageServer")}</span>
+            </div>
+          )}
+          {commonSettings.useLSP && LSPStatus === "closed" && (
+            <Tooltip label={t("LSP.InitLanguageServer")}>
+              <div
+                className="flex cursor-pointer items-center text-warn-600"
+                onClick={handleWebSocketClick}
+              >
+                <span>{t("LSP.LanguageServerClosed")}</span>
+              </div>
+            </Tooltip>
+          )}
+          {commonSettings.useLSP && LSPStatus === "error" && (
+            <Tooltip label={t("LSP.InitLanguageServer")}>
+              <div
+                className="flex cursor-pointer items-center text-red-600"
+                onClick={handleWebSocketClick}
+              >
+                <span>{t("LSP.LanguageServerError")}</span>
+              </div>
+            </Tooltip>
+          )}
         </div>
       )}
-      {commonSettings.useLSP && LSPStatus === "closed" && (
-        <Tooltip label={t("LSP.InitLanguageServer")}>
-          <div
-            className="flex cursor-pointer items-center text-warn-600"
-            onClick={handleWebSocketClick}
-          >
-            <span>{t("LSP.LanguageServerClosed")}</span>
-          </div>
-        </Tooltip>
-      )}
-      {commonSettings.useLSP && LSPStatus === "error" && (
-        <Tooltip label={t("LSP.InitLanguageServer")}>
-          <div
-            className="flex cursor-pointer items-center text-red-600"
-            onClick={handleWebSocketClick}
-          >
-            <span>{t("LSP.LanguageServerError")}</span>
-          </div>
-        </Tooltip>
-      )}
-    </div>
+    </>
   );
 }

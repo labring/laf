@@ -37,8 +37,8 @@ function HeadPanel() {
 
   return (
     <Panel className="recentList !flex-row justify-between !px-0">
-      <SimpleBar style={{ height: 36, flex: 1, overflowY: "hidden" }}>
-        <HStack className="h-9 flex-1" data-simplebar>
+      <SimpleBar style={{ flex: 1, overflowY: "hidden" }}>
+        <HStack className="flex-1" height="36px" data-simplebar>
           <div className="flex h-full">
             {recentFunctionList.length > 0 &&
               recentFunctionList.map((item, index) => {
@@ -124,6 +124,7 @@ function HeadPanel() {
       </SimpleBar>
       <HStack
         minW="500px"
+        height="36px"
         className={clsx(
           "flex justify-end border-b-[2px] pr-2",
           !darkMode ? "border-[#EEF0F2] " : "border-[#1A202C]",

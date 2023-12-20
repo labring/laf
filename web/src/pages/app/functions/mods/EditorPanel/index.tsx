@@ -15,6 +15,7 @@ import "@/components/Editor/index.css";
 
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useCustomSettingStore from "@/pages/customSetting";
+import useGlobalStore from "@/pages/globalStore";
 
 function EditorPanel() {
   const store = useFunctionStore((store) => store);
@@ -23,6 +24,7 @@ function EditorPanel() {
   const { colorMode } = useColorMode();
   const { t } = useTranslation();
   const functionCache = useFunctionCache();
+  const { isLSPEffective } = useGlobalStore();
 
   const functionListQuery = useFunctionListQuery();
   return (
@@ -40,7 +42,7 @@ function EditorPanel() {
         </EmptyBox>
       )}
       <div className={functionListQuery.data?.data?.length !== 0 ? "h-full" : "hidden"}>
-        {commonSettings.useLSP ? (
+        {commonSettings.useLSP && isLSPEffective ? (
           <FunctionEditor
             colorMode={colorMode}
             className="h-full flex-grow"

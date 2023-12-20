@@ -30,6 +30,7 @@ type State = {
   avatarUpdatedAt: string;
   updateUserInfo(): void;
   visitedViews: string[];
+  isLSPEffective: boolean;
 
   showSuccess: (text: string | React.ReactNode) => void;
   showInfo: (text: string | React.ReactNode, duration?: number, isClosable?: boolean) => void;
@@ -123,6 +124,9 @@ const useGlobalStore = create<State>()(
       setCurrentApp: (app) => {
         set((state) => {
           state.currentApp = app;
+          state.isLSPEffective =
+            app?.bundle?.resource?.limitCPU! / 1000 >= 0.5 &&
+            app?.bundle?.resource.limitMemory / 1024 >= 1;
 
           if (typeof state.currentApp === "object") {
             const host = `${
@@ -133,6 +137,8 @@ const useGlobalStore = create<State>()(
           }
         });
       },
+
+      isLSPEffective: false,
 
       showSuccess: (text: string | React.ReactNode) => {
         toast({

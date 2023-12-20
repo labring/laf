@@ -117,7 +117,7 @@ const CreateAppModal = (props: {
 
   const [autoscaling, setAutoscaling] = React.useState(defaultAutoscaling);
 
-  const { showSuccess, currentApp, setCurrentApp } = useGlobalStore();
+  const { showSuccess, currentApp, setCurrentApp, updateCurrentApp } = useGlobalStore();
 
   const [totalPrice, setTotalPrice] = React.useState(0);
   const [calculating, setCalculating] = React.useState(false);
@@ -204,6 +204,17 @@ const CreateAppModal = (props: {
             autoscaling: autoscaling,
           };
           setCurrentApp({ ...currentApp, bundle: newBundle });
+        }
+
+        if (
+          currentApp &&
+          (bundle.cpu !== application?.bundle.resource.limitCPU ||
+            bundle.memory !== application?.bundle.resource.limitMemory)
+        ) {
+          updateCurrentApp(
+            currentApp!,
+            currentApp!.state === APP_STATUS.Stopped ? APP_STATUS.Running : APP_STATUS.Restarting,
+          );
         }
         break;
 

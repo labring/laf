@@ -234,7 +234,7 @@
     "FuncListDisplay": "Function List Display",
     "ListDisplay": "List Display",
     "EditorLanguageServer": "Editor Language Server",
-    "isOpenLanguageServer": "Enable or Close Language server (Note that enabling this feature may consume more CPU and memory)",
+    "isOpenLanguageServer": "Enable or Close Language server (only effective when the app config is above 0.5C 1G)",
     "Editor": "Editor",
     "FuncList": "Function List",
     "OldLogs": "Old Logs",

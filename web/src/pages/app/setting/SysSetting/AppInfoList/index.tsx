@@ -6,7 +6,7 @@ import { Box, Button, HStack, useColorMode, VStack } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import { APP_PHASE_STATUS, APP_STATUS, COLOR_MODE, Routes } from "@/constants/index";
-import { formatDate } from "@/utils/format";
+import { formatDate, formatSize } from "@/utils/format";
 
 import InfoDetail from "./InfoDetail";
 
@@ -139,15 +139,21 @@ const AppEnvList = () => {
               },
               {
                 key: t("Spec.RAM"),
-                value: `${currentApp?.bundle?.resource.limitMemory} ${t("Unit.MB")}`,
+                value: String(
+                  formatSize(currentApp?.bundle?.resource.limitMemory * 1024 * 1024, 0),
+                ),
               },
               {
                 key: t("Spec.Database"),
-                value: `${currentApp?.bundle?.resource.databaseCapacity! / 1024} ${t("Unit.GB")}`,
+                value: String(
+                  formatSize(currentApp?.bundle?.resource.databaseCapacity * 1024 * 1024, 0),
+                ),
               },
               {
                 key: t("Spec.Storage"),
-                value: `${currentApp?.bundle?.resource.storageCapacity! / 1024} ${t("Unit.GB")}`,
+                value: String(
+                  formatSize(currentApp?.bundle?.resource.storageCapacity * 1024 * 1024, 0),
+                ),
               },
             ]}
             className={darkMode ? "w-60" : "w-60 bg-[#F8FAFB]"}
