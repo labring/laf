@@ -7,19 +7,19 @@ export function command(): Command {
     .command('environment')
     .alias('env')
     .hook('preAction', () => {
-    checkApplication()
-  })
+      checkApplication()
+    })
 
   cmd
     .command('pull')
-    .description('push environment variables')
+    .description('pull environment variables')
     .action(() => {
       pull()
     })
-  
+
   cmd
     .command('push')
-    .description('pull environment variables')
+    .description('push environment variables')
     .action(() => {
       push()
     })
