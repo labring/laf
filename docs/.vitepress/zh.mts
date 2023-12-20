@@ -40,7 +40,7 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
           { text: '请求', link: '/zh/cloud-function/request' },
           { text: '响应', link: '/zh/cloud-function/response' },
           { text: '认证', link: '/zh/cloud-function/auth' },
-          { text: '文件上传' },
+          { text: '文件上传', link: '/zh/cloud-function/files' },
         ]
       },
       { text: '访问云数据库' },
