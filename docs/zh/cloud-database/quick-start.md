@@ -3,6 +3,9 @@
 
 本文通过 3 分钟，快速介绍如何操作云数据库。
 
+::: info 本节目录
+[[toc]]
+:::
 
 ## 获取数据库实例
 
@@ -121,8 +124,13 @@ export default async function () {
 ```
 :::
 
-## 更多
+## 下一步
 
-::: tip 提示
-Laf 使用的数据库 API 是 [MongoDb 官方 Node.js SDK](https://www.mongodb.com/docs/drivers/node/v5.0/quick-reference/)，你也可以直接参考官方文档。
+::: tip 
+- [插入文档](./insert.md)
+- [查询文档](./find.md)
+- [更新文档](./update.md)
+- [删除文档](./delete.md)
+
+>_Laf 使用的数据库 API 是 [MongoDb 官方 Node.js SDK](https://www.mongodb.com/docs/drivers/node/v5.0/quick-reference/)，你也可以直接参考官方文档。_
 :::

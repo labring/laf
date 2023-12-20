@@ -1,9 +1,14 @@
 
 # 云数据库 - 插入文档
 
-## 概述
+本节介绍云数据库中插入文档的用法。
 
-在本文中，您可以了解云数据库的插入文档操作。
+::: info 本节目录
+[[toc]]
+:::
+
+
+## 概述
 
 插入操作将一个或多个文档插入到集合中。Node.js 驱动程序提供了以下方法来执行插入操作：
 
@@ -96,4 +101,12 @@ export default async function () {
 ::: info 更多参考
 - [db.collection.insertMany() 完整说明](https://www.mongodb.com/docs/manual/reference/method/db.collection.insertMany/)
 - [API: Collection.insertMany()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#insertMany)
+:::
+
+
+## 下一步
+::: tip
+- [查询文档](./find.md)
+- [更新文档](./update.md)
+- [删除文档](./delete.md)
 :::

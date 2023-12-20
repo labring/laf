@@ -43,7 +43,6 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
           { text: '文件上传', link: '/zh/cloud-function/files' },
         ]
       },
-      { text: '访问云数据库' },
       { text: '发起网络请求' },
       { text: '环境变量' },
       { text: '定时任务' },

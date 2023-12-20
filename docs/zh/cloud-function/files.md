@@ -4,6 +4,10 @@
 
 本节介绍如何使用云函数处理客户端上传的文件。
 
+::: info 本节目录
+[[toc]]
+:::
+
 ## 获取上传的文件对象
 
 ::: info
@@ -86,3 +90,12 @@ export default async function (ctx: FunctionContext) {
 ::: info 更多参考
 操作云存储的详细用法，请参考[云存储上传文件](../cloud-storage/upload.md)。
 :::
+
+## 下一步
+::: tip
+- [HTTP 请求](./request.md)
+- [HTTP 响应](./response.md)
+- [HTTP 认证](./auth.md)
+- [云存储](../cloud-storage/index.md)
+:::
+

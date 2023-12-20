@@ -1,9 +1,11 @@
 
 # 云数据库 - 删除文档
 
-## 概述
+本节将介绍如何从云数据库中删除集合中的文档。
 
-本节将介绍如何调用写操作从云数据库中删除集合中的文档。
+::: info 本节目录
+[[toc]]
+:::
 
 ## 删除单条文档
 
@@ -69,3 +71,10 @@ export default async function () {
 - [API: Collection.deleteMany()](https://mongodb.github.io/node-mongodb-native/5.0/classes/Collection.html#deleteMany)
 :::
 
+
+## 下一步
+::: tip
+- [插入文档](./insert.md)
+- [查询文档](./find.md)
+- [更新文档](./update.md)
+:::
