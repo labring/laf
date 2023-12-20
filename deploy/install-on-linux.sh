@@ -59,6 +59,7 @@ sealos pull labring/cert-manager:v1.8.0
 sealos pull labring/metrics-server:v0.6.2
 sealos pull lafyun/laf:latest
 sealos pull docker.io/labring/ingress-nginx:v1.8.1
+sealos pull labring/kubeblocks:v0.7.1
 
 # install k8s cluster
 sealos run labring/kubernetes:v1.24.9 labring/flannel:v0.19.0 labring/helm:v3.8.2
@@ -74,6 +75,7 @@ sealos run labring/cert-manager:v1.8.0
 sealos run labring/metrics-server:v0.6.2
 sealos run docker.io/labring/ingress-nginx:v1.8.1 \
   -e HELM_OPTS="--set controller.hostNetwork=true --set controller.kind=DaemonSet --set controller.service.enabled=false"
+sealos run labring/kubeblocks:v0.7.1
 
 
 sealos run --env DOMAIN=$DOMAIN --env DB_PV_SIZE=5Gi --env OSS_PV_SIZE=5Gi --env EXTERNAL_HTTP_SCHEMA=http lafyun/laf:latest

@@ -1,0 +1,33 @@
+apiVersion: apps.kubeblocks.io/v1alpha1
+kind: Cluster
+metadata:
+  finalizers:
+    - cluster.kubeblocks.io/finalizer
+  labels:
+    clusterdefinition.kubeblocks.io/name: mongodb
+    clusterversion.kubeblocks.io/name: mongodb-5.0
+  name: mongodb
+spec:
+  affinity:
+    nodeLabels: {}
+    podAntiAffinity: Preferred
+    tenancy: SharedNode
+    topologyKeys: []
+  clusterDefinitionRef: mongodb
+  clusterVersionRef: mongodb-5.0
+  componentSpecs:
+    - componentDefRef: mongodb
+      monitor: true
+      name: mongodb
+      replicas: 1
+      serviceAccountName: ""
+      volumeClaimTemplates:
+        - name: data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: $CAPACITY
+  terminationPolicy: Delete
+  tolerations: []
