@@ -31,93 +31,42 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
     text: '云函数',
     collapsed: false,
     items: [
+      { text: '云函数简介', link: '/zh/cloud-function/' },
+      { text: '快速开始', link: '/zh/cloud-function/quick-start' },
       {
-        text: '云函数入门',
-        link: '/zh/cloud-function/',
-      },
-      {
-        text: '云函数用法',
-        link: '/zh/cloud-function/use-function',
-      },
-      {
-        text: '云函数 SDK',
+        text: '处理 HTTP',
         collapsed: true,
         items: [
-          {
-            text: 'SDK 简介',
-            link: '/zh/cloud-function/function-sdk#frontmatter-title',
-          },
-          {
-            text: '导入 SDK',
-            link: '/zh/cloud-function/function-sdk#导入-sdk',
-          },
-          {
-            text: '发送网络请求',
-            link: '/zh/cloud-function/function-sdk#发送网络请求',
-          },
-          {
-            text: '操作数据库',
-            link: '/zh/cloud-function/function-sdk#操作数据库',
-          },
-          {
-            text: '云函数鉴权',
-            link: '/zh/cloud-function/function-sdk#云函数鉴权',
-          },
-          {
-            text: '云函数全局缓存',
-            link: '/zh/cloud-function/function-sdk#云函数全局缓存',
-          },
-          {
-            text: '原生 MongoDriver 实例',
-            link: '/zh/cloud-function/function-sdk#云函数原生-mongodriverobject-实例',
-          },
-        ],
+          { text: '请求', link: '/zh/cloud-function/request' },
+          { text: '响应', link: '/zh/cloud-function/response' },
+          { text: '认证', link: '/zh/cloud-function/auth' },
+          { text: '文件上传' },
+        ]
       },
-      {
-        text: 'HTTP 调用云函数',
-        link: '/zh/cloud-function/call-function-in-http',
-      },
-      {
-        text: '函数市场',
-        link: '/zh/cloud-function/function-market',
-      },
-      {
-        text: 'Laf Pilot',
-        link: '/zh/cloud-function/pilot',
-      },
-      {
-        text: '云函数日志',
-        link: '/zh/cloud-function/logs',
-      },
+      { text: '访问云数据库' },
+      { text: '发起网络请求' },
+      { text: '环境变量' },
+      { text: '定时任务' },
+      { text: '函数引用' },
       {
         text: '依赖管理',
-        link: '/zh/cloud-function/depend',
+        collapsed: true,
+        items: [
+          { text: '依赖管理' },
+          { text: '离线环境' },
+        ]
       },
       {
-        text: '触发器',
-        link: '/zh/cloud-function/trigger',
+        text: '内置云函数',
+        collapsed: true,
+        items: [
+          { text: '拦截器' },
+          { text: '初始化' },
+          { text: 'NotFound' },
+        ],
       },
-      {
-        text: '环境变量',
-        link: '/zh/cloud-function/env',
-      },
-      {
-        text: 'WebSocket 连接',
-        link: '/zh/cloud-function/websocket',
-      },
-      {
-        text: '拦截器',
-        link: '/zh/cloud-function/interceptor',
-      },
-      {
-        text: '应用初始化',
-        link: '/zh/cloud-function/init',
-      },
-      {
-        text: '云函数 FAQ',
-        link: '/zh/cloud-function/faq',
-      },
-    ],
+      { text: 'WebSocket' },
+    ]
   },
   {
     text: '云数据库',
