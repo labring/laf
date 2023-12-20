@@ -2,8 +2,7 @@
 
 # 基于 JWT 的身份验证
 
-关于 JWT 的介绍，可以参考 [JWT 官网](https://jwt.io/)，本节不在赘述。
-
+关于 JWT 的介绍，可以参考文末参考链接，本节不在赘述。
 
 ## 生成 JWT
 
@@ -67,3 +66,8 @@ export default async function (ctx: FunctionContext) {
 如果 token 验证不通过， `ctx.user` 为 `null`。
 :::
 
+
+## 参考链接
+
+- [JWT 中文详解](https://zhuanlan.zhihu.com/p/651660344)
+- [JWT 官网](https://jwt.io/)
