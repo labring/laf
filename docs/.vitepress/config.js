@@ -146,10 +146,6 @@ const guideSiderbarConfig = [
             link: "/guide/function/function-sdk#操作数据库",
           },
           {
-            text: "调用其他云函数",
-            link: "/guide/function/function-sdk#调用其他云函数",
-          },
-          {
             text: "云函数鉴权",
             link: "/guide/function/function-sdk#云函数鉴权",
           },

@@ -15,30 +15,12 @@ title: 使用云函数生成上传和下载地址
 
 ```typescript
 import cloud from '@lafjs/cloud'
-import { S3, PutObjectCommand } from "@aws-sdk/client-s3"
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-
-
-const client = new S3({
-  region: cloud.env.OSS_REGION,
-  endpoint: process.env.OSS_EXTERNAL_ENDPOINT,
-  credentials: {
-    accessKeyId: cloud.env.OSS_ACCESS_KEY,
-    secretAccessKey: cloud.env.OSS_ACCESS_SECRET,
-  },
-  forcePathStyle: true,
-})
-
 
 export default async function (ctx: FunctionContext) {
-  const bucketName = `${process.env.APPID}-cloud-bin`
+  const bucket = cloud.storage.bucket('cloud-bin')
 
-  const command = new PutObjectCommand({
-    Bucket: bucketName,
-    Key: 'laf.json',
-  })
-
-  const url = await getSignedUrl(client, command, { expiresIn: 3600 * 24 })
+  // 第二个参数为上传地址有效期，单位为秒， 3600 * 24 为 24 小时
+  const url = bucket.getUploadUrl('laf.json', 3600 * 24)
   return url
 }
 
@@ -64,29 +46,12 @@ curl -X PUT -H "Content-Type: application/json" -d '{"name":"hi, laf"}' $upload_
 
 ```typescript
 import cloud from '@lafjs/cloud'
-import { S3, GetObjectCommand } from "@aws-sdk/client-s3"
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
-
-
-const client = new S3({
-  region: cloud.env.OSS_REGION,
-  endpoint: process.env.OSS_EXTERNAL_ENDPOINT,
-  credentials: {
-    accessKeyId: cloud.env.OSS_ACCESS_KEY,
-    secretAccessKey: cloud.env.OSS_ACCESS_SECRET,
-  },
-  forcePathStyle: true,
-})
 
 export default async function (ctx: FunctionContext) {
-  const bucketName = `${process.env.APPID}-cloud-bin`
-
-  const command = new GetObjectCommand({
-    Bucket: bucketName,
-    Key: 'laf.json',
-  })
-
-  const url = await getSignedUrl(client, command, { expiresIn: 3600 * 24 })
+  const bucket = cloud.storage.bucket('cloud-bin')
+  
+  // 第二个参数为下载地址有效期，单位为秒， 3600 * 24 为 24 小时
+  const url = await bucket.getDownloadUrl('test.html', 3600 * 24)
   return url
 }
 

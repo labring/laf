@@ -1,7 +1,10 @@
-import SyntaxHighlighter from "react-syntax-highlighter";
+import SyntaxHighlighter, { Prism } from "react-syntax-highlighter";
+import { FixedSizeList as List } from "react-window";
 import SimpleBar from "simplebar-react";
 
 import { COLOR_MODE } from "@/constants";
+
+import "./index.scss";
 
 type JSONViewerProps = {
   code: string;
@@ -238,28 +241,60 @@ const JSONViewerDarkStyle: any = {
     fontWeight: "bold",
   },
 };
+
 export default function JSONViewer(props: JSONViewerProps) {
   const { code, language = "json", colorMode = COLOR_MODE.light, ...rest } = props;
-  const lightTheme = { background: "#fdfdfe" };
+  const lightTheme = { background: "#fdfdfe", padding: 0 };
   const darkTheme = {
     background: "#202631",
     color: "#f0f0f0",
   };
 
-  return (
-    <SimpleBar
-      style={{
-        maxHeight: 390,
-      }}
-      {...rest}
-    >
-      <SyntaxHighlighter
+  const rowHeight = 22;
+
+  const renderRow = ({ index, style }: { index: number; style: any }) => (
+    <div style={style} className="code">
+      <Prism
         language={language}
         style={colorMode === COLOR_MODE.dark ? JSONViewerDarkStyle : JSONViewerStyle}
         customStyle={colorMode === COLOR_MODE.dark ? darkTheme : lightTheme}
       >
-        {code}
-      </SyntaxHighlighter>
-    </SimpleBar>
+        {code.split(`\n`)[index]}
+      </Prism>
+    </div>
   );
+
+  if (code.split(`\n`).length <= 100) {
+    return (
+      <SimpleBar
+        style={{
+          maxHeight: 390,
+        }}
+        {...rest}
+      >
+        <SyntaxHighlighter
+          language={language}
+          style={colorMode === COLOR_MODE.dark ? JSONViewerDarkStyle : JSONViewerStyle}
+          customStyle={colorMode === COLOR_MODE.dark ? darkTheme : lightTheme}
+        >
+          {code}
+        </SyntaxHighlighter>
+      </SimpleBar>
+    );
+  } else {
+    return (
+      <List
+        height={390}
+        itemCount={code.split(`\n`).length}
+        itemSize={rowHeight}
+        width="100%"
+        style={{
+          paddingTop: 0,
+        }}
+        {...rest}
+      >
+        {renderRow}
+      </List>
+    );
+  }
 }

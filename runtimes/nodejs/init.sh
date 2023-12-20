@@ -2,12 +2,13 @@
 
 set -e
 
-# skip init if $DEPENDENCIES is empty
-if [ -z "$DEPENDENCIES" ]; then
+# skip init if $DEPENDENCIES is empty and $LF_NODE_MODULES_CACHE is not `always`
+if [ -z "$DEPENDENCIES" ] && [ "$LF_NODE_MODULES_CACHE" != "always" ]; then
   echo "No dependencies to install."
   exit 0
 fi
 
+### get node_modules cache ###
 # if $NODE_MODULES_URL is not empty
 if [ -n "$NODE_MODULES_PULL_URL" ]; then
   echo "Downloading node_modules from $NODE_MODULES_PULL_URL"
@@ -43,13 +44,19 @@ if [ -n "$NODE_MODULES_PULL_URL" ]; then
     fi
   fi
 
-  
   # re-enable set -e
   set -e
 else
   echo "No node_modules cache found, continuing installation."
 fi
 
+# if $LF_NODE_MODULES_CACHE is `always`
+if [ "$LF_NODE_MODULES_CACHE" = "always" ]; then
+  echo "LF_NODE_MODULES_CACHE is set to 'always', skipping dependency check and install."
+  exit 0
+fi
+
+### dependency check ###
 CACHED_DEPENDENCIES=""
 # if node_modules/.dependencies exists
 if [ -f "node_modules/.dependencies" ]; then
@@ -68,7 +75,7 @@ else
 fi
 
 
-# npm install $DEPENDENCIES
+### npm install $DEPENDENCIES ###
 start_time=$(date +%s)
 echo "npm install $DEPENDENCIES $NPM_INSTALL_FLAGS"
 npm install $DEPENDENCIES $NPM_INSTALL_FLAGS
@@ -76,6 +83,7 @@ end_time=$(date +%s)
 elapsed_time=$(expr $end_time - $start_time)
 echo "Installed dependencies in $elapsed_time seconds."
 
+### cache node_modules ###
 # if $NODE_MODULES_PUSH_URL is not empty
 if [ -n "$NODE_MODULES_PUSH_URL" ]; then
   # temporarily disable set -e

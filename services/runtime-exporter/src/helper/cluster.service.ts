@@ -1,17 +1,19 @@
 import * as k8s from '@kubernetes/client-node'
+import * as http from 'http'
 import Config from '../config'
 import {
   totalCPUForContainer,
   totalMemoryForContainer,
   quantityToScalar,
 } from '@kubernetes/client-node/dist/util'
+import { V1DeploymentList } from '@kubernetes/client-node'
 
 export interface Metric {
   cpu: number
   memory: number
   appid: string
   containerName: string
-  podName: string
+  podName?: string
 }
 
 export class ClusterService {
@@ -41,6 +43,11 @@ export class ClusterService {
   static makeCoreV1Api() {
     const kc = this.loadKubeConfig()
     return kc.makeApiClient(k8s.CoreV1Api)
+  }
+
+  static makeAppsV1Api() {
+    const kc = this.loadKubeConfig()
+    return kc.makeApiClient(k8s.AppsV1Api)
   }
 
   static getMetricsClient() {
@@ -91,10 +98,13 @@ export class ClusterService {
   }
 
   static async getRuntimePodsLimitForAllNamespaces(): Promise<Metric[]> {
-    const coreV1Api = this.makeCoreV1Api()
-    let res: any
+    const appsV1Api = this.makeAppsV1Api()
+    let res: {
+      response: http.IncomingMessage
+      body: V1DeploymentList
+    }
     if (ClusterService.NAMESPACE) {
-      res = await coreV1Api.listNamespacedPod(
+      res = await appsV1Api.listNamespacedDeployment(
         ClusterService.NAMESPACE,
         undefined,
         undefined,
@@ -103,7 +113,7 @@ export class ClusterService {
         ClusterService.LABEL_KEY_APP_ID,
       )
     } else {
-      res = await coreV1Api.listPodForAllNamespaces(
+      res = await appsV1Api.listDeploymentForAllNamespaces(
         undefined,
         undefined,
         undefined,
@@ -115,9 +125,8 @@ export class ClusterService {
 
     for (const item of res.body.items) {
       const appid = item.metadata.labels[ClusterService.LABEL_KEY_APP_ID]
-      const podName = item.metadata.name
-
-      for (const container of item.spec.containers) {
+      const hpa = Number(item.spec.replicas)
+      for (const container of item.spec.template.spec.containers) {
         const containerName = container.name
         // cpu is in cores, convert to millicores, 1 core = 1000 millicores
         const cpu = Number(totalCPUForContainer(container).limit || 0) * 1000
@@ -126,11 +135,10 @@ export class ClusterService {
           Number(totalMemoryForContainer(container).limit || 0) / 1048576
 
         const metric: Metric = {
-          cpu: cpu,
-          memory: memory,
+          cpu: cpu * hpa,
+          memory: memory * hpa,
           appid: appid,
           containerName: containerName,
-          podName: podName,
         }
         metricsList.push(metric)
       }
