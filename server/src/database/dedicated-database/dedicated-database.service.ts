@@ -16,7 +16,6 @@ import { ClientSession } from 'mongodb'
 import * as mongodb_uri from 'mongodb-uri'
 import { MongoService } from 'src/database/mongo.service'
 import { MongoAccessor } from 'database-proxy'
-import * as assert from 'node:assert'
 import { ApplicationBundle } from 'src/application/entities/application-bundle'
 
 const getDedicatedDatabaseName = (appid: string) => appid
@@ -225,16 +224,12 @@ export class DedicatedDatabaseService {
    * Get database accessor that used for `database-proxy`
    */
   async getDatabaseAccessor(appid: string) {
-    const region = await this.regionService.findByAppId(appid)
     const database = await this.findOne(appid)
     if (!database) return null
 
-    const dbName = database.name
-    const connectionUri = await this.getConnectionUri(region, database)
-    assert(connectionUri, 'Database connection uri not found')
+    const { client } = await this.findAndConnect(appid)
 
-    const accessor = new MongoAccessor(dbName, connectionUri)
-    await accessor.init()
+    const accessor = new MongoAccessor(client)
     return accessor
   }
 
