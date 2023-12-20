@@ -105,7 +105,7 @@ export class BillingService {
       {
         $project: {
           day: {
-            $dateToString: { format: '%Y-%m-%d', date: '$endAt' },
+            $dateToString: { format: '%Y-%m-%d', date: '$startAt' },
           },
           amount: 1,
         },
