@@ -4,7 +4,7 @@ title: laf assistant (非官方维护)
 
 # {{ $frontmatter.title }}
 
-`laf assistant` 为前社区用户 `白夜` 由于兴趣开发。基于 `laf-cli` 封装开发而成。
+`laf assistant` 为社区用户 `白夜` 由于兴趣开发。基于 `laf-cli` 封装开发而成。
 
 详细介绍可看：[Laf Assistant：云开发从未如此爽快！](https://mp.weixin.qq.com/s/SueTSmWFXDySaRSx3uAPIg)
 
