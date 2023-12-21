@@ -17,6 +17,7 @@ import * as mongodb_uri from 'mongodb-uri'
 import { MongoService } from 'src/database/mongo.service'
 import { MongoAccessor } from 'database-proxy'
 import { ApplicationBundle } from 'src/application/entities/application-bundle'
+import * as assert from 'assert'
 
 const getDedicatedDatabaseName = (appid: string) => appid
 
@@ -93,7 +94,10 @@ export class DedicatedDatabaseService {
     const api = this.cluster.makeObjectApi(region)
     const emptyManifest = this.makeDeployManifest(region, appid)
     const specs = loadAllYaml(emptyManifest)
-    if (!specs || specs.length === 0) return null
+    assert(
+      specs && specs.length > 0,
+      'the deploy manifest of database should not be empty',
+    )
     const spec = specs[0]
 
     try {
@@ -155,6 +159,10 @@ export class DedicatedDatabaseService {
   getDatabaseNamespace(region: Region, appid: string) {
     const emptyManifest = this.makeDeployManifest(region, appid)
     const specs = loadAllYaml(emptyManifest)
+    assert(
+      specs && specs.length > 0,
+      'the deploy manifest of database should not be empty',
+    )
     if (!specs || specs.length === 0) return null
     const spec = specs[0]
     return spec.metadata.namespace
@@ -170,9 +178,7 @@ export class DedicatedDatabaseService {
 
     const username = Buffer.from(srv.body.data.username, 'base64').toString()
     const password = Buffer.from(srv.body.data.password, 'base64').toString()
-    const host =
-      Buffer.from(srv.body.data.headlessHost, 'base64').toString() +
-      '.cluster.local'
+    const host = Buffer.from(srv.body.data.headlessHost, 'base64').toString()
     const port = Number(
       Buffer.from(srv.body.data.headlessPort, 'base64').toString(),
     )
