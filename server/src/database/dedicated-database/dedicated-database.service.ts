@@ -124,9 +124,9 @@ export class DedicatedDatabaseService {
     const { limitCPU, limitMemory, replicas, capacity } = dto
     const name = getDedicatedDatabaseName(appid)
 
-    const requestCPU = limitCPU * region.bundleConf.cpuRequestLimitRatio
+    const requestCPU = limitCPU * region.bundleConf?.cpuRequestLimitRatio || 0.1
     const requestMemory =
-      limitMemory * region.bundleConf.memoryRequestLimitRatio
+      limitMemory * region.bundleConf?.memoryRequestLimitRatio || 0.5
 
     const template = region.deployManifest.database
     const tmpl = _.template(template)
