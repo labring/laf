@@ -300,6 +300,20 @@ export class InitializerService {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        regionId: region._id,
+        type: ResourceType.DedicatedDatabaseReplicas,
+        price: 0.0,
+        specs: [
+          { label: '1', value: 1 },
+          { label: '3', value: 3 },
+          { label: '5', value: 5 },
+          { label: '7', value: 7 },
+          { label: '9', value: 9 },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ])
 
     this.logger.verbose('Created default resource options')
@@ -334,6 +348,7 @@ export class InitializerService {
           [ResourceType.DedicatedDatabaseCPU]: { value: 200 },
           [ResourceType.DedicatedDatabaseMemory]: { value: 256 },
           [ResourceType.DedicatedDatabaseCapacity]: { value: 1024 },
+          [ResourceType.DedicatedDatabaseReplicas]: { value: 1 },
         },
         enableFreeTier: false,
         limitCountOfFreeTierPerUser: 20,
@@ -353,6 +368,7 @@ export class InitializerService {
           [ResourceType.DedicatedDatabaseCPU]: { value: 500 },
           [ResourceType.DedicatedDatabaseMemory]: { value: 512 },
           [ResourceType.DedicatedDatabaseCapacity]: { value: 4096 },
+          [ResourceType.DedicatedDatabaseReplicas]: { value: 3 },
         },
         enableFreeTier: false,
         createdAt: new Date(),
@@ -371,6 +387,7 @@ export class InitializerService {
           [ResourceType.DedicatedDatabaseCPU]: { value: 1000 },
           [ResourceType.DedicatedDatabaseMemory]: { value: 2048 },
           [ResourceType.DedicatedDatabaseCapacity]: { value: 16384 },
+          [ResourceType.DedicatedDatabaseReplicas]: { value: 5 },
         },
         enableFreeTier: false,
         createdAt: new Date(),
@@ -389,6 +406,7 @@ export class InitializerService {
           [ResourceType.DedicatedDatabaseCPU]: { value: 2000 },
           [ResourceType.DedicatedDatabaseMemory]: { value: 4096 },
           [ResourceType.DedicatedDatabaseCapacity]: { value: 65536 },
+          [ResourceType.DedicatedDatabaseReplicas]: { value: 7 },
         },
         enableFreeTier: false,
         createdAt: new Date(),

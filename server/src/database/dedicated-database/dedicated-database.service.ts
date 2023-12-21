@@ -68,16 +68,7 @@ export class DedicatedDatabaseService {
       .collection<ApplicationBundle>('ApplicationBundle')
       .findOne({ appid })
 
-    const spec = {
-      limitCPU: bundle.resource['dedicatedDatabase.limitCPU'],
-      limitMemory: bundle.resource['dedicatedDatabase.limitMemory'],
-      requestCPU: bundle.resource['dedicatedDatabase.requestCPU'],
-      requestMemory: bundle.resource['dedicatedDatabase.requestMemory'],
-      replicas: bundle.resource['dedicatedDatabase.replicas'],
-      capacity: bundle.resource['dedicatedDatabase.capacity'],
-    } as DedicatedDatabaseSpec
-
-    return spec
+    return bundle.resource.dedicatedDatabase
   }
 
   async findOne(appid: string) {
@@ -161,7 +152,7 @@ export class DedicatedDatabaseService {
     return res.value
   }
 
-  getDatabaseNamespace(region, appid) {
+  getDatabaseNamespace(region: Region, appid: string) {
     const emptyManifest = this.makeDeployManifest(region, appid)
     const specs = loadAllYaml(emptyManifest)
     if (!specs || specs.length === 0) return null

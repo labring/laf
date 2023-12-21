@@ -18,22 +18,20 @@ export enum DedicatedDatabaseState {
 }
 
 export class DedicatedDatabaseSpec {
-  @ApiProperty()
+  @ApiProperty({ example: 500 })
   limitCPU: number
 
-  @ApiProperty()
+  @ApiProperty({ example: 1024 })
   limitMemory: number
 
-  @ApiProperty()
   requestCPU: number
 
-  @ApiProperty()
   requestMemory: number
 
-  @ApiProperty()
+  @ApiProperty({ example: 1024 })
   capacity: number
 
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   replicas: number
 }
 

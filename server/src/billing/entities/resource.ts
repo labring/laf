@@ -7,9 +7,10 @@ export enum ResourceType {
   DatabaseCapacity = 'databaseCapacity',
   StorageCapacity = 'storageCapacity',
   NetworkTraffic = 'networkTraffic',
-  DedicatedDatabaseCPU = 'dedicatedDatabase.cpu',
-  DedicatedDatabaseMemory = 'dedicatedDatabase.memory',
-  DedicatedDatabaseCapacity = 'dedicatedDatabase.capacity',
+  DedicatedDatabaseCPU = 'dedicatedDatabaseCPU',
+  DedicatedDatabaseMemory = 'dedicatedDatabaseMemory',
+  DedicatedDatabaseCapacity = 'dedicatedDatabaseCapacity',
+  DedicatedDatabaseReplicas = 'dedicatedDatabaseReplicas',
 }
 
 export class ResourceSpec {
@@ -57,7 +58,19 @@ export class ResourceBundleSpecMap {
   [ResourceType.StorageCapacity]: ResourceSpec;
 
   @ApiPropertyOptional({ type: ResourceSpec })
-  [ResourceType.NetworkTraffic]?: ResourceSpec
+  [ResourceType.NetworkTraffic]?: ResourceSpec;
+
+  @ApiProperty({ type: ResourceSpec })
+  [ResourceType.DedicatedDatabaseCPU]: ResourceSpec;
+
+  @ApiProperty({ type: ResourceSpec })
+  [ResourceType.DedicatedDatabaseMemory]: ResourceSpec;
+
+  @ApiProperty({ type: ResourceSpec })
+  [ResourceType.DedicatedDatabaseCapacity]: ResourceSpec;
+
+  @ApiProperty({ type: ResourceSpec })
+  [ResourceType.DedicatedDatabaseReplicas]: ResourceSpec
 }
 
 export class ResourceBundle {
@@ -83,6 +96,7 @@ export class ResourceBundle {
     [ResourceType.DedicatedDatabaseCPU]: ResourceSpec
     [ResourceType.DedicatedDatabaseMemory]: ResourceSpec
     [ResourceType.DedicatedDatabaseCapacity]: ResourceSpec
+    [ResourceType.DedicatedDatabaseReplicas]: ResourceSpec
   }
 
   @ApiPropertyOptional()

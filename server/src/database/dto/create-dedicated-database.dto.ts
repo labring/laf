@@ -20,6 +20,6 @@ export class CreateDedicatedDatabaseDto {
   @ApiProperty({ example: 3 })
   @IsNotEmpty()
   @IsInt()
-  @Max(10)
+  @Max(9)
   replicas: number
 }

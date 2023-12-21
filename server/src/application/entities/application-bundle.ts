@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ObjectId } from 'mongodb'
 import { Autoscaling } from './application-configuration'
+import { DedicatedDatabaseSpec } from 'src/database/entities/dedicated-database'
 
 export class ApplicationBundleResource {
   @ApiProperty({ example: 500 })
@@ -39,20 +40,8 @@ export class ApplicationBundleResource {
   limitDatabaseTPS: number
   limitStorageTPS: number
 
-  @ApiProperty({ example: 500 })
-  'dedicatedDatabase.limitCPU': number
-
-  @ApiProperty({ example: 1024 })
-  'dedicatedDatabase.limitMemory': number
-
-  'dedicatedDatabase.requestCPU': number
-  'dedicatedDatabase.requestMemory': number
-
-  @ApiProperty({ example: 4096 })
-  'dedicatedDatabase.capacity': number
-
-  @ApiProperty({ example: 1 })
-  'dedicatedDatabase.replicas': number
+  @ApiProperty({ type: DedicatedDatabaseSpec })
+  dedicatedDatabase: DedicatedDatabaseSpec
 
   constructor(partial: Partial<ApplicationBundleResource>) {
     Object.assign(this, partial)

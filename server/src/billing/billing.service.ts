@@ -208,6 +208,10 @@ export class BillingService {
       groupedOptions[ResourceType.DedicatedDatabaseCapacity],
       'dedicated database capacity option not found',
     )
+    assert(
+      groupedOptions[ResourceType.DedicatedDatabaseReplicas],
+      'dedicated database replicas option not found',
+    )
 
     // calculate cpu price
     const cpuOption = groupedOptions[ResourceType.CPU]

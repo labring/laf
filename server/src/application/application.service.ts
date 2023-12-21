@@ -471,12 +471,14 @@ export class ApplicationService {
       limitStorageTPS,
       reservedTimeAfterExpired,
 
-      'dedicatedDatabase.limitCPU': dto.dedicatedDatabase?.cpu || 0,
-      'dedicatedDatabase.limitMemory': dto.dedicatedDatabase?.memory || 0,
-      'dedicatedDatabase.requestCPU': ddbRequestCPU,
-      'dedicatedDatabase.requestMemory': ddbRequestMemory,
-      'dedicatedDatabase.capacity': dto.dedicatedDatabase?.capacity || 0,
-      'dedicatedDatabase.replicas': dto.dedicatedDatabase?.replicas || 0,
+      dedicatedDatabase: {
+        limitCPU: dto.dedicatedDatabase?.cpu || 0,
+        limitMemory: dto.dedicatedDatabase?.memory || 0,
+        requestCPU: ddbRequestCPU,
+        requestMemory: ddbRequestMemory,
+        capacity: dto.dedicatedDatabase?.capacity || 0,
+        replicas: dto.dedicatedDatabase?.replicas || 0,
+      },
     })
 
     return resource

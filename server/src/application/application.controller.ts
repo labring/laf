@@ -336,7 +336,7 @@ export class ApplicationController {
 
     const origin = app.bundle
     if (
-      (origin.resource['dedicatedDatabase.limitCPU'] && dto.databaseCapacity) ||
+      (origin.resource.dedicatedDatabase?.limitCPU && dto.databaseCapacity) ||
       (origin.resource.databaseCapacity && dto.dedicatedDatabase)
     ) {
       return ResponseUtil.error('cannot change database type')
@@ -369,20 +369,20 @@ export class ApplicationController {
       !doc.autoscaling.enable && origin.autoscaling.enable
     const isDedicatedDatabaseChanged =
       !isEqual(
-        origin.resource['dedicatedDatabase.limitCPU'],
-        doc.resource['dedicatedDatabase.limitCPU'],
+        origin.resource.dedicatedDatabase.limitCPU,
+        doc.resource.dedicatedDatabase.limitCPU,
       ) ||
       !isEqual(
-        origin.resource['dedicatedDatabase.limitMemory'],
-        doc.resource['dedicatedDatabase.limitMemory'],
+        origin.resource.dedicatedDatabase.limitMemory,
+        doc.resource.dedicatedDatabase.limitMemory,
       ) ||
       !isEqual(
-        origin.resource['dedicatedDatabase.replicas'],
-        doc.resource['dedicatedDatabase.replicas'],
+        origin.resource.dedicatedDatabase.replicas,
+        doc.resource.dedicatedDatabase.replicas,
       ) ||
       !isEqual(
-        origin.resource['dedicatedDatabase.capacity'],
-        doc.resource['dedicatedDatabase.capacity'],
+        origin.resource.dedicatedDatabase.capacity,
+        doc.resource.dedicatedDatabase.capacity,
       )
 
     if (!isEqual(doc.autoscaling, origin.autoscaling)) {
@@ -523,25 +523,32 @@ export class ApplicationController {
         case 'storageCapacity':
           return option.specs.some((spec) => spec.value === dto.storageCapacity)
         // dedicated database
-        case 'dedicatedDatabase.cpu':
+        case 'dedicatedDatabaseCPU':
           return (
             !dto.dedicatedDatabase ||
             option.specs.some(
               (spec) => spec.value === dto.dedicatedDatabase.cpu,
             )
           )
-        case 'dedicatedDatabase.memory':
+        case 'dedicatedDatabaseMemory':
           return (
             !dto.dedicatedDatabase ||
             option.specs.some(
               (spec) => spec.value === dto.dedicatedDatabase.memory,
             )
           )
-        case 'dedicatedDatabase.capacity':
+        case 'dedicatedDatabaseCapacity':
           return (
             !dto.dedicatedDatabase ||
             option.specs.some(
               (spec) => spec.value === dto.dedicatedDatabase.capacity,
+            )
+          )
+        case 'dedicatedDatabaseReplicas':
+          return (
+            !dto.dedicatedDatabase ||
+            option.specs.some(
+              (spec) => spec.value === dto.dedicatedDatabase.replicas,
             )
           )
         default:

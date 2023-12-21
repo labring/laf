@@ -194,15 +194,15 @@ export class BillingCreationTaskService {
             usage: priceInput.storageCapacity,
             amount: priceResult.storageCapacity,
           },
-          ['dedicatedDatabase.cpu']: {
+          dedicatedDatabaseCPU: {
             usage: priceInput.dedicatedDatabase.cpu,
             amount: priceResult.dedicatedDatabase.cpu,
           },
-          ['dedicatedDatabase.memory']: {
+          dedicatedDatabaseMemory: {
             usage: priceInput.dedicatedDatabase.memory,
             amount: priceResult.dedicatedDatabase.memory,
           },
-          ['dedicatedDatabase.capacity']: {
+          dedicatedDatabaseCapacity: {
             usage: priceInput.dedicatedDatabase.capacity,
             amount: priceResult.dedicatedDatabase.capacity,
           },
@@ -237,10 +237,10 @@ export class BillingCreationTaskService {
     dto.databaseCapacity = bundle.resource.databaseCapacity
 
     dto.dedicatedDatabase = {
-      cpu: bundle.resource['dedicatedDatabase.limitCPU'],
-      memory: bundle.resource['dedicatedDatabase.limitMemory'],
-      capacity: bundle.resource['dedicatedDatabase.capacity'],
-      replicas: bundle.resource['dedicatedDatabase.replicas'],
+      cpu: bundle.resource.dedicatedDatabase.limitCPU,
+      memory: bundle.resource.dedicatedDatabase.limitMemory,
+      capacity: bundle.resource.dedicatedDatabase.capacity,
+      replicas: bundle.resource.dedicatedDatabase.replicas,
     }
 
     return dto
