@@ -24,6 +24,17 @@ import { BillingControllerGetExpense, BillingControllerGetExpenseByDay } from "@
 import useGlobalStore from "@/pages/globalStore";
 import { useAccountQuery } from "@/pages/home/service";
 
+function getLocalDateISOString(date: Date) {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  const seconds = date.getSeconds().toString().padStart(2, "0");
+  const milliseconds = date.getMilliseconds().toString().padStart(3, "0");
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+}
+
 const DATA_DURATION = 6 * 24 * 60 * 60 * 1000;
 
 export default function Usage() {
@@ -31,13 +42,11 @@ export default function Usage() {
   const darkMode = useColorMode().colorMode === "dark";
   const [endTime, setEndTime] = React.useState<Date>(() => {
     const today = new Date();
-    today.setHours(23, 59, 59, 999);
     return today;
   });
   const [startTime, setStartTime] = React.useState<Date>(() => {
     const today = new Date();
     today.setTime(today.getTime() - DATA_DURATION);
-    today.setHours(0, 0, 0, 0);
     return today;
   });
 
@@ -52,8 +61,8 @@ export default function Usage() {
       const endOfDay = new Date(endTime);
       endOfDay.setHours(23, 59, 59, 999);
       return BillingControllerGetExpense({
-        startTime: startOfDay?.getTime(),
-        endTime: endOfDay?.getTime(),
+        startTime: Date.parse(getLocalDateISOString(startOfDay)),
+        endTime: Date.parse(getLocalDateISOString(endOfDay)),
       });
     },
   );
@@ -66,8 +75,8 @@ export default function Usage() {
       const endOfDay = new Date(endTime);
       endOfDay.setHours(23, 59, 59, 999);
       return AccountControllerGetChargeOrderAmount({
-        startTime: startOfDay?.getTime(),
-        endTime: endOfDay?.getTime(),
+        startTime: Date.parse(getLocalDateISOString(startOfDay)),
+        endTime: Date.parse(getLocalDateISOString(endOfDay)),
       });
     },
   );
@@ -80,8 +89,8 @@ export default function Usage() {
       const endOfDay = new Date(endTime);
       endOfDay.setHours(23, 59, 59, 999);
       return BillingControllerGetExpenseByDay({
-        startTime: startOfDay?.getTime(),
-        endTime: endOfDay?.getTime(),
+        startTime: Date.parse(getLocalDateISOString(startOfDay)),
+        endTime: Date.parse(getLocalDateISOString(endOfDay)),
       });
     },
   );

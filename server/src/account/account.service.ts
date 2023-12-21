@@ -230,7 +230,7 @@ export class AccountService {
 
     if (condition.endTime) {
       if (condition.startTime) {
-        query['createdAt']['$lte'] = condition.endTime
+        query['createdAt']['$lt'] = condition.endTime
       } else {
         query['createdAt'] = { $lte: condition.endTime }
       }
@@ -291,7 +291,7 @@ export class AccountService {
 
     if (condition.endTime) {
       if (condition.startTime) {
-        query['createdAt']['$lte'] = condition.endTime
+        query['createdAt']['$lt'] = condition.endTime
       } else {
         query['createdAt'] = { $lte: condition.endTime }
       }

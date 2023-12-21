@@ -30,7 +30,7 @@ export class BillingService {
 
     if (condition.endTime) {
       if (condition.startTime) {
-        query['startAt']['$lte'] = condition.endTime
+        query['startAt']['$lt'] = condition.endTime
       } else {
         query['startAt'] = { $lte: condition.endTime }
       }
@@ -85,7 +85,7 @@ export class BillingService {
 
     if (condition.endTime) {
       if (condition.startTime) {
-        query['startAt']['$lte'] = condition.endTime
+        query['startAt']['$lt'] = condition.endTime
       } else {
         query['startAt'] = { $lte: condition.endTime }
       }
@@ -149,7 +149,7 @@ export class BillingService {
 
     if (condition.endTime) {
       if (condition.startTime) {
-        query['startAt']['$lte'] = condition.endTime
+        query['startAt']['$lt'] = condition.endTime
       } else {
         query['startAt'] = { $lte: condition.endTime }
       }
