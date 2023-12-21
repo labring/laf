@@ -83,13 +83,13 @@ export default function AppMonitor() {
             className={clsx(
               "mr-2",
               "mt-10",
-              dedicatedDatabaseCPU ? "h-[423px]" : "h-[440px]",
+              !dedicatedDatabaseCPU ? "h-[423px]" : "h-[440px]",
               "w-full",
               "space-y-4",
               "pb-0",
             )}
           >
-            {dedicatedDatabaseCPU ? (
+            {!dedicatedDatabaseCPU ? (
               <>
                 <PieCard
                   data={monitorData?.data?.databaseUsage}
