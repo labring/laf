@@ -243,29 +243,28 @@ export default function BillingDetails() {
                     <Td className="text-grayModern-600">{formatDate(item.endAt)}</Td>
                     <Td className="text-grayModern-600">{item.detail?.cpu?.amount}</Td>
                     <Td className="text-grayModern-600">{item.detail?.memory?.amount}</Td>
-                    {item.detail?.["dedicatedDatabase.cpu"]?.usage ? (
+                    {item.detail?.dedicatedDatabaseCPU?.usage ? (
                       <Tooltip
                         label={
                           <div>
                             <div>
-                              {t("SpecItem.cpu")}: {item.detail["dedicatedDatabase.cpu"]?.amount}
+                              {t("SpecItem.cpu")}: {item.detail.dedicatedDatabaseCPU?.amount}
                             </div>
                             <div>
-                              {t("SpecItem.memory")}:{" "}
-                              {item.detail["dedicatedDatabase.memory"]?.amount}
+                              {t("SpecItem.memory")}: {item.detail.dedicatedDatabaseMemory?.amount}
                             </div>
                             <div>
                               {t("SpecItem.capacity")}:{" "}
-                              {item.detail["dedicatedDatabase.capacity"]?.amount}
+                              {item.detail.dedicatedDatabaseCapacity?.amount}
                             </div>
                           </div>
                         }
                       >
                         <Td className="text-grayModern-600">
                           {(
-                            item.detail["dedicatedDatabase.cpu"].amount +
-                            item.detail["dedicatedDatabase.memory"].amount +
-                            item.detail["dedicatedDatabase.capacity"].amount
+                            item.detail.dedicatedDatabaseCPU.amount +
+                            item.detail.dedicatedDatabaseMemory.amount +
+                            item.detail.dedicatedDatabaseCapacity.amount
                           ).toFixed(6)}
                         </Td>
                       </Tooltip>

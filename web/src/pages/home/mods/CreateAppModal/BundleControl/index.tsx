@@ -120,17 +120,18 @@ export default function BundleControl(props: {
                   onBundleItemChange("memory", item.spec.memory.value);
                   onBundleItemChange("databaseCapacity", undefined);
                   onBundleItemChange("storageCapacity", item.spec.storageCapacity.value);
-                  onBundleItemChange(
-                    "dedicatedDatabase.cpu",
-                    item.spec["dedicatedDatabase.cpu"].value,
-                  );
+                  onBundleItemChange("dedicatedDatabase.cpu", item.spec.dedicatedDatabaseCPU.value);
                   onBundleItemChange(
                     "dedicatedDatabase.memory",
-                    item.spec["dedicatedDatabase.memory"].value,
+                    item.spec.dedicatedDatabaseMemory.value,
                   );
                   onBundleItemChange(
                     "dedicatedDatabase.capacity",
-                    item.spec["dedicatedDatabase.capacity"].value,
+                    item.spec.dedicatedDatabaseCapacity.value,
+                  );
+                  onBundleItemChange(
+                    "dedicatedDatabase.replicas",
+                    item.spec.dedicatedDatabaseReplicas.value,
                   );
                 }}
                 bundle={item}

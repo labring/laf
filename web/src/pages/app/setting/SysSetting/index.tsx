@@ -31,7 +31,7 @@ export default function SysSetting(props: {
   currentTab?: string;
 }) {
   const { currentApp } = useGlobalStore();
-  const dedicatedDatabaseLimit = currentApp.bundle.resource["dedicatedDatabase.limitCPU"];
+  const dedicatedDatabaseLimitCPU = currentApp.bundle.resource.dedicatedDatabase?.limitCPU;
 
   const monitorItems = useMemo(() => {
     const items = [
@@ -42,7 +42,7 @@ export default function SysSetting(props: {
         icon: <MonitorIcon boxSize={4} />,
       },
     ];
-    if (dedicatedDatabaseLimit !== 0) {
+    if (dedicatedDatabaseLimitCPU) {
       items.push({
         key: APP_SETTING_KEY.MONITOR_DATABASE,
         name: t("SettingPanel.DatabaseMonitor"),
@@ -51,7 +51,7 @@ export default function SysSetting(props: {
       });
     }
     return items;
-  }, [dedicatedDatabaseLimit]);
+  }, [dedicatedDatabaseLimitCPU]);
 
   return (
     <SettingModal

@@ -2,11 +2,6 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   HStack,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
   Slider,
   SliderFilledTrack,
   SliderMark,
@@ -145,39 +140,41 @@ export default function DatabaseBundleControl(props: {
         </HStack>
       </div>
       <div className="pb-8">
-        {databaseType === "dedicated" &&
-          ["cpu", "memory", "capacity"].map((type) =>
-            buildSlider({
-              type,
-              value: _.get(bundle, `dedicatedDatabase.${type}`) as unknown as number,
-              specs: find(resourceOptions, { type: `dedicatedDatabase.${type}` })?.specs || [],
-              onChange: (value) => {
-                onBundleItemChange(`dedicatedDatabase.${type}`, value);
-              },
-            }),
-          )}
         {databaseType === "dedicated" && (
-          <div className="ml-8 mt-8 flex items-center">
-            <span className={clsx("w-[12%]", darkMode ? "" : "text-grayModern-600")}>
-              {t(`SpecItem.replicas`)}
-            </span>
-            <NumberInput
-              maxW="100px"
-              size="sm"
-              max={10}
-              min={1}
-              value={_.get(bundle, `dedicatedDatabase.replicas`)}
-              onChange={(value) => {
-                onBundleItemChange(`dedicatedDatabase.replicas`, Number(value));
-              }}
-            >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-          </div>
+          <>
+            {buildSlider({
+              type: "cpu",
+              value: _.get(bundle, "dedicatedDatabase.cpu") as unknown as number,
+              specs: find(resourceOptions, { type: "dedicatedDatabaseCPU" })?.specs || [],
+              onChange: (value) => {
+                onBundleItemChange(`dedicatedDatabase.cpu`, value);
+              },
+            })}
+            {buildSlider({
+              type: "memory",
+              value: _.get(bundle, "dedicatedDatabase.memory") as unknown as number,
+              specs: find(resourceOptions, { type: "dedicatedDatabaseMemory" })?.specs || [],
+              onChange: (value) => {
+                onBundleItemChange(`dedicatedDatabase.memory`, value);
+              },
+            })}
+            {buildSlider({
+              type: "capacity",
+              value: _.get(bundle, "dedicatedDatabase.capacity") as unknown as number,
+              specs: find(resourceOptions, { type: "dedicatedDatabaseCapacity" })?.specs || [],
+              onChange: (value) => {
+                onBundleItemChange(`dedicatedDatabase.capacity`, value);
+              },
+            })}
+            {buildSlider({
+              type: "replicas",
+              value: _.get(bundle, "dedicatedDatabase.replicas") as unknown as number,
+              specs: find(resourceOptions, { type: "dedicatedDatabaseReplicas" })?.specs || [],
+              onChange: (value) => {
+                onBundleItemChange(`dedicatedDatabase.replicas`, value);
+              },
+            })}
+          </>
         )}
         {databaseType === "shared" &&
           buildSlider({

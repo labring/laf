@@ -1,373 +1,582 @@
 declare namespace Definitions {
-
   export type CreateFunctionDto = {
-    name?: string; /* Function name is unique in the application */
-    description?: string; methods?: string[]; code?: string; /* The source code of the function */
+    name?: string /* Function name is unique in the application */;
+    description?: string;
+    methods?: string[];
+    code?: string /* The source code of the function */;
     tags?: string[];
-  }
+  };
 
-  export type CloudFunction = {
-  }
+  export type CloudFunction = {};
 
   export type UpdateFunctionDto = {
-    newName?: string; /* Function name is unique in the application */
-    description?: string; methods?: string[]; code?: string; /* The source code of the function */
+    newName?: string /* Function name is unique in the application */;
+    description?: string;
+    methods?: string[];
+    code?: string /* The source code of the function */;
     tags?: string[];
-  }
+  };
 
   export type UpdateFunctionDebugDto = {
     params?: {};
-  }
+  };
 
   export type CompileFunctionDto = {
-    code?: string; /* The source code of the function */
-  }
+    code?: string /* The source code of the function */;
+  };
 
   export type CreateApplicationDto = {
-    cpu?: number; memory?: number; databaseCapacity?: number; storageCapacity?: number; autoscaling?: Definitions.CreateAutoscalingDto; dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto; name?: string; state?: string; regionId?: string; runtimeId?: string;
-  }
+    cpu?: number;
+    memory?: number;
+    databaseCapacity?: number;
+    storageCapacity?: number;
+    autoscaling?: Definitions.CreateAutoscalingDto;
+    dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto;
+    name?: string;
+    state?: string;
+    regionId?: string;
+    runtimeId?: string;
+  };
 
   export type ApplicationWithRelations = {
-    _id?: string; name?: string; appid?: string; regionId?: string; runtimeId?: string; tags?: string[]; state?: string; phase?: string; createdAt?: string; updatedAt?: string; createdBy?: string; region?: Definitions.Region; bundle?: Definitions.ApplicationBundle; runtime?: Definitions.Runtime; configuration?: Definitions.ApplicationConfiguration; domain?: Definitions.RuntimeDomain;
-  }
+    _id?: string;
+    name?: string;
+    appid?: string;
+    regionId?: string;
+    runtimeId?: string;
+    tags?: string[];
+    state?: string;
+    phase?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+    region?: Definitions.Region;
+    bundle?: Definitions.ApplicationBundle;
+    runtime?: Definitions.Runtime;
+    configuration?: Definitions.ApplicationConfiguration;
+    domain?: Definitions.RuntimeDomain;
+  };
 
   export type Application = {
-    _id?: string; name?: string; appid?: string; regionId?: string; runtimeId?: string; tags?: string[]; state?: string; phase?: string; createdAt?: string; updatedAt?: string; createdBy?: string;
-  }
+    _id?: string;
+    name?: string;
+    appid?: string;
+    regionId?: string;
+    runtimeId?: string;
+    tags?: string[];
+    state?: string;
+    phase?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+  };
 
   export type UpdateApplicationNameDto = {
     name?: string;
-  }
+  };
 
   export type UpdateApplicationStateDto = {
     state?: string;
-  }
+  };
 
   export type UpdateApplicationBundleDto = {
-    cpu?: number; memory?: number; databaseCapacity?: number; storageCapacity?: number; autoscaling?: Definitions.CreateAutoscalingDto; dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto;
-  }
+    cpu?: number;
+    memory?: number;
+    databaseCapacity?: number;
+    storageCapacity?: number;
+    autoscaling?: Definitions.CreateAutoscalingDto;
+    dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto;
+  };
 
   export type ApplicationBundle = {
-    _id?: string; appid?: string; resource?: Definitions.ApplicationBundleResource; autoscaling?: Definitions.Autoscaling; isTrialTier?: boolean; createdAt?: string; updatedAt?: string;
-  }
+    _id?: string;
+    appid?: string;
+    resource?: Definitions.ApplicationBundleResource;
+    autoscaling?: Definitions.Autoscaling;
+    isTrialTier?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 
   export type BindCustomDomainDto = {
     domain?: string;
-  }
+  };
 
   export type RuntimeDomain = {
-    _id?: string; appid?: string; domain?: string; customDomain?: string; state?: string; phase?: string; createdAt?: string; updatedAt?: string;
-  }
+    _id?: string;
+    appid?: string;
+    domain?: string;
+    customDomain?: string;
+    state?: string;
+    phase?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 
   export type CreateEnvironmentDto = {
-    name?: string; value?: string;
-  }
+    name?: string;
+    value?: string;
+  };
 
   export type PodNameListDto = {
-    appid?: string; podNameList?: string[]; /* List of pod identifiers */
-  }
+    appid?: string;
+    podNameList?: string[] /* List of pod identifiers */;
+  };
 
   export type ContainerNameListDto = {
-    podName?: string; containerNameList?: string[]; /* List of container identifiers */
-  }
+    podName?: string;
+    containerNameList?: string[] /* List of container identifiers */;
+  };
 
   export type CreateBucketDto = {
-    shortName?: string; /* The short name of the bucket which not contain the appid */
+    shortName?: string /* The short name of the bucket which not contain the appid */;
     policy?: string;
-  }
+  };
 
   export type UpdateBucketDto = {
     policy?: string;
-  }
+  };
 
   export type CreateCollectionDto = {
     name?: string;
-  }
+  };
 
   export type Collection = {
-    name?: string; type?: string; options?: {}; info?: {}; idIndex?: {};
-  }
+    name?: string;
+    type?: string;
+    options?: {};
+    info?: {};
+    idIndex?: {};
+  };
 
   export type UpdateCollectionDto = {
-    validatorSchema?: {}; validationLevel?: string;
-  }
+    validatorSchema?: {};
+    validationLevel?: string;
+  };
 
   export type CreatePolicyDto = {
     name?: string;
-  }
+  };
 
   export type DatabasePolicyWithRules = {
-    _id?: string; appid?: string; name?: string; injector?: string; createdAt?: string; updatedAt?: string; rules?: Definitions.DatabasePolicyRule[];
-  }
+    _id?: string;
+    appid?: string;
+    name?: string;
+    injector?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    rules?: Definitions.DatabasePolicyRule[];
+  };
 
   export type UpdatePolicyDto = {
     injector?: string;
-  }
+  };
 
   export type DatabasePolicy = {
-    _id?: string; appid?: string; name?: string; injector?: string; createdAt?: string; updatedAt?: string;
-  }
+    _id?: string;
+    appid?: string;
+    name?: string;
+    injector?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 
   export type CreatePolicyRuleDto = {
-    collectionName?: string; value?: string;
-  }
+    collectionName?: string;
+    value?: string;
+  };
 
   export type DatabasePolicyRule = {
-    _id?: string; appid?: string; policyName?: string; collectionName?: string; value?: {}; createdAt?: string; updatedAt?: string;
-  }
+    _id?: string;
+    appid?: string;
+    policyName?: string;
+    collectionName?: string;
+    value?: {};
+    createdAt?: string;
+    updatedAt?: string;
+  };
 
   export type UpdatePolicyRuleDto = {
     value?: string;
-  }
+  };
 
   export type Account = {
-    _id?: string; balance?: number; state?: string; createdAt?: string; updatedAt?: string; createdBy?: string;
-  }
+    _id?: string;
+    balance?: number;
+    state?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+  };
 
-  export type Number = {
-  }
+  export type Number = {};
 
   export type AccountChargeOrder = {
-    _id?: string; accountId?: string; amount?: number; currency?: string; phase?: string; channel?: string; result?: {}; message?: string; createdAt?: string; updatedAt?: string; createdBy?: string;
-  }
+    _id?: string;
+    accountId?: string;
+    amount?: number;
+    currency?: string;
+    phase?: string;
+    channel?: string;
+    result?: {};
+    message?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+  };
 
   export type CreateChargeOrderDto = {
-    amount?: number; channel?: string; currency?: string;
-  }
+    amount?: number;
+    channel?: string;
+    currency?: string;
+  };
 
   export type CreateChargeOrderOutDto = {
-    order?: Definitions.AccountChargeOrder; result?: Definitions.WeChatPaymentCreateOrderResult;
-  }
+    order?: Definitions.AccountChargeOrder;
+    result?: Definitions.WeChatPaymentCreateOrderResult;
+  };
 
   export type UseGiftCodeDto = {
-    code?: string; /* gift code */
-  }
+    code?: string /* gift code */;
+  };
 
   export type InviteCode = {
-    _id?: string; uid?: string; code?: string; state?: string; name?: string; description?: string; createdAt?: string; updatedAt?: string;
-  }
+    _id?: string;
+    uid?: string;
+    code?: string;
+    state?: string;
+    name?: string;
+    description?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 
   export type CreateWebsiteDto = {
-    bucketName?: string; state?: string;
-  }
+    bucketName?: string;
+    state?: string;
+  };
 
   export type PasswdSignupDto = {
-    username?: string; /* username, 3-64 characters */
-    password?: string; /* password, 8-64 characters */
-    phone?: string; /* phone */
-    code?: string; /* verify code */
-    type?: string; /* type */
-    inviteCode?: string; /* invite code */
-  }
+    username?: string /* username, 3-64 characters */;
+    password?: string /* password, 8-64 characters */;
+    phone?: string /* phone */;
+    code?: string /* verify code */;
+    type?: string /* type */;
+    inviteCode?: string /* invite code */;
+  };
 
   export type PasswdSigninDto = {
-    username?: string; /* username */
-    password?: string; /* password, 8-64 characters */
-  }
+    username?: string /* username */;
+    password?: string /* password, 8-64 characters */;
+  };
 
   export type PasswdResetDto = {
-    password?: string; /* new password, 8-64 characters */
-    phone?: string; /* phone */
-    code?: string; /* verify code */
-    type?: string; /* type */
-  }
+    password?: string /* new password, 8-64 characters */;
+    phone?: string /* phone */;
+    code?: string /* verify code */;
+    type?: string /* type */;
+  };
 
   export type PasswdCheckDto = {
-    username?: string; /* username | phone | email */
-  }
+    username?: string /* username | phone | email */;
+  };
 
   export type SendPhoneCodeDto = {
-    phone?: string; /* phone */
-    type?: string; /* verify code type */
-  }
+    phone?: string /* phone */;
+    type?: string /* verify code type */;
+  };
 
   export type PhoneSigninDto = {
-    phone?: string; /* phone */
-    code?: string; username?: string; /* username */
-    password?: string; /* password, 8-64 characters */
-    inviteCode?: string; /* invite code */
-  }
+    phone?: string /* phone */;
+    code?: string;
+    username?: string /* username */;
+    password?: string /* password, 8-64 characters */;
+    inviteCode?: string /* invite code */;
+  };
 
   export type Pat2TokenDto = {
-    pat?: string; /* PAT */
-  }
+    pat?: string /* PAT */;
+  };
 
   export type SendEmailCodeDto = {
-    email?: string; type?: string; /* verify code type */
-  }
+    email?: string;
+    type?: string /* verify code type */;
+  };
 
   export type GithubSigninDto = {
     code?: string;
-  }
+  };
 
   export type GithubBind = {
-    token?: string; /* temporary token signed for github bindings */
-    isRegister?: boolean; /* Is a newly registered use */
-  }
+    token?: string /* temporary token signed for github bindings */;
+    isRegister?: boolean /* Is a newly registered use */;
+  };
 
   export type UserWithProfile = {
-    _id?: string; username?: string; email?: string; phone?: string; github?: number; createdAt?: string; updatedAt?: string; profile?: Definitions.UserProfile;
-  }
+    _id?: string;
+    username?: string;
+    email?: string;
+    phone?: string;
+    github?: number;
+    createdAt?: string;
+    updatedAt?: string;
+    profile?: Definitions.UserProfile;
+  };
 
   export type CreatePATDto = {
-    name?: string; expiresIn?: number;
-  }
+    name?: string;
+    expiresIn?: number;
+  };
 
   export type BindPhoneDto = {
-    oldPhoneNumber?: string; /* old phone number */
-    newPhoneNumber?: string; /* new phone number */
-    oldSmsCode?: string; /* sms verify code for old phone number */
-    newSmsCode?: string; /* sms verify code for new phone number */
-  }
+    oldPhoneNumber?: string /* old phone number */;
+    newPhoneNumber?: string /* new phone number */;
+    oldSmsCode?: string /* sms verify code for old phone number */;
+    newSmsCode?: string /* sms verify code for new phone number */;
+  };
 
   export type BindEmailDto = {
-    email?: string; code?: string; /* verify code */
-  }
+    email?: string;
+    code?: string /* verify code */;
+  };
 
   export type BindUsernameDto = {
-    username?: string; /* username */
-  }
+    username?: string /* username */;
+  };
 
   export type DeleteDependencyDto = {
     name?: string;
-  }
+  };
 
   export type CreateTriggerDto = {
-    desc?: string; cron?: string; target?: string;
-  }
+    desc?: string;
+    cron?: string;
+    target?: string;
+  };
 
   export type CalculatePriceDto = {
-    cpu?: number; memory?: number; databaseCapacity?: number; storageCapacity?: number; autoscaling?: Definitions.CreateAutoscalingDto; dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto; regionId?: string;
-  }
+    cpu?: number;
+    memory?: number;
+    databaseCapacity?: number;
+    storageCapacity?: number;
+    autoscaling?: Definitions.CreateAutoscalingDto;
+    dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto;
+    regionId?: string;
+  };
 
   export type CalculatePriceResultDto = {
-    cpu?: number; memory?: number; storageCapacity?: number; databaseCapacity?: number; total?: number;
-  }
+    cpu?: number;
+    memory?: number;
+    storageCapacity?: number;
+    databaseCapacity?: number;
+    total?: number;
+  };
 
   export type CreateFunctionTemplateDto = {
-    name?: string; /* function template name */
-    dependencies?: Definitions.CreateDependencyDto[]; /* Dependencies */
-    environments?: Definitions.CreateEnvironmentDto[]; /* environments */
-    private?: boolean; /* Private flag */
-    description?: string; /* function template description */
-    items?: Definitions.FunctionTemplateItemDto[]; /* items of the function template */
-  }
+    name?: string /* function template name */;
+    dependencies?: Definitions.CreateDependencyDto[] /* Dependencies */;
+    environments?: Definitions.CreateEnvironmentDto[] /* environments */;
+    private?: boolean /* Private flag */;
+    description?: string /* function template description */;
+    items?: Definitions.FunctionTemplateItemDto[] /* items of the function template */;
+  };
 
   export type UpdateFunctionTemplateDto = {
-    functionTemplateId?: any; /* Function template id */
-    name?: string; /* Template name */
-    dependencies?: Definitions.CreateDependencyDto[]; /* Dependencies */
-    environments?: Definitions.CreateEnvironmentDto[]; /* Environments */
-    private?: boolean; /* Private flag */
-    description?: string; /* function template description */
-    items?: Definitions.FunctionTemplateItemDto[]; /* items of the function template */
-  }
+    functionTemplateId?: any /* Function template id */;
+    name?: string /* Template name */;
+    dependencies?: Definitions.CreateDependencyDto[] /* Dependencies */;
+    environments?: Definitions.CreateEnvironmentDto[] /* Environments */;
+    private?: boolean /* Private flag */;
+    description?: string /* function template description */;
+    items?: Definitions.FunctionTemplateItemDto[] /* items of the function template */;
+  };
 
   export type DeleteRecycleBinItemsDto = {
-    ids?: string[]; /* The list of item ids */
-  }
+    ids?: string[] /* The list of item ids */;
+  };
 
   export type RestoreRecycleBinItemsDto = {
-    ids?: string[]; /* The list of item ids */
-  }
+    ids?: string[] /* The list of item ids */;
+  };
 
   export type Group = {
-    _id?: string; name?: string; appid?: string; createdBy?: string; createdAt?: string; updatedAt?: string;
-  }
+    _id?: string;
+    name?: string;
+    appid?: string;
+    createdBy?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 
   export type GetGroupInviteCodeDetailDto = {
-    group?: Definitions.Group; invitedBy?: Definitions.User;
-  }
+    group?: Definitions.Group;
+    invitedBy?: Definitions.User;
+  };
 
   export type CreateGroupDto = {
     name?: string;
-  }
+  };
 
   export type UpdateGroupDto = {
     name?: string;
-  }
+  };
 
   export type GenerateGroupInviteCodeDto = {
     role?: string;
-  }
+  };
 
   export type GroupInviteCode = {
-    _id?: string; usedBy?: string; code?: string; role?: string; groupId?: string; createdBy?: string; createdAt?: string; updatedAt?: string;
-  }
+    _id?: string;
+    usedBy?: string;
+    code?: string;
+    role?: string;
+    groupId?: string;
+    createdBy?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 
   export type GroupMember = {
-    _id?: string; uid?: string; groupId?: string; role?: string; createdAt?: string; updatedAt?: string;
-  }
+    _id?: string;
+    uid?: string;
+    groupId?: string;
+    role?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 
   export type UpdateGroupMemberRoleDto = {
     role?: string;
-  }
+  };
 
   export type CreateAutoscalingDto = {
-    enable?: boolean; minReplicas?: number; maxReplicas?: number; targetCPUUtilizationPercentage?: number; targetMemoryUtilizationPercentage?: number;
-  }
+    enable?: boolean;
+    minReplicas?: number;
+    maxReplicas?: number;
+    targetCPUUtilizationPercentage?: number;
+    targetMemoryUtilizationPercentage?: number;
+  };
 
   export type CreateDedicatedDatabaseDto = {
-    cpu?: number; memory?: number; capacity?: number; replicas?: number;
-  }
+    cpu?: number;
+    memory?: number;
+    capacity?: number;
+    replicas?: number;
+  };
 
   export type Region = {
-    _id?: string; name?: string; displayName?: string; state?: string; createdAt?: string; updatedAt?: string;
-  }
+    _id?: string;
+    name?: string;
+    displayName?: string;
+    state?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 
   export type ApplicationBundleResource = {
-    limitCPU?: number; limitMemory?: number; databaseCapacity?: number; storageCapacity?: number; limitCountOfCloudFunction?: number; limitCountOfBucket?: number; limitCountOfDatabasePolicy?: number; limitCountOfTrigger?: number; limitCountOfWebsiteHosting?: number; reservedTimeAfterExpired?: number; "dedicatedDatabase.limitCPU"?: number; "dedicatedDatabase.limitMemory"?: number; "dedicatedDatabase.capacity"?: number; "dedicatedDatabase.replicas"?: number;
-  }
+    limitCPU?: number;
+    limitMemory?: number;
+    databaseCapacity?: number;
+    storageCapacity?: number;
+    limitCountOfCloudFunction?: number;
+    limitCountOfBucket?: number;
+    limitCountOfDatabasePolicy?: number;
+    limitCountOfTrigger?: number;
+    limitCountOfWebsiteHosting?: number;
+    reservedTimeAfterExpired?: number;
+    dedicatedDatabase?: Definitions.DedicatedDatabaseSpec;
+  };
+
+  export type DedicatedDatabaseSpec = {
+    limitCPU?: number;
+    limitMemory?: number;
+    capacity?: number;
+    replicas?: number;
+  };
 
   export type Autoscaling = {
-    enable?: boolean; minReplicas?: number; maxReplicas?: number; targetCPUUtilizationPercentage?: number; targetMemoryUtilizationPercentage?: number;
-  }
+    enable?: boolean;
+    minReplicas?: number;
+    maxReplicas?: number;
+    targetCPUUtilizationPercentage?: number;
+    targetMemoryUtilizationPercentage?: number;
+  };
 
   export type Runtime = {
-    _id?: string; name?: string; type?: string; image?: Definitions.RuntimeImageGroup; state?: string; version?: string; latest?: boolean;
-  }
+    _id?: string;
+    name?: string;
+    type?: string;
+    image?: Definitions.RuntimeImageGroup;
+    state?: string;
+    version?: string;
+    latest?: boolean;
+  };
 
   export type RuntimeImageGroup = {
-    main?: string; init?: string; sidecar?: string;
-  }
+    main?: string;
+    init?: string;
+    sidecar?: string;
+  };
 
   export type ApplicationConfiguration = {
-    _id?: string; appid?: string; environments?: Definitions.EnvironmentVariable[]; dependencies?: string[]; createdAt?: string; updatedAt?: string;
-  }
+    _id?: string;
+    appid?: string;
+    environments?: Definitions.EnvironmentVariable[];
+    dependencies?: string[];
+    createdAt?: string;
+    updatedAt?: string;
+  };
 
   export type EnvironmentVariable = {
-    name?: string; value?: string;
-  }
+    name?: string;
+    value?: string;
+  };
 
   export type WeChatPaymentCreateOrderResult = {
     code_url?: string;
-  }
+  };
 
   export type UserProfile = {
-    _id?: string; uid?: string; openData?: {}; avatar?: string; name?: string; idVerified?: Definitions.IdVerified; idCard?: string; createdAt?: string; updatedAt?: string;
-  }
+    _id?: string;
+    uid?: string;
+    openData?: {};
+    avatar?: string;
+    name?: string;
+    idVerified?: Definitions.IdVerified;
+    idCard?: string;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 
   export type IdVerified = {
-    isVerified?: boolean; idVerifyFailedTimes?: number;
-  }
+    isVerified?: boolean;
+    idVerifyFailedTimes?: number;
+  };
 
   export type CreateDependencyDto = {
-    name?: string; spec?: string;
-  }
+    name?: string;
+    spec?: string;
+  };
 
   export type FunctionTemplateItemDto = {
-    name?: string; /* FunctionTemplate item name */
-    description?: string; methods?: string[]; code?: string; /* The source code of the function */
-  }
+    name?: string /* FunctionTemplate item name */;
+    description?: string;
+    methods?: string[];
+    code?: string /* The source code of the function */;
+  };
 
   export type User = {
-    _id?: string; username?: string; email?: string; phone?: string; github?: number; createdAt?: string; updatedAt?: string;
-  }
-
+    _id?: string;
+    username?: string;
+    email?: string;
+    phone?: string;
+    github?: number;
+    createdAt?: string;
+    updatedAt?: string;
+  };
 }
 
 declare namespace Paths {
-
   namespace AppControllerGetRuntimes {
     export type QueryParameters = any;
 
@@ -1463,6 +1672,4 @@ declare namespace Paths {
 
     export type Responses = any;
   }
-
-
 }

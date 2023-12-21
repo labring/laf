@@ -18,18 +18,10 @@ export const MonitorDataType = ["cpuUsage", "memoryUsage", "databaseUsage", "sto
 export default function MonitorBar() {
   const { currentApp } = useGlobalStore();
   const { t } = useTranslation();
-  const {
-    limitCPU,
-    limitMemory,
-    storageCapacity,
-    "dedicatedDatabase.limitCPU": dedicatedDatabaseLimitCPU,
-  } = currentApp.bundle.resource;
-  let databaseCapacity: number;
-  if (dedicatedDatabaseLimitCPU === 0) {
-    databaseCapacity = currentApp.bundle.resource["databaseCapacity"];
-  } else {
-    databaseCapacity = currentApp.bundle.resource["dedicatedDatabase.capacity"];
-  }
+  const { limitCPU, limitMemory, storageCapacity, dedicatedDatabase } = currentApp.bundle.resource;
+  const dedicatedDatabaseLimitCPU = dedicatedDatabase?.limitCPU;
+  let { databaseCapacity } = currentApp.bundle.resource;
+  databaseCapacity = dedicatedDatabaseLimitCPU ? dedicatedDatabase?.capacity : databaseCapacity;
 
   const [resources, setResources] = useState<any>([]);
   const [instantData, setInstantData] = useState<TInstantMonitorData>();

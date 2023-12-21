@@ -20,9 +20,7 @@ export default function DatabaseMonitor() {
   const { t } = useTranslation();
   const { currentApp } = useGlobalStore();
   const {
-    "dedicatedDatabase.limitCPU": limitCPU,
-    "dedicatedDatabase.limitMemory": limitMemory,
-    "dedicatedDatabase.capacity": databaseCapacity,
+    dedicatedDatabase: { limitCPU, limitMemory, capacity },
   } = currentApp.bundle.resource;
 
   const appid = currentApp.bundle.appid;
@@ -142,7 +140,7 @@ export default function DatabaseMonitor() {
                 <div className="mt-5 h-[430px] w-full rounded-xl pb-0">
                   <PieCard
                     data={resourceData?.data?.dataSize || []}
-                    maxValue={databaseCapacity}
+                    maxValue={capacity}
                     title={t("DatabaseMonitor.Capacity")}
                     colors={["#47C8BF", "#D5D6E1"]}
                     appid={appid}

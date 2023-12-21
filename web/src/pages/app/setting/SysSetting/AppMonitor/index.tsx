@@ -17,13 +17,9 @@ import useGlobalStore from "@/pages/globalStore";
 export default function AppMonitor() {
   const { t } = useTranslation();
   const { currentApp } = useGlobalStore();
-  const {
-    limitCPU,
-    limitMemory,
-    databaseCapacity,
-    storageCapacity,
-    "dedicatedDatabase.limitCPU": dedicatedDatabaseCPU,
-  } = currentApp.bundle.resource;
+  const { limitCPU, limitMemory, databaseCapacity, storageCapacity, dedicatedDatabase } =
+    currentApp.bundle.resource;
+  const dedicatedDatabaseCPU = dedicatedDatabase?.limitCPU;
 
   const [dataNumber, setDataNumber] = useState(0);
   const queryClient = useQueryClient();
@@ -87,13 +83,13 @@ export default function AppMonitor() {
             className={clsx(
               "mr-2",
               "mt-10",
-              dedicatedDatabaseCPU === 0 ? "h-[423px]" : "h-[440px]",
+              dedicatedDatabaseCPU ? "h-[423px]" : "h-[440px]",
               "w-full",
               "space-y-4",
               "pb-0",
             )}
           >
-            {dedicatedDatabaseCPU === 0 ? (
+            {dedicatedDatabaseCPU ? (
               <>
                 <PieCard
                   data={monitorData?.data?.databaseUsage}
