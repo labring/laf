@@ -186,6 +186,8 @@ export class ApplicationService {
       .project<ApplicationWithRelations>({
         'bundle.resource.requestCPU': 0,
         'bundle.resource.requestMemory': 0,
+        'bundle.resource.dedicatedDatabase.requestCPU': 0,
+        'bundle.resource.dedicatedDatabase.requestMemory': 0,
       })
       .toArray()
 
@@ -230,6 +232,8 @@ export class ApplicationService {
       .project<ApplicationWithRelations>({
         'bundle.resource.requestCPU': 0,
         'bundle.resource.requestMemory': 0,
+        'bundle.resource.dedicatedDatabase.requestCPU': 0,
+        'bundle.resource.dedicatedDatabase.requestMemory': 0,
       })
       .next()
 
