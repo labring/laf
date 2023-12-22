@@ -130,4 +130,5 @@ NPM_INSTALL_FLAGS="--registry=https://registry.npmjs.org"
 - [云数据库](../cloud-database/index.md)
 - [云存储](../cloud-storage/index.md)
 - [函数引用](./import.md)
+- [依赖管理](./deps.md)
 :::

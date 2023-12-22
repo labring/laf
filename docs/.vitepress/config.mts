@@ -11,7 +11,7 @@ export default defineConfig({
 
   locales: {
     root: {
-      label: '简单中文',
+      label: '简体中文',
       lang: 'zh-CN',
       link: '/zh/',
       title: "Laf 开发文档",

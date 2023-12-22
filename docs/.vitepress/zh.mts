@@ -44,15 +44,8 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
       { text: '发起网络请求', link: '/zh/cloud-function/fetch' },
       { text: '函数引用', link: '/zh/cloud-function/import' },
       { text: '环境变量', link: '/zh/cloud-function/env' },
-      { text: '定时任务' },
-      {
-        text: '依赖管理',
-        collapsed: true,
-        items: [
-          { text: '依赖管理' },
-          { text: '离线环境' },
-        ]
-      },
+      { text: '依赖管理', link: '/zh/cloud-function/deps' },
+      { text: '定时任务', link: '/zh/cloud-function/cron' },
       {
         text: '内置云函数',
         collapsed: true,
