@@ -94,6 +94,7 @@ export default async function (ctx: FunctionContext) {
 - [云数据库](../cloud-database/index.md)
 - [云存储](../cloud-storage/index.md)
 - [函数引用](./import.md)
+- [环境变量](./env.md)
 :::
 
 
