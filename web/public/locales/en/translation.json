@@ -232,8 +232,7 @@
     "EditorFont": "Editor Font",
     "FontSize": "Font Size",
     "FuncListDisplay": "Function List Display",
-    "ListDisplay": "List Display",
-    "OldLogs": "Old Logs"
+    "ListDisplay": "List Display"
   },
   "StoragePanel": {
     "All": "Total Capacity",

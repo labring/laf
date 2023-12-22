@@ -232,8 +232,7 @@
     "EditorFont": "编辑器字体",
     "FontSize": "字体大小",
     "FuncListDisplay": "函数列表显示",
-    "ListDisplay": "列表显示",
-    "OldLogs": "旧版日志"
+    "ListDisplay": "列表显示"
   },
   "StoragePanel": {
     "All": "总容量",
