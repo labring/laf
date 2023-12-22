@@ -83,5 +83,6 @@ export default async function (ctx: FunctionContext) {
 - [HTTP 请求](./request.md)
 - [HTTP 响应](./response.md)
 - [处理文件上传](./files.md)
+- [发起网络请求](./fetch.md)
 - [云数据库](../cloud-database/index.md)
 :::

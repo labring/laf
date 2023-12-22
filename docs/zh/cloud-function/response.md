@@ -89,6 +89,7 @@ export default async function (ctx: FunctionContext) {
 - [HTTP 请求](./request.md)
 - [HTTP 认证](./auth.md)
 - [处理文件上传](./files.md)
+- [发起网络请求](./fetch.md)
 :::
 
 

@@ -97,5 +97,7 @@ export default async function (ctx: FunctionContext) {
 - [HTTP 响应](./response.md)
 - [HTTP 认证](./auth.md)
 - [云存储](../cloud-storage/index.md)
+- [发起网络请求](./fetch.md)
+- [函数引用](./import.md)
 :::
 

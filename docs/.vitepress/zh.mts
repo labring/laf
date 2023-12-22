@@ -7,9 +7,7 @@ function wrapGray(content: string) {
 
 export const NavItemsInZh: DefaultTheme.NavItem[] = [
   { text: '开发指南', link: '/zh/' },
-  {
-    text: '使用实例', link: '/zh/examples/'
-  }
+  { text: '使用实例', link: '/zh/examples/' }
 ]
 
 export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
@@ -43,10 +41,10 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
           { text: '文件上传', link: '/zh/cloud-function/files' },
         ]
       },
-      { text: '发起网络请求' },
+      { text: '发起网络请求', link: '/zh/cloud-function/fetch' },
+      { text: '函数引用', link: '/zh/cloud-function/import' },
       { text: '环境变量' },
       { text: '定时任务' },
-      { text: '函数引用' },
       {
         text: '依赖管理',
         collapsed: true,
@@ -143,18 +141,7 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
-    text: 'laf-cli 命令行工具',
-    items: [{ text: 'laf-cli 使用说明', link: '/zh/cli/' }],
-  },
-  {
-    text: '客户端 SDK',
-    items: [
-      { text: 'laf-client-sdk 使用说明', link: '/zh/client-sdk/' },
-      { text: '数据库访问策略', link: '/zh/cloud-database/database-ql/policy' },
-    ],
-  },
-  {
-    text: 'VSCode 本地开发',
-    items: [{ text: 'laf assistant', link: '/zh/laf-assistant/' }],
+    text: '工具',
+    items: [{ text: 'laf-cli', link: '/zh/cli/' }],
   },
 ]

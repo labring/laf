@@ -56,5 +56,7 @@ Laf 应用支持以实例为单位的自动水平伸缩，基于 Kubernetes HPA 
 - [HTTP 响应](./response.md)
 - [HTTP 认证](./auth.md)
 - [处理文件上传](./files.md)
+- [发起网络请求](./fetch.md)
+- [函数引用](./import.md)
 :::
 
