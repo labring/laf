@@ -347,6 +347,15 @@ export class ApplicationController {
       return ResponseUtil.error('invalid resource specification')
     }
 
+    if (
+      dto.dedicatedDatabase?.capacity &&
+      origin.resource.dedicatedDatabase?.capacity &&
+      dto.dedicatedDatabase?.capacity <
+        origin.resource.dedicatedDatabase?.capacity
+    ) {
+      return ResponseUtil.error('cannot reduce database capacity')
+    }
+
     // check if a user exceeds the resource limit in a region
     const limitResource = await this.quotaServiceTsService.resourceLimit(
       user._id,
