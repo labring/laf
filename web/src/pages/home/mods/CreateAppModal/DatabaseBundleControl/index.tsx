@@ -19,6 +19,7 @@ import { TypeBundle } from "..";
 
 export default function DatabaseBundleControl(props: {
   bundle: TypeBundle;
+  originCapacity?: number;
   resourceOptions: any;
   disabledChangeType: boolean;
   defaultDatabaseCapacity?: number;
@@ -32,6 +33,7 @@ export default function DatabaseBundleControl(props: {
     resourceOptions,
     defaultDatabaseCapacity,
     defaultDedicatedDatabaseBundle,
+    originCapacity,
   } = props;
   const { t } = useTranslation();
   const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
@@ -53,9 +55,10 @@ export default function DatabaseBundleControl(props: {
     type: string;
     specs: { value: number }[];
     value?: number;
+    min?: number;
     onChange: (value: number) => void;
   }) => {
-    const { type, specs, value, onChange } = props;
+    const { type, specs, value, onChange, min } = props;
     const idx = specs.findIndex((spec) => spec.value === value);
 
     return (
@@ -71,6 +74,7 @@ export default function DatabaseBundleControl(props: {
           max={specs.length - 1}
           colorScheme="primary"
           onChange={(v) => {
+            if (typeof min !== "undefined" && min > specs[v].value) return;
             onChange(specs[v].value);
           }}
         >
@@ -160,6 +164,7 @@ export default function DatabaseBundleControl(props: {
             })}
             {buildSlider({
               type: "capacity",
+              min: originCapacity,
               value: _.get(bundle, "dedicatedDatabase.capacity") as unknown as number,
               specs: find(resourceOptions, { type: "dedicatedDatabaseCapacity" })?.specs || [],
               onChange: (value) => {

@@ -326,6 +326,7 @@ const CreateAppModal = (props: {
                     />
                     <DatabaseBundleControl
                       bundle={bundle}
+                      originCapacity={application?.bundle.resource.dedicatedDatabase.capacity}
                       onBundleItemChange={(k: string, v?: number) => {
                         setBundle((prev) => {
                           const v1 = _.cloneDeep(_.set(prev, k, v));
