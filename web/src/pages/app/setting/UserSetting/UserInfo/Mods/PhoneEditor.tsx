@@ -39,7 +39,7 @@ export default function PhoneEditor(props: { handleBack: any }) {
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      oldPhoneNumber: "",
+      oldPhoneNumber: userInfo?.phone || "",
       oldSmsCode: "",
       newPhoneNumber: "",
       newSmsCode: "",
@@ -70,10 +70,10 @@ export default function PhoneEditor(props: { handleBack: any }) {
         <Box className="w-[265px] pt-4">
           {userInfo?.phone && (
             <>
-              <FormControl isInvalid={!!errors?.oldPhoneNumber}>
+              <FormControl>
                 <div className="pb-2">{t("UserInfo.OldPhoneNumber")}</div>
                 <InputGroup>
-                  <Input {...register("oldPhoneNumber", { required: true })} variant="userInfo" />
+                  <Input {...register("oldPhoneNumber")} variant="userInfo" isDisabled />
                   <InputRightElement width="6rem" height={8}>
                     <SendSmsCodeButton
                       getPhone={getValues}

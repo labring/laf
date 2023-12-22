@@ -29,7 +29,7 @@ export default function UserNameEditor(props: { handleBack: any }) {
   const { handleBack } = props;
   const { t } = useTranslation();
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const { showSuccess, showError } = useGlobalStore();
+  const { showSuccess, showError, userInfo } = useGlobalStore();
   const resetPasswordMutation = useResetPasswordMutation();
 
   const {
@@ -40,7 +40,7 @@ export default function UserNameEditor(props: { handleBack: any }) {
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      phone: "",
+      phone: userInfo?.phone || "",
       validationCode: "",
       password: "",
       confirmPassword: "",
@@ -82,18 +82,7 @@ export default function UserNameEditor(props: { handleBack: any }) {
           <FormControl isInvalid={!!errors?.phone}>
             <div className="pb-2">{t("AuthPanel.Phone")}</div>
             <InputGroup>
-              <Input
-                {...register("phone", {
-                  required: true,
-                  pattern: {
-                    value: /^1[2-9]\d{9}$/,
-                    message: t("AuthPanel.PhoneTip"),
-                  },
-                })}
-                type="tel"
-                id="phone"
-                variant="userInfo"
-              />
+              <Input {...register("phone")} variant="userInfo" isDisabled />
               <InputRightElement width="6rem" height={8}>
                 <SendSmsCodeButton
                   getPhone={getValues}
