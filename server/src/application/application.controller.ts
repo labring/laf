@@ -356,6 +356,15 @@ export class ApplicationController {
       return ResponseUtil.error('cannot reduce database capacity')
     }
 
+    if (
+      dto.dedicatedDatabase?.replicas &&
+      origin.resource.dedicatedDatabase?.replicas &&
+      dto.dedicatedDatabase?.replicas !==
+        origin.resource.dedicatedDatabase?.replicas
+    ) {
+      return ResponseUtil.error('cannot change database replicas')
+    }
+
     // check if a user exceeds the resource limit in a region
     const limitResource = await this.quotaServiceTsService.resourceLimit(
       user._id,
