@@ -337,7 +337,7 @@ export class ApplicationController {
     const origin = app.bundle
     if (
       (origin.resource.dedicatedDatabase?.limitCPU && dto.databaseCapacity) ||
-      (origin.resource.databaseCapacity && dto.dedicatedDatabase)
+      (origin.resource.databaseCapacity && dto.dedicatedDatabase?.cpu)
     ) {
       return ResponseUtil.error('cannot change database type')
     }
@@ -534,28 +534,28 @@ export class ApplicationController {
         // dedicated database
         case 'dedicatedDatabaseCPU':
           return (
-            !dto.dedicatedDatabase ||
+            !dto.dedicatedDatabase?.cpu ||
             option.specs.some(
               (spec) => spec.value === dto.dedicatedDatabase.cpu,
             )
           )
         case 'dedicatedDatabaseMemory':
           return (
-            !dto.dedicatedDatabase ||
+            !dto.dedicatedDatabase?.memory ||
             option.specs.some(
               (spec) => spec.value === dto.dedicatedDatabase.memory,
             )
           )
         case 'dedicatedDatabaseCapacity':
           return (
-            !dto.dedicatedDatabase ||
+            !dto.dedicatedDatabase?.capacity ||
             option.specs.some(
               (spec) => spec.value === dto.dedicatedDatabase.capacity,
             )
           )
         case 'dedicatedDatabaseReplicas':
           return (
-            !dto.dedicatedDatabase ||
+            !dto.dedicatedDatabase?.replicas ||
             option.specs.some(
               (spec) => spec.value === dto.dedicatedDatabase.replicas,
             )
