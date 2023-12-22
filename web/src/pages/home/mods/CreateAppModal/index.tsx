@@ -58,10 +58,10 @@ export type TypeBundle = {
   databaseCapacity?: number;
   storageCapacity: number;
   dedicatedDatabase?: {
-    cpu?: number;
-    memory?: number;
-    capacity?: number;
-    replicas?: number;
+    cpu: number;
+    memory: number;
+    capacity: number;
+    replicas: number;
   };
 };
 
@@ -228,6 +228,12 @@ const CreateAppModal = (props: {
             limitMemory: bundle.memory,
             databaseCapacity: bundle.databaseCapacity,
             storageCapacity: bundle.storageCapacity,
+            dedicatedDatabase: {
+              limitCPU: bundle.dedicatedDatabase?.cpu || 0,
+              limitMemory: bundle.dedicatedDatabase?.memory || 0,
+              capacity: bundle.dedicatedDatabase?.capacity || 0,
+              replicas: bundle.dedicatedDatabase?.replicas || 0,
+            },
           };
 
           const newBundle = {
