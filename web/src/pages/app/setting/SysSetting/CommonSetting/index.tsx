@@ -11,11 +11,7 @@ export default function CommonSetting() {
   const [currentCommonSettings, setCurrentCommonSettings] = useState(commonSettings);
   const { showSuccess } = useGlobalStore((state) => state);
   const handleSave = () => {
-    try {
-      setCommonSettings(currentCommonSettings);
-    } catch (error) {
-      console.log(error);
-    }
+    setCommonSettings(currentCommonSettings);
     showSuccess(t("SavedSuccessfully"));
   };
   const { t } = useTranslation();
