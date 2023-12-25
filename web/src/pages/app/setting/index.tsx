@@ -117,10 +117,10 @@ const SettingModal = (props: {
                               }}
                             >
                               <span className="flex">
-                                <span className="flex items-center pr-2 ">{tab.icon}</span>
-                                {tab.name}
+                                <span className="flex items-center pr-2">{tab.icon}</span>
+                                <div className="w-[85%] truncate whitespace-nowrap">{tab.name}</div>
                                 {tab?.status && (
-                                  <span className="ml-4 scale-75 rounded-full border border-red-300 px-1 text-red-300">
+                                  <span className="scale-75 whitespace-nowrap rounded-full border border-red-300 px-1 text-red-300">
                                     {tab.status}
                                   </span>
                                 )}

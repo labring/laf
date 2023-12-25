@@ -19,7 +19,7 @@ import { useBindDomainMutation, useRemoveApplicationMutation } from "./service";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function CustomDomain() {
-  const { currentApp, showSuccess, setCurrentApp } = useGlobalStore();
+  const { currentApp, showSuccess, setCurrentApp, showWarning } = useGlobalStore();
 
   const { register, handleSubmit } = useForm<{ domain: string }>({
     defaultValues: { domain: currentApp?.domain?.customDomain || "" },
@@ -94,6 +94,8 @@ export default function CustomDomain() {
               if (res.data) {
                 setCurrentApp({ ...currentApp, domain: res.data });
                 showSuccess(t("StoragePanel.DomainUpdateSuccess"));
+              } else if (res.error === "domain not resolved") {
+                showWarning(t("StoragePanel.DomainNotResolved"));
               }
             })}
           >

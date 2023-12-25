@@ -232,8 +232,7 @@
     "EditorFont": "编辑器字体",
     "FontSize": "字体大小",
     "FuncListDisplay": "函数列表显示",
-    "ListDisplay": "列表显示",
-    "OldLogs": "旧版日志"
+    "ListDisplay": "列表显示"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -292,7 +291,12 @@
     "CustomApplicationDomain": "自定义应用域名",
     "BucketNameisRequired": "请输入 Bucket 名称",
     "Fail": "上传失败",
-    "UploadFailTip": "{{number}} 个文件上传失败"
+    "UploadFailTip": "{{number}} 个文件上传失败",
+    "StartAppTips": "请先启动应用",
+    "SuccessfullyHosted": "托管成功",
+    "SuccessfullyHostedTips": "HTTP已生效，HTTPS需要一些时间生效。如需查看托管状态，请暂时使用HTTP访问。",
+    "BucketTips": "新创建的 bucket，或应用重启后的 bucket ，需要等待 15 ~ 30s 才能生效",
+    "DomainNotResolved": "尝试使用 ping 或 nslookup 来查看域名解析是否生效"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
@@ -313,7 +317,8 @@
     "EmptyTriggerTip": "您还没有创建触发器,",
     "Every8AM": "每天上午8点",
     "EveryHour": "每小时",
-    "EveryFiveMinutes": "每五分钟"
+    "EveryFiveMinutes": "每五分钟",
+    "createFail": "触发器数量已达上限，请升级应用配置"
   },
   "StatusBar": {
     "CurrentApplication": "当前应用"
@@ -393,7 +398,8 @@
     "LoginOrRegister": "登录 / 注册",
     "BindGitHub": "绑定 GitHub",
     "BindSuccess": "绑定成功",
-    "GitHubLogin": "GitHub 登录"
+    "GitHubLogin": "GitHub 登录",
+    "PleaseBindUser": "请绑定对应用户"
   },
   "Time": "时间",
   "CreateTime": "创建时间",

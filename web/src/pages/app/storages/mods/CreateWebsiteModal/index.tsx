@@ -37,9 +37,12 @@ import useStorageStore from "../../store";
 
 import SiteStatus from "./SiteStatus";
 
+import useGlobalStore from "@/pages/globalStore";
+
 function CreateWebsiteModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { currentStorage, getOrigin } = useStorageStore();
+  const { showSuccess, showInfo, showWarning } = useGlobalStore();
   const { register, setFocus, handleSubmit, reset } = useForm<{ domain: string }>();
   const { t } = useTranslation();
   const createWebsiteMutation = useWebsiteCreateMutation();
@@ -113,7 +116,7 @@ function CreateWebsiteModal() {
           variant={"secondary"}
           style={{ borderRadius: "1rem" }}
           disabled={currentStorage === undefined}
-          onClick={() => {
+          onClick={async () => {
             if (!(currentStorage?.policy === BUCKET_POLICY_TYPE.readonly)) {
               toast({
                 status: "warning",
@@ -122,10 +125,14 @@ function CreateWebsiteModal() {
               });
               return;
             }
-            createWebsiteMutation.mutateAsync({
+            const res = await createWebsiteMutation.mutateAsync({
               bucketName: currentStorage && currentStorage.name,
               state: BUCKET_STATUS.Active,
             });
+            if (!res.error) {
+              showSuccess(t("StoragePanel.SuccessfullyHosted"));
+              showInfo(t("StoragePanel.SuccessfullyHostedTips"), 5000, true);
+            }
           }}
         >
           {t("StoragePanel.websiteHost")}
@@ -175,12 +182,14 @@ function CreateWebsiteModal() {
               type="submit"
               isLoading={updateWebsiteMutation.isLoading}
               onClick={handleSubmit(async (value) => {
-                const res: any = await updateWebsiteMutation.mutateAsync({
+                const res = await updateWebsiteMutation.mutateAsync({
                   id: currentStorage?.websiteHosting._id,
                   domain: value.domain,
                 });
                 if (res.data) {
                   onClose();
+                } else if (res.error === "domain not resolved") {
+                  showWarning(t("StoragePanel.DomainNotResolved"));
                 }
               })}
             >

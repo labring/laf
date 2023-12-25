@@ -9,7 +9,7 @@
     "strings": true
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   // eslint
   "eslint.alwaysShowStatus": true,
@@ -78,6 +78,7 @@
     "millicores",
     "MINIO",
     "moby",
+    "mongorestore",
     "MONOG",
     "nestjs",
     "objs",

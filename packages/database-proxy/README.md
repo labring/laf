@@ -18,6 +18,7 @@
 ```js
 const app = require('express')()
 const { Proxy, MongoAccessor, Policy } = require('database-proxy')
+const { MongoClient } = require('mongodb')
 
 app.use(express.json())
 
@@ -31,9 +32,12 @@ const rules = {
     }
 }
 
+const client = new MongoClient('mongodb://localhost:27017')
+client.connect()
+
 // create an accessor
-const accessor = new MongoAccessor('mydb', 'mongodb://localhost:27017', { directConnection: true })
-accessor.init()
+const accessor = new MongoAccessor(client)
+
 
 // create a policy
 const policy = new Policy(accessor)

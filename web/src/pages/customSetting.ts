@@ -62,8 +62,8 @@ const useCustomSettingStore = create<State>()(
             SideBar: {
               id: "SideBar",
               style: {
-                width: 218,
-                minWidth: 0,
+                width: 240,
+                minWidth: 220,
               },
             },
 
@@ -71,7 +71,7 @@ const useCustomSettingStore = create<State>()(
               id: "RightPanel",
               style: {
                 width: 270,
-                minWidth: 0,
+                minWidth: 232,
               },
             },
 
@@ -113,7 +113,7 @@ const useCustomSettingStore = create<State>()(
               id: "SideBar",
               style: {
                 width: 300,
-                minWidth: 0,
+                minWidth: 206,
               },
             },
             CollectionPanel: {
@@ -142,7 +142,7 @@ const useCustomSettingStore = create<State>()(
               id: "SideBar",
               style: {
                 width: 300,
-                minWidth: 0,
+                minWidth: 230,
                 maxWidth: 800,
               },
             },
@@ -184,7 +184,7 @@ const useCustomSettingStore = create<State>()(
 
       {
         name: "laf_custom_setting",
-        version: 2,
+        version: 3,
       },
     ),
   ),

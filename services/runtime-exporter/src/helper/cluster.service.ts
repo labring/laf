@@ -23,7 +23,9 @@ export class ClusterService {
    * - if kubeconfig is not empty, load from string
    */
   static LABEL_KEY_APP_ID = 'laf.dev/appid'
+  static LABEL_DATABASE = 'app.kubernetes.io/managed-by=kubeblocks'
   static NAMESPACE = Config.NAMESPACE
+  static DB_NAMESPACE = Config.DB_NAMESPACE
 
   static loadKubeConfig() {
     const conf = Config.KUBECONF
@@ -55,42 +57,71 @@ export class ClusterService {
     return new k8s.Metrics(kc)
   }
 
-  static async getRuntimePodMetricsForAllNamespaces(): Promise<Metric[]> {
+  static async getPodMetrics(
+    namespace: string,
+    label: string,
+    app: string,
+  ): Promise<Metric[]> {
     const metricsClient = this.getMetricsClient()
     let res: any
-    if (ClusterService.NAMESPACE) {
+    if (namespace) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       res = await metricsClient.metricsApiRequest(
-        `/apis/metrics.k8s.io/v1beta1/namespaces/${ClusterService.NAMESPACE}/pods?labelSelector=laf.dev/appid`,
+        `/apis/metrics.k8s.io/v1beta1/namespaces/${namespace}/pods?labelSelector=${label}`,
       )
     } else {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       res = await metricsClient.metricsApiRequest(
-        '/apis/metrics.k8s.io/v1beta1/pods?labelSelector=laf.dev/appid',
+        `/apis/metrics.k8s.io/v1beta1/pods?labelSelector=${label}`,
       )
     }
 
     const metricsList: Metric[] = []
-    for (const item of res.items) {
-      const appid = item.metadata.labels[ClusterService.LABEL_KEY_APP_ID]
-      const podName = item.metadata.name
-      for (const container of item.containers) {
-        const containerName = container.name
-        // millicores
-        const cpu = Number(quantityToScalar(container.usage.cpu || 0))
-        // bytes
-        const memory = Number(quantityToScalar(container.usage.memory || 0))
 
-        const metric: Metric = {
-          cpu: cpu,
-          memory: memory,
-          appid: appid,
-          containerName: containerName,
-          podName: podName,
+    if (app === 'RUNTIME') {
+      for (const item of res.items) {
+        const appid: string =
+          item.metadata.labels[ClusterService.LABEL_KEY_APP_ID]
+        const podName = item.metadata.name
+        for (const container of item.containers) {
+          // millicores
+          const cpu = Number(quantityToScalar(container.usage.cpu || 0))
+          // bytes
+          const memory = Number(quantityToScalar(container.usage.memory || 0))
+
+          const metric: Metric = {
+            cpu: cpu,
+            memory: memory,
+            appid: appid,
+            containerName: container.name,
+            podName: podName,
+          }
+          metricsList.push(metric)
         }
-        metricsList.push(metric)
+      }
+    } else {
+      for (const item of res.items) {
+        const appid: string = item.metadata.labels['app.kubernetes.io/instance']
+        const podName = item.metadata.name
+        for (const container of item.containers) {
+          if (container.name === 'mongodb') {
+            // millicores
+            const cpu = Number(quantityToScalar(container.usage.cpu || 0))
+            // bytes
+            const memory = Number(quantityToScalar(container.usage.memory || 0))
+
+            const metric: Metric = {
+              cpu: cpu,
+              memory: memory,
+              appid: appid,
+              containerName: container.name,
+              podName: podName,
+            }
+            metricsList.push(metric)
+          }
+        }
       }
     }
 

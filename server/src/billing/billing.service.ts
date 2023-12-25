@@ -24,12 +24,16 @@ export class BillingService {
   async query(userId: ObjectId, condition?: BillingQuery) {
     const query = { createdBy: userId }
 
-    if (condition.endTime) {
-      query['endAt'] = { $lte: condition.endTime }
-    }
-
     if (condition.startTime) {
       query['startAt'] = { $gte: condition.startTime }
+    }
+
+    if (condition.endTime) {
+      if (condition.startTime) {
+        query['startAt']['$lte'] = condition.endTime
+      } else {
+        query['startAt'] = { $lte: condition.endTime }
+      }
     }
 
     if (condition.appid) {
@@ -75,12 +79,16 @@ export class BillingService {
   async getExpenseByDay(userId: ObjectId, condition?: BillingQuery) {
     const query = { createdBy: userId }
 
-    if (condition.endTime) {
-      query['endAt'] = { $lte: condition.endTime }
-    }
-
     if (condition.startTime) {
       query['startAt'] = { $gte: condition.startTime }
+    }
+
+    if (condition.endTime) {
+      if (condition.startTime) {
+        query['startAt']['$lte'] = condition.endTime
+      } else {
+        query['startAt'] = { $lte: condition.endTime }
+      }
     }
 
     if (condition.appid) {
@@ -97,7 +105,7 @@ export class BillingService {
       {
         $project: {
           day: {
-            $dateToString: { format: '%Y-%m-%d', date: '$endAt' },
+            $dateToString: { format: '%Y-%m-%d', date: '$startAt' },
           },
           amount: 1,
         },
@@ -135,12 +143,16 @@ export class BillingService {
   async getExpense(userId: ObjectId, condition?: BillingQuery) {
     const query = { createdBy: userId }
 
-    if (condition.endTime) {
-      query['endAt'] = { $lte: condition.endTime }
-    }
-
     if (condition.startTime) {
       query['startAt'] = { $gte: condition.startTime }
+    }
+
+    if (condition.endTime) {
+      if (condition.startTime) {
+        query['startAt']['$lte'] = condition.endTime
+      } else {
+        query['startAt'] = { $lte: condition.endTime }
+      }
     }
 
     if (condition.appid) {

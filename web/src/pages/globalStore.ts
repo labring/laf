@@ -32,7 +32,8 @@ type State = {
   visitedViews: string[];
 
   showSuccess: (text: string | React.ReactNode) => void;
-  showInfo: (text: string | React.ReactNode) => void;
+  showInfo: (text: string | React.ReactNode, duration?: number, isClosable?: boolean) => void;
+  showWarning: (text: string | React.ReactNode) => void;
   showError: (text: string | React.ReactNode) => void;
 };
 
@@ -161,16 +162,35 @@ const useGlobalStore = create<State>()(
         });
       },
 
-      showInfo: (text: string | React.ReactNode) => {
+      showWarning: (text: string | React.ReactNode) => {
         toast({
           position: "top",
           title: text,
+          status: "warning",
           variant: localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY) ? "subtle" : "solid",
-          duration: 1000,
+          duration: 3000,
           containerStyle: {
             maxWidth: "100%",
             minWidth: "100px",
           },
+        });
+      },
+
+      showInfo: (
+        text: string | React.ReactNode,
+        duration: number = 1000,
+        isClosable: boolean = false,
+      ) => {
+        toast({
+          position: "top",
+          title: text,
+          variant: localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY) ? "subtle" : "solid",
+          duration: duration,
+          containerStyle: {
+            maxWidth: "100%",
+            minWidth: "100px",
+          },
+          isClosable: isClosable,
         });
       },
     })),

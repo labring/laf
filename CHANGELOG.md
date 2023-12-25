@@ -1,4 +1,73 @@
-# [1.0.0-beta.4](https://github.com/labring/laf/compare/v1.0.0-beta.12...v1.0.0-beta.4) (2023-10-31)
+# [1.0.0-beta.4](https://github.com/labring/laf/compare/v1.0.0-beta.14...v1.0.0-beta.4) (2023-12-19)
+
+
+
+# [1.0.0-beta.14](https://github.com/labring/laf/compare/v1.0.0-beta.13...v1.0.0-beta.14) (2023-12-19)
+
+
+### Bug Fixes
+
+* **runtime:** append null check to object check ([#1684](https://github.com/labring/laf/issues/1684)) ([f2a3a40](https://github.com/labring/laf/commit/f2a3a40969be641a0235bc2faa916f2d33eebf46))
+* **runtime:** fix cloud sdk cannot initialize in custom deps module ([#1711](https://github.com/labring/laf/issues/1711)) ([c1748d6](https://github.com/labring/laf/commit/c1748d6f868b3cef500a41145644204c950bfc9f))
+* **runtime:** fix module.exports error; fix logs error while response.chunkedEncoding is true ([#1707](https://github.com/labring/laf/issues/1707)) ([8ea5ad0](https://github.com/labring/laf/commit/8ea5ad0d893e1a55d0f91e65c4d3e6ec4c2de9b7))
+* **runtime:** fix process.env hot reload ([#1709](https://github.com/labring/laf/issues/1709)) ([7ef87f5](https://github.com/labring/laf/commit/7ef87f5ab2229045cafef6e74c71738bfc65dd99))
+* **runtime:** upgrade node to v20 to fix importModuleDynamic bug ([#1687](https://github.com/labring/laf/issues/1687)) ([849a221](https://github.com/labring/laf/commit/849a2214395afdb92185512515afb68db0760996))
+* **server:** add field whitelist for validation ([#1692](https://github.com/labring/laf/issues/1692)) ([b73acea](https://github.com/labring/laf/commit/b73acea07c043ca391782abdcf8ebc2039f5dd08))
+* **server:** fix get_client_ip method, use x-forwarded-fro first ([#1717](https://github.com/labring/laf/issues/1717)) ([be0cb05](https://github.com/labring/laf/commit/be0cb054351cc65a03998ec41b7247aa9ddebf79))
+* **server:** fix logging api error return ([#1727](https://github.com/labring/laf/issues/1727)) ([dafa12c](https://github.com/labring/laf/commit/dafa12cb58cc426c9a164ed98777e9733647515d))
+* **server:** fix runtime logging interface not authenticated ([#1725](https://github.com/labring/laf/issues/1725)) ([6e41123](https://github.com/labring/laf/commit/6e41123dab4206459ce09ec57996069c282dc62d))
+* **services:** change runtime exporter penalty rules ([#1733](https://github.com/labring/laf/issues/1733)) ([e2a85e0](https://github.com/labring/laf/commit/e2a85e0c57a5b5d9d3f679e0e3aa2e2bbf0ed2f5))
+* **web:** cannot update database record with ObjectId [#1524](https://github.com/labring/laf/issues/1524) ([#1723](https://github.com/labring/laf/issues/1723)) ([f8e2385](https://github.com/labring/laf/commit/f8e2385b26ffcdc7ca2e41425b7a66e1f8b4bada))
+* **web:** fix app monitor longest array ([#1682](https://github.com/labring/laf/issues/1682)) ([9239629](https://github.com/labring/laf/commit/9239629fb02681b8b3aca6a3a2e2c3783a5dbecd))
+* **web:** function return shows when not undefined & update current function after edit name ([#1713](https://github.com/labring/laf/issues/1713)) ([2b228d0](https://github.com/labring/laf/commit/2b228d05fd67caaf7eea20be1b0185eab44e8fae))
+* **web:** jsonviewer support to render large data ([#1731](https://github.com/labring/laf/issues/1731)) ([382d8f2](https://github.com/labring/laf/commit/382d8f2af4824b8b74930b930f767eef165c7864))
+
+
+### Features
+
+* cli support env ([#1718](https://github.com/labring/laf/issues/1718)) ([80b88c0](https://github.com/labring/laf/commit/80b88c026c3566520e9307843b33e0a14ec34926))
+* **cloud-sdk:** add url api to cloud sdk ([#1732](https://github.com/labring/laf/issues/1732)) ([2b87cb7](https://github.com/labring/laf/commit/2b87cb735caf87698a8016fe4c95cd0128fe0e7c))
+* **runtime:** add cloud.storage api in cloud sdk ([#1729](https://github.com/labring/laf/issues/1729)) ([18afa9b](https://github.com/labring/laf/commit/18afa9b9b128f935ea1928012bf59fdb1d315721))
+* **runtime:** detach custom dependency, support node_module caching ([#1658](https://github.com/labring/laf/issues/1658)) ([2fbc5f1](https://github.com/labring/laf/commit/2fbc5f189a941b3d445c555350ebac4bc9983dcb))
+* **runtime:** support LF_NODE_MODULES_CACHE to control if offline deps installation ([#1743](https://github.com/labring/laf/issues/1743)) ([3e4b2f7](https://github.com/labring/laf/commit/3e4b2f7cf78e61619eeaac861074e2d5ab76aa18))
+* **runtime:** support relative path import of fn ([#1712](https://github.com/labring/laf/issues/1712)) ([9daa9f8](https://github.com/labring/laf/commit/9daa9f8a42394456179e5437ffd2c89c48505cb1))
+* **server:** Add a consolidated multi-pod, multi-container log query ([#1689](https://github.com/labring/laf/issues/1689)) ([b29fdcd](https://github.com/labring/laf/commit/b29fdcdda83cb4b5ea7de0b284642f2884c51e2f))
+* **server:** support request-limit ratio conf of runtime resource in region ([#1702](https://github.com/labring/laf/issues/1702)) ([2046b4b](https://github.com/labring/laf/commit/2046b4bdfc4062978b3a79ab18ea9913cd436aab))
+* **web:** support consolidated multi-pod, multi-container log query ([#1691](https://github.com/labring/laf/issues/1691)) ([61e7fcb](https://github.com/labring/laf/commit/61e7fcbaa4c103786cf0155e6ab9482db9b04eb6))
+
+
+
+# [1.0.0-beta.13](https://github.com/labring/laf/compare/v1.0.0-beta.12...v1.0.0-beta.13) (2023-11-10)
+
+
+### Bug Fixes
+
+* **runtime:** fix DISABLE_MODULE_CACHE condition error ([#1630](https://github.com/labring/laf/issues/1630)) ([62cc5a7](https://github.com/labring/laf/commit/62cc5a7a6de3709c0363a5fab2f8ee000c7a9d7f))
+* **runtime:** fix interceptor main func error ([#1638](https://github.com/labring/laf/issues/1638)) ([b3bc612](https://github.com/labring/laf/commit/b3bc6121843c0d835bf37f72d0371ec2850e5ca5))
+* **server:** fix billing miss on old app ([#1659](https://github.com/labring/laf/issues/1659)) ([4e5b8d4](https://github.com/labring/laf/commit/4e5b8d407a06d76091fda112351b1491dc05fac1))
+* **server:** fix billing miss on old app ([#1666](https://github.com/labring/laf/issues/1666)) ([943ad92](https://github.com/labring/laf/commit/943ad92000b92e29664a846ee43b6abf120d0a40))
+* **server:** fix get metering data miss quota ([#1673](https://github.com/labring/laf/issues/1673)) ([afbdd36](https://github.com/labring/laf/commit/afbdd369945c4b357a4a983e531370926db3ef11))
+* **services:** fix runtime exporter metrics data caching issue ([#1663](https://github.com/labring/laf/issues/1663)) ([9e8ee08](https://github.com/labring/laf/commit/9e8ee08c15eb92d1c46c8843152fad50c3c16fec))
+* **services:** fix runtime exporter metrics data caching issue ([#1664](https://github.com/labring/laf/issues/1664)) ([c1f0cdc](https://github.com/labring/laf/commit/c1f0cdcbb18d81ad7d703cc9b8e6ded5c37407a4))
+* **web:** fix add index bug ([#1626](https://github.com/labring/laf/issues/1626)) ([525a063](https://github.com/labring/laf/commit/525a063987604ea7d96e2555d8274c48cf66844e))
+* **web:** fix inner html with LogViewer ([#1636](https://github.com/labring/laf/issues/1636)) ([46bcf42](https://github.com/labring/laf/commit/46bcf42f8d3bb48af84fc125b5468c0b2483edde))
+* **web:** fix mergeArrays function ([#1672](https://github.com/labring/laf/issues/1672)) ([ab61bf2](https://github.com/labring/laf/commit/ab61bf23cd3ee302a904cea9f49c733beb470f15))
+* **web:** fix monitor mergeArrays ([#1675](https://github.com/labring/laf/issues/1675)) ([51ef7fe](https://github.com/labring/laf/commit/51ef7fe4ea5a612dc59a0f9ca3ce040edbc49fa4))
+* **web:** fix upload file entry 100 items limit ([#1629](https://github.com/labring/laf/issues/1629)) ([c92d405](https://github.com/labring/laf/commit/c92d405de8443f0bfb1df3f41d22c59e7c32e734))
+* **web:** fix wrap of log amended ([#1645](https://github.com/labring/laf/issues/1645)) ([f78a053](https://github.com/labring/laf/commit/f78a0531ffcc5d0497d08b7c803b1e98e67e2acb))
+* **web:** log viewer line height and fontsize ([#1639](https://github.com/labring/laf/issues/1639)) ([dded744](https://github.com/labring/laf/commit/dded7447c15c9933b15e28ba987e125adf5ce838))
+
+
+### Features
+
+* **runtime:** beautify runtime log format ([#1637](https://github.com/labring/laf/issues/1637)) ([8243db4](https://github.com/labring/laf/commit/8243db4fbf13b8760c7287c2b48457d85f252e91))
+* **runtime:** refactor log console & enable module cache ([#1618](https://github.com/labring/laf/issues/1618)) ([8d95fff](https://github.com/labring/laf/commit/8d95fff415b52a18b7a152e4a88d2c7e7fbbda34))
+* **runtime:** unit runtime logger instead of log4js; cache __websocket__ module ([2ad4f74](https://github.com/labring/laf/commit/2ad4f74f8ef1861d703b5585fa1d72d4a8286faa))
+* **server:** add pod log interface ([#1631](https://github.com/labring/laf/issues/1631)) ([fa726a1](https://github.com/labring/laf/commit/fa726a196e890720780702b1560909e33fb4e67c))
+* **services:** add runtime metrics exporter ([#1619](https://github.com/labring/laf/issues/1619)) ([44c29bd](https://github.com/labring/laf/commit/44c29bdbc25f47df66ea347d8be5604d7d83b6d6))
+* **web:** add pods logs modal ([#1634](https://github.com/labring/laf/issues/1634)) ([33ac767](https://github.com/labring/laf/commit/33ac767468b7a1150183ecf4312353a13466dcd8))
+* **web:** cpu and memory monitor support "all" option ([#1670](https://github.com/labring/laf/issues/1670)) ([b2fdf04](https://github.com/labring/laf/commit/b2fdf045188904937170d1c34d2df82c726f1327))
+* **web:** footer add 'about us' page ([#1622](https://github.com/labring/laf/issues/1622)) ([779fae9](https://github.com/labring/laf/commit/779fae94655c2eefdf989b2d8f4f559c4d3dfd94))
 
 
 

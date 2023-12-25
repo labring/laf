@@ -1,3 +1,4 @@
+import { objectidType } from "./objectidType";
 import { requestType } from "./requestType";
 import { responseType } from "./responseType";
 import { readableStreamTypes, streamTypes, writableStreamTypes } from "./streamType";
@@ -8,6 +9,7 @@ ${readableStreamTypes}
 ${writableStreamTypes}
 ${requestType}
 ${responseType}
+${objectidType}
 
 declare class FunctionConsole {
   private _logs;

@@ -232,8 +232,7 @@
     "EditorFont": "Editor Font",
     "FontSize": "Font Size",
     "FuncListDisplay": "Function List Display",
-    "ListDisplay": "List Display",
-    "OldLogs": "Old Logs"
+    "ListDisplay": "List Display"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -279,7 +278,7 @@
     "Inaccessible": "Inaccessible",
     "isResolved": "Effective",
     "cnameTip": "Add the \"CNAME\" record of the domain to resolve to <strong>{{cnameDomain}}</strong>, After the resolution takes effect, the custom domain name can be bound.",
-    "editHostTip": "oss-bucket needs to be in read mode to enable website hosting",
+    "editHostTip": "oss-bucket needs to be in readOnly mode to enable website hosting",
     "CreateWebHosting": "Bind custom domain name",
     "CustomDomain": "Custom Domain",
     "CurrentDomain": "Current domain: ",
@@ -292,7 +291,12 @@
     "CustomApplicationDomain": "Custom Application Domain",
     "BucketNameisRequired": "Bucket name is required",
     "Fail": "upload failed",
-    "UploadFailTip": "{{number}} files upload failed"
+    "UploadFailTip": "{{number}} files upload failed",
+    "StartAppTips": " Please start the application first",
+    "SuccessfullyHosted": "Successfully hosted",
+    "SuccessfullyHostedTips": "HTTP is active, HTTPS activation may take some time. To check the hosting status, use HTTP for now.",
+    "BucketTips": "Newly created buckets or buckets after app restart need to wait for 15 ~ 30 s to take effect",
+    "DomainNotResolved": "Try using ping or nslookup to check if domain name resolution is effective"
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -313,7 +317,8 @@
     "EmptyTriggerTip": "You have not created a trigger,",
     "Every8AM": "8 am every day",
     "EveryHour": "per hour",
-    "EveryFiveMinutes": "every five minutes"
+    "EveryFiveMinutes": "every five minutes",
+    "createFail": "Trigger limit reached. Upgrade app configuration."
   },
   "StatusBar": {
     "CurrentApplication": "Current App"
@@ -393,7 +398,8 @@
     "LoginOrRegister": "Login / Register",
     "BindGitHub": "Bind GitHub",
     "BindSuccess": "Bind Successfully",
-    "GitHubLogin": "GitHub Login"
+    "GitHubLogin": "GitHub Login",
+    "PleaseBindUser": "Please bind your user"
   },
   "Time": "Time",
   "CreateTime": "Created",

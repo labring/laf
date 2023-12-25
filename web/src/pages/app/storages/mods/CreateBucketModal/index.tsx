@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { InfoOutlineIcon } from "@chakra-ui/icons";
 import {
   Button,
   FormControl,
@@ -145,6 +146,11 @@ function CreateBucketModal(props: { storage?: TBucket; children: React.ReactElem
                   </option>
                 </Select>
               </FormControl>
+
+              <span className="flex items-center text-grayModern-600">
+                <InfoOutlineIcon className="mx-1" />
+                {t("StoragePanel.BucketTips")}
+              </span>
             </VStack>
           </ModalBody>
 
