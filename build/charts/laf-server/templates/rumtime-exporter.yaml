@@ -39,6 +39,8 @@ spec:
               value: {{ .Values.default_region.runtime_exporter_secret | quote }}
             - name: NAMESPACE
               value: {{ .Release.Namespace | quote }}
+            - name: DB_NAMESPACE
+              value: {{ .Release.Namespace | quote }}
 --- 
 apiVersion: v1
 kind: Service
@@ -67,6 +69,10 @@ spec:
   endpoints:
     - interval: 60s
       path: "/runtime/metrics/{{ .Values.default_region.runtime_exporter_secret}}"
+      scrapeTimeout: 10s
+      honorLabels: true
+    - interval: 60s
+      path: "/database/metrics/{{ .Values.default_region.runtime_exporter_secret}}"
       scrapeTimeout: 10s
       honorLabels: true
   namespaceSelector:
