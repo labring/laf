@@ -17,6 +17,8 @@ import { COLOR_MODE } from "@/constants";
 
 import { TypeBundle } from "..";
 
+import useGlobalStore from "@/pages/globalStore";
+
 export default function DatabaseBundleControl(props: {
   bundle: TypeBundle;
   originCapacity?: number;
@@ -41,6 +43,14 @@ export default function DatabaseBundleControl(props: {
     bundle.dedicatedDatabase ? "dedicated" : "shared",
   );
 
+  const { showInfo } = useGlobalStore(({ showInfo }) => ({ showInfo }));
+
+  useEffect(() => {
+    showInfo("数据库一旦创建后，暂时无法修改类型和实例数，容量只增不减，如有特殊需要请联系客服", {
+      duration: 5000,
+    });
+  }, []);
+
   useEffect(() => {
     if (databaseType === "dedicated") {
       onBundleItemChange("databaseCapacity", undefined);
@@ -56,9 +66,10 @@ export default function DatabaseBundleControl(props: {
     specs: { value: number }[];
     value?: number;
     min?: number;
+    disable?: boolean;
     onChange: (value: number) => void;
   }) => {
-    const { type, specs, value, onChange, min } = props;
+    const { type, specs, value, onChange, min, disable } = props;
     const idx = specs.findIndex((spec) => spec.value === value);
 
     return (
@@ -74,6 +85,7 @@ export default function DatabaseBundleControl(props: {
           max={specs.length - 1}
           colorScheme="primary"
           onChange={(v) => {
+            if (disable) return;
             if (typeof min !== "undefined" && min > specs[v].value) return;
             onChange(specs[v].value);
           }}
@@ -173,6 +185,7 @@ export default function DatabaseBundleControl(props: {
             })}
             {buildSlider({
               type: "replicas",
+              disable: true,
               value: _.get(bundle, "dedicatedDatabase.replicas") as unknown as number,
               specs: find(resourceOptions, { type: "dedicatedDatabaseReplicas" })?.specs || [],
               onChange: (value) => {

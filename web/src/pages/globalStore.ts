@@ -32,7 +32,7 @@ type State = {
   visitedViews: string[];
 
   showSuccess: (text: string | React.ReactNode) => void;
-  showInfo: (text: string | React.ReactNode) => void;
+  showInfo: (text: string | React.ReactNode, options?: { duration?: number }) => void;
   showError: (text: string | React.ReactNode) => void;
 };
 
@@ -161,12 +161,13 @@ const useGlobalStore = create<State>()(
         });
       },
 
-      showInfo: (text: string | React.ReactNode) => {
+      showInfo: (text: string | React.ReactNode, options?: { duration?: number }) => {
+        const { duration } = options || {};
         toast({
           position: "top",
           title: text,
           variant: localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY) ? "subtle" : "solid",
-          duration: 1000,
+          duration: duration || 1000,
           containerStyle: {
             maxWidth: "100%",
             minWidth: "100px",
