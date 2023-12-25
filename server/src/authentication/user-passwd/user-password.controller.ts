@@ -1,6 +1,6 @@
 import { AuthenticationService } from '../authentication.service'
 import { UserPasswordService } from './user-password.service'
-import { Body, Controller, Logger, Post } from '@nestjs/common'
+import { Body, Controller, Logger, Post, UseGuards } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ResponseUtil } from 'src/utils/response'
 import { UserService } from '../../user/user.service'
@@ -10,6 +10,9 @@ import { AuthBindingType, AuthProviderBinding } from '../entities/types'
 import { SmsService } from '../phone/sms.service'
 import { PasswdResetDto } from '../dto/passwd-reset.dto'
 import { PasswdCheckDto } from '../dto/passwd-check.dto'
+import { InjectUser } from 'src/utils/decorator'
+import { JwtAuthGuard } from '../jwt.auth.guard'
+import { User } from 'src/user/entities/user'
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -110,8 +113,9 @@ export class UserPasswordController {
    */
   @ApiOperation({ summary: 'Reset password' })
   @ApiResponse({ type: ResponseUtil })
+  @UseGuards(JwtAuthGuard)
   @Post('passwd/reset')
-  async reset(@Body() dto: PasswdResetDto) {
+  async reset(@Body() dto: PasswdResetDto, @InjectUser() user: User) {
     // valid phone code
     const { phone, code, type } = dto
     const err = await this.smsService.validateCode(phone, code, type)
@@ -119,10 +123,8 @@ export class UserPasswordController {
       return ResponseUtil.error(err)
     }
 
-    // find user by phone
-    const user = await this.userService.findOneByPhone(phone)
-    if (!user) {
-      return ResponseUtil.error('user not found')
+    if (user.phone !== phone) {
+      return ResponseUtil.error('incorrect user cell phone number')
     }
 
     // reset password
