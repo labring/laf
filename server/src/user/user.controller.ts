@@ -113,6 +113,9 @@ export class UserController {
   @Post('bind/phone')
   async bindPhone(@Body() dto: BindPhoneDto, @InjectUser() user: User) {
     const { oldPhoneNumber, newPhoneNumber, oldSmsCode, newSmsCode } = dto
+    // TODO:
+    // 第一次绑定逻辑，之前没绑定过
+
     // check code valid
     if (user.phone) {
       if (!dto.oldPhoneNumber || !dto.oldSmsCode) {
