@@ -698,5 +698,9 @@
     "logs": "日志"
   },
   "Deprecated": "已弃用",
-  "All": "全部"
+  "All": "全部",
+  "UpgradeVersionTip": {
+    "Title": "Laf 新版本已经准备好了！",
+    "Description": "点击立即更新"
+  }
 }

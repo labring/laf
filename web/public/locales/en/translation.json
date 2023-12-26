@@ -698,5 +698,9 @@
     "logs": "Logs"
   },
   "Deprecated": "Deprecated",
-  "All": "All"
+  "All": "All",
+  "UpgradeVersionTip": {
+    "Title": "Laf is ready to update!",
+    "Description": "Click to update"
+  }
 }

@@ -1,9 +1,16 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "types": ["node"],
+    "types": [
+      "node",
+      "vite-plugin-pwa/client"
+    ],
     "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": false,
@@ -18,10 +25,22 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     }
   },
-  "include": ["src", "apis/v1/api-auto.d.ts", "public/locales"],
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "exclude": ["node_modules"]
+  "include": [
+    "src",
+    "apis/v1/api-auto.d.ts",
+    "public/locales"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
