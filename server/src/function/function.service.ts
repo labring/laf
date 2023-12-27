@@ -57,7 +57,7 @@ export class FunctionService {
 
     const fn = await this.findOne(appid, dto.name)
 
-    await this.addOneHistoryRecord(fn, 'function created')
+    await this.addOneHistoryRecord(fn, 'created')
     await this.publish(fn)
     return fn
   }
