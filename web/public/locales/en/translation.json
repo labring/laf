@@ -135,7 +135,8 @@
     "HistoryTips": "No historical versions available",
     "NoDesc": "No Description",
     "CurrentVersion": "Current Version",
-    "HistoryVersion": "History version"
+    "HistoryVersion": "History version",
+    "DeployChangelog": "Input the description of this function modification (optional)"
   },
   "HomePanel": {
     "APP": "Android or iOS app",
