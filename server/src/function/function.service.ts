@@ -57,7 +57,7 @@ export class FunctionService {
 
     const fn = await this.findOne(appid, dto.name)
 
-    await this.addOneHistoryRecord(fn)
+    await this.addOneHistoryRecord(fn, 'function created')
     await this.publish(fn)
     return fn
   }
@@ -173,7 +173,7 @@ export class FunctionService {
     )
 
     const fn = await this.findOne(func.appid, func.name)
-    await this.addOneHistoryRecord(fn)
+    await this.addOneHistoryRecord(fn, dto.changelog)
     await this.publish(fn)
 
     return fn
@@ -405,7 +405,7 @@ export class FunctionService {
     return history
   }
 
-  async addOneHistoryRecord(func: CloudFunction) {
+  async addOneHistoryRecord(func: CloudFunction, changelog = '') {
     await this.db
       .collection<CloudFunctionHistory>('CloudFunctionHistory')
       .insertOne({
@@ -415,6 +415,7 @@ export class FunctionService {
           code: func.source.code,
         },
         createdAt: new Date(),
+        changelog,
       })
   }
 

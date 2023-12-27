@@ -19,6 +19,9 @@ export class CloudFunctionHistory {
   @ApiProperty({ type: CloudFunctionHistorySource })
   source: CloudFunctionHistorySource
 
+  @ApiProperty({ type: String })
+  changelog?: string
+
   @ApiProperty()
   createdAt: Date
 }
