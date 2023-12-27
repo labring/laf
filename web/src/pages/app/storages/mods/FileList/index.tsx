@@ -91,6 +91,7 @@ export default function FileList() {
   useHotkeys(
     Key.Backspace,
     async (e) => {
+      if (selectedFiles.length === 0) return;
       confirmDialog.show({
         bodyText: t("StoragePanel.DeleteFiles", { num: selectedFiles.length }),
         headerText: t("Delete"),
