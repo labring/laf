@@ -296,7 +296,10 @@
     "SuccessfullyHosted": "Successfully hosted",
     "SuccessfullyHostedTips": "HTTP is active, HTTPS activation may take some time. To check the hosting status, use HTTP for now.",
     "BucketTips": "Newly created buckets or buckets after app restart need to wait for 15 ~ 30 s to take effect",
-    "DomainNotResolved": "Try using ping or nslookup to check if domain name resolution is effective"
+    "DomainNotResolved": "Try using ping or nslookup to check if domain name resolution is effective",
+    "DeleteFiles": "Are you sure you want to delete {{num}} directories or files?",
+    "DeletingFiles": "Deleting {{num}} directories or files...",
+    "DeleteFilesResult": "Delete directories or files: {{successNum}} success, {{failedNum}} failed."
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
