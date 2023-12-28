@@ -146,3 +146,19 @@ export async function main(ctx: FunctionContext) {
 ### Null Type
 
 Null is equivalent to a placeholder that indicates a field exists but has no value.
+
+## Intelligent Migration of `cloud.database()` to Native Queries
+
+We can intelligently rewrite cloud functions using `cloud.database()` to utilize native `MongoDB` queries through the following method:
+
+The prompt is as follows: paste the Laf cloud function at the end and send it together to an AI (such as Laf Pilot).
+
+```text
+You are a senior programmer, especially skilled in using the official MongoDB SDK under the TypeScript language. Below, I will provide you with a segment of code where the 'db' was originally initialized using cloud.database(). Now, please initialize all instances of 'db' using cloud.mongo.db (this is a variable, not a function), and transform all database operations to conform to the official MongoDB SDK format.
+
+Note:
+1. db=cloud.mongo.db; this statement retrieves an already initialized data connection.
+2. Regarding the 'id': previously, the 'db' used a string type for 'id', while MongoDB's official 'id' is of the ObjectId type. If necessary, you will need to add parsing/encapsulation conversion logic.
+3. Do not modify other parts of the program's code.
+Below is the code:
+```

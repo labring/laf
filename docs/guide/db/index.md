@@ -146,3 +146,20 @@ export async function main(ctx: FunctionContext) {
 ### Null 类型
 
 Null 相当于一个占位符，表示一个字段存在但是值为空。
+
+## 智能迁移 `cloud.database()` 至原生查询
+
+我们可以使用如下的方法通过 AI 将 `cloud.database()` 写法的云函数智能改写为 `MongoDB` 原生查询：
+
+Prompt 如下，将 Laf 云函数粘贴到末尾，一同发送给 AI（如 Laf Pilot）即可：
+
+```text
+你是一个资深程序员，尤其擅长使用TypeScript语言下的官方mongodb sdk。下面我将给你一段代码，代码中的db原来是用cloud.database()初始化的。
+现在，请你将所有的db全部使用cloud.mongo.db初始化（这是一个变量，不是一个函数），并且将所有的数据库操作改成符合官方mongodb sdk的形式。
+注意：
+
+1. db=cloud.mongo.db，这条语句获取的已经是一个初始化好的数据连接
+2. 关于id。之前的db使用的id的类型是string，而mongodb官方的id是ObjectId类型，如有必要，你需要增加解析/封装的转换逻辑
+3. 不要改动程序的其他代码部分
+下面是代码：
+```
