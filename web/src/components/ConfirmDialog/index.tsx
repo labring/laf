@@ -71,8 +71,10 @@ export const useConfirmDialog = () => {
     setOpen(false);
   }, []);
 
-  const Dialog = () =>
-    data ? <ConfirmDialog {...data} isOpen={isOpen} onClose={onClose} /> : <></>;
+  const Dialog = useCallback(
+    () => (data ? <ConfirmDialog {...data} isOpen={isOpen} onClose={onClose} /> : <></>),
+    [data, isOpen, onClose],
+  );
   return {
     Dialog,
     show,
