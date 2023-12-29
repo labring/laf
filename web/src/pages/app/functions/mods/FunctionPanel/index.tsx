@@ -348,11 +348,11 @@ export default function FunctionList() {
             <div
               className="flex items-center overflow-hidden text-ellipsis whitespace-nowrap font-medium"
               style={{
-                marginLeft: !isFuncList ? `${0.25 * level}rem` : 0,
+                marginLeft: !isFuncList ? `${0.35 * level}rem` : 0,
               }}
             >
               <FileTypeIcon type={fileType} width="12px" />
-              <span className="ml-2" style={{ fontSize: commonSettings.fontSize - 2 }}>
+              <span style={{ fontSize: commonSettings.fontSize - 2, marginLeft: "0.4rem" }}>
                 {itemDisplay}
               </span>
             </div>
