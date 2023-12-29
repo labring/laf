@@ -346,10 +346,10 @@ export default function FunctionList() {
             data-is-func-dir={!!item.children?.length}
           >
             <div
-              className={clsx(
-                "flex items-center overflow-hidden text-ellipsis whitespace-nowrap font-medium",
-                !isFuncList ? `ml-${2 * level}` : "",
-              )}
+              className="flex items-center overflow-hidden text-ellipsis whitespace-nowrap font-medium"
+              style={{
+                marginLeft: !isFuncList ? `${0.25 * level}rem` : 0,
+              }}
             >
               <FileTypeIcon type={fileType} width="12px" />
               <span className="ml-2" style={{ fontSize: commonSettings.fontSize - 2 }}>
