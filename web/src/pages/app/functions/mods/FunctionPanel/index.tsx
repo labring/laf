@@ -73,6 +73,8 @@ function pruneChildTree(node: TFunctionNode, data: TFunction[]): boolean {
 // get function dir not ended with /
 function getFunctionDir(funcName: string, isFuncDir: "true" | "false" = "false") {
   if (isFuncDir === "true" && funcName !== "" && !funcName.endsWith("/")) funcName += "/";
+  if (isFuncDir === "false" && funcName.endsWith("/"))
+    funcName = funcName.slice(0, funcName.length - 1);
 
   const funcNameSplit = funcName.split("/");
   funcNameSplit.pop();
@@ -407,13 +409,18 @@ export default function FunctionList() {
   const [dragOverFuncDir, setDragOverFuncDir] = useState<string | null>(null);
 
   const renameFunction = useCallback(
-    async (oldName: string, targetDir: string) => {
-      if (targetDir !== "" && !targetDir.endsWith("/")) targetDir += "/";
+    async (oldName: string, targetDirOrNewName: string, isNewName = false) => {
       const func = allFunctionList.find((v) => v.name === oldName);
       if (!func) return;
 
-      const funcName = oldName.split("/").pop();
-      const newName = targetDir + funcName;
+      let newName = targetDirOrNewName;
+      if (!isNewName) {
+        let targetDir = targetDirOrNewName;
+        if (targetDir !== "" && !targetDir.endsWith("/")) targetDir += "/";
+
+        const funcName = oldName.split("/").pop();
+        newName = targetDir + funcName;
+      }
 
       const res = await updateFunctionMutation.mutateAsync({
         name: func.name,
@@ -446,11 +453,16 @@ export default function FunctionList() {
       if (srcDir !== "" && !srcDir.endsWith("/")) srcDir += "/";
       if (targetDir !== "" && !targetDir.endsWith("/")) targetDir += "/";
 
+      let dir = getFunctionDir(srcDir, "false");
+      if (dir !== "") dir += "/";
       const funcs = allFunctionList.filter((func) => func.name.startsWith(srcDir));
-      await funcs.map(async (v) => {
-        const newFuncName = targetDir + v.name.slice(srcDir.length);
-        return await renameFunction(v.name, newFuncName);
-      });
+
+      return await Promise.allSettled(
+        funcs.map(async (v) => {
+          const newFuncName = targetDir + v.name.slice(dir.length);
+          return await renameFunction(v.name, newFuncName, true);
+        }),
+      );
     },
     [allFunctionList, renameFunction],
   );
@@ -473,7 +485,7 @@ export default function FunctionList() {
 
       const handleMoveToRootDir = () => {
         // from root dir to root dir
-        if (getFunctionDir(srcFunc, srcIsFuncDir) === "") return;
+        if (!srcFunc.includes("/")) return;
 
         confirmDialog.show({
           headerText: String(t("MoveFunction")),
