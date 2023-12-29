@@ -9,12 +9,14 @@ const UpgradePrompt = () => {
     updateServiceWorker,
   } = useRegisterSW({
     onRegistered(r) {
-      r &&
-        setInterval(() => {
-          if (!(!r.installing && navigator)) return;
-          if ("connection" in navigator && !navigator.onLine) return;
-          r.update();
-        }, 5 * 60 * 1000); // check new version every 5 mins
+      if (!r) return;
+      r.update();
+
+      setInterval(() => {
+        if (!(!r.installing && navigator)) return;
+        if ("connection" in navigator && !navigator.onLine) return;
+        r.update();
+      }, 5 * 60 * 1000); // check new version every 5 mins
     },
   });
 
@@ -37,7 +39,7 @@ const UpgradePrompt = () => {
               bg="primary.500"
               borderRadius={10}
               shadow="2xl"
-              className="cursor-pointer select-none hover:scale-105 focus:outline-none active:bg-primary-700"
+              className="animate-bounce cursor-pointer select-none hover:scale-105 focus:outline-none active:bg-primary-700"
               onClick={() => updateServiceWorker(true)}
             >
               <VStack>
