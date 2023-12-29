@@ -16,8 +16,10 @@ title: 快速开始
 
 ## 编写云函数
 
-首先需要创建一个云函数。
-
+首先需要创建一个云函数
+:::tip
+提醒一下：客户端目前 SDK 暂时只支持发送 POST 请求
+:::
 ![create-function](../../doc-images/create-function.png)
 
 然后在`get-list`云函数中写上以下代码，写完以后记得在右上角找到`发布`两个字，点一下发布。
