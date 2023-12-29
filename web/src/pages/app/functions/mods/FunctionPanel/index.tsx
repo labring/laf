@@ -326,7 +326,7 @@ export default function FunctionList() {
               dragOverFuncDir !== null &&
                 ((item.children?.length && (item.name + "/").startsWith(dragOverFuncDir)) ||
                   (!item.children?.length && item.name.startsWith(dragOverFuncDir))) &&
-                "bg-gray-50",
+                "bg-[#f9f9f9]",
             )}
             onClick={() => {
               if (!item.children?.length) {
@@ -471,8 +471,7 @@ export default function FunctionList() {
         target = target.parentElement;
       }
 
-      // root dir
-      if (!target) {
+      const handleMoveToRootDir = () => {
         // from root dir to root dir
         if (getFunctionDir(srcFunc, srcIsFuncDir) === "") return;
 
@@ -500,6 +499,11 @@ export default function FunctionList() {
           confirmButtonText: String(t("Confirm")),
         });
         return;
+      };
+
+      // root dir
+      if (!target) {
+        return handleMoveToRootDir();
       }
 
       const { func: targetFunc, isFuncDir } = target.dataset;
@@ -507,6 +511,10 @@ export default function FunctionList() {
       if (targetFunc === srcFunc && isFuncDir === srcIsFuncDir) return;
 
       let targetDir = getFunctionDir(targetFunc, isFuncDir);
+      if (targetDir === "") {
+        return handleMoveToRootDir();
+      }
+
       const srcFuncDir = getFunctionDir(srcFunc, srcIsFuncDir);
       // not to root
       // not to drag a dir to its inner dir
@@ -583,7 +591,7 @@ export default function FunctionList() {
           return;
         }
 
-        setDragOverFuncDir(targetDir + "/");
+        setDragOverFuncDir(!targetDir ? "" : targetDir + "/");
       } else {
         // from root to root
         if (!draggedFunc.func.includes("/")) {
