@@ -43,6 +43,7 @@ export interface FunctionContext {
   query?: any
   body?: any
   user?: any
+  params?: any
   requestId?: string
   method?: string
   socket?: WebSocket
