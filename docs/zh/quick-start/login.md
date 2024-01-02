@@ -154,3 +154,11 @@ async function register(username, password) {
 
 可以在你的 Vue/React/Angular/小程序 页面中调用这两个云函数完成具体的登录注册功能！
 :::
+
+## 下一步
+
+::: tip
+- [云函数](/zh/cloud-function/)
+- [云数据库](/zh/cloud-database/)
+- [云存储](/zh/cloud-storage/)
+:::
