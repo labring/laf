@@ -32,7 +32,7 @@ export default async function (ctx: FunctionContext) {
   console.log(ctx.query)
 
   // 获取客户端的 IP 地址
-  const ip = ctx.headers['x-real-ip']
+  const ip = ctx.headers['x-forwarded-for']
 
   return `你的 IP 地址是：${ip}`
 }

@@ -40,7 +40,7 @@ export default async function (ctx: FunctionContext) {
 
 ```typescript
 export default async function (ctx: FunctionContext) {
-  const ip = ctx.headers['x-real-ip']
+  const ip = ctx.headers['x-forwarded-for']
   return `你的 IP 是：${ip}`
 }
 
