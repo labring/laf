@@ -530,7 +530,8 @@
     "DatabaseSpecification": "Database specification",
     "DedicatedType": "Dedicated",
     "SharedType": "Shared",
-    "ApplicationSecification": "Application specification"
+    "ApplicationSecification": "Application specification",
+    "DatabaseCreateTip": "Once a database is created, its type and number of instances cannot be temporarily modified. The capacity can only increase, not decrease. If there are special needs, please contact our customer service."
   },
   "Storage Threshold": "Storage Threshold",
   "Template": {
