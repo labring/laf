@@ -1,6 +1,6 @@
 {
   "version": "1.0.0-beta.14",
-  "name": "laf-doc",
+  "name": "laf-docs",
   "private": true,
   "scripts": {
     "start": "npm run dev",

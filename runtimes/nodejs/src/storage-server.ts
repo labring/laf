@@ -1,84 +1,133 @@
-import express from 'express'
+import * as http from 'http'
 import Config from './config'
 import { logger } from './support/logger'
 import './support/cloud-sdk'
 import { WebsiteHostingChangeStream } from './support/database-change-stream/website-hosting-change-stream'
-import proxy from 'express-http-proxy'
-import axios from 'axios'
-import cors from 'cors'
+import axios, { AxiosError } from 'axios'
 
-const app = express()
-
-app.use(
-  cors({
-    origin: true,
-    methods: '*',
-    exposedHeaders: '*',
-    credentials: true,
-  }),
-)
-
-const tryPath = (bucket: string, path: string) => {
-  const testPaths = path.endsWith('/')
-    ? [path + 'index.html', '/index.html']
-    : [path, path + '/index.html', '/index.html']
-  return testPaths.map((v) => `/${bucket}${v}`)
+const tryPath = (bucket: string, path: string): string[] => {
+  return path.endsWith('/')
+    ? [`/${bucket}${path}index.html`, `/${bucket}/index.html`]
+    : [
+        `/${bucket}${path}`,
+        `/${bucket}${path}/index.html`,
+        `/${bucket}/index.html`,
+      ]
 }
 
-app.use(
-  proxy(Config.OSS_INTERNAL_ENDPOINT, {
-    preserveHostHdr: true,
-    parseReqBody: false,
-    proxyReqOptDecorator: function (proxyReqOpts, srcReq) {
-      // patch for
-      if ('content-length' in srcReq.headers) {
-        proxyReqOpts.headers['content-length'] =
-          srcReq.headers['content-length']
-      }
-      if ('connection' in srcReq.headers) {
-        proxyReqOpts.headers['connection'] = srcReq.headers['connection']
-      }
-      return proxyReqOpts
-    },
-    proxyReqPathResolver: async function (req) {
-      // check if is website hosting
-      const websiteHosting = WebsiteHostingChangeStream.websiteHosting.find(
-        (item) => req.hostname === item.domain,
-      )
-      if (!websiteHosting) {
-        return req.url
-      }
+const websiteHostingPathHandler = async (
+  host: string,
+  url: string,
+): Promise<string> => {
+  const websiteHosting = WebsiteHostingChangeStream.websiteHosting.find(
+    (item) => host === item.domain,
+  )
+  if (!websiteHosting) {
+    return url
+  }
 
-      // req.url doesn't have hostname
-      const minioUrl = new URL(req.url, Config.OSS_INTERNAL_ENDPOINT)
-      const paths = tryPath(websiteHosting.bucketName, req.path)
-      const getUrl = () => minioUrl.pathname + minioUrl.search
+  const minioUrl = new URL(url, Config.OSS_INTERNAL_ENDPOINT)
+  const paths = tryPath(websiteHosting.bucketName, url)
 
-      for (const [idx, path] of paths.entries()) {
-        minioUrl.pathname = path
+  for (const path of paths) {
+    minioUrl.pathname = path
+    try {
+      await axios.head(minioUrl.toString())
+      return minioUrl.pathname + minioUrl.search
+    } catch (err) {
+      if ((err as AxiosError).response?.status !== 404) {
+        break
+      }
+    }
+  }
+  return url // If all paths are unavailable, the original URL is returned.
+}
 
-        if (idx === paths.length - 1) {
-          return getUrl()
+const storageServer = http.createServer(
+  async (req: http.IncomingMessage, res: http.ServerResponse) => {
+    const headers = {
+      'Access-Control-Allow-Origin': req.headers.origin || '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
+      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Allow-Credentials': 'true',
+    }
+
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204, headers)
+      res.end()
+      return
+    }
+    try {
+      const proxyReqUrl = new URL(Config.OSS_INTERNAL_ENDPOINT)
+      const path = await websiteHostingPathHandler(req.headers.host, req.url)
+
+      const proxyReq = http.request({
+        host: proxyReqUrl.hostname,
+        port: proxyReqUrl.port,
+        headers: req.headers,
+        method: req.method,
+        path: path,
+      })
+
+      proxyReq.on('response', (proxyRes: http.IncomingMessage) => {
+        res.writeHead(proxyRes.statusCode || 500, proxyRes.headers)
+        proxyRes.pipe(res)
+      })
+
+      proxyReq.on('error', (err) => {
+        req.emit('close')
+        proxyReq.emit('close')
+        logger.error('Proxy request error:', err)
+        if (!res.headersSent) {
+          res.writeHead(500)
+          res.end('Internal Server Error')
         }
+      })
 
-        try {
-          await axios.head(minioUrl.toString())
-          return getUrl()
-        } catch (err) {
-          if (err.response.status === 404) {
-            continue
-          }
-          return getUrl()
+      proxyReq.on('close', () => {
+        proxyReq.removeAllListeners()
+        proxyReq.destroy()
+      })
+
+      req.on('aborted', () => {
+        proxyReq.emit('close')
+        req.emit('close')
+        if (!res.headersSent) {
+          res.writeHead(504)
         }
+        res.end()
+      })
+
+      req.on('close', () => {
+        req.removeAllListeners()
+        req.destroy()
+      })
+
+      req.on('error', (err) => {
+        req.emit('close')
+        proxyReq.emit('close')
+        logger.error('Source request error:', err)
+        if (!res.headersSent) {
+          res.writeHead(500)
+          res.end('Internal Server Error')
+        }
+      })
+
+      req.pipe(proxyReq)
+    } catch (err) {
+      logger.error('Error handling request:', err)
+      if (!res.headersSent) {
+        res.writeHead(500)
+        res.end('Internal Server Error')
       }
-    },
-  }),
+    }
+  },
 )
 
-const storageServer = app.listen(Config.STORAGE_PORT, () =>
+storageServer.listen(Config.STORAGE_PORT, () => {
   logger.info(
-    `storage server ${process.pid} listened on ${Config.STORAGE_PORT}`,
-  ),
-)
+    `Storage server ${process.pid} listened on ${Config.STORAGE_PORT}`,
+  )
+})
 
 export default storageServer

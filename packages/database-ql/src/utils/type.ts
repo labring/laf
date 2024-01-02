@@ -46,7 +46,7 @@ export const isPlainObject = (obj: any): obj is object => {
 }
 
 export const isObjectId = (x: any): x is ObjectId => {
-  return x?._bsontype === 'ObjectID'
+  return x?._bsontype === 'ObjectID' || x?._bsontype === 'ObjectId'
 }
 
 export const isBinary = (x: any): x is Binary => {

@@ -62,8 +62,11 @@ const getRuntimeMetrics: RequestHandler = async (req, res) => {
   RUNTIME_MEMORY.reset()
   RUNTIME_MEMORY_LIMIT.reset()
 
-  const runtimeMetrics =
-    await ClusterService.getRuntimePodMetricsForAllNamespaces()
+  const runtimeMetrics = await ClusterService.getPodMetrics(
+    ClusterService.NAMESPACE,
+    ClusterService.LABEL_KEY_APP_ID,
+    'RUNTIME',
+  )
 
   for (const metric of runtimeMetrics) {
     updateMetrics(metric)
