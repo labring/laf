@@ -418,6 +418,18 @@ export class InitializerService {
         value: 'https://hnpsxzqqtavv.cloud.sealos.cn/status/laf',
         desc: 'laf status url',
       },
+      {
+        public: true,
+        key: SettingKey.LafAboutUsUrl,
+        value: 'https://sealos.run/company/',
+        desc: 'laf about us url',
+      },
+      {
+        public: true,
+        key: SettingKey.LafDocUrl,
+        value: 'https://doc.laf.run/zh/',
+        desc: 'laf doc site url',
+      },
     ])
 
     this.logger.verbose('Created default settings')
