@@ -30,7 +30,7 @@ spec:
         requests:
           cpu: <%- requestCPU %>m
           memory: <%- requestMemory %>Mi
-      serviceAccountName: <%- name %>
+      serviceAccountName: laf-mongodb-<%- name %>
       volumeClaimTemplates:
         - name: data
           spec:
