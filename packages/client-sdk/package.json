@@ -28,7 +28,7 @@
   "homepage": "https://github.com/labring/laf#readme",
   "dependencies": {
     "axios": "^0.21.1",
-    "database-ql": "^1.0.0-beta.14"
+    "database-ql": "1.0.0-beta.14"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",

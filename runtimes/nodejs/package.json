@@ -29,13 +29,13 @@
     "@aws-sdk/client-sts": "^3.468.0",
     "@aws-sdk/s3-request-presigner": "^3.468.0",
     "@kubernetes/client-node": "^0.18.0",
-    "@lafjs/cloud": "^1.0.0-beta.14",
+    "@lafjs/cloud": "^1.0.0-beta.14-patch0",
     "@types/pako": "^2.0.2",
     "axios": "^1.4.0",
     "chalk": "^4.1.2",
     "chatgpt": "^5.2.5",
     "cors": "^2.8.5",
-    "database-proxy": "^1.0.0-beta.14",
+    "database-proxy": "^1.0.0-beta.14-patch0",
     "dayjs": "^1.11.7",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.8",
@@ -52,7 +52,8 @@
     "nodemailer": "^6.6.3",
     "pako": "^2.1.0",
     "validator": "^13.7.0",
-    "ws": "^8.11.0"
+    "ws": "^8.11.0",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { CloseIcon } from "@chakra-ui/icons";
-import { HStack, Input, useColorMode } from "@chakra-ui/react";
+import { HStack, Input, useColorMode, Tooltip } from "@chakra-ui/react";
 import clsx from "clsx";
 import SimpleBar from "simplebar-react";
 
@@ -75,7 +75,10 @@ function HeadPanel() {
                         functionItem={item}
                         color={selected ? "#00A9A6" : ""}
                       />
-                      <p className="truncate">{item.name}</p>
+                      <Tooltip label={item.name} placement="auto">
+                        <p className="truncate">{item.name.split('/').pop()}</p>
+                      </Tooltip>
+
                     </div>
                     {functionCache.getCache(item?._id, (item as any)?.source?.code) !==
                     (item as any)?.source?.code ? (
