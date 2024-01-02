@@ -12,7 +12,7 @@ import "./useWorker";
 
 import { createUrl, createWebSocketAndStartClient, performInit } from "./LanguageClient";
 
-import { TFunctionNode } from "@/apis/typing";
+import { TFunction } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useFunctionStore from "@/pages/app/functions/store";
@@ -154,7 +154,7 @@ function FunctionEditor(props: {
       }
     });
 
-    functionList.forEach((item: TFunctionNode) => {
+    functionList.forEach((item: TFunction) => {
       const uri = monaco.Uri.file(`${RUNTIMES_PATH}/${item.name}.ts`);
 
       if (!allFunctionList.includes(item)) {
