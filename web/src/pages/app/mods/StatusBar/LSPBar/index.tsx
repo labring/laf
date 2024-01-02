@@ -13,7 +13,13 @@ export default function LSPBar() {
   const { LSPStatus, setLSPStatus, allFunctionList } = useFunctionStore();
   const { currentApp, isLSPEffective } = useGlobalStore();
   const baseUrl = currentApp.host;
-  const url = useMemo(() => createUrl(baseUrl, "/_/lsp"), [baseUrl]);
+  const url = useMemo(() => {
+    try {
+      return createUrl(baseUrl, "/_/lsp");
+    } catch {
+      return "";
+    }
+  }, [baseUrl]);
   const { commonSettings } = useCustomSettingStore();
   const [lspWebSocket, setLspWebSocket] = useState<WebSocket>();
 
