@@ -69,7 +69,7 @@ export const Routes = {
 };
 
 export const site_url = {
-  laf_doc: "https://doc.laf.run/guide/",
+  laf_doc: "https://doc.laf.run/zh/",
   laf_github: "https://github.com/labring/laf",
   laf_index_video: "https://itceb8-video.oss.laf.run/laf-website.mp4",
   laf_about_us: "https://sealos.run/zh-Hans/company/",
