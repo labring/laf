@@ -321,6 +321,7 @@ const CreateAppModal = (props: {
                     <BundleControl
                       bundle={bundle}
                       sortedBundles={sortedBundles}
+                      type={type}
                       onBundleItemChange={(k: string, v?: number) => {
                         setBundle((prev) => {
                           const v1 = _.cloneDeep(_.set(prev, k, v));

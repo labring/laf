@@ -186,7 +186,7 @@ export default function DatabaseBundleControl(props: {
             })}
             {buildSlider({
               type: "replicas",
-              disable: true,
+              disable: disabledChangeType,
               value: _.get(bundle, "dedicatedDatabase.replicas") as unknown as number,
               specs: find(resourceOptions, { type: "dedicatedDatabaseReplicas" })?.specs || [],
               onChange: (value) => {

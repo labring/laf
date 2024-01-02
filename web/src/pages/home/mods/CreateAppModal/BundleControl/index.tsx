@@ -21,11 +21,12 @@ import { TBundle } from "@/apis/typing";
 
 export default function BundleControl(props: {
   bundle: TypeBundle;
+  type: "create" | "change";
   sortedBundles: TBundle[];
   onBundleItemChange: (k: string, v?: number) => any;
   resourceOptions: any;
 }) {
-  const { bundle, onBundleItemChange, resourceOptions, sortedBundles } = props;
+  const { bundle, onBundleItemChange, resourceOptions, sortedBundles, type } = props;
   const { t } = useTranslation();
   const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
 
@@ -125,14 +126,16 @@ export default function BundleControl(props: {
                     "dedicatedDatabase.memory",
                     item.spec.dedicatedDatabaseMemory.value,
                   );
-                  onBundleItemChange(
-                    "dedicatedDatabase.capacity",
-                    item.spec.dedicatedDatabaseCapacity.value,
-                  );
-                  onBundleItemChange(
-                    "dedicatedDatabase.replicas",
-                    item.spec.dedicatedDatabaseReplicas.value,
-                  );
+                  if (type !== "change") {
+                    onBundleItemChange(
+                      "dedicatedDatabase.capacity",
+                      item.spec.dedicatedDatabaseCapacity.value,
+                    );
+                    onBundleItemChange(
+                      "dedicatedDatabase.replicas",
+                      item.spec.dedicatedDatabaseReplicas.value,
+                    );
+                  }
                 }}
                 bundle={item}
                 isActive={activeBundle?._id === item._id}
