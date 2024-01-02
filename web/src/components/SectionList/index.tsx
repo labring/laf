@@ -4,37 +4,41 @@ import SimpleBar from "simplebar-react";
 
 import styles from "./index.module.scss";
 
-function SectionList(props: {
-  children: React.ReactNode;
-  style?: React.CSSProperties;
-  className?: string;
-}) {
+function SectionList(
+  props: { children: React.ReactNode; className?: string } & Omit<
+    React.HTMLAttributes<HTMLDivElement>,
+    "children"
+  >,
+) {
+  const { className, children, ...restProps } = props;
+
   return (
     <SimpleBar
-      className={styles.sectionList + " flex flex-col overflow-y-auto " + props.className}
-      style={props.style || {}}
+      className={clsx(styles.sectionList, "flex flex-col overflow-y-auto", className || "")}
+      {...restProps}
     >
-      {props.children}
+      {children}
     </SimpleBar>
   );
 }
 
-function Item(props: {
-  children: React.ReactNode;
-  isActive: boolean;
-  className?: string;
-  key: string;
-  size?: "small" | "default";
-  onClick?: () => void;
-}) {
-  const { children, isActive, onClick, className, size = "default" } = props;
+function Item(
+  props: {
+    children: React.ReactNode;
+    isActive: boolean;
+    className?: string;
+    size?: "small" | "default";
+  } & Omit<React.HTMLAttributes<HTMLLIElement>, "children">,
+) {
+  const { children, isActive, className, size = "default", ...restProps } = props;
+
   return (
     <li
       className={clsx(className, {
         [styles.active]: isActive,
         [styles.small]: size === "small",
       })}
-      onClick={onClick && onClick}
+      {...restProps}
     >
       {children}
     </li>
