@@ -119,7 +119,7 @@
     "SystemDependence": "Built-In",
     "Value": "Value",
     "isSupport": "Whether to support",
-    "FunctionNameRule": "Function names must consist of letters, numbers, periods (.), and hyphens (-), matching the regex: /^[a-zA-Z0-9.-]{1,128}$/.",
+    "FunctionNameRule": "Function names must consist of letters, numbers, periods (.), and hyphens (-), matching the regex: /^[a-zA-Z0-9_.\\-](?:[a-zA-Z0-9_.\\-/]{0,254}[a-zA-Z0-9_.\\-])?$/.",
     "EmptyDebugTip": "No results yet",
     "EmptyFunctionTip": "You have not created the function",
     "UploadButton": "upload",
@@ -135,7 +135,10 @@
     "HistoryTips": "No historical versions available",
     "NoDesc": "No Description",
     "CurrentVersion": "Current Version",
-    "HistoryVersion": "History version"
+    "HistoryVersion": "History version",
+    "MoveFunctionTip": "Are you sure to move {{srcFunc}} to {{targetDir}} directory?",
+    "MoveFunctionToRootTip": "Are you sure to move {{srcFunc}} to the root directory?",
+    "MovingFunction": "Moving functions..."
   },
   "HomePanel": {
     "APP": "Android or iOS app",
@@ -302,7 +305,10 @@
     "SuccessfullyHosted": "Successfully hosted",
     "SuccessfullyHostedTips": "HTTP is active, HTTPS activation may take some time. To check the hosting status, use HTTP for now.",
     "BucketTips": "Newly created buckets or buckets after app restart need to wait for 15 ~ 30 s to take effect",
-    "DomainNotResolved": "Try using ping or nslookup to check if domain name resolution is effective"
+    "DomainNotResolved": "Try using ping or nslookup to check if domain name resolution is effective",
+    "DeleteFiles": "Are you sure you want to delete {{num}} directories or files?",
+    "DeletingFiles": "Deleting {{num}} directories or files...",
+    "DeleteFilesResult": "Delete directories or files: {{successNum}} success, {{failedNum}} failed."
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -721,5 +727,11 @@
     "FunctionListSettings": "Function list settings"
   },
   "Deprecated": "Deprecated",
-  "All": "All"
+  "All": "All",
+  "MoveFunction": "Move function",
+  "UpgradeVersionTip": {
+    "Title": "Laf is ready to update!",
+    "Description": "Click to update"
+  }
 }
+

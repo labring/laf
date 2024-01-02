@@ -24,7 +24,7 @@ export default defineConfig(({ command, mode }) => {
       react(),
       pluginRewriteAll(),
       VitePWA({
-        registerType: "autoUpdate",
+        registerType: "prompt",
         includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.png"],
         devOptions: {
           enabled: false,
