@@ -7,12 +7,9 @@ import {
   DomainIcon,
   ENVIcon,
   MonitorIcon,
-  OldLogsIcon,
   TextIcon,
 } from "@/components/CommonIcon";
 import { APP_SETTING_KEY } from "@/constants";
-
-import LogsPage from "../../logs";
 
 import AppEnvList from "./AppEnvList";
 import AppInfoList from "./AppInfoList";
@@ -79,13 +76,6 @@ export default function SysSetting(props: {
               name: t("SettingPanel.Domain"),
               component: <CustomDomain />,
               icon: <DomainIcon boxSize={4} />,
-            },
-            {
-              key: APP_SETTING_KEY.OLD_LOGS,
-              name: t("SettingPanel.OldLogs"),
-              component: <LogsPage />,
-              icon: <OldLogsIcon />,
-              status: t("Deprecated"),
             },
           ],
         },

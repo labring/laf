@@ -6,18 +6,18 @@ on:
     branches: [main]
     types: [opened, synchronize, reopened]
     paths:
-      - 'web/**'
-      - '.github/workflows/dockerize-web.yml'
-      - '!**/*.md'
-      - '!web/package-lock.json'
+      - "web/**"
+      - ".github/workflows/dockerize-web.yml"
+      - "!**/*.md"
+      - "!web/package-lock.json"
   push:
     branches:
       - main
     paths:
-      - 'web/**'
-      - '.github/workflows/dockerize-web.yml'
-      - '!**/*.md'
-      - '!web/package-lock.json'
+      - "web/**"
+      - ".github/workflows/dockerize-web.yml"
+      - "!**/*.md"
+      - "!web/package-lock.json"
 
 # permissions:
 #   pull-requests: write
@@ -72,7 +72,7 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           sourcemaps: dist/assets
-          url_prefix: '~/assets/'
+          url_prefix: "~/assets/"
           version: ${{ format('laf@{0}', github.sha) }}
           working_directory: web
           ignore_missing: true
@@ -114,6 +114,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
+        id: docker-build
         uses: docker/build-push-action@v3
         with:
           context: ./web
@@ -127,12 +128,13 @@ jobs:
         if: github.event_name == 'pull_request_target'
         uses: mshick/add-pr-comment@v2
         with:
-          message-id: 'dockerize-web'
+          message-id: "dockerize-web"
           message: |
             **:boom: laf web image built successfully for pr ${{ github.event.pull_request.number }}**
             ```
             ${{ steps.meta.outputs.tags }}
             ```
+            digest: `${{ steps.docker-build.outputs.digest }}`
 
   trigger-workflow-build-cluster-image:
     needs: [dockerize-web]

@@ -33,6 +33,9 @@
 
 `laf` is an open-source cloud development platform that offers ready-to-use application resources such as cloud functions, cloud databases, and cloud storage. It allows developers to focus on business development without the need to tinker with servers, enabling them to quickly unleash their creativity.
 
+![dev](https://sif268-laf-image.oss.laf.dev/dev.png)
+
+
 ## 🎉 Features of `laf`
 
 - Cloud Functions
@@ -42,7 +45,6 @@
 - Web-hosting
 - WebSocket support
 
-![dev](https://sif268-laf-image.oss.laf.dev/dev.png)
 
 ## 👨‍💻 Who uses `laf`?
 

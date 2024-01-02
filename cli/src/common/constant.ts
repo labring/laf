@@ -26,6 +26,7 @@ export const USER_SCHEMA_NAME = 'user.yaml'
 export const FUNCTION_SCHEMA_DIRECTORY = 'functions'
 export const FUNCTION_SCHEMA_SUFFIX = '.yaml'
 export const DEPLOY_SCHEMA_NAME = 'deploy.yaml'
+export const ENVIRONMENT_SCHEMA_NAME = '.env'
 
 export const IGNORE_FILE_NAME = '.gitignore'
 export const POLICIES_DIRECTORY_NAME = 'policies'

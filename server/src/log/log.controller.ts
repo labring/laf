@@ -19,7 +19,7 @@ import { Log } from '@kubernetes/client-node'
 import { GetApplicationNamespace } from 'src/utils/getter'
 import { RegionService } from 'src/region/region.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
-import { Observable, async } from 'rxjs'
+import { Observable } from 'rxjs'
 import { PodService } from 'src/application/pod.service'
 
 @ApiBearerAuth('Authorization')
@@ -107,10 +107,24 @@ export class LogController {
     if (!containerName) {
       containerName = appid
     }
-    let podNameList: string[] = undefined
-    if (podName === 'all') {
-      podNameList = (await this.podService.getPodNameListByAppid(appid))
-        .podNameList
+
+    let podNameList: string[] = (
+      await this.podService.getPodNameListByAppid(appid)
+    ).podNameList
+
+    if (!podNameList.includes(podName) && podName !== 'all') {
+      return new Observable<MessageEvent>((subscriber) => {
+        subscriber.next(
+          JSON.stringify({
+            error: 'podName not exist',
+          }) as unknown as MessageEvent,
+        )
+        subscriber.complete()
+      })
+    }
+
+    if (podName !== 'all') {
+      podNameList = undefined
     }
 
     const region = await this.regionService.findByAppId(appid)

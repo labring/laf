@@ -25,7 +25,7 @@ function DatabasePage() {
   return (
     <Content>
       <Row className="flex-grow" ref={containerRef}>
-        <Col {...settingStore.layoutInfo.collectionPage.SideBar}>
+        <Col style={{ width: settingStore.layoutInfo.collectionPage.SideBar.style.width }}>
           <CollectionListPanel />
           <Resize
             type="y"

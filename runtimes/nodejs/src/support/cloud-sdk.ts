@@ -29,22 +29,23 @@ export function createCloudSdk() {
     getToken: getToken,
     parseToken: parseToken,
     mongo: {
-      client: DatabaseAgent.accessor.conn,
-      db: DatabaseAgent.accessor.db,
+      client: DatabaseAgent.client as any,
+      db: DatabaseAgent.client.db as any,
     },
     sockets: WebSocketAgent.clients,
     appid: Config.APPID,
     get env() {
       return process.env
     },
+    storage: null,
   }
 
   /**
    * Ensure the database is connected, update its Mongo object, otherwise it is null
    */
-  DatabaseAgent.accessor.ready.then(() => {
-    cloud.mongo.client = DatabaseAgent.accessor.conn
-    cloud.mongo.db = DatabaseAgent.accessor.db
+  DatabaseAgent.ready.then(() => {
+    cloud.mongo.client = DatabaseAgent.client as any
+    cloud.mongo.db = DatabaseAgent.accessor.db as any
   })
   return cloud
 }

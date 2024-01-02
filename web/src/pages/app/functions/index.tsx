@@ -25,7 +25,7 @@ function FunctionPage() {
   return (
     <Content>
       <Row ref={containerRef}>
-        <Col {...functionPageConfig.SideBar}>
+        <Col style={{ width: functionPageConfig.SideBar.style.width }}>
           <FunctionPanel />
           <Resize
             type="y"
@@ -71,7 +71,7 @@ function FunctionPage() {
               reverse
               containerRef={containerRef}
             />
-            <Col {...functionPageConfig.RightPanel}>
+            <Col style={{ width: functionPageConfig.RightPanel.style.width }}>
               <DebugPanel containerRef={containerRef} />
             </Col>
           </Row>

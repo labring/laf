@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import Config from './config'
 import { logger } from './logger'
 import getRuntimeMetrics from './handler/get-runtime-metrics'
+import getDatabaseMetrics from './handler/get-db-metrics'
 
 require('express-async-errors')
 const app = express()
@@ -14,12 +15,14 @@ process.on('uncaughtException', (err: Error) => {
 })
 
 app.get('/runtime/metrics/:token', getRuntimeMetrics)
+app.get('/database/metrics/:token', getDatabaseMetrics)
 app.get('/healthz', (_, res: Response) => res.send('ok'))
 
 // express error capture middleware
-app.use((err: Error, _req: Request, res: Response) => {
+app.use((err: Error, _req: Request, res: Response, next: any) => {
   logger.error('Caught error:', err)
   res.status(500).send('Internal Server Error')
+  next()
 })
 
 const server = app.listen(Config.PORT, () =>

@@ -22,14 +22,14 @@ async function loadPackageTypings(packageName: string) {
 }
 
 /**
- * 解析 ts 文件中的 import 依赖
+ * Typescript import parser
  */
 export class ImportParser {
   REGEX_DETECT_IMPORT =
     /(?:(?:(?:import)|(?:export))(?:.)*?from\s+["']([^"']+)["'])|(?:\/+\s+<reference\s+path=["']([^"']+)["']\s+\/>)/g;
 
   /**
-   * 解析 ts 文件中的 import 依赖
+   * Parse ts source code and return dependencies
    * @param {string} source source code
    * @returns
    */
@@ -53,18 +53,18 @@ export class ImportParser {
 }
 
 /**
- * Typescript 自动对引入依赖进行类型提示加载
+ * Typescript auto import typings
  */
 export class AutoImportTypings {
   _parser = new ImportParser();
 
   /**
-   * 已加载过的依赖
+   * Loaded packages
    */
   _loaded: string[] = [];
 
   /**
-   * 解析 ts 代码中的 import 包， 并加载其类型文件
+   * Parse ts source code and load dependencies
    * @param {string} source ts 代码
    * @returns
    */
@@ -79,7 +79,7 @@ export class AutoImportTypings {
   }
 
   /**
-   * 加载初始默认的 类型文件
+   * Load default typings
    */
   loadDefaults() {
     this.addExtraLib({ path: "globals.d.ts", content: globalDeclare });
@@ -108,10 +108,16 @@ export class AutoImportTypings {
     if (!this.isLoaded("ws")) {
       this.loadDeclaration("ws");
     }
+    if (!this.isLoaded("@aws-sdk/client-s3")) {
+      this.loadDeclaration("@aws-sdk/client-s3");
+    }
+    if (!this.isLoaded("@aws-sdk/s3-request-presigner")) {
+      this.loadDeclaration("@aws-sdk/s3-request-presigner");
+    }
   }
 
   /**
-   * 包是否已加载
+   * Check if package is loaded
    * @param {string} packageName
    * @returns
    */
@@ -120,7 +126,7 @@ export class AutoImportTypings {
   }
 
   /**
-   * 从远程加载包的类型文件
+   * Load package declaration files
    * @param {string} packageName
    * @returns
    */
@@ -150,7 +156,7 @@ export class AutoImportTypings {
   }
 
   /**
-   * 添加类型文件到编辑器
+   * Add extra lib to monaco editor
    * @param {path: string, content: string} param0
    * @returns
    */

@@ -24,7 +24,7 @@
     "RulesContent": "规则内容",
     "RulesNum": "规则数",
     "Search": "请输入 ID 进行搜索",
-    "Query": "请输入 ID 或 Mongo where 语句，按回车进行查询。如：{_id: {$eq: 'document id'}}",
+    "Query": "请输入 MongoDb 查询语句，按回车进行查询。如：{ _id: ObjectId('') }",
     "SelectCollection": "选择集合",
     "SelectFunction": "请选择云函数",
     "CollectionNameRule": "集合名称只能由字母开头,包含字母, _ 或者 - 的3至32个字符组成",
@@ -296,7 +296,12 @@
     "CustomApplicationDomain": "自定义应用域名",
     "BucketNameisRequired": "请输入 Bucket 名称",
     "Fail": "上传失败",
-    "UploadFailTip": "{{number}} 个文件上传失败"
+    "UploadFailTip": "{{number}} 个文件上传失败",
+    "StartAppTips": "请先启动应用",
+    "SuccessfullyHosted": "托管成功",
+    "SuccessfullyHostedTips": "HTTP已生效，HTTPS需要一些时间生效。如需查看托管状态，请暂时使用HTTP访问。",
+    "BucketTips": "新创建的 bucket，或应用重启后的 bucket ，需要等待 15 ~ 30s 才能生效",
+    "DomainNotResolved": "尝试使用 ping 或 nslookup 来查看域名解析是否生效"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
@@ -317,7 +322,8 @@
     "EmptyTriggerTip": "您还没有创建触发器,",
     "Every8AM": "每天上午8点",
     "EveryHour": "每小时",
-    "EveryFiveMinutes": "每五分钟"
+    "EveryFiveMinutes": "每五分钟",
+    "createFail": "触发器数量已达上限，请升级应用配置"
   },
   "StatusBar": {
     "CurrentApplication": "当前应用"
@@ -398,7 +404,8 @@
     "LoginOrRegister": "登录 / 注册",
     "BindGitHub": "绑定 GitHub",
     "BindSuccess": "绑定成功",
-    "GitHubLogin": "GitHub 登录"
+    "GitHubLogin": "GitHub 登录",
+    "PleaseBindUser": "请绑定对应用户"
   },
   "Time": "时间",
   "CreateTime": "创建时间",

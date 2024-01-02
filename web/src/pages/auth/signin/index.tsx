@@ -11,6 +11,7 @@ import LoginByPasswordPanel from "./mods/LoginByPasswordPanel";
 import LoginByPhonePanel from "./mods/LoginByPhonePanel";
 
 import useAuthStore from "@/pages/auth/store";
+import useGlobalStore from "@/pages/globalStore";
 
 type providersTypes = "user-password" | "phone" | "github" | "wechat";
 
@@ -22,10 +23,17 @@ export default function SignIn() {
   const [currentProvider, setCurrentProvider] = useState<providersTypes>();
 
   const isBindGithub = !!sessionStorage.getItem("githubToken");
+  const { showInfo } = useGlobalStore();
 
   useEffect(() => {
     setCurrentProvider(defaultProvider.name);
   }, [defaultProvider]);
+
+  useEffect(() => {
+    if (isBindGithub) {
+      showInfo(t("AuthPanel.PleaseBindUser"), 5000, true);
+    }
+  }, [isBindGithub, showInfo]);
 
   return (
     <div

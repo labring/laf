@@ -1,6 +1,6 @@
 {
   "name": "laf-client-sdk",
-  "version": "1.0.0-beta.12",
+  "version": "1.0.0-beta.14",
   "description": "",
   "main": "dist/commonjs/index.js",
   "module": "dist/esm/index.js",
@@ -28,7 +28,7 @@
   "homepage": "https://github.com/labring/laf#readme",
   "dependencies": {
     "axios": "^0.21.1",
-    "database-ql": "^1.0.0-beta.12"
+    "database-ql": "1.0.0-beta.14"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",

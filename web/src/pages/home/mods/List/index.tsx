@@ -111,13 +111,13 @@ function List(props: { appList: TApplicationItem[] }) {
                   bg={bg}
                   className="group mb-3 flex h-[68px] items-center rounded-[10px] px-6"
                 >
-                  <div className="w-3/12 ">
-                    <div className="flex">
-                      <span className="mr-2 text-lg font-medium">{item?.name}</span>
+                  <div className="w-3/12">
+                    <div className="flex w-44">
+                      <div className="truncate text-lg font-medium">{item?.name}</div>
                       {item?.createdBy !== userInfo?._id && (
                         <span
                           className={clsx(
-                            "-ml-2 flex scale-[.83] items-center rounded-full border  border-dashed border-[#DEE0E2] px-2",
+                            "flex scale-[.83] items-center whitespace-nowrap rounded-full border border-dashed border-[#DEE0E2] px-2",
                             darkMode ? "" : "text-grayModern-600",
                           )}
                         >

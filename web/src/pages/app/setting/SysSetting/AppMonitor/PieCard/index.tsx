@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 
-import { uniformCapacity } from "@/utils/format";
+import { formatSize, uniformCapacity } from "@/utils/format";
 
 export default function PieCard(props: {
   data: any[];
@@ -38,7 +38,7 @@ export default function PieCard(props: {
               ></span>
               <p>{entry.value}</p>
             </span>
-            <p className="ml-3 mt-1">{(pieData[index]?.value).toFixed(3)} MB</p>
+            <p className="ml-3 mt-1">{formatSize(pieData[index]?.value * 1024 * 1024)}</p>
           </div>
         ))}
       </ul>

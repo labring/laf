@@ -5,6 +5,7 @@ import * as fs from 'node:fs'
 import { pull as depPull } from '../dependency'
 import { pullAll as policyPull } from '../policy'
 import { pullAll as funcPull } from '../function'
+import { pull as envPull } from '../environment'
 import { AppSchema } from '../../schema/app'
 
 import {
@@ -118,6 +119,8 @@ export async function init(appid: string, options: { sync: boolean; basicMode: b
     policyPull()
     // pull functions
     funcPull({ force: true })
+    // pull env
+    envPull()
   }
   console.log(`${getEmoji('🚀')} application ${app.name} init success`)
 }

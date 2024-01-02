@@ -1,6 +1,6 @@
 {
   "name": "database-ql",
-  "version": "1.0.0-beta.12",
+  "version": "1.0.0-beta.14-patch0",
   "description": "Database interface for laf",
   "main": "dist/commonjs/index.js",
   "module": "dist/esm/index.js",
@@ -28,10 +28,7 @@
     "typescript": "^3.6.2"
   },
   "dependencies": {
-    "bson": "^4.5.3",
-    "lodash.clonedeep": "4.5.0",
-    "lodash.set": "4.3.2",
-    "lodash.unset": "4.5.2"
+    "bson": "^5.5.1"
   },
   "lint-staged": {
     "*.{ts,js}": "eslint --fix"

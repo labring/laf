@@ -22,7 +22,7 @@ on:
 #   pull-requests: write
 #   packages: write
 #   contents: read
-  
+
 concurrency:
   group: dockerize-runtime-exporter-${{ github.ref }}
   cancel-in-progress: true
@@ -72,6 +72,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
+        id: docker-build
         uses: docker/build-push-action@v3
         with:
           context: ./services/runtime-exporter
@@ -85,12 +86,13 @@ jobs:
         if: github.event_name == 'pull_request_target'
         uses: mshick/add-pr-comment@v2
         with:
-          message-id: 'dockerize-runtime-exporter'
+          message-id: "dockerize-runtime-exporter"
           message: |
             **:boom: laf runtime exporter image built successfully for pr ${{ github.event.pull_request.number }}**
             ```
             ${{ steps.meta.outputs.tags }}
             ```
+            digest: `${{ steps.docker-build.outputs.digest }}`
 
   trigger-workflow-build-cluster-image:
     needs: [dockerize-runtime-exporter]

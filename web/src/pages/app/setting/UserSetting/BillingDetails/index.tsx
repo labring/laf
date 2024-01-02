@@ -95,7 +95,11 @@ export default function BillingDetails() {
               <Tr className={clsx("h-8", !darkMode && "bg-[#F4F6F8]")}>
                 <Th className="!pr-0">
                   <span className="flex items-center">
-                    <span className="mr-1 font-normal !text-grayModern-700">AppId</span>
+                    <span
+                      className={clsx("mr-1 font-normal", darkMode ? "" : "text-grayModern-700")}
+                    >
+                      AppId
+                    </span>
                     <Popover>
                       <PopoverTrigger>
                         <FilterIcon className="cursor-pointer !text-grayModern-400" />
@@ -136,7 +140,12 @@ export default function BillingDetails() {
                 </Th>
                 <Th className="!px-0 !pl-2">
                   <span className="flex items-center">
-                    <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
+                    <span
+                      className={clsx(
+                        "mr-1 border-l pl-2 font-normal",
+                        darkMode ? "" : "text-grayModern-700",
+                      )}
+                    >
                       {t("Duration")}
                     </span>
                     <Popover>
@@ -166,28 +175,53 @@ export default function BillingDetails() {
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="border-l pl-2 font-normal !text-grayModern-700">
+                  <span
+                    className={clsx(
+                      "border-l pl-2 font-normal",
+                      darkMode ? "" : "text-grayModern-700",
+                    )}
+                  >
                     {t("SpecItem.cpu")}
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="border-l pl-2 font-normal !text-grayModern-700">
+                  <span
+                    className={clsx(
+                      "border-l pl-2 font-normal",
+                      darkMode ? "" : "text-grayModern-700",
+                    )}
+                  >
                     {t("SpecItem.memory")}
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="border-l pl-2 font-normal !text-grayModern-700">
+                  <span
+                    className={clsx(
+                      "border-l pl-2 font-normal",
+                      darkMode ? "" : "text-grayModern-700",
+                    )}
+                  >
                     {t("Spec.Database")}
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="border-l pl-2 font-normal !text-grayModern-700">
+                  <span
+                    className={clsx(
+                      "border-l pl-2 font-normal",
+                      darkMode ? "" : "text-grayModern-700",
+                    )}
+                  >
                     {t("Spec.Storage")}
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
                   <span className="flex items-center">
-                    <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
+                    <span
+                      className={clsx(
+                        "mr-1 border-l pl-2 font-normal",
+                        darkMode ? "" : "text-grayModern-700",
+                      )}
+                    >
                       {t("State")}
                     </span>
                     <Popover>
@@ -220,7 +254,12 @@ export default function BillingDetails() {
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="border-l pl-2 font-normal !text-grayModern-700">
+                  <span
+                    className={clsx(
+                      "border-l pl-2 font-normal",
+                      darkMode ? "" : "text-grayModern-700",
+                    )}
+                  >
                     {t("TotalAmount")}
                   </span>
                 </Th>
@@ -240,9 +279,33 @@ export default function BillingDetails() {
                     >
                       {item.appid}
                     </Td>
-                    <Td className="text-grayModern-600">{formatDate(item.endAt)}</Td>
-                    <Td className="text-grayModern-600">{item.detail?.cpu?.amount}</Td>
-                    <Td className="text-grayModern-600">{item.detail?.memory?.amount}</Td>
+                    <Td
+                      className={
+                        darkMode
+                          ? "!border-b-grayModern-600 !text-grayModern-200"
+                          : "text-grayModern-600"
+                      }
+                    >
+                      {formatDate(item.endAt)}
+                    </Td>
+                    <Td
+                      className={
+                        darkMode
+                          ? "!border-b-grayModern-600 !text-grayModern-200"
+                          : "text-grayModern-600"
+                      }
+                    >
+                      {item.detail?.cpu?.amount}
+                    </Td>
+                    <Td
+                      className={
+                        darkMode
+                          ? "!border-b-grayModern-600 !text-grayModern-200"
+                          : "text-grayModern-600"
+                      }
+                    >
+                      {item.detail?.memory?.amount}
+                    </Td>
                     {item.detail?.dedicatedDatabaseCPU?.usage ? (
                       <Tooltip
                         label={
@@ -260,7 +323,13 @@ export default function BillingDetails() {
                           </div>
                         }
                       >
-                        <Td className="text-grayModern-600">
+                        <Td
+                          className={
+                            darkMode
+                              ? "!border-b-grayModern-600 !text-grayModern-200"
+                              : "text-grayModern-600"
+                          }
+                        >
                           {(
                             item.detail.dedicatedDatabaseCPU.amount +
                             item.detail.dedicatedDatabaseMemory.amount +
@@ -269,11 +338,25 @@ export default function BillingDetails() {
                         </Td>
                       </Tooltip>
                     ) : (
-                      <Td className="text-grayModern-600">
+                      <Td
+                        className={
+                          darkMode
+                            ? "!border-b-grayModern-600 !text-grayModern-200"
+                            : "text-grayModern-600"
+                        }
+                      >
                         {item.detail?.databaseCapacity?.amount}
                       </Td>
                     )}
-                    <Td className="text-grayModern-600">{item.detail?.storageCapacity?.amount}</Td>
+                    <Td
+                      className={
+                        darkMode
+                          ? "!border-b-grayModern-600 !text-grayModern-200"
+                          : "text-grayModern-600"
+                      }
+                    >
+                      {item.detail?.storageCapacity?.amount}
+                    </Td>
                     <Td
                       className={clsx(
                         darkMode ? "!border-b-grayModern-600" : "",
