@@ -46,10 +46,10 @@ function FunctionEditor(props: {
   const [functionList, setFunctionList] = useState(allFunctionList);
   const baseUrl = globalStore.currentApp.host;
   const url = useMemo(() => {
-    if (!baseUrl) {
-      return "";
-    } else {
+    try {
       return createUrl(baseUrl, "/_/lsp");
+    } catch {
+      return "";
     }
   }, [baseUrl]);
 
@@ -97,11 +97,10 @@ function FunctionEditor(props: {
         setLSPStatus("closed");
       };
     };
-    if (globalStore.currentApp.state === APP_STATUS.Running) {
+    if (globalStore.currentApp.state === APP_STATUS.Running && url) {
       startLSP();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [globalStore.currentApp.state, url]);
+  }, [globalStore.currentApp.develop_token, globalStore.currentApp.state, url]);
 
   useEffect(() => {
     const listener = (event: any) => {
