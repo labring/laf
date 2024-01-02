@@ -20,7 +20,7 @@ const Navbar = () => {
   const navList = [
     {
       text: t("HomePage.NavBar.docs"),
-      ref: site_url.laf_doc,
+      ref: siteSettings.laf_doc_url?.value,
     },
     {
       text: t("HomePage.NavBar.forum"),
