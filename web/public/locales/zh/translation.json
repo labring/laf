@@ -31,7 +31,7 @@
     "EmptyCollectionTip": "您还没有创建集合",
     "EmptyDataText": "暂无数据信息,",
     "EmptyPolicyTip": "您还没有创建策略",
-    "EmptyRuleTip": "此策略还没有规则,",
+    "EmptyRuleTip": "此策略没有规则",
     "CreateTagTip": "按「回车键」输入标签，每个标签最多由16个字符组成",
     "IndexManage": "索引管理",
     "ConfirmDeleteIndex": "确定删除该索引吗？",
