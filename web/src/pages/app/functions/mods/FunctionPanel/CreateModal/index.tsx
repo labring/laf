@@ -278,7 +278,7 @@ const CreateModal = (props: {
         isOpen={templateOpen}
         onClose={() => {
           setTemplateOpen(!templateOpen);
-          navigate(`/app/${currentApp.appid}/function`);
+          navigate(`/app/${currentApp.appid}/function`, { replace: true });
         }}
       >
         <ModalOverlay />
