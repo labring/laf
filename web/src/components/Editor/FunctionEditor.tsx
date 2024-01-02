@@ -45,7 +45,13 @@ function FunctionEditor(props: {
   const functionCache = useFunctionCache();
   const [functionList, setFunctionList] = useState(allFunctionList);
   const baseUrl = globalStore.currentApp.host;
-  const url = useMemo(() => createUrl(baseUrl, "/_/lsp"), [baseUrl]);
+  const url = useMemo(() => {
+    if (!baseUrl) {
+      return "";
+    } else {
+      return createUrl(baseUrl, "/_/lsp");
+    }
+  }, [baseUrl]);
 
   useHotKey(
     DEFAULT_SHORTCUTS.send_request,
@@ -95,7 +101,7 @@ function FunctionEditor(props: {
       startLSP();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [globalStore.currentApp.state]);
+  }, [globalStore.currentApp.state, url]);
 
   useEffect(() => {
     const listener = (event: any) => {

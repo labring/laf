@@ -42,7 +42,6 @@ export const createUrl = (
   secure: boolean = window.location.protocol === "https:",
 ): string => {
   const protocol = secure ? "wss" : "ws";
-  if (!baseUrl || !path) return "";
   const url = new URL(`${protocol}://${baseUrl}${path}`);
   return url.toString();
 };
