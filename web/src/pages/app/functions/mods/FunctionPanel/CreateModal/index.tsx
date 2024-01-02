@@ -160,7 +160,7 @@ const CreateModal = (props: {
                   <input
                     {...register("name", {
                       pattern: {
-                        value: /^[a-zA-Z0-9_.\-/]{1,256}$/,
+                        value: /^[a-zA-Z0-9_.\-](?:[a-zA-Z0-9_.\-/]{0,254}[a-zA-Z0-9_.\-])?$/,
                         message: t("FunctionPanel.FunctionNameRule"),
                       },
                     })}

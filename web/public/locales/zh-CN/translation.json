@@ -90,10 +90,10 @@
     "ConfirmDeploy": "确认发布",
     "CustomDependence": "自定义依赖",
     "CustomDependenceTip": "暂无自定义依赖",
-    "DeleteDependencyConfirm": "确认要删除该依赖吗？删除依赖后会立即重启应用。",
+    "DeleteDependencyConfirm": "确定要删除该依赖吗？删除依赖后会立即重启应用。",
     "Debug": "运行",
     "DebugResult": "运行结果",
-    "DeleteConfirm": "确认要删除函数吗？",
+    "DeleteConfirm": "确定要删除函数吗？",
     "Dependence": "NPM 依赖",
     "DependenceAdd": "添加依赖",
     "DependenceEdit": "编辑依赖",
@@ -119,7 +119,7 @@
     "SystemDependence": "内置依赖",
     "Value": "值",
     "isSupport": "是否支持",
-    "FunctionNameRule": "函数名须由字母、数字、点（.）和划线(-_)组成，匹配正则：/^[a-zA-Z0-9_.-/]{1,256}$/",
+    "FunctionNameRule": "函数名须由字母、数字、点（.）和划线(-_)组成，匹配正则：/^[a-zA-Z0-9_.\\-](?:[a-zA-Z0-9_.\\-/]{0,254}[a-zA-Z0-9_.\\-])?$/",
     "EmptyDebugTip": "暂无运行结果",
     "EmptyFunctionTip": "您还没有创建函数",
     "UploadButton": "上传",
@@ -135,7 +135,10 @@
     "HistoryTips": "暂无历史版本",
     "NoDesc": "暂无描述",
     "CurrentVersion": "当前版本",
-    "HistoryVersion": "历史版本"
+    "HistoryVersion": "历史版本",
+    "MoveFunctionTip": "是否要将 {{srcFunc}} 移动到 {{targetDir}} 目录？",
+    "MoveFunctionToRootTip": "是否要将 {{srcFunc}} 移动到根目录？",
+    "MovingFunction": "移动函数中..."
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",
@@ -242,8 +245,8 @@
   "StoragePanel": {
     "All": "总容量",
     "DeleteConfirm": "当前操作将会永久删除云存储",
-    "DeleteFileTip": "确认要删除文件吗？",
-    "DeleteFolderTip": "确认要删除整个文件夹吗？请注意当有大量文件存在时会稍许有一点慢哦",
+    "DeleteFileTip": "确定要删除文件吗？",
+    "DeleteFolderTip": "确定要删除整个文件夹吗？请注意当有大量文件存在时会稍许有一点慢哦",
     "Drag": "拖放到此处或者",
     "EmptyText": "暂无 Bucket 数据,",
     "File": "文件",
@@ -301,7 +304,10 @@
     "SuccessfullyHosted": "托管成功",
     "SuccessfullyHostedTips": "HTTP已生效，HTTPS需要一些时间生效。如需查看托管状态，请暂时使用HTTP访问。",
     "BucketTips": "新创建的 bucket，或应用重启后的 bucket ，需要等待 15 ~ 30s 才能生效",
-    "DomainNotResolved": "尝试使用 ping 或 nslookup 来查看域名解析是否生效"
+    "DomainNotResolved": "尝试使用 ping 或 nslookup 来查看域名解析是否生效",
+    "DeleteFiles": "确定要删除 {{num}} 个目录及文件吗？",
+    "DeletingFiles": "正在删除 {{num}} 个目录及文件...",
+    "DeleteFilesResult": "删除目录及文件：{{successNum}} 成功，{{failedNum}} 失败"
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
@@ -718,5 +724,10 @@
     "Performance": "性能",
     "Capacity": "容量"
   },
-  "DatabaseBundleControlTip": "数据库一旦创建后，暂时无法修改类型和实例数，容量只增不减，如有特殊需要请联系客服"
+  "DatabaseBundleControlTip": "数据库一旦创建后，暂时无法修改类型和实例数，容量只增不减，如有特殊需要请联系客服",
+  "MoveFunction": "移动函数",
+  "UpgradeVersionTip": {
+    "Title": "Laf 新版本已经准备好了！",
+    "Description": "点击立即更新"
+  }
 }

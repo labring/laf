@@ -44,6 +44,7 @@
     "react-day-picker": "^8.8.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",
+    "react-hotkeys-hook": "^4.4.1",
     "react-i18next": "^12.3.1",
     "react-icons": "^4.8.0",
     "react-image-crop": "^10.1.5",
@@ -56,6 +57,7 @@
     "remark-math": "^5.1.1",
     "sass": "^1.62.1",
     "simplebar-react": "^3.2.4",
+    "ts-key-enum": "^2.0.12",
     "uuid": "^9.0.0",
     "zustand": "^4.3.8"
   },
