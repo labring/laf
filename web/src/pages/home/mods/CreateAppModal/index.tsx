@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { cloneElement, ReactElement, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Button,
@@ -19,6 +19,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { t } from "i18next";
 import { debounce } from "lodash";
+import _ from "lodash";
 
 import ChargeButton from "@/components/ChargeButton";
 import { APP_STATUS } from "@/constants/index";
@@ -28,7 +29,8 @@ import { APP_LIST_QUERY_KEY } from "../..";
 import { queryKeys, useAccountQuery } from "../../service";
 
 import AutoscalingControl, { TypeAutoscaling } from "./AutoscalingControl";
-import BundleControl, { TypeBundle } from "./BundleControl";
+import BundleControl from "./BundleControl";
+import DatabaseBundleControl from "./DatabaseBundleControl";
 
 import { TApplicationItem, TBundle } from "@/apis/typing";
 import {
@@ -42,38 +44,57 @@ import {
 } from "@/apis/v1/resources";
 import useGlobalStore from "@/pages/globalStore";
 
+type FormData = {
+  name: string;
+  state: APP_STATUS | string;
+  regionId: string;
+  runtimeId: string;
+  bundleId: string;
+};
+
+export type TypeBundle = {
+  cpu: number;
+  memory: number;
+  databaseCapacity?: number;
+  storageCapacity: number;
+  dedicatedDatabase?: {
+    cpu: number;
+    memory: number;
+    capacity: number;
+    replicas: number;
+  };
+};
+
 const CreateAppModal = (props: {
   type: "create" | "edit" | "change";
   application?: TApplicationItem;
-  children: React.ReactElement;
+  children: ReactElement;
   isCurrentApp?: boolean;
 }) => {
+  const { application, type, isCurrentApp } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const queryClient = useQueryClient();
-
-  const { application, type, isCurrentApp } = props;
-
-  const title = type === "edit" ? t("Edit") : type === "change" ? t("Change") : t("CreateApp");
-
-  const { runtimes = [], regions = [] } = useGlobalStore();
-
+  const { runtimes = [], regions = [], showSuccess, currentApp, setCurrentApp } = useGlobalStore();
   const { data: accountRes } = useAccountQuery();
 
-  const currentRegion =
-    regions.find((item: any) => item._id === application?.regionId) || regions[0];
-
-  const bundles = currentRegion.bundles;
-  const sortedBundles = [...bundles].sort(
-    (a: TBundle, b: TBundle) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  const title = useMemo(
+    () => (type === "edit" ? t("Edit") : type === "change" ? t("Change") : t("CreateApp")),
+    [type],
   );
 
-  type FormData = {
-    name: string;
-    state: APP_STATUS | string;
-    regionId: string;
-    runtimeId: string;
-    bundleId: string;
-  };
+  const currentRegion = useMemo(
+    () => regions.find((item: any) => item._id === application?.regionId) || regions[0],
+    [regions, application],
+  );
+
+  const sortedBundles = useMemo(
+    () =>
+      [...currentRegion.bundles].sort(
+        (a: TBundle, b: TBundle) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      ),
+    [currentRegion.bundles],
+  );
 
   let defaultValues = {
     name: application?.name || "",
@@ -101,6 +122,22 @@ const CreateAppModal = (props: {
       application?.bundle.resource.databaseCapacity || sortedBundles[0].spec.databaseCapacity.value,
     storageCapacity:
       application?.bundle.resource.storageCapacity || sortedBundles[0].spec.storageCapacity.value,
+    dedicatedDatabase: !application?.bundle.resource.databaseCapacity
+      ? {
+          cpu:
+            application?.bundle.resource.dedicatedDatabase.limitCPU ||
+            sortedBundles[0].spec.dedicatedDatabaseCPU.value,
+          memory:
+            application?.bundle.resource.dedicatedDatabase.limitMemory ||
+            sortedBundles[0].spec.dedicatedDatabaseMemory.value,
+          capacity:
+            application?.bundle.resource.dedicatedDatabase.capacity ||
+            sortedBundles[0].spec.dedicatedDatabaseCapacity.value,
+          replicas:
+            application?.bundle.resource.dedicatedDatabase.replicas ||
+            sortedBundles[0].spec.dedicatedDatabaseReplicas.value,
+        }
+      : undefined,
   };
 
   const defaultAutoscaling: TypeAutoscaling = {
@@ -113,14 +150,10 @@ const CreateAppModal = (props: {
       application?.bundle.autoscaling?.targetMemoryUtilizationPercentage || null,
   };
 
-  const [bundle, setBundle] = React.useState(defaultBundle);
-
-  const [autoscaling, setAutoscaling] = React.useState(defaultAutoscaling);
-
-  const { showSuccess, currentApp, setCurrentApp } = useGlobalStore();
-
-  const [totalPrice, setTotalPrice] = React.useState(0);
-  const [calculating, setCalculating] = React.useState(false);
+  const [bundle, setBundle] = useState(defaultBundle);
+  const [autoscaling, setAutoscaling] = useState(defaultAutoscaling);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [calculating, setCalculating] = useState(false);
 
   const billingQuery = useQuery(
     [queryKeys.useBillingPriceQuery],
@@ -162,7 +195,6 @@ const CreateAppModal = (props: {
     return () => {
       debouncedBillingQuery.cancel();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, bundle, autoscaling]);
 
   const updateAppMutation = useMutation((params: any) => ApplicationControllerUpdateName(params));
@@ -196,6 +228,12 @@ const CreateAppModal = (props: {
             limitMemory: bundle.memory,
             databaseCapacity: bundle.databaseCapacity,
             storageCapacity: bundle.storageCapacity,
+            dedicatedDatabase: {
+              limitCPU: bundle.dedicatedDatabase?.cpu || 0,
+              limitMemory: bundle.dedicatedDatabase?.memory || 0,
+              capacity: bundle.dedicatedDatabase?.capacity || 0,
+              replicas: bundle.dedicatedDatabase?.replicas || 0,
+            },
           };
 
           const newBundle = {
@@ -239,7 +277,7 @@ const CreateAppModal = (props: {
 
   return (
     <>
-      {React.cloneElement(props.children, {
+      {cloneElement(props.children, {
         onClick: (event?: any) => {
           event?.preventDefault();
           reset(defaultValues);
@@ -258,14 +296,14 @@ const CreateAppModal = (props: {
             <ModalHeader>{title}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <VStack spacing={0} align="flex-start" px="8">
+              <VStack spacing={0} align="flex-start" px="8" gap="6">
                 <FormControl
                   isRequired
                   isInvalid={!!errors?.name}
                   isDisabled={type === "change"}
                   hidden={type === "change"}
                 >
-                  <div className="mb-4 flex h-12 w-full items-center border-b-2">
+                  <div className="flex h-12 w-full items-center border-b-2">
                     <input
                       {...register("name", {
                         required: `${t("HomePanel.Application") + t("Name") + t("IsRequired")}`,
@@ -282,16 +320,33 @@ const CreateAppModal = (props: {
                   <>
                     <BundleControl
                       bundle={bundle}
-                      setBundle={setBundle}
                       sortedBundles={sortedBundles}
-                      billingResourceOptionsRes={billingResourceOptionsRes}
-                      setCalculating={setCalculating}
+                      type={type}
+                      onBundleItemChange={(k: string, v?: number) => {
+                        setBundle((prev) => {
+                          const v1 = _.cloneDeep(_.set(prev, k, v));
+                          return v1;
+                        });
+                        setCalculating(true);
+                      }}
+                      resourceOptions={billingResourceOptionsRes?.data}
                     />
-                    <AutoscalingControl
-                      autoscaling={autoscaling}
-                      setAutoscaling={setAutoscaling}
-                      className="!mt-6"
-                    />
+                    <DatabaseBundleControl
+                      bundle={bundle}
+                      originCapacity={application?.bundle.resource.dedicatedDatabase.capacity}
+                      onBundleItemChange={(k: string, v?: number) => {
+                        setBundle((prev) => {
+                          const v1 = _.cloneDeep(_.set(prev, k, v));
+                          return v1;
+                        });
+                        setCalculating(true);
+                      }}
+                      disabledChangeType={type === "change"}
+                      defaultDatabaseCapacity={defaultBundle.databaseCapacity}
+                      defaultDedicatedDatabaseBundle={defaultBundle.dedicatedDatabase}
+                      resourceOptions={billingResourceOptionsRes?.data}
+                    ></DatabaseBundleControl>
+                    <AutoscalingControl autoscaling={autoscaling} setAutoscaling={setAutoscaling} />
                   </>
                 )}
               </VStack>

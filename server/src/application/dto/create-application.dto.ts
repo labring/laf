@@ -29,6 +29,6 @@ export class CreateApplicationDto extends UpdateApplicationBundleDto {
   runtimeId: string
 
   validate() {
-    return null
+    return super.validate()
   }
 }

@@ -5,11 +5,8 @@ import { ENVIRONMENT_SCHEMA_NAME } from '../common/constant'
 import * as dotenv from 'dotenv'
 import { exist } from '../util/file'
 
-
 export class EnvironmentSchema {
-
   variables: EnvironmentVariable[]
-
 
   static read(): EnvironmentVariable[] {
     const configPath = path.join(getAppPath(), ENVIRONMENT_SCHEMA_NAME)
@@ -22,7 +19,7 @@ export class EnvironmentSchema {
     for (const key in data) {
       env.push({
         name: key,
-        value: data[key]
+        value: data[key],
       })
     }
     return env
@@ -36,7 +33,6 @@ export class EnvironmentSchema {
     }
     fs.writeFileSync(configPath, dataStr)
   }
-
 }
 
 export interface EnvironmentVariable {

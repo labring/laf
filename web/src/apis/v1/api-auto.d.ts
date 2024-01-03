@@ -31,6 +31,7 @@ declare namespace Definitions {
     databaseCapacity?: number;
     storageCapacity?: number;
     autoscaling?: Definitions.CreateAutoscalingDto;
+    dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto;
     name?: string;
     state?: string;
     regionId?: string;
@@ -84,6 +85,7 @@ declare namespace Definitions {
     databaseCapacity?: number;
     storageCapacity?: number;
     autoscaling?: Definitions.CreateAutoscalingDto;
+    dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto;
   };
 
   export type ApplicationBundle = {
@@ -358,6 +360,7 @@ declare namespace Definitions {
     databaseCapacity?: number;
     storageCapacity?: number;
     autoscaling?: Definitions.CreateAutoscalingDto;
+    dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto;
     regionId?: string;
   };
 
@@ -454,6 +457,13 @@ declare namespace Definitions {
     targetMemoryUtilizationPercentage?: number;
   };
 
+  export type CreateDedicatedDatabaseDto = {
+    cpu?: number;
+    memory?: number;
+    capacity?: number;
+    replicas?: number;
+  };
+
   export type Region = {
     _id?: string;
     name?: string;
@@ -474,6 +484,14 @@ declare namespace Definitions {
     limitCountOfTrigger?: number;
     limitCountOfWebsiteHosting?: number;
     reservedTimeAfterExpired?: number;
+    dedicatedDatabase?: Definitions.DedicatedDatabaseSpec;
+  };
+
+  export type DedicatedDatabaseSpec = {
+    limitCPU?: number;
+    limitMemory?: number;
+    capacity?: number;
+    replicas?: number;
   };
 
   export type Autoscaling = {
@@ -920,6 +938,30 @@ declare namespace Paths {
   }
 
   namespace PolicyRuleControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace DedicatedDatabaseMonitorControllerGetResource {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace DedicatedDatabaseMonitorControllerGetConnection {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace DedicatedDatabaseMonitorControllerGetPerformance {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

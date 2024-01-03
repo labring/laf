@@ -168,7 +168,9 @@
     "cpu": "CPU",
     "memory": "Memory",
     "databaseCapacity": "Database",
-    "storageCapacity": "Storage"
+    "storageCapacity": "Storage",
+    "capacity": "Capacity",
+    "replicas": "Replicas"
   },
   "LogPanel": {
     "Detail": "Log Details",
@@ -227,15 +229,18 @@
     "CostTrend": "Cost Trend",
     "Balance": "Balance",
     "Pause": "Pause",
-    "AppMonitor": "Application Monitor",
     "PauseTips": "Are you sure you want to pause this application?",
     "RestartTips": "Are you sure you want to restart this application?",
     "CommonSetting": "Common Settings",
-    "ClientSetting": "Client Settings",
     "EditorFont": "Editor Font",
     "FontSize": "Font Size",
     "FuncListDisplay": "Function List Display",
-    "ListDisplay": "List Display"
+    "ListDisplay": "List Display",
+    "OldLogs": "Old Logs",
+    "MonitorSetting": "Resource Monitor",
+    "DatabaseMonitor": "Database monitor",
+    "RuntimeMonitor": "Runtime monitor",
+    "ClientSetting": "Client settings"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -365,7 +370,8 @@
     "RAM": "RAM",
     "Database": "Database",
     "Storage": "Storage",
-    "NetworkTraffic": "NetworkTraffic"
+    "NetworkTraffic": "NetworkTraffic",
+    "QueryOperand": "Query operands"
   },
   "Price": {
     "Free": "Free"
@@ -526,7 +532,12 @@
     "ChooseSpecifications": "Choose Specifications",
     "autoscaling": "AutoScaling",
     "Number of Instances": "Number of Instances",
-    "CPU Threshold": "CPU Threshold"
+    "CPU Threshold": "CPU Threshold",
+    "DatabaseSpecification": "Database specification",
+    "DedicatedType": "Dedicated",
+    "SharedType": "Shared",
+    "ApplicationSecification": "Application specification",
+    "DatabaseCreateTip": "Once a database is created, its type and number of instances cannot be temporarily modified. The capacity can only increase, not decrease. If there are special needs, please contact our customer service."
   },
   "Storage Threshold": "Storage Threshold",
   "Template": {
@@ -705,9 +716,19 @@
   },
   "Deprecated": "Deprecated",
   "All": "All",
+  "DatabaseMonitor": {
+    "Connections": "Connections",
+    "DocumentOperand": "Document operands",
+    "PageError": "Page error(ops/s)",
+    "Resource": "Resource",
+    "Performance": "Performance",
+    "Capacity": "Capacity"
+  },
+  "DatabaseBundleControlTip": "Once a database is created, its type and number of instances cannot be temporarily modified, and its capacity can only increase and not decrease. If you have special needs, please contact customer service",
   "MoveFunction": "Move function",
   "UpgradeVersionTip": {
     "Title": "Laf is ready to update!",
     "Description": "Click to update"
   }
 }
+

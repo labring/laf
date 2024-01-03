@@ -16,6 +16,7 @@ import {
   Td,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useColorMode,
 } from "@chakra-ui/react";
@@ -305,15 +306,48 @@ export default function BillingDetails() {
                     >
                       {item.detail?.memory?.amount}
                     </Td>
-                    <Td
-                      className={
-                        darkMode
-                          ? "!border-b-grayModern-600 !text-grayModern-200"
-                          : "text-grayModern-600"
-                      }
-                    >
-                      {item.detail?.databaseCapacity?.amount}
-                    </Td>
+                    {item.detail?.dedicatedDatabaseCPU?.usage ? (
+                      <Tooltip
+                        label={
+                          <div>
+                            <div>
+                              {t("SpecItem.cpu")}: {item.detail.dedicatedDatabaseCPU?.amount}
+                            </div>
+                            <div>
+                              {t("SpecItem.memory")}: {item.detail.dedicatedDatabaseMemory?.amount}
+                            </div>
+                            <div>
+                              {t("SpecItem.capacity")}:{" "}
+                              {item.detail.dedicatedDatabaseCapacity?.amount}
+                            </div>
+                          </div>
+                        }
+                      >
+                        <Td
+                          className={
+                            darkMode
+                              ? "!border-b-grayModern-600 !text-grayModern-200"
+                              : "text-grayModern-600"
+                          }
+                        >
+                          {(
+                            item.detail.dedicatedDatabaseCPU.amount +
+                            item.detail.dedicatedDatabaseMemory.amount +
+                            item.detail.dedicatedDatabaseCapacity.amount
+                          ).toFixed(6)}
+                        </Td>
+                      </Tooltip>
+                    ) : (
+                      <Td
+                        className={
+                          darkMode
+                            ? "!border-b-grayModern-600 !text-grayModern-200"
+                            : "text-grayModern-600"
+                        }
+                      >
+                        {item.detail?.databaseCapacity?.amount}
+                      </Td>
+                    )}
                     <Td
                       className={
                         darkMode

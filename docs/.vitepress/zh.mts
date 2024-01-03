@@ -50,12 +50,11 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
         text: '内置云函数',
         collapsed: true,
         items: [
-          { text: '拦截器(TBD)' },
-          { text: '初始化(TBD)' },
-          { text: 'NotFound(TBD)' },
+          { text: '拦截器', link: '/zh/cloud-function/interceptor' },
+          { text: '初始化', link: '/zh/cloud-function/init' },
+          { text: 'WebSocket', link: '/zh/cloud-function/websocket' },
         ],
       },
-      { text: 'WebSocket(TBD)' },
     ]
   },
   {

@@ -13,13 +13,21 @@ import { DomainState, RuntimeDomain } from 'src/gateway/entities/runtime-domain'
 import { BucketDomain } from 'src/gateway/entities/bucket-domain'
 import { WebsiteHosting } from 'src/website/entities/website'
 import { CronTrigger, TriggerState } from 'src/trigger/entities/cron-trigger'
+import { DedicatedDatabaseService } from 'src/database/dedicated-database/dedicated-database.service'
+import {
+  DedicatedDatabasePhase,
+  DedicatedDatabaseState,
+} from 'src/database/entities/dedicated-database'
 
 @Injectable()
 export class InstanceTaskService {
   readonly lockTimeout = 15 // in second
   private readonly logger = new Logger(InstanceTaskService.name)
 
-  constructor(private readonly instanceService: InstanceService) {}
+  constructor(
+    private readonly instanceService: InstanceService,
+    private readonly dedicatedDatabaseService: DedicatedDatabaseService,
+  ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
@@ -103,9 +111,6 @@ export class InstanceTaskService {
     if (!res.value) return
     const app = res.value
 
-    // create instance
-    await this.instanceService.create(app.appid)
-
     // if waiting time is more than 5 minutes, stop the application
     const waitingTime = Date.now() - app.updatedAt.getTime()
     if (waitingTime > 1000 * 60 * 5) {
@@ -125,7 +130,28 @@ export class InstanceTaskService {
       return
     }
 
+    // create instance
+    await this.instanceService.create(app.appid)
+
     const appid = app.appid
+
+    const ddb = await this.dedicatedDatabaseService.findOne(appid)
+    if (ddb) {
+      if (ddb.state === DedicatedDatabaseState.Stopped) {
+        await this.dedicatedDatabaseService.updateState(
+          appid,
+          DedicatedDatabaseState.Running,
+        )
+        await this.relock(appid, waitingTime)
+        return
+      }
+
+      if (ddb.phase !== DedicatedDatabasePhase.Started) {
+        await this.relock(appid, waitingTime)
+        return
+      }
+    }
+
     const instance = await this.instanceService.get(appid)
     const unavailable =
       instance.deployment?.status?.unavailableReplicas || false
@@ -283,6 +309,16 @@ export class InstanceTaskService {
         { $set: { state: TriggerState.Inactive, updatedAt: new Date() } },
       )
 
+    const ddb = await this.dedicatedDatabaseService.findOne(appid)
+    if (ddb && ddb.state !== DedicatedDatabaseState.Stopped) {
+      await this.dedicatedDatabaseService.updateState(
+        appid,
+        DedicatedDatabaseState.Stopped,
+      )
+      await this.relock(appid, waitingTime)
+      return
+    }
+
     // check if the instance is removed
     const instance = await this.instanceService.get(app.appid)
     if (instance.deployment) {
@@ -336,6 +372,11 @@ export class InstanceTaskService {
 
     if (!res.value) return
     const app = res.value
+
+    await this.dedicatedDatabaseService.updateState(
+      app.appid,
+      DedicatedDatabaseState.Restarting,
+    )
 
     await this.instanceService.restart(app.appid)
 

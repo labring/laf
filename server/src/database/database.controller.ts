@@ -35,6 +35,7 @@ import { ImportDatabaseDto } from './dto/import-database.dto'
 import { InjectUser } from 'src/utils/decorator'
 import { User } from 'src/user/entities/user'
 import { QuotaService } from 'src/user/quota.service'
+import { DedicatedDatabaseService } from './dedicated-database/dedicated-database.service'
 
 @ApiTags('Database')
 @ApiBearerAuth('Authorization')
@@ -45,6 +46,7 @@ export class DatabaseController {
   constructor(
     private readonly dbService: DatabaseService,
     private readonly quotaService: QuotaService,
+    private readonly dedicatedDatabaseService: DedicatedDatabaseService,
   ) {}
 
   /**
@@ -56,7 +58,9 @@ export class DatabaseController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post('proxy')
   async proxy(@Param('appid') appid: string, @Req() req: IRequest) {
-    const accessor = await this.dbService.getDatabaseAccessor(appid)
+    const accessor =
+      (await this.dedicatedDatabaseService.getDatabaseAccessor(appid)) ||
+      (await this.dbService.getDatabaseAccessor(appid))
 
     // Don't need policy rules, open all collections' access permission for dbm use.
     // Just create a empty policy for proxy.

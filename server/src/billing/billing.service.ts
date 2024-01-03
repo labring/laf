@@ -196,6 +196,22 @@ export class BillingService {
       groupedOptions[ResourceType.DatabaseCapacity],
       'database capacity option not found',
     )
+    assert(
+      groupedOptions[ResourceType.DedicatedDatabaseCPU],
+      'dedicated database cpu option not found',
+    )
+    assert(
+      groupedOptions[ResourceType.DedicatedDatabaseMemory],
+      'dedicated database memory option not found',
+    )
+    assert(
+      groupedOptions[ResourceType.DedicatedDatabaseCapacity],
+      'dedicated database capacity option not found',
+    )
+    assert(
+      groupedOptions[ResourceType.DedicatedDatabaseReplicas],
+      'dedicated database replicas option not found',
+    )
 
     // calculate cpu price
     const cpuOption = groupedOptions[ResourceType.CPU]
@@ -214,20 +230,50 @@ export class BillingService {
     // calculate database capacity price
     const databaseOption = groupedOptions[ResourceType.DatabaseCapacity]
     const databasePrice = new Decimal(databaseOption.price).mul(
-      dto.databaseCapacity,
+      dto.databaseCapacity || 0,
     )
+
+    const ddbCPUOption = groupedOptions[ResourceType.DedicatedDatabaseCPU]
+    const ddbCPUPrice = dto.dedicatedDatabase
+      ? new Decimal(ddbCPUOption.price)
+          .mul(dto.dedicatedDatabase.cpu)
+          .mul(dto.dedicatedDatabase.replicas)
+      : new Decimal(0)
+
+    const ddbMemoryOption = groupedOptions[ResourceType.DedicatedDatabaseMemory]
+    const ddbMemoryPrice = dto.dedicatedDatabase
+      ? new Decimal(ddbMemoryOption.price)
+          .mul(dto.dedicatedDatabase.memory)
+          .mul(dto.dedicatedDatabase.replicas)
+      : new Decimal(0)
+
+    const ddbCapacityOption =
+      groupedOptions[ResourceType.DedicatedDatabaseCapacity]
+    const ddbCapacityPrice = dto.dedicatedDatabase
+      ? new Decimal(ddbCapacityOption.price)
+          .mul(dto.dedicatedDatabase.capacity)
+          .mul(dto.dedicatedDatabase.replicas)
+      : new Decimal(0)
+
+    const ddbTotalPrice = ddbCPUPrice.add(ddbMemoryPrice).add(ddbCapacityPrice)
 
     // calculate total price
     const totalPrice = cpuPrice
       .add(memoryPrice)
       .add(storagePrice)
       .add(databasePrice)
+      .add(ddbTotalPrice)
 
     return {
       cpu: cpuPrice.toNumber(),
       memory: memoryPrice.toNumber(),
       storageCapacity: storagePrice.toNumber(),
       databaseCapacity: databasePrice.toNumber(),
+      dedicatedDatabase: {
+        cpu: ddbCPUPrice.toNumber(),
+        memory: ddbMemoryPrice.toNumber(),
+        capacity: ddbCapacityPrice.toNumber(),
+      },
       total: totalPrice.toNumber(),
     }
   }
