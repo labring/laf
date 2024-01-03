@@ -3,18 +3,19 @@ import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 
-import { formatSize, uniformCapacity } from "@/utils/format";
+import { uniformCapacity } from "@/utils/format";
 
 export default function PieCard(props: {
   data: any[];
   maxValue: number;
   title: string;
   colors: string[];
-  heightClass?: string;
+  appid?: string;
 }) {
   const { t } = useTranslation();
-  const { data, maxValue, title, colors, heightClass } = props;
-  const usedData = uniformCapacity(data[0]?.value[1]) || 0;
+  const { data, maxValue, title, colors, appid } = props;
+  const usedData =
+    uniformCapacity(data.find((item) => item.metric.database === appid)?.value[1]) || 0;
   const percentage = (usedData / maxValue) * 100;
   const pieData = useMemo(
     () =>
@@ -38,19 +39,15 @@ export default function PieCard(props: {
               ></span>
               <p>{entry.value}</p>
             </span>
-            <p className="ml-3 mt-1">{formatSize(pieData[index]?.value * 1024 * 1024)}</p>
+            <p className="ml-3 mt-1">{(pieData[index]?.value).toFixed(3)} MB</p>
           </div>
         ))}
       </ul>
     );
   };
+
   return (
-    <div
-      className={clsx(
-        heightClass || "h-1/2",
-        "mb-2 rounded-xl border border-grayModern-200 bg-[#F8FAFB] p-4",
-      )}
-    >
+    <div className="mb-2 h-full  rounded-xl border border-grayModern-200  bg-[#F8FAFB] p-4">
       <span className={clsx("flex items-center font-medium text-grayModern-900")}>
         <div className="mr-2 h-3 w-1 whitespace-nowrap rounded-xl bg-primary-600" />
         {title}

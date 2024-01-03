@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Menu, MenuButton, MenuItemOption, MenuList } from "@chakra-ui/react";
 import clsx from "clsx";
+import { t } from "i18next";
 import {
   Area,
   AreaChart,
@@ -58,94 +59,119 @@ function mergeArrays(dataArrays: (DataPoint[] | null)[]): DataPoint[] {
   const baseChartData = generateChartData();
   return baseChartData.map((basePoint) => {
     const mergedPoint: DataPoint = { xData: basePoint.xData };
-    dataArrays.forEach((arr, index) => {
+    dataArrays.forEach((arr) => {
       if (!arr || arr.length === 0) return;
       const matchingPoint = arr.find((p) => p.xData === basePoint.xData);
       if (matchingPoint) {
-        mergedPoint[`value${index}`] = matchingPoint[`value${index}`] ?? 0;
+        Object.keys(matchingPoint).forEach((key) => {
+          if (key !== "xData") {
+            mergedPoint[key] = matchingPoint[key] ?? 0;
+          }
+        });
       } else {
-        mergedPoint[`value${index}`] = 0;
+        Object.keys(arr[0]).forEach((key) => {
+          if (key !== "xData") {
+            mergedPoint[key] = 0;
+          }
+        });
       }
     });
     return mergedPoint;
   });
 }
 
-function extractNumber(str: string) {
-  const match = str.match(/\d+$/) || [];
-  return Number(match[0]);
+function getLineName(data: any) {
+  if (data.metric.state && data.metric.pod) {
+    return `${data.metric.pod}-${data.metric.state}`;
+  }
+  if (data.metric.type && data.metric.pod) {
+    return `${data.metric.pod}-${data.metric.type}`;
+  }
+  if (data.metric.pod) {
+    return `${data.metric.pod}`;
+  }
+  return "yData";
 }
+
 const modifyTimestamp = (t: number) => {
-  let date = new Date(t * 1000);
-  date.setSeconds(0, 0);
-  return date.getTime();
+  let date = new Date(t * 1000); // 将秒级时间戳转换为毫秒级
+  date.setSeconds(0, 0); // 设置秒和毫秒都为0
+  return date.getTime(); // 返回修改后的毫秒级时间戳
 };
 
 export default function AreaCard(props: {
   data: TCpuUsageData;
   strokeColor: string;
   fillColor: string;
-  setDataNumber?: (value: number) => void;
-  dataNumber: number;
-  podsArray: string[];
+  setPodName?: (value: string) => void;
+  podName: string | null;
+  podList: string[];
   title: string;
   maxValue: number;
   unit: string;
   className?: string;
+  syncId: string;
+  tableMarginLeft: number;
 }) {
   const {
     data,
-    strokeColor,
     fillColor,
-    setDataNumber,
-    dataNumber,
-    podsArray,
+    setPodName,
+    podName,
+    podList,
     title,
     maxValue,
     unit,
     className,
+    syncId,
+    tableMarginLeft,
   } = props;
   const [chartData, setChartData] = useState<any[]>([]);
   useEffect(() => {
-    if (dataNumber === 0) {
-      let tempDataArray: any = [];
+    if (podName === t("All")) {
+      const tempDataArray: any = [];
       data?.forEach((item, index) => {
+        const lineName = getLineName(item);
         if (item.values) {
           const tempData = item.values.map((item) => {
-            if (title === "CPU") {
+            if (title === t("Spec.RAM")) {
               return {
                 xData: modifyTimestamp(item[0]),
-                [`value${index}`]: Number(item[1]),
-              };
-            } else {
-              return {
-                xData: modifyTimestamp(item[0]),
-                [`value${index}`]: Number(item[1]) / 1024 / 1024,
+                [lineName]: Number(item[1]) / 1024 / 1024,
               };
             }
+            return {
+              xData: modifyTimestamp(item[0]),
+              [lineName]: Number(item[1]),
+            };
+          });
+          tempDataArray.push(tempData);
+        }
+      });
+      setChartData(mergeArrays(tempDataArray));
+    } else {
+      const tempDataArray: any = [];
+      data?.forEach((item, index) => {
+        const lineName = getLineName(item);
+        if (item.metric.pod === podName && item.values) {
+          const tempData = item.values.map((item) => {
+            if (title === t("Spec.RAM")) {
+              return {
+                xData: modifyTimestamp(item[0]),
+                [lineName]: Number(item[1]) / 1024 / 1024,
+              };
+            }
+            return {
+              xData: modifyTimestamp(item[0]),
+              [lineName]: Number(item[1]),
+            };
           });
           tempDataArray.push(tempData);
         }
       });
       setChartData(mergeArrays(tempDataArray));
     }
-    if (!data[dataNumber - 1]?.values) return;
-    setChartData(
-      data[dataNumber - 1]?.values.map((item) => {
-        if (title === "CPU") {
-          return {
-            xData: item[0] * 1000,
-            value0: Number(item[1]),
-          };
-        } else {
-          return {
-            xData: item[0] * 1000,
-            value0: Number(item[1]) / 1024 / 1024,
-          };
-        }
-      }),
-    );
-  }, [data, dataNumber, title]);
+  }, [data, podName, title]);
 
   return (
     <div className={className}>
@@ -154,22 +180,21 @@ export default function AreaCard(props: {
           <div className="mr-2 h-3 w-1 whitespace-nowrap rounded-xl bg-primary-600" />
           {title}
         </span>
-        {setDataNumber && podsArray && podsArray.length > 0 && (
+        {setPodName && podList && podList.length > 1 && (
           <Menu>
             <MenuButton className="text-grayModern-600">
-              {podsArray[dataNumber]}
-              {podsArray.length > 1 && <ChevronDownIcon />}
+              {podName}
+              {podList.length > 1 && <ChevronDownIcon />}
             </MenuButton>
-            {podsArray.length > 1 && (
+            {podList.length > 1 && (
               <MenuList>
-                {podsArray.map((pod, index) => (
+                {podList.map((podName, index) => (
                   <MenuItemOption
                     key={index}
-                    value={String(index)}
-                    onClick={() => setDataNumber(index)}
+                    onClick={() => setPodName(podName)}
                     className="!px-0 !text-grayModern-600"
                   >
-                    {pod}
+                    {podName}
                   </MenuItemOption>
                 ))}
               </MenuList>
@@ -178,7 +203,11 @@ export default function AreaCard(props: {
         )}
       </div>
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ left: -28, top: 6 }} syncId="sync">
+        <AreaChart
+          data={chartData}
+          margin={{ left: tableMarginLeft, top: 6 }}
+          {...(syncId !== "" ? { syncId: syncId } : {})}
+        >
           <CartesianGrid stroke="#f5f5f5" vertical={false} />
           <XAxis
             dataKey="xData"
@@ -191,32 +220,32 @@ export default function AreaCard(props: {
             stroke="#C0C2D2"
           />
           <YAxis fontSize="10" stroke="#9CA2A8" />
-          <ReferenceLine
-            y={maxValue}
-            strokeDasharray="3 3"
-            className="text-[10px]"
-            label={maxValue + " " + unit}
-            ifOverflow="extendDomain"
-          />
-          {dataNumber === 0 && podsArray.length > 1 ? (
+
+          {maxValue !== 0 && (
+            <ReferenceLine
+              y={maxValue}
+              strokeDasharray="3 3"
+              className="text-[10px]"
+              label={`${maxValue} ${unit}`}
+              ifOverflow="extendDomain"
+            />
+          )}
+
+          {podName === t("All") && podList.length > 1 ? (
             <>
               <Tooltip
-                formatter={(value, index) => [
-                  podsArray[extractNumber(index as string) + 1] +
-                    ": " +
-                    Number(value).toFixed(3) +
-                    unit,
-                ]}
+                formatter={(value, index) => [index + ": " + Number(value).toFixed(3) + unit]}
                 labelFormatter={(value) => formatDate(new Date(value)).split(" ")[1]}
                 labelStyle={{ color: "#24282C" }}
                 contentStyle={{ fontFamily: "Consolas", opacity: 0.75 }}
+                wrapperStyle={{ zIndex: 100, position: "absolute" }}
               />
               {data?.map((item, index) => {
                 return (
                   <Area
                     key={index}
                     type="monotone"
-                    dataKey={`value${index}`}
+                    dataKey={getLineName(item)}
                     stroke={strokeColorArray[index]}
                     fill={fillColor}
                     strokeWidth={2}
@@ -227,18 +256,28 @@ export default function AreaCard(props: {
           ) : (
             <>
               <Tooltip
-                formatter={(value, index) => [Number(value).toFixed(3) + unit]}
+                formatter={(value, index) => [index + ": " + Number(value).toFixed(3) + unit]}
                 labelFormatter={(value) => formatDate(new Date(value)).split(" ")[1]}
                 labelStyle={{ color: "#24282C" }}
                 contentStyle={{ fontFamily: "Consolas", opacity: 0.75 }}
+                wrapperStyle={{ zIndex: 100 }}
               />
-              <Area
-                type="monotone"
-                dataKey="value0"
-                stroke={strokeColor}
-                fill={fillColor}
-                strokeWidth={2}
-              />
+              {data?.map((item, index) => {
+                if (item.metric.pod === podName) {
+                  return (
+                    <Area
+                      key={index}
+                      type="monotone"
+                      dataKey={getLineName(item)}
+                      stroke={strokeColorArray[index]}
+                      fill={fillColor}
+                      strokeWidth={2}
+                    />
+                  );
+                } else {
+                  return null;
+                }
+              })}
             </>
           )}
         </AreaChart>

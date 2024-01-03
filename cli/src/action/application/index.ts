@@ -119,7 +119,7 @@ export async function init(appid: string, options: { sync: boolean; basicMode: b
     policyPull()
     // pull functions
     funcPull({ force: true })
-    // pull env 
+    // pull env
     envPull()
   }
   console.log(`${getEmoji('🚀')} application ${app.name} init success`)

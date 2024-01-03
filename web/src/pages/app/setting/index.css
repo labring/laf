@@ -1,0 +1,5 @@
+/* stylelint-disable selector-class-pattern */
+.chakra-modal__content-container::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
