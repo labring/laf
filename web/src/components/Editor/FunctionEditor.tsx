@@ -117,26 +117,34 @@ function FunctionEditor(props: {
 
   useEffect(() => {
     if (monacoEl && !editorRef.current) {
-      performInit(true);
-      editorRef.current = monaco.editor.create(monacoEl.current!, {
-        minimap: {
-          enabled: false,
-        },
-        language: "typescript",
-        automaticLayout: true,
-        scrollbar: {
-          verticalScrollbarSize: 4,
-          horizontalScrollbarSize: 8,
-        },
-        formatOnPaste: true,
-        overviewRulerLanes: 0,
-        lineNumbersMinChars: 4,
-        fontSize: fontSize,
-        theme: colorMode === COLOR_MODE.dark ? "vs-dark" : "vs",
-        fontFamily: "Fira Code",
-        fontWeight: "450",
-        scrollBeyondLastLine: false,
-      });
+      performInit(true)
+        .catch((e) => {
+          if (e.message?.includes("already initialized")) {
+            return;
+          }
+          throw e;
+        })
+        .then(() => {
+          editorRef.current = monaco.editor.create(monacoEl.current!, {
+            minimap: {
+              enabled: false,
+            },
+            language: "typescript",
+            automaticLayout: true,
+            scrollbar: {
+              verticalScrollbarSize: 4,
+              horizontalScrollbarSize: 8,
+            },
+            formatOnPaste: true,
+            overviewRulerLanes: 0,
+            lineNumbersMinChars: 4,
+            fontSize: fontSize,
+            theme: colorMode === COLOR_MODE.dark ? "vs-dark" : "vs",
+            fontFamily: "Fira Code",
+            fontWeight: "450",
+            scrollBeyondLastLine: false,
+          });
+        });
     }
 
     allFunctionList.forEach((item: any) => {
