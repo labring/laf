@@ -13,7 +13,7 @@ import * as path from 'node:path'
 import { ensureDirectory, readDirectoryRecursive, compareFileMD5, exist } from '../../util/file'
 import * as fs from 'node:fs'
 import * as mime from 'mime'
-import { ListObjectsCommand, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
+import { ListObjectsCommand, GetObjectCommand, PutObjectCommand, DeleteObjectCommand, ServiceUnavailableException } from '@aws-sdk/client-s3';
 import { Readable } from 'node:stream'
 import { AppSchema } from '../../schema/app'
 
@@ -140,9 +140,18 @@ export async function push(bucketName: string, inPath: string, options: { force:
     bucketName = appSchema.appid + '-' + bucketName
   }
 
-  const client = getS3ClientV3(appSchema.storage)
-  const listCommand = new ListObjectsCommand({ Bucket: bucketName, Delimiter: '' })
-  const res = await client.send(listCommand)
+  const client = getS3ClientV3(appSchema.storage);
+  try {
+    const listCommand = new ListObjectsCommand({ Bucket: bucketName, Delimiter: '' });
+    const res = await client.send(listCommand);
+  } catch (error) {
+    if (error instanceof ServiceUnavailableException) {
+      console.log(`${getEmoji('❌')} The S3 service is currently unavailable. Please try again later.`);
+      return;
+    }
+    throw error;
+  }
+  const bucketObjects = res.Contents || [];
   const bucketObjects = res.Contents || []
 
   const absPath = path.resolve(inPath)
@@ -170,7 +179,15 @@ export async function push(bucketName: string, inPath: string, options: { force:
         Body: fs.readFileSync(path.resolve(absPath, file.absPath)),
         ContentType: mime.getType(file.key),
       })
-      await client.send(putCommand)
+      try {
+        await client.send(putCommand);
+      } catch (error) {
+        if (error instanceof ServiceUnavailableException) {
+          console.log(`${getEmoji('❌')} The S3 service is currently unavailable. Please try again later.`);
+          return;
+        }
+        throw error;
+      }
 
       if (options.detail) {
         console.log(`${getEmoji('📤')} upload file: ${file.absPath}`)
