@@ -125,16 +125,16 @@ const CreateAppModal = (props: {
     dedicatedDatabase: !application?.bundle.resource.databaseCapacity
       ? {
           cpu:
-            application?.bundle.resource.dedicatedDatabase.limitCPU ||
+            application?.bundle.resource.dedicatedDatabase?.limitCPU ||
             sortedBundles[0].spec.dedicatedDatabaseCPU.value,
           memory:
-            application?.bundle.resource.dedicatedDatabase.limitMemory ||
+            application?.bundle.resource.dedicatedDatabase?.limitMemory ||
             sortedBundles[0].spec.dedicatedDatabaseMemory.value,
           capacity:
-            application?.bundle.resource.dedicatedDatabase.capacity ||
+            application?.bundle.resource.dedicatedDatabase?.capacity ||
             sortedBundles[0].spec.dedicatedDatabaseCapacity.value,
           replicas:
-            application?.bundle.resource.dedicatedDatabase.replicas ||
+            application?.bundle.resource.dedicatedDatabase?.replicas ||
             sortedBundles[0].spec.dedicatedDatabaseReplicas.value,
         }
       : undefined,
@@ -333,7 +333,7 @@ const CreateAppModal = (props: {
                     />
                     <DatabaseBundleControl
                       bundle={bundle}
-                      originCapacity={application?.bundle.resource.dedicatedDatabase.capacity}
+                      originCapacity={application?.bundle.resource.dedicatedDatabase?.capacity}
                       onBundleItemChange={(k: string, v?: number) => {
                         setBundle((prev) => {
                           const v1 = _.cloneDeep(_.set(prev, k, v));

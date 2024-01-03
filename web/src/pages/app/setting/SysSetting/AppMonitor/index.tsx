@@ -19,7 +19,7 @@ export default function AppMonitor() {
   const { currentApp } = useGlobalStore();
   const { limitCPU, limitMemory, databaseCapacity, storageCapacity, dedicatedDatabase } =
     currentApp.bundle.resource;
-  const dedicatedDatabaseCPU = dedicatedDatabase.limitCPU;
+  const dedicatedDatabaseCPU = dedicatedDatabase?.limitCPU;
 
   const [dataNumber, setDataNumber] = useState(0);
   const queryClient = useQueryClient();
