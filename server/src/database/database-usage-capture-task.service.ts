@@ -79,7 +79,9 @@ export class DatabaseUsageCaptureTaskService {
   }
 
   async captureDatabaseUsage(appid: string) {
-    const { db, client } = await this.databaseService.findAndConnect(appid)
+    const res = await this.databaseService.findAndConnect(appid)
+    if (!res) return
+    const { client, db } = res
     try {
       const data = await db.stats()
       const { dataSize } = data

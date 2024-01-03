@@ -16,6 +16,7 @@ import { DomainPhase, DomainState } from './entities/runtime-domain'
 import { BucketDomain } from './entities/bucket-domain'
 import { WebsiteHostingGatewayService } from './ingress/website-ingress.service'
 import { DatabaseService } from 'src/database/database.service'
+import { DedicatedDatabaseService } from 'src/database/dedicated-database/dedicated-database.service'
 
 @Injectable()
 export class WebsiteTaskService {
@@ -27,6 +28,7 @@ export class WebsiteTaskService {
     private readonly websiteGateway: WebsiteHostingGatewayService,
     private readonly certService: CertificateService,
     private readonly databaseService: DatabaseService,
+    private readonly dedicatedDatabaseService: DedicatedDatabaseService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
@@ -304,9 +306,9 @@ export class WebsiteTaskService {
   }
 
   async publish(website: WebsiteHosting) {
-    const { db, client } = await this.databaseService.findAndConnect(
-      website.appid,
-    )
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(website.appid)) ||
+      (await this.databaseService.findAndConnect(website.appid))
     const session = client.startSession()
 
     try {
@@ -323,9 +325,9 @@ export class WebsiteTaskService {
   }
 
   async unpublish(website: WebsiteHosting) {
-    const { db, client } = await this.databaseService.findAndConnect(
-      website.appid,
-    )
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(website.appid)) ||
+      (await this.databaseService.findAndConnect(website.appid))
 
     try {
       const coll = db.collection(CN_PUBLISHED_WEBSITE_HOSTING)
