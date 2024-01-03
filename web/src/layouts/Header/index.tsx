@@ -7,7 +7,7 @@ import ColorModeSwitch from "@/components/ColorModeSwitch";
 import { ChatIcon, DocIcon } from "@/components/CommonIcon";
 import LanguageSwitch from "@/components/LanguageSwitch";
 import { Logo, LogoText } from "@/components/LogoIcon";
-import { COLOR_MODE, Routes, site_url } from "@/constants";
+import { COLOR_MODE, Routes } from "@/constants";
 import { getAvatarUrl } from "@/utils/getAvatarUrl";
 
 import UserSetting from "../../pages/app/setting/UserSetting";
@@ -31,7 +31,7 @@ const Header = (props: { className?: string }) => {
   const navList_right = [
     {
       text: t("HomePage.NavBar.docs"),
-      ref: site_url.laf_doc,
+      ref: siteSettings.laf_doc_url?.value,
       icon: <DocIcon boxSize={5} />,
     },
     {

@@ -14,6 +14,7 @@ import CollectionDataList from "./CollectionDataList";
 import CollectionListPanel from "./CollectionListPanel";
 import PolicyDataList from "./PolicyDataList";
 import PolicyListPanel from "./PolicyListPanel";
+import { usePolicyListQuery } from "./service";
 
 import useDBMStore from "./store";
 
@@ -22,21 +23,34 @@ function DatabasePage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const store = useDBMStore((state) => state);
   const settingStore = useCustomSettingStore();
+
+  const { data: policyList } = usePolicyListQuery((data) => {
+    if (data.data.length === 0) {
+      store.setCurrentPolicy(undefined);
+    } else if (store.currentPolicy === undefined) {
+      store.setCurrentPolicy(data?.data[0]);
+    }
+  });
+
   return (
     <Content>
       <Row className="flex-grow" ref={containerRef}>
-        <Col {...settingStore.layoutInfo.collectionPage.SideBar}>
+        <Col style={{ width: settingStore.layoutInfo.collectionPage.SideBar.style.width }}>
           <CollectionListPanel />
-          <Resize
-            type="y"
-            pageId="collectionPage"
-            panelId="PolicyPanel"
-            reverse
-            containerRef={containerRef}
-          />
-          <Row {...settingStore.layoutInfo.collectionPage.PolicyPanel}>
-            <PolicyListPanel />
-          </Row>
+          {!!policyList?.data?.length && (
+            <>
+              <Resize
+                type="y"
+                pageId="collectionPage"
+                panelId="PolicyPanel"
+                reverse
+                containerRef={containerRef}
+              />
+              <Row {...settingStore.layoutInfo.collectionPage.PolicyPanel}>
+                <PolicyListPanel policyList={policyList} />
+              </Row>
+            </>
+          )}
         </Col>
         <Resize type="x" pageId="collectionPage" panelId="SideBar" containerRef={containerRef} />
         <Col>

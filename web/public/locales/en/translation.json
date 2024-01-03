@@ -28,7 +28,7 @@
     "EmptyCollectionTip": "You have not created a collection",
     "EmptyDataText": "No data information,",
     "EmptyPolicyTip": "You have not created a policy",
-    "EmptyRuleTip": "This policy has no rules yet,",
+    "EmptyRuleTip": "This policy has no rules",
     "Query": "Please input the MongoDb query statement, press Enter to query. For example: { _id: ObjectId('') }.",
     "Search": "Please enter ID to search",
     "CreateTagTip": "Press \"Enter\" to separate tags, each tag can be up to 16 characters",
@@ -119,7 +119,7 @@
     "SystemDependence": "Built-In",
     "Value": "Value",
     "isSupport": "Whether to support",
-    "FunctionNameRule": "Function names must consist of letters, numbers, periods (.), and hyphens (-), matching the regex: /^[a-zA-Z0-9.-]{1,128}$/.",
+    "FunctionNameRule": "Function names must consist of letters, numbers, periods (.), and hyphens (-), matching the regex: /^[a-zA-Z0-9_.\\-](?:[a-zA-Z0-9_.\\-/]{0,254}[a-zA-Z0-9_.\\-])?$/.",
     "EmptyDebugTip": "No results yet",
     "EmptyFunctionTip": "You have not created the function",
     "UploadButton": "upload",
@@ -135,7 +135,10 @@
     "HistoryTips": "No historical versions available",
     "NoDesc": "No Description",
     "CurrentVersion": "Current Version",
-    "HistoryVersion": "History version"
+    "HistoryVersion": "History version",
+    "MoveFunctionTip": "Are you sure to move {{srcFunc}} to {{targetDir}} directory?",
+    "MoveFunctionToRootTip": "Are you sure to move {{srcFunc}} to the root directory?",
+    "MovingFunction": "Moving functions..."
   },
   "HomePanel": {
     "APP": "Android or iOS app",
@@ -165,7 +168,9 @@
     "cpu": "CPU",
     "memory": "Memory",
     "databaseCapacity": "Database",
-    "storageCapacity": "Storage"
+    "storageCapacity": "Storage",
+    "capacity": "Capacity",
+    "replicas": "Replicas"
   },
   "LogPanel": {
     "Detail": "Log Details",
@@ -224,16 +229,18 @@
     "CostTrend": "Cost Trend",
     "Balance": "Balance",
     "Pause": "Pause",
-    "AppMonitor": "Application Monitor",
     "PauseTips": "Are you sure you want to pause this application?",
     "RestartTips": "Are you sure you want to restart this application?",
     "CommonSetting": "Common Settings",
-    "ClientSetting": "Client Settings",
     "EditorFont": "Editor Font",
     "FontSize": "Font Size",
     "FuncListDisplay": "Function List Display",
     "ListDisplay": "List Display",
-    "OldLogs": "Old Logs"
+    "OldLogs": "Old Logs",
+    "MonitorSetting": "Resource Monitor",
+    "DatabaseMonitor": "Database monitor",
+    "RuntimeMonitor": "Runtime monitor",
+    "ClientSetting": "Client settings"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -279,7 +286,7 @@
     "Inaccessible": "Inaccessible",
     "isResolved": "Effective",
     "cnameTip": "Add the \"CNAME\" record of the domain to resolve to <strong>{{cnameDomain}}</strong>, After the resolution takes effect, the custom domain name can be bound.",
-    "editHostTip": "oss-bucket needs to be in read mode to enable website hosting",
+    "editHostTip": "oss-bucket needs to be in readOnly mode to enable website hosting",
     "CreateWebHosting": "Bind custom domain name",
     "CustomDomain": "Custom Domain",
     "CurrentDomain": "Current domain: ",
@@ -292,7 +299,15 @@
     "CustomApplicationDomain": "Custom Application Domain",
     "BucketNameisRequired": "Bucket name is required",
     "Fail": "upload failed",
-    "UploadFailTip": "{{number}} files upload failed"
+    "UploadFailTip": "{{number}} files upload failed",
+    "StartAppTips": " Please start the application first",
+    "SuccessfullyHosted": "Successfully hosted",
+    "SuccessfullyHostedTips": "HTTP is active, HTTPS activation may take some time. To check the hosting status, use HTTP for now.",
+    "BucketTips": "Newly created buckets or buckets after app restart need to wait for 15 ~ 30 s to take effect",
+    "DomainNotResolved": "Try using ping or nslookup to check if domain name resolution is effective",
+    "DeleteFiles": "Are you sure you want to delete {{num}} directories or files?",
+    "DeletingFiles": "Deleting {{num}} directories or files...",
+    "DeleteFilesResult": "Delete directories or files: {{successNum}} success, {{failedNum}} failed."
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -313,7 +328,8 @@
     "EmptyTriggerTip": "You have not created a trigger,",
     "Every8AM": "8 am every day",
     "EveryHour": "per hour",
-    "EveryFiveMinutes": "every five minutes"
+    "EveryFiveMinutes": "every five minutes",
+    "createFail": "Trigger limit reached. Upgrade app configuration."
   },
   "StatusBar": {
     "CurrentApplication": "Current App"
@@ -354,7 +370,8 @@
     "RAM": "RAM",
     "Database": "Database",
     "Storage": "Storage",
-    "NetworkTraffic": "NetworkTraffic"
+    "NetworkTraffic": "NetworkTraffic",
+    "QueryOperand": "Query operands"
   },
   "Price": {
     "Free": "Free"
@@ -393,7 +410,8 @@
     "LoginOrRegister": "Login / Register",
     "BindGitHub": "Bind GitHub",
     "BindSuccess": "Bind Successfully",
-    "GitHubLogin": "GitHub Login"
+    "GitHubLogin": "GitHub Login",
+    "PleaseBindUser": "Please bind your user"
   },
   "Time": "Time",
   "CreateTime": "Created",
@@ -514,7 +532,12 @@
     "ChooseSpecifications": "Choose Specifications",
     "autoscaling": "AutoScaling",
     "Number of Instances": "Number of Instances",
-    "CPU Threshold": "CPU Threshold"
+    "CPU Threshold": "CPU Threshold",
+    "DatabaseSpecification": "Database specification",
+    "DedicatedType": "Dedicated",
+    "SharedType": "Shared",
+    "ApplicationSecification": "Application specification",
+    "DatabaseCreateTip": "Once a database is created, its type and number of instances cannot be temporarily modified. The capacity can only increase, not decrease. If there are special needs, please contact our customer service."
   },
   "Storage Threshold": "Storage Threshold",
   "Template": {
@@ -692,5 +715,20 @@
     "logs": "Logs"
   },
   "Deprecated": "Deprecated",
-  "All": "All"
+  "All": "All",
+  "DatabaseMonitor": {
+    "Connections": "Connections",
+    "DocumentOperand": "Document operands",
+    "PageError": "Page error(ops/s)",
+    "Resource": "Resource",
+    "Performance": "Performance",
+    "Capacity": "Capacity"
+  },
+  "DatabaseBundleControlTip": "Once a database is created, its type and number of instances cannot be temporarily modified, and its capacity can only increase and not decrease. If you have special needs, please contact customer service",
+  "MoveFunction": "Move function",
+  "UpgradeVersionTip": {
+    "Title": "Laf is ready to update!",
+    "Description": "Click to update"
+  }
 }
+

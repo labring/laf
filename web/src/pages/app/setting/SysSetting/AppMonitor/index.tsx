@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Center, Spinner } from "@chakra-ui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import clsx from "clsx";
 
 import { ErrorIcon } from "@/components/CommonIcon";
 
@@ -16,7 +17,9 @@ import useGlobalStore from "@/pages/globalStore";
 export default function AppMonitor() {
   const { t } = useTranslation();
   const { currentApp } = useGlobalStore();
-  const { limitCPU, limitMemory, databaseCapacity, storageCapacity } = currentApp.bundle.resource;
+  const { limitCPU, limitMemory, databaseCapacity, storageCapacity, dedicatedDatabase } =
+    currentApp.bundle.resource;
+  const dedicatedDatabaseCPU = dedicatedDatabase?.limitCPU;
 
   const [dataNumber, setDataNumber] = useState(0);
   const queryClient = useQueryClient();
@@ -51,7 +54,7 @@ export default function AppMonitor() {
         </Center>
       ) : monitorData?.data && Object.keys(monitorData?.data).length !== 0 ? (
         <>
-          <div className="mr-4 mt-10 h-[413px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
+          <div className="mr-4 mt-10 h-[440px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
             <AreaCard
               data={monitorData?.data?.cpuUsage}
               strokeColor="#47C8BF"
@@ -76,19 +79,40 @@ export default function AppMonitor() {
               className="h-1/2 p-4"
             />
           </div>
-          <div className="mr-2 mt-10 h-[396px] w-full space-y-4">
-            <PieCard
-              data={monitorData?.data?.databaseUsage}
-              maxValue={databaseCapacity}
-              title={t("Spec.Database")}
-              colors={["#47C8BF", "#D5D6E1"]}
-            />
-            <PieCard
-              data={monitorData?.data?.storageUsage}
-              maxValue={storageCapacity}
-              title={t("Spec.Storage")}
-              colors={["#9A8EE0", "#D5D6E1"]}
-            />
+          <div
+            className={clsx(
+              "mr-2",
+              "mt-10",
+              !dedicatedDatabaseCPU ? "h-[423px]" : "h-[440px]",
+              "w-full",
+              "space-y-4",
+              "pb-0",
+            )}
+          >
+            {!dedicatedDatabaseCPU ? (
+              <>
+                <PieCard
+                  data={monitorData?.data?.databaseUsage}
+                  maxValue={databaseCapacity}
+                  title={t("Spec.Database")}
+                  colors={["#47C8BF", "#D5D6E1"]}
+                />
+                <PieCard
+                  data={monitorData?.data?.storageUsage}
+                  maxValue={storageCapacity}
+                  title={t("Spec.Storage")}
+                  colors={["#9A8EE0", "#D5D6E1"]}
+                />
+              </>
+            ) : (
+              <PieCard
+                data={monitorData?.data?.storageUsage}
+                maxValue={storageCapacity}
+                title={t("Spec.Storage")}
+                colors={["#9A8EE0", "#D5D6E1"]}
+                heightClass="h-full"
+              />
+            )}
           </div>
         </>
       ) : (

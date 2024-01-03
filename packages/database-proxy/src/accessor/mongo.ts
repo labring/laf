@@ -10,14 +10,7 @@ import {
   CreateIndexResult,
 } from './accessor'
 import { Params, ActionType, Order, Direction } from '../types'
-import {
-  MongoClient,
-  ObjectId,
-  MongoClientOptions,
-  Db,
-  UpdateOptions,
-  Filter,
-} from 'mongodb'
+import { MongoClient, ObjectId, UpdateOptions, Filter } from 'mongodb'
 import * as mongodb from 'mongodb'
 import { DefaultLogger, LoggerInterface } from '../logger'
 import { EventEmitter } from 'events'
@@ -25,46 +18,17 @@ import { EJSON } from 'bson'
 import { AggregateStage } from 'database-ql/dist/commonjs/interface'
 
 /**
- * Mongodb Accessor 负责执行 mongodb 数据操作
- *
- * 连接参数同 mongodb nodejs driver，参考以下链接：
- * @see https://docs.mongodb.com/manual/reference/connection-string/
- *
- * 实例化本对象后，须调用 `init()` 待数据库连接成功，方可执行数据操作。
- * ```js
- *  const accessor = new MongoAccessor('dbname', 'mongodb://localhost:27017', { directConnection: true })
- *
- *  accessor.init()
- * ```
- *
- * 可通过 `ready` 属性等待数据库连接就绪，该属性为 `Promise` 对象：
- * ```js
- *  accessor.ready.then(() => {
- *      // 连接就绪，可进行数据操作
- *  })
- * ```
+ * Mongodb Accessor is responsible for performing MongoDB data operations.
  */
 export class MongoAccessor implements AccessorInterface {
-  readonly type: string = 'mongo'
+  readonly type = 'mongo'
 
-  /**
-   * 数据库名
-   */
-  readonly db_name: string
-  readonly conn: MongoClient
+  readonly client: MongoClient
   protected _event = new EventEmitter()
 
-  /**
-   * `ready` 属性可用于等待数据库连接就绪，该属性为 `Promise` 对象：
-   * ```js
-   *  accessor.ready.then(() => {
-   *      // 连接就绪，可进行数据操作
-   *  })
-   * ```
-   */
-  ready: Promise<MongoClient>
-
-  db: Db
+  get db() {
+    return this.client.db()
+  }
 
   private _logger: LoggerInterface
 
@@ -79,34 +43,8 @@ export class MongoAccessor implements AccessorInterface {
     this._logger = logger
   }
 
-  /**
-   * Mongodb Accessor 负责执行 mongodb 数据操作
-   *
-   * 连接参数同 mongodb nodejs driver，参考以下链接：
-   * @see https://docs.mongodb.com/manual/reference/connection-string/
-   *
-   * 实例化本对象后，须调用 `init()` 待数据库连接成功，方可执行数据操作。
-   * ```js
-   *  const accessor = new MongoAccessor('dbname', 'mongodb://localhost:27017', { directConnection: true })
-   *
-   *  accessor.init()
-   * ```
-   *
-   * 可通过 `ready` 属性等待数据库连接就绪，该属性为 `Promise` 对象：
-   * ```js
-   *  accessor.ready.then(() => {
-   *      // 连接就绪，可进行数据操作
-   *  })
-   * ```
-   */
-  constructor(db: string, url: string, options?: MongoClientOptions) {
-    this.db_name = db
-    this.conn = new MongoClient(url, options || {})
-    this.db = null
-    // 初始化为空 Promise，永远不被 resolved
-    this.ready = new Promise(() => {
-      /* nop */
-    })
+  constructor(client: MongoClient) {
+    this.client = client
   }
 
   emit(event: string | symbol, ...args: any[]): boolean {
@@ -129,34 +67,11 @@ export class MongoAccessor implements AccessorInterface {
     this._event.off(event, listener)
   }
 
-  /**
-   * 初始化实例: 执行数据库连接
-   * @returns Promise<MongoClient>
-   */
-  async init() {
-    this.logger.info(`mongo accessor connecting...`)
-    this.ready = this.conn.connect().then((ret) => {
-      this.logger.info(`mongo accessor connected, db: ` + this.db_name)
-      this.db = this.conn.db(this.db_name)
-      return ret
-    })
-
-    return await this.ready
-  }
-
-  /**
-   * 关闭连接
-   */
   async close() {
-    await this.conn.close()
+    await this.client.close()
     this.logger.info('mongo connection closed')
   }
 
-  /**
-   * 执行数据请求
-   * @param params 数据请求参数
-   * @returns
-   */
   async execute(
     params: Params
   ): Promise<
@@ -205,7 +120,7 @@ export class MongoAccessor implements AccessorInterface {
   }
 
   /**
-   * 查询单个文档，主要用于 `访问规则` 中的数据查询
+   * Query a single document, mainly used for data queries in `access rules`
    */
   async get(collection: string, query: Filter<any>): Promise<any> {
     const coll = this.db.collection(collection)
@@ -213,7 +128,7 @@ export class MongoAccessor implements AccessorInterface {
   }
 
   /**
-   * 触发查询结果事件
+   * Emit result event
    * @param params
    * @param data
    */
@@ -222,10 +137,10 @@ export class MongoAccessor implements AccessorInterface {
   }
 
   /**
-   * 执行查询文档操作
-   * @param collection 集合名
-   * @param params 请求参数
-   * @returns 查询结果
+   * Execute read query
+   * @param collection collection name
+   * @param params query params
+   * @returns
    */
   protected async read(
     collection: string,
@@ -405,11 +320,12 @@ export class MongoAccessor implements AccessorInterface {
       result = await coll.insertMany(data)
     }
 
+    const ids =
+      (result as mongodb.InsertManyResult).insertedIds ||
+      (result as mongodb.InsertOneResult).insertedId
+
     const ret: AddResult = {
-      _id: this.serializeBson(
-        (result as mongodb.InsertManyResult).insertedIds ||
-          (result as mongodb.InsertOneResult).insertedId
-      ) as any,
+      _id: this.serializeBson(ids) as any,
       insertedCount: (result as mongodb.InsertManyResult).insertedCount,
     }
 
@@ -423,7 +339,7 @@ export class MongoAccessor implements AccessorInterface {
   }
 
   /**
-   * 执行删除文档操作
+   * Execute remove query
    * @param collection 集合名
    * @param params 请求参数
    * @returns 执行结果
@@ -439,7 +355,7 @@ export class MongoAccessor implements AccessorInterface {
     let result: any
     this.logger.debug(`mongo before remove {${collection}}: `, { query, multi })
 
-    // multi 表示单条或多条删除
+    // multi means delete one or more
     if (!multi) {
       result = await coll.deleteOne(query)
     } else {
@@ -456,10 +372,10 @@ export class MongoAccessor implements AccessorInterface {
   }
 
   /**
-   * 执行文档计数操作
-   * @param collection 集合名
-   * @param params 请求参数
-   * @returns 执行结果
+   * Execute count query
+   * @param collection collection name
+   * @param params query params
+   * @returns
    */
   protected async count(
     collection: string,

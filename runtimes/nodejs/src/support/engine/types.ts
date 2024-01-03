@@ -31,6 +31,7 @@ export interface FunctionModuleGlobalContext {
   global: FunctionModuleGlobalContext
   __from_modules: string[]
   fetch: typeof globalThis.fetch
+  ObjectId: typeof ObjectId
 }
 
 /**
@@ -42,6 +43,7 @@ export interface FunctionContext {
   query?: any
   body?: any
   user?: any
+  params?: any
   requestId?: string
   method?: string
   socket?: WebSocket

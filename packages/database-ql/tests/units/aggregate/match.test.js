@@ -1,6 +1,6 @@
 const { Actions, getDb } = require('../_utils')
 const assert = require('assert')
-const { ObjectId, Binary } = require('bson')
+const { ObjectId, Binary, EJSON } = require('bson')
 
 describe('db-ql(unit): db::aggregate()::$match', () => {
   it('match() should be ok', async () => {

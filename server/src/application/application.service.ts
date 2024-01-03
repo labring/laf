@@ -26,6 +26,8 @@ import { GroupMember } from 'src/group/entities/group-member'
 import { RegionService } from 'src/region/region.service'
 import { assert } from 'console'
 import { Region } from 'src/region/entities/region'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { ApplicationCreatingEvent } from './events/application-creating.event'
 
 @Injectable()
 export class ApplicationService {
@@ -33,7 +35,8 @@ export class ApplicationService {
 
   constructor(
     private readonly groupService: GroupService,
-    readonly regionService: RegionService,
+    private readonly regionService: RegionService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -88,6 +91,16 @@ export class ApplicationService {
           updatedAt: new Date(),
         },
         { session },
+      )
+
+      await this.eventEmitter.emitAsync(
+        ApplicationCreatingEvent.eventName,
+        new ApplicationCreatingEvent({
+          region,
+          appid,
+          session,
+          dto,
+        }),
       )
 
       // create application
@@ -173,6 +186,8 @@ export class ApplicationService {
       .project<ApplicationWithRelations>({
         'bundle.resource.requestCPU': 0,
         'bundle.resource.requestMemory': 0,
+        'bundle.resource.dedicatedDatabase.requestCPU': 0,
+        'bundle.resource.dedicatedDatabase.requestMemory': 0,
       })
       .toArray()
 
@@ -217,6 +232,8 @@ export class ApplicationService {
       .project<ApplicationWithRelations>({
         'bundle.resource.requestCPU': 0,
         'bundle.resource.requestMemory': 0,
+        'bundle.resource.dedicatedDatabase.requestCPU': 0,
+        'bundle.resource.dedicatedDatabase.requestMemory': 0,
       })
       .next()
 
@@ -331,28 +348,46 @@ export class ApplicationService {
     dto: UpdateApplicationBundleDto,
     isTrialTier: boolean,
   ) {
-    const db = SystemDatabase.db
     const region = await this.regionService.findByAppId(appid)
     assert(region, 'region cannot be empty')
 
     const resource = this.buildBundleResource(region, dto)
     const autoscaling = this.buildAutoscalingConfig(dto)
 
-    const res = await db
-      .collection<ApplicationBundle>('ApplicationBundle')
-      .findOneAndUpdate(
-        { appid },
-        { $set: { resource, autoscaling, updatedAt: new Date(), isTrialTier } },
-        {
-          projection: {
-            'bundle.resource.requestCPU': 0,
-            'bundle.resource.requestMemory': 0,
-          },
-          returnDocument: 'after',
-        },
-      )
+    const client = SystemDatabase.client
+    const db = SystemDatabase.db
+    const session = client.startSession()
 
-    return res.value
+    try {
+      session.startTransaction()
+
+      const res = await db
+        .collection<ApplicationBundle>('ApplicationBundle')
+        .findOneAndUpdate(
+          { appid },
+          {
+            $set: { resource, autoscaling, updatedAt: new Date(), isTrialTier },
+          },
+          {
+            projection: {
+              'bundle.resource.requestCPU': 0,
+              'bundle.resource.requestMemory': 0,
+              'bundle.resource.dedicatedDatabase.requestCPU': 0,
+              'bundle.resource.dedicatedDatabase.requestMemory': 0,
+            },
+            returnDocument: 'after',
+          },
+        )
+
+      await session.commitTransaction()
+      return res.value
+    } catch (error) {
+      await session.abortTransaction()
+      this.logger.error(error)
+      throw error
+    } finally {
+      await session.endSession()
+    }
   }
 
   async remove(appid: string) {
@@ -416,12 +451,19 @@ export class ApplicationService {
     const limitStorageTPS = Math.floor(dto.cpu * 1)
     const reservedTimeAfterExpired = 60 * 60 * 24 * 31 // 31 days
 
+    const ddbRequestCPU = dto.dedicatedDatabase
+      ? Math.floor(dto.dedicatedDatabase.cpu * cpuRatio)
+      : 0
+    const ddbRequestMemory = dto.dedicatedDatabase
+      ? Math.floor(dto.dedicatedDatabase.memory * memoryRatio)
+      : 0
+
     const resource = new ApplicationBundleResource({
       limitCPU: dto.cpu,
       limitMemory: dto.memory,
       requestCPU,
       requestMemory,
-      databaseCapacity: dto.databaseCapacity,
+      databaseCapacity: dto.databaseCapacity || 0,
       storageCapacity: dto.storageCapacity,
 
       limitCountOfCloudFunction,
@@ -432,6 +474,15 @@ export class ApplicationService {
       limitDatabaseTPS,
       limitStorageTPS,
       reservedTimeAfterExpired,
+
+      dedicatedDatabase: {
+        limitCPU: dto.dedicatedDatabase?.cpu || 0,
+        limitMemory: dto.dedicatedDatabase?.memory || 0,
+        requestCPU: ddbRequestCPU,
+        requestMemory: ddbRequestMemory,
+        capacity: dto.dedicatedDatabase?.capacity || 0,
+        replicas: dto.dedicatedDatabase?.replicas || 0,
+      },
     })
 
     return resource

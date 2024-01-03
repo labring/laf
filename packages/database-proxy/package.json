@@ -1,7 +1,7 @@
 {
   "name": "database-proxy",
-  "version": "1.0.0-beta.12",
-  "description": "通过一套「访问控制规则」配置数据库访问，用一个 API 替代服务端 90% 的数据访问 APIs。",
+  "version": "1.0.0-beta.14-patch0",
+  "description": "Through a set of access control rules configuration database access to realize the client directly access the database via HTTP.",
   "main": "./dist",
   "scripts": {
     "test-all": "mocha tests/**/*test.js",
@@ -27,17 +27,16 @@
   "author": "maslow(wangfugen@126.com)",
   "license": "ISC",
   "dependencies": {
-    "database-ql": "^1.0.0-beta.12",
-    "lodash": "^4.17.21",
-    "mongodb": "^4.1.1",
+    "database-ql": "^1.0.0-beta.14-patch0",
+    "mongodb": "^5.9.2",
     "mysql2": "^2.2.5",
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@types/node": "^12.12.5",
+    "@types/node": "^20.10.4",
     "@types/validator": "^10.11.3",
     "mocha": "^9.0.2",
-    "typescript": "^3.6.4"
+    "typescript": "^5.3.3"
   },
   "lint-staged": {
     "*.{ts,js}": "eslint --fix"

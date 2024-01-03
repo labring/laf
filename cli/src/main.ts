@@ -13,7 +13,6 @@ import { command as triggerCommand } from './command/trigger'
 import { command as databaseCommand } from './command/database'
 import { command as environmentCommand } from './command/environment'
 
-
 const program = new Command()
 program.option('-v, --version', 'output version').action((options) => {
   if (!options.version) {

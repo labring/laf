@@ -9,6 +9,10 @@ import {
   ListObjectsCommandInput,
   PutObjectCommand,
   GetObjectCommand,
+  GetObjectCommandOutput,
+  PutObjectCommandOutput,
+  DeleteObjectCommandOutput,
+  ListObjectsCommandOutput,
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
@@ -21,6 +25,54 @@ export interface SdkStreamMixin {
   transformToByteArray: () => Promise<Uint8Array>
   transformToString: (encoding?: string) => Promise<string>
   transformToWebStream: () => ReadableStream
+}
+
+export interface ResponseMetadata {
+  /**
+   * The status code of the last HTTP response received for this operation.
+   */
+  httpStatusCode?: number
+  /**
+   * A unique identifier for the last request sent for this operation. Often
+   * requested by AWS service teams to aid in debugging.
+   */
+  requestId?: string
+  /**
+   * A secondary identifier for the last request sent. Used for debugging.
+   */
+  extendedRequestId?: string
+  /**
+   * A tertiary identifier for the last request sent. Used for debugging.
+   */
+  cfId?: string
+  /**
+   * The number of times this operation was attempted.
+   */
+  attempts?: number
+  /**
+   * The total amount of time (in milliseconds) that was spent waiting between
+   * retry attempts.
+   */
+  totalRetryDelay?: number
+}
+
+export interface ExtendGetObjectCommandOutput extends GetObjectCommandOutput {
+  Body: NodeJsRuntimeStreamingBlobPayloadOutputTypes
+  $metadata: ResponseMetadata
+}
+
+export interface ExtendPutObjectCommandOutput extends PutObjectCommandOutput {
+  $metadata: ResponseMetadata
+}
+
+export interface ExtendDeleteObjectCommandOutput
+  extends DeleteObjectCommandOutput {
+  $metadata: ResponseMetadata
+}
+
+export interface ExtendListObjectsCommandOutput
+  extends ListObjectsCommandOutput {
+  $metadata: ResponseMetadata
 }
 
 /**
@@ -144,7 +196,7 @@ export class CloudStorageBucket {
   public async readFile(
     filename: string,
     options?: Omit<GetObjectCommandInput, 'Bucket' | 'Key'>
-  ): Promise<NodeJsRuntimeStreamingBlobPayloadOutputTypes> {
+  ) {
     assert(filename, 'filename is required')
     const internal = this.storage.getInternalS3Client()
 
@@ -153,8 +205,9 @@ export class CloudStorageBucket {
       Key: filename,
       ...options,
     }
+
     const res = await internal.getObject(args)
-    return res.Body as NodeJsRuntimeStreamingBlobPayloadOutputTypes
+    return res as ExtendGetObjectCommandOutput
   }
 
   /**
@@ -181,7 +234,7 @@ export class CloudStorageBucket {
       ...options,
     }
     const res = await external.putObject(args)
-    return res
+    return res as ExtendPutObjectCommandOutput
   }
 
   /**
@@ -204,7 +257,7 @@ export class CloudStorageBucket {
       ...options,
     }
     const res = await external.deleteObject(args)
-    return res
+    return res as ExtendDeleteObjectCommandOutput
   }
 
   /**
@@ -214,19 +267,15 @@ export class CloudStorageBucket {
    * @returns
    * @see https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjects.html
    */
-  public async listFiles(
-    prefix?: string,
-    options?: Omit<ListObjectsCommandInput, 'Bucket' | 'Prefix'>
-  ) {
+  public async listFiles(options?: Omit<ListObjectsCommandInput, 'Bucket'>) {
     const internal = this.storage.getInternalS3Client()
 
     const args: ListObjectsCommandInput = {
       Bucket: this.name,
-      Prefix: prefix,
       ...options,
     }
     const res = await internal.listObjects(args)
-    return res
+    return res as ExtendListObjectsCommandOutput
   }
 
   /**

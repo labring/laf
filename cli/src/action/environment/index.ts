@@ -1,7 +1,7 @@
-import { environmentVariableControllerGet, environmentVariableControllerUpdateAll } from "../../api/v1/application";
-import { AppSchema } from "../../schema/app";
-import { EnvironmentSchema } from "../../schema/environment";
-import { getEmoji } from "../../util/print";
+import { environmentVariableControllerGet, environmentVariableControllerUpdateAll } from '../../api/v1/application'
+import { AppSchema } from '../../schema/app'
+import { EnvironmentSchema } from '../../schema/environment'
+import { getEmoji } from '../../util/print'
 
 export async function pull(): Promise<void> {
   const appSchema = AppSchema.read()

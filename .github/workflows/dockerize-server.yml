@@ -6,17 +6,17 @@ on:
     branches: [main]
     types: [opened, synchronize, reopened]
     paths:
-      - 'server/**'
-      - '.github/workflows/dockerize-server.yml'
-      - '!**/*.md'
-      - '!server/package-lock.json'
+      - "server/**"
+      - ".github/workflows/dockerize-server.yml"
+      - "!**/*.md"
+      - "!server/package-lock.json"
   push:
     branches: [main]
     paths:
-      - 'server/**'
-      - '.github/workflows/dockerize-server.yml'
-      - '!**/*.md'
-      - '!server/package-lock.json'
+      - "server/**"
+      - ".github/workflows/dockerize-server.yml"
+      - "!**/*.md"
+      - "!server/package-lock.json"
 
 # permissions:
 #   pull-requests: write
@@ -93,6 +93,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
+        id: docker-build
         uses: docker/build-push-action@v3
         with:
           context: ./server
@@ -101,17 +102,18 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64, linux/arm64
-      
+
       - name: Comment docker image tags to PR
         if: github.event_name == 'pull_request_target'
         uses: mshick/add-pr-comment@v2
         with:
-          message-id: 'dockerize-server'
+          message-id: "dockerize-server"
           message: |
             **:boom: laf server image built successfully for pr ${{ github.event.pull_request.number }}**
             ```
             ${{ steps.meta.outputs.tags }}
             ```
+            digest: `${{ steps.docker-build.outputs.digest }}`
 
   trigger-workflow-build-cluster-image:
     needs: [dockerize-server]
