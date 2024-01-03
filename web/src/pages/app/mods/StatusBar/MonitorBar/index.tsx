@@ -19,7 +19,7 @@ export default function MonitorBar() {
   const { currentApp } = useGlobalStore();
   const { t } = useTranslation();
   const { limitCPU, limitMemory, storageCapacity, dedicatedDatabase } = currentApp.bundle.resource;
-  const dedicatedDatabaseLimitCPU = dedicatedDatabase.limitCPU;
+  const dedicatedDatabaseLimitCPU = dedicatedDatabase?.limitCPU;
   let { databaseCapacity } = currentApp.bundle.resource;
   databaseCapacity = dedicatedDatabaseLimitCPU ? dedicatedDatabase.capacity : databaseCapacity;
 

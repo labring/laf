@@ -28,7 +28,7 @@ export default function SysSetting(props: {
   currentTab?: string;
 }) {
   const { currentApp } = useGlobalStore();
-  const dedicatedDatabaseLimitCPU = currentApp.bundle.resource.dedicatedDatabase.limitCPU;
+  const dedicatedDatabaseLimitCPU = currentApp.bundle.resource.dedicatedDatabase?.limitCPU;
 
   const monitorItems = useMemo(() => {
     const items = [
