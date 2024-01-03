@@ -26,14 +26,15 @@ kubectl create namespace ${NAMESPACE} || true
 set -e
 set -x
 
-DATABASE_URL="mongodb://${DB_USERNAME:-admin}:${PASSWD_OR_SECRET}@mongodb-0.mongo.${NAMESPACE}.svc.cluster.local:27017/sys_db?authSource=admin&replicaSet=rs0&w=majority"
-helm install mongodb -n ${NAMESPACE} \
-    --set db.username=${DB_USERNAME:-admin} \
-    --set db.password=${PASSWD_OR_SECRET} \
-    --set storage.size=${DB_PV_SIZE:-5Gi} \
-    ./charts/mongodb
+sed "s/\$CAPACITY/${DB_PV_SIZE:-5Gi}/g" mongodb.yaml | kubectl apply -n ${NAMESPACE} -f -
+kubectl wait --for=condition=exists --timeout=120s secret/mongodb-conn-credential -n ${NAMESPACE}
 
-## 3. install prometheus
+DB_USERNAME=$(kubectl get secret -n ${NAMESPACE} mongodb-conn-credential -ojsonpath='{.data.username}' | base64 -d)
+DB_PASSWORD=$(kubectl get secret -n ${NAMESPACE} mongodb-conn-credential -ojsonpath='{.data.password}' | base64 -d)
+DB_ENDPOINT=$(kubectl get secret -n ${NAMESPACE} mongodb-conn-credential -ojsonpath='{.data.headlessEndpoint}' | base64 -d)
+DATABASE_URL="mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_ENDPOINT}/sys_db?authSource=admin&replicaSet=rs0&w=majority"
+
+## 2. install prometheus
 PROMETHEUS_URL=http://prometheus-operated.${NAMESPACE}.svc.cluster.local:9090
 if [ "$ENABLE_MONITOR" = "true" ]; then
     sed -e "s/\$NAMESPACE/$NAMESPACE/g" \
@@ -43,16 +44,9 @@ if [ "$ENABLE_MONITOR" = "true" ]; then
     helm install prometheus --version 48.3.3 -n ${NAMESPACE} \
         -f ./prometheus-helm-with-values.yaml \
         ./charts/kube-prometheus-stack
-
-    helm install prometheus-mongodb-exporter --version 3.2.0 -n ${NAMESPACE} \
-        --set mongodb.uri=${DATABASE_URL} \
-        --set serviceMonitor.enabled=true \
-        --set serviceMonitor.additionalLabels.release=prometheus \
-        --set serviceMonitor.additionalLabels.namespace=${NAMESPACE} \
-        ./charts/prometheus-mongodb-exporter
 fi
 
-## 4. install minio
+## 3. install minio
 MINIO_ROOT_ACCESS_KEY=minio-root-user
 MINIO_ROOT_SECRET_KEY=$PASSWD_OR_SECRET
 MINIO_DOMAIN=oss.${DOMAIN}
@@ -70,9 +64,18 @@ helm install minio -n ${NAMESPACE} \
     --set metrics.serviceMonitor.additionalLabels.namespace=${NAMESPACE} \
     ./charts/minio
 
-## 5. install laf-server
+## 4. install laf-server
 SERVER_JWT_SECRET=$PASSWD_OR_SECRET
 RUNTIME_EXPORTER_SECRET=$PASSWD_OR_SECRET
+
+DEPLOY_MANIFEST=$(jq -n '{}')
+for file in deploy-manifest/*.yaml; do
+    content=$(cat "$file" | jq -Rs .)
+    key=$(basename "$file")
+    DEPLOY_MANIFEST=$(echo "$DEPLOY_MANIFEST" | jq --arg key "$key" --arg value "$content" '. + {($key): $value}')
+done
+DEPLOY_MANIFEST=$(echo "$DEPLOY_MANIFEST" | sed "s/\$NAMESPACE/$NAMESPACE/g")
+
 helm install server -n ${NAMESPACE} \
     --set databaseUrl=${DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
@@ -89,11 +92,12 @@ helm install server -n ${NAMESPACE} \
     --set default_region.runtime_domain=${DOMAIN} \
     --set default_region.website_domain=${DOMAIN} \
     --set default_region.tls.enabled=false \
-    --set default_region.runtime_exporter_secret=${RUNTIME_EXPORTER_SECRET} \
+    $([ "$ENABLE_MONITOR" = "true" ] && echo "--set default_region.runtime_exporter_secret=${RUNTIME_EXPORTER_SECRET}") \
     $([ "$ENABLE_MONITOR" = "true" ] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}") \
+    --set default_region.deploy_manifest=${DEPLOY_MANIFEST}
     ./charts/laf-server
 
-## 6. install laf-web
+## 5. install laf-web
 helm install web -n ${NAMESPACE} \
     --set domain=${DOMAIN} \
     ./charts/laf-web

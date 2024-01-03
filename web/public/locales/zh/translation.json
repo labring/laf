@@ -168,7 +168,9 @@
     "cpu": "CPU",
     "memory": "内存",
     "databaseCapacity": "数据库",
-    "storageCapacity": "云存储"
+    "storageCapacity": "云存储",
+    "capacity": "容量",
+    "replicas": "实例数"
   },
   "LogPanel": {
     "Detail": "日志详情",
@@ -227,11 +229,9 @@
     "CostTrend": "成本趋势",
     "Balance": "余额",
     "Pause": "暂停应用",
-    "AppMonitor": "资源监控",
     "PauseTips": "确定要暂停此应用吗？",
     "RestartTips": "确定要重启此应用吗？",
     "CommonSetting": "常用设置",
-    "ClientSetting": "客户端设置",
     "EditorFont": "编辑器字体",
     "FontSize": "字体大小",
     "FuncListDisplay": "函数列表显示",
@@ -240,8 +240,12 @@
     "isOpenLanguageServer": "是否开启语言服务（仅在应用配置高于 0.5C 1G 时生效）",
     "Editor": "编辑器",
     "FuncList": "函数列表",
+    "EditorMode": "使用编辑器模式",
     "OldLogs": "旧版日志",
-    "EditorMode": "使用编辑器模式"
+    "MonitorSetting": "资源监控",
+    "DatabaseMonitor": "数据库监控",
+    "RuntimeMonitor": "运行时监控",
+    "ClientSetting": "客户端设置"
   },
   "StoragePanel": {
     "All": "总容量",
@@ -371,7 +375,8 @@
     "RAM": "内存",
     "Database": "数据库",
     "Storage": "云存储",
-    "NetworkTraffic": "出网流量"
+    "NetworkTraffic": "出网流量",
+    "QueryOperand": "查询操作数"
   },
   "Price": {
     "Free": "免费"
@@ -581,7 +586,12 @@
     "ChooseSpecifications": "选择规格",
     "autoscaling": "弹性伸缩",
     "Number of Instances": "实例数",
-    "CPU Threshold": "CPU 阈值"
+    "CPU Threshold": "CPU 阈值",
+    "DatabaseSpecification": "数据库规格",
+    "DedicatedType": "专用型",
+    "SharedType": "共享型",
+    "ApplicationSecification": "应用规格",
+    "DatabaseCreateTip": "数据库一旦创建后，暂时无法修改类型和实例数，容量只增不减，如有特殊需要请联系客服"
   },
   "Storage Threshold": "内存阈值",
   "Yesterday": "昨天",
@@ -728,10 +738,18 @@
   },
   "Deprecated": "已弃用",
   "All": "全部",
+  "DatabaseMonitor": {
+    "Connections": "连接数",
+    "DocumentOperand": "文档操作数",
+    "PageError": "页错误(ops/s)",
+    "Resource": "资源",
+    "Performance": "性能",
+    "Capacity": "容量"
+  },
+  "DatabaseBundleControlTip": "数据库一旦创建后，暂时无法修改类型和实例数，容量只增不减，如有特殊需要请联系客服",
   "MoveFunction": "移动函数",
   "UpgradeVersionTip": {
     "Title": "Laf 新版本已经准备好了！",
     "Description": "点击立即更新"
   }
 }
-

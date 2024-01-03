@@ -15,6 +15,7 @@ import { ApplicationWithRelations } from 'src/application/entities/application'
 import { ApplicationService } from 'src/application/application.service'
 import * as assert from 'assert'
 import { CloudBinBucketService } from 'src/storage/cloud-bin-bucket.service'
+import { DedicatedDatabaseService } from 'src/database/dedicated-database/dedicated-database.service'
 
 @Injectable()
 export class InstanceService {
@@ -24,6 +25,7 @@ export class InstanceService {
     private readonly cluster: ClusterService,
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
+    private readonly dedicatedDatabaseService: DedicatedDatabaseService,
     private readonly applicationService: ApplicationService,
     private readonly cloudbin: CloudBinBucketService,
   ) {}
@@ -244,11 +246,20 @@ export class InstanceService {
     const npm_install_flags = region.clusterConf.npmInstallFlags || ''
 
     // db connection uri
-    const database = await this.databaseService.findOne(appid)
-    const dbConnectionUri = this.databaseService.getInternalConnectionUri(
-      region,
-      database,
-    )
+    let dbConnectionUri: string
+    const dedicatedDatabase = await this.dedicatedDatabaseService.findOne(appid)
+    if (dedicatedDatabase) {
+      dbConnectionUri = await this.dedicatedDatabaseService.getConnectionUri(
+        region,
+        dedicatedDatabase,
+      )
+    } else {
+      const database = await this.databaseService.findOne(appid)
+      dbConnectionUri = this.databaseService.getInternalConnectionUri(
+        region,
+        database,
+      )
+    }
 
     const storage = await this.storageService.findOne(appid)
     const NODE_MODULES_PUSH_URL =
