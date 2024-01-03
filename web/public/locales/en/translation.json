@@ -28,7 +28,7 @@
     "EmptyCollectionTip": "You have not created a collection",
     "EmptyDataText": "No data information,",
     "EmptyPolicyTip": "You have not created a policy",
-    "EmptyRuleTip": "This policy has no rules yet,",
+    "EmptyRuleTip": "This policy has no rules",
     "Query": "Please input the MongoDb query statement, press Enter to query. For example: { _id: ObjectId('') }.",
     "Search": "Please enter ID to search",
     "CreateTagTip": "Press \"Enter\" to separate tags, each tag can be up to 16 characters",
@@ -731,3 +731,4 @@
     "Description": "Click to update"
   }
 }
+
