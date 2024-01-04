@@ -68,22 +68,36 @@ function FunctionEditor(props: {
       const lspWebSocket = createWebSocketAndStartClient(url, globalStore.currentApp.develop_token);
       setLSPStatus("initializing");
 
-      lspWebSocket.addEventListener("message", (event) => {
-        const message = JSON.parse(event.data);
-        if (message.method === "textDocument/publishDiagnostics") {
-          setLSPStatus("ready");
-          return;
-        }
-      });
+      const abortController = new AbortController();
 
-      lspWebSocket.addEventListener("close", () => {
-        setLSPStatus("closed");
-      });
+      lspWebSocket.addEventListener(
+        "message",
+        (event) => {
+          const message = JSON.parse(event.data);
+          if (message.method === "textDocument/publishDiagnostics") {
+            setLSPStatus("ready");
+            return;
+          }
+        },
+        abortController,
+      );
 
-      lspWebSocket.addEventListener("error", () => {
-        setLSPStatus("error");
-        lspWebSocket?.close();
-      });
+      lspWebSocket.addEventListener(
+        "close",
+        () => {
+          setLSPStatus("closed");
+        },
+        abortController,
+      );
+
+      lspWebSocket.addEventListener(
+        "error",
+        () => {
+          setLSPStatus("error");
+          lspWebSocket?.close();
+        },
+        abortController,
+      );
 
       window.onbeforeunload = () => {
         // On page reload/exit, close web socket connection
@@ -93,6 +107,7 @@ function FunctionEditor(props: {
 
       return () => {
         // On component unmount, close web socket connection
+        abortController.abort();
         lspWebSocket.close();
         setLSPStatus("closed");
       };

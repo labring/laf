@@ -34,22 +34,36 @@ export default function LSPBar() {
     setLspWebSocket(newLspWebSocket);
     setLSPStatus("initializing");
 
-    newLspWebSocket.addEventListener("message", (event) => {
-      const message = JSON.parse(event.data);
-      if (message.method === "textDocument/publishDiagnostics") {
-        setLSPStatus("ready");
-        return;
-      }
-    });
+    const abortController = new AbortController();
 
-    newLspWebSocket.addEventListener("close", () => {
-      setLSPStatus("closed");
-    });
+    newLspWebSocket.addEventListener(
+      "message",
+      (event) => {
+        const message = JSON.parse(event.data);
+        if (message.method === "textDocument/publishDiagnostics") {
+          setLSPStatus("ready");
+          return;
+        }
+      },
+      abortController,
+    );
 
-    newLspWebSocket.addEventListener("error", () => {
-      setLSPStatus("error");
-      lspWebSocket?.close();
-    });
+    newLspWebSocket.addEventListener(
+      "close",
+      () => {
+        setLSPStatus("closed");
+      },
+      abortController,
+    );
+
+    newLspWebSocket.addEventListener(
+      "error",
+      () => {
+        setLSPStatus("error");
+        lspWebSocket?.close();
+      },
+      abortController,
+    );
 
     window.onbeforeunload = () => {
       // On page reload/exit, close web socket connection
@@ -59,6 +73,7 @@ export default function LSPBar() {
 
     return () => {
       // Cleanup function for component unmount or page unload
+      abortController.abort();
       newLspWebSocket.close();
       setLSPStatus("closed");
     };
