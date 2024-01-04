@@ -98,7 +98,7 @@ function FunctionEditor(props: {
       };
     };
     if (globalStore.currentApp.state === APP_STATUS.Running && url) {
-      startLSP();
+      return startLSP();
     }
   }, [globalStore.currentApp.develop_token, globalStore.currentApp.state, url]);
 
