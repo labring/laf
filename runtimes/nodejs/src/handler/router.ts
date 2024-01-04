@@ -12,6 +12,7 @@ import { handleDatabaseProxy } from './db-proxy'
 import { handlePackageTypings } from './typings'
 import { generateUUID } from '../support/utils'
 import { handleInvokeFunction } from './invoke'
+import { DatabaseAgent } from '../db'
 
 /**
  * multer uploader config
@@ -36,7 +37,13 @@ export const router = Router()
 
 router.post('/proxy/:policy', handleDatabaseProxy)
 router.get('/_/typing/package', handlePackageTypings)
-router.get('/_/healthz', (_req, res) => res.status(200).send('ok'))
+router.get('/_/healthz', (_req, res) => {
+  if (DatabaseAgent.client) {
+    res.status(200).send('ok')
+  } else {
+    res.status(503).send('db is not ready')
+  }
+})
 
 /**
  * Invoke cloud function through HTTP request.
