@@ -196,6 +196,8 @@ export class DedicatedDatabaseService {
       database: database.name,
       options: {
         authSource: 'admin',
+        replicaSet: `${name}-mongodb`,
+        w: 'majority',
       },
       scheme: 'mongodb',
     })
