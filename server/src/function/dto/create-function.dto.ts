@@ -43,11 +43,9 @@ export class CreateFunctionDto {
     if (this.tags?.length >= 8) {
       return 'tags length must less than 8'
     }
-
-    if (this.name.includes('./') || this.name.includes('../')) {
+    if (this.name.includes('./')) {
       return 'the relative path is not allowed in function name'
     }
-
     return null
   }
 }
