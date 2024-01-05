@@ -8,7 +8,7 @@
 创建一个固定命名为 `__websocket__` 的云函数，该云函数专用于处理 WebSocket 连接。
 
 ::: tip
-WebSocket 云函数名为固定云函数名：__websocket__，其他名称均不会生效
+WebSocket 云函数名为固定云函数名：`__websocket__`，其他名称均不会生效
 :::
 
 以下是处理 WebSocket 的示例代码：
