@@ -22,9 +22,9 @@ const EditableTable = function (props: {
   column: TColumnItem[];
   tableData: any[] | undefined;
   configuration: TConfiguration;
-  onEdit: (data: any) => any;
-  onDelete: (data: any) => any;
-  onCreate: (data: any) => any;
+  onEdit: (data: any) => Promise<any>;
+  onDelete: (data: any) => Promise<any>;
+  onCreate: (data: any) => Promise<any>;
 }) {
   const { column, tableData, configuration, onEdit, onCreate, onDelete } = props;
   const [columnList, setColumnList] = useState<TColumnItem[]>(column);
@@ -86,15 +86,10 @@ const EditableTable = function (props: {
           "border-frostyNightfall-200": !darkMode,
         })}
       >
-        <TableContainer
-          roundedTop={"md"}
-          h={configuration?.tableHeight || "250px"}
-          overflowY="auto"
-          ref={tableRef}
-        >
+        <TableContainer h={configuration?.tableHeight || "250px"} overflowY="auto" ref={tableRef}>
           <Table variant="simple">
             <Thead
-              className={clsx("border-b", {
+              className={clsx({
                 "bg-lafWhite-300": !darkMode,
                 "text-grayModern-500": !darkMode,
               })}
@@ -118,9 +113,8 @@ const EditableTable = function (props: {
                 return (
                   <Tr
                     key={item[configuration.key]}
-                    className={clsx("!h-12 border-b", {
+                    className={clsx({
                       "hover:bg-lafWhite-300": !darkMode,
-                      "border-frostyNightfall-200": !darkMode,
                     })}
                   >
                     {item.isEdit ? (
@@ -130,7 +124,7 @@ const EditableTable = function (props: {
                         onSave={(newData: any) => {
                           const data = { ...newData };
                           delete data.isEdit;
-                          onEdit({ newData: data, item });
+                          onEdit(data);
                         }}
                         onCancel={(key: string) => handleSwitchEdit(key, false)}
                       />
@@ -181,10 +175,8 @@ const EditableTable = function (props: {
           borderBottomLeftRadius: "10px",
           color: "#7B838B",
           fontWeight: 400,
-          fontSize: "12px",
-          width: "100%",
-          height: "48px",
         }}
+        py="6"
         onClick={handleAdd}
         variant="outline"
       >

@@ -336,9 +336,7 @@ export default function FunctionList() {
                 if (!recentFunctionList.map((item) => item._id).includes(item._id)) {
                   setRecentFunctionList([item as unknown as TFunction, ...recentFunctionList]);
                 }
-                navigate(`/app/${currentApp?.appid}/${Pages.function}/${item.name}`, {
-                  replace: true,
-                });
+                navigate(`/app/${currentApp?.appid}/${Pages.function}/${item.name}`);
               } else {
                 item.isExpanded = !item.isExpanded;
                 setFunctionRoot({ ...functionRoot });
