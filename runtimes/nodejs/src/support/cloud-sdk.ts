@@ -30,7 +30,7 @@ export function createCloudSdk() {
     parseToken: parseToken,
     mongo: {
       client: DatabaseAgent.client as any,
-      db: DatabaseAgent.client.db as any,
+      db: DatabaseAgent.db as any,
     },
     sockets: WebSocketAgent.clients,
     appid: Config.APPID,
