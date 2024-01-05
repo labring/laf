@@ -127,7 +127,7 @@ export class BillingPaymentTaskService {
 
         // stop application if balance is not enough
         if (newBalance < 0) {
-          await db.collection<Application>('Application').updateOne(
+          const res = await db.collection<Application>('Application').updateOne(
             { appid: billing.appid, state: ApplicationState.Running },
             {
               $set: {
@@ -137,9 +137,12 @@ export class BillingPaymentTaskService {
             },
             { session },
           )
-          this.logger.warn(
-            `Application ${billing.appid} stopped due to insufficient balance`,
-          )
+
+          if (res.modifiedCount > 0) {
+            this.logger.warn(
+              `Application ${billing.appid} stopped due to insufficient balance`,
+            )
+          }
         }
       })
     } catch (error) {
