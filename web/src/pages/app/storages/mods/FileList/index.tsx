@@ -102,7 +102,7 @@ export default function FileList() {
             "orange",
           );
           let cnt = 0;
-          await Promise.all(
+          await Promise.allSettled(
             selectedFiles.map((v) => deleteFile(bucketName!, v).then(() => cnt++)),
           ).finally(() => {
             refetch();
