@@ -124,7 +124,7 @@ const EditableTr = function (props: {
       {column.map((item: TColumnItem) => {
         const { width, key, editable = true, validate, editComponent } = item;
         return (
-          <Td maxWidth={width || undefined} key={key}>
+          <Td maxWidth={width || undefined} key={key} className="!py-[10px]">
             <FormControl isInvalid={invalidData && !invalidData[key].isValidate}>
               {editComponent ? (
                 editComponent({
@@ -142,6 +142,8 @@ const EditableTr = function (props: {
                   onChange={(e: any) => handleChange(e, key, validate)}
                   disabled={!editable && !isCreate}
                   placeholder={`${t("InputTip").toString()} ${key}`}
+                  className="!bg-lafWhite-500 !pl-2"
+                  style={{ fontFamily: "Inter" }}
                 />
               )}
               <FormErrorMessage>{invalidData && invalidData[key].errorInfo}</FormErrorMessage>
@@ -149,32 +151,30 @@ const EditableTr = function (props: {
           </Td>
         );
       })}
-      <Td maxWidth="150px">
-        <>
-          <TextButton
-            text={configuration?.saveButtonText ? configuration.saveButtonText : t("Confirm")}
-            type="submit"
-            onClick={() => {
-              let flag = true;
-              for (let { validate, key } of column) {
-                flag = validate && !handleValidate(key, formData[key], validate) ? false : flag;
-                if (!flag) {
-                  break;
-                }
+      <Td className="mr-1 flex justify-end !py-[18px]">
+        <TextButton
+          text={configuration?.saveButtonText ? configuration.saveButtonText : t("Confirm")}
+          type="submit"
+          onClick={() => {
+            let flag = true;
+            for (let { validate, key } of column) {
+              flag = validate && !handleValidate(key, formData[key], validate) ? false : flag;
+              if (!flag) {
+                break;
               }
-              if (flag) {
-                onSave(formData);
-              }
-            }}
-          />
-          <TextButton
-            text={configuration?.cancelButtonText ? configuration.cancelButtonText : t("Cancel")}
-            className="ml-4"
-            onClick={() => {
-              onCancel(formData[configuration.key]);
-            }}
-          />
-        </>
+            }
+            if (flag) {
+              onSave(formData);
+            }
+          }}
+        />
+        <TextButton
+          text={configuration?.cancelButtonText ? configuration.cancelButtonText : t("Cancel")}
+          className="ml-3"
+          onClick={() => {
+            onCancel(formData[configuration.key]);
+          }}
+        />
       </Td>
     </>
   );
