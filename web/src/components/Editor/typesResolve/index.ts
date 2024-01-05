@@ -82,6 +82,9 @@ export class AutoImportTypings {
    */
   loadDefaults(monaco: any) {
     this.addExtraLib({ path: "globals.d.ts", content: globalDeclare, monaco });
+    if (!this.isLoaded("@lafjs/cloud")) {
+      this.loadDeclaration("@lafjs/cloud", monaco);
+    }
     if (!this.isLoaded("globals")) {
       this.loadDeclaration("globals", monaco);
     }
@@ -128,17 +131,26 @@ export class AutoImportTypings {
   async loadDeclaration(packageName: string, monaco: any) {
     if (this.isLoaded(packageName)) return;
     try {
+      this._loaded.push(packageName);
+
       const r = await loadPackageTypings(packageName).catch((err: any) => console.error(err));
       if (r?.code) {
+        this._loaded = this._loaded.filter((x) => x !== packageName);
         return;
       }
 
       const rets = r.data || [];
       for (const lib of rets) {
+        // 修复包的类型入口文件不为 index.d.ts 的情况
+        if (packageName === lib.packageName && lib.path !== `${packageName}/index.d.ts`) {
+          const _lib = { ...lib };
+          _lib.path = `${packageName}/index.d.ts`;
+          this.addExtraLib({ path: _lib.path, content: _lib.content, monaco });
+        }
         this.addExtraLib({ path: lib.path, content: lib.content, monaco });
       }
-      this._loaded.push(packageName);
     } catch (error) {
+      this._loaded = this._loaded.filter((x) => x !== packageName);
       console.error(`failed to load package: ${packageName} :`, error);
     }
   }

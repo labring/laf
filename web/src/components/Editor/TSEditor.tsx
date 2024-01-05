@@ -59,8 +59,6 @@ export default function TSEditor(props: {
     overviewRulerLanes: 0,
     lineNumbersMinChars: 4,
     fontSize: fontSize,
-    fontFamily: "Fira Code",
-    fontWeight: "450",
     scrollBeyondLastLine: false,
   };
 

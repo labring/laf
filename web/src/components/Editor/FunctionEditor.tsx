@@ -155,8 +155,7 @@ function FunctionEditor(props: {
             lineNumbersMinChars: 4,
             fontSize: fontSize,
             theme: colorMode === COLOR_MODE.dark ? "vs-dark" : "vs",
-            fontFamily: "Fira Code",
-            fontWeight: "450",
+            fontWeight: "400",
             scrollBeyondLastLine: false,
           });
         });
