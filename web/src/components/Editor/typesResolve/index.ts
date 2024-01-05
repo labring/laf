@@ -1,4 +1,5 @@
 import axios from "axios";
+import * as monaco from "monaco-editor";
 
 import { globalDeclare } from "./globals";
 
@@ -67,47 +68,51 @@ export class AutoImportTypings {
    * @param {string} source ts 代码
    * @returns
    */
-  async parse(source: string, monaco: any) {
+  async parse(source: string) {
     const rets = this._parser.parseDependencies(source);
     if (!rets || !rets.length) return;
 
     const newImports = rets.filter((pkg) => !this.isLoaded(pkg));
     for (const pkg of newImports) {
-      await this.loadDeclaration(pkg, monaco);
+      await this.loadDeclaration(pkg);
     }
   }
 
   /**
    * Load default typings
    */
-  loadDefaults(monaco: any) {
-    this.addExtraLib({ path: "globals.d.ts", content: globalDeclare, monaco });
+  loadDefaults() {
+    this.addExtraLib({ path: "globals.d.ts", content: globalDeclare });
+    // if (!this.isLoaded("@lafjs/cloud")) {
+    //   this.loadDeclaration("@lafjs/cloud");
+    // }
     if (!this.isLoaded("globals")) {
-      this.loadDeclaration("globals", monaco);
+      this.loadDeclaration("globals");
     }
     if (!this.isLoaded("database-proxy")) {
-      this.loadDeclaration("database-proxy", monaco);
+      this.loadDeclaration("database-proxy");
     }
     if (!this.isLoaded("database-ql")) {
-      this.loadDeclaration("database-ql", monaco);
+      this.loadDeclaration("database-ql");
     }
     if (!this.isLoaded("axios")) {
-      this.loadDeclaration("axios", monaco);
+      this.loadDeclaration("axios");
     }
+    // if (!this.isLoaded('cloud-function-engine')) { this.loadDeclaration('cloud-function-engine') }
     if (!this.isLoaded("mongodb")) {
-      this.loadDeclaration("mongodb", monaco);
+      this.loadDeclaration("mongodb");
     }
     if (!this.isLoaded("@types/node")) {
-      this.loadDeclaration("@types/node", monaco);
+      this.loadDeclaration("@types/node");
     }
     if (!this.isLoaded("ws")) {
-      this.loadDeclaration("ws", monaco);
+      this.loadDeclaration("ws");
     }
     if (!this.isLoaded("@aws-sdk/client-s3")) {
-      this.loadDeclaration("@aws-sdk/client-s3", monaco);
+      this.loadDeclaration("@aws-sdk/client-s3");
     }
     if (!this.isLoaded("@aws-sdk/s3-request-presigner")) {
-      this.loadDeclaration("@aws-sdk/s3-request-presigner", monaco);
+      this.loadDeclaration("@aws-sdk/s3-request-presigner");
     }
   }
 
@@ -125,7 +130,7 @@ export class AutoImportTypings {
    * @param {string} packageName
    * @returns
    */
-  async loadDeclaration(packageName: string, monaco: any) {
+  async loadDeclaration(packageName: string) {
     if (this.isLoaded(packageName)) return;
     try {
       const r = await loadPackageTypings(packageName).catch((err: any) => console.error(err));
@@ -135,8 +140,15 @@ export class AutoImportTypings {
 
       const rets = r.data || [];
       for (const lib of rets) {
-        this.addExtraLib({ path: lib.path, content: lib.content, monaco });
+        // 修复包的类型入口文件不为 index.d.ts 的情况
+        if (packageName === lib.packageName && lib.path !== `${packageName}/index.d.ts`) {
+          const _lib = { ...lib };
+          _lib.path = `${packageName}/index.d.ts`;
+          this.addExtraLib(_lib);
+        }
+        this.addExtraLib(lib);
       }
+
       this._loaded.push(packageName);
     } catch (error) {
       console.error(`failed to load package: ${packageName} :`, error);
@@ -148,20 +160,27 @@ export class AutoImportTypings {
    * @param {path: string, content: string} param0
    * @returns
    */
-  addExtraLib({ path, content, monaco }: { path: string; content: string; monaco: any }) {
-    const fullPath = `file:///node_modules/${path}`;
+  addExtraLib({ path, content }: { path: string; content: string }) {
+    const fullpath = `file:///node_modules/${path}`;
     const defaults = monaco.languages.typescript.typescriptDefaults;
-    const loaded = defaults.getExtraLibs();
 
-    if (fullPath in loaded) {
+    const loaded = defaults.getExtraLibs();
+    const keys = Object.keys(loaded);
+
+    if (keys.includes(fullpath)) {
+      console.log(`${path} already exists in ts extralib`);
       return;
     }
     try {
-      defaults.addExtraLib(content, fullPath);
-      monaco.editor.createModel(content, "typescript", monaco.Uri.parse(fullPath));
+      defaults.addExtraLib(content, fullpath);
     } catch (error) {
-      console.log(error, fullPath);
+      console.log(error, fullpath, keys);
       throw error;
     }
+  }
+
+  getExtraLibs() {
+    const defaults = monaco.languages.typescript.typescriptDefaults;
+    return defaults.getExtraLibs();
   }
 }

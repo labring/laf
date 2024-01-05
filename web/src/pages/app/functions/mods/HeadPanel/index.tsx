@@ -37,13 +37,12 @@ function HeadPanel() {
 
   return (
     <Panel className="recentList !flex-row justify-between !px-0">
-      <SimpleBar style={{ flex: 1, overflowY: "hidden" }}>
-        <HStack className="flex-1" height="36px" data-simplebar>
+      <SimpleBar style={{ height: 36, flex: 1, overflowY: "hidden" }}>
+        <HStack className="h-9 flex-1" data-simplebar>
           <div className="flex h-full">
             {recentFunctionList.length > 0 &&
               recentFunctionList.map((item, index) => {
                 const selected = currentFunction?._id === item._id;
-                const isLast = recentFunctionList.length <= 1;
                 return (
                   <div
                     key={index}
@@ -64,9 +63,7 @@ function HeadPanel() {
                         : "px-[14px]",
                     )}
                     onClick={() => {
-                      navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`, {
-                        replace: true,
-                      });
+                      navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`);
                       setCurrentFunction(item);
                     }}
                   >
@@ -81,35 +78,27 @@ function HeadPanel() {
                     </div>
                     {functionCache.getCache(item?._id, (item as any)?.source?.code) !==
                     (item as any)?.source?.code ? (
-                      <span
-                        className={clsx(
-                          "ml-2 inline-block h-1 w-1 flex-none rounded-full bg-rose-500",
-                          !isLast ? "group-hover:hidden" : "",
-                        )}
-                      ></span>
+                      <span className="ml-2 inline-block h-1 w-1 flex-none rounded-full bg-rose-500 group-hover:hidden"></span>
                     ) : (
                       <span className="ml-2 inline-block h-1 w-1 flex-none rounded-full bg-none group-hover:hidden"></span>
                     )}
-                    <span className={clsx(!isLast ? "-mr-1 hidden group-hover:flex" : "hidden")}>
-                      <IconWrap
-                        size={16}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setRecentFunctionList(
-                            recentFunctionList.filter((i) => i._id !== item._id),
-                          );
-                          if (currentFunction?._id === item._id) {
-                            const nextFunction =
-                              recentFunctionList[index + 1] || recentFunctionList[0] || {};
-                            setCurrentFunction(nextFunction);
-                            navigate(
-                              `/app/${currentApp?.appid}/${Pages.function}/${nextFunction.name}`,
-                              { replace: true },
+                    <span className="-mr-1 hidden group-hover:flex">
+                      <IconWrap size={16}>
+                        <CloseIcon
+                          boxSize="2"
+                          className="!text-grayModern-600"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setRecentFunctionList(
+                              recentFunctionList.filter((i) => i._id !== item._id),
                             );
-                          }
-                        }}
-                      >
-                        <CloseIcon boxSize="2" className="!text-grayModern-600" />
+                            if (currentFunction?._id === item._id) {
+                              setCurrentFunction(
+                                recentFunctionList[index + 1] || recentFunctionList[0] || {},
+                              );
+                            }
+                          }}
+                        />
                       </IconWrap>
                     </span>
                   </div>
@@ -126,7 +115,6 @@ function HeadPanel() {
       </SimpleBar>
       <HStack
         minW="500px"
-        height="36px"
         className={clsx(
           "flex justify-end border-b-[2px] pr-2",
           !darkMode ? "border-[#EEF0F2] " : "border-[#1A202C]",

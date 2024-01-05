@@ -127,7 +127,7 @@ const CreateModal = (props: {
       showSuccess(isEdit ? t("update success") : t("create success"));
       onClose();
       reset(defaultValues);
-      navigate(`/app/${currentApp.appid}/function/${res.data.name}`, { replace: true });
+      navigate(`/app/${currentApp.appid}/function/${res.data.name}`);
     }
   };
 
@@ -278,7 +278,7 @@ const CreateModal = (props: {
         isOpen={templateOpen}
         onClose={() => {
           setTemplateOpen(!templateOpen);
-          navigate(`/app/${currentApp.appid}/function`, { replace: true });
+          navigate(`/app/${currentApp.appid}/function`);
         }}
       >
         <ModalOverlay />
