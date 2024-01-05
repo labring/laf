@@ -1,0 +1,87 @@
+.monaco-editor .margin {
+  background-color: #ffffff !important;
+}
+
+.monaco-editor {
+  --vscode-editor-background: #ffffff !important;
+}
+
+[data-theme="dark"] .monaco-editor .margin {
+  background-color: #202631 !important;
+}
+
+[data-theme="dark"] .monaco-editor {
+  --vscode-editor-background: #202631 !important;
+}
+
+.mtk8 {
+  color: #646893 !important;
+}
+
+.mtk4 {
+  color: #646893 !important;
+}
+
+[data-theme="dark"] .mtk7 {
+  color: #c99bdf !important;
+}
+
+[data-theme="dark"] .mtk4 {
+  color: #c99bdf !important;
+}
+
+.mtk6 {
+  color: #0178ce !important;
+}
+
+.mtk5 {
+  color: #0178ce !important;
+}
+
+.mtk1 {
+  color: #006674 !important;
+}
+
+.mtk20 {
+  color: #b934c5 !important;
+}
+
+.mtk11 {
+  color: #b934c5 !important;
+}
+
+[data-theme="dark"] .mtk9 {
+  color: #47c8bf !important;
+}
+
+[data-theme="dark"] .mtk11 {
+  color: #36adef !important;
+}
+
+[data-theme="dark"] .mtk1 {
+  color: #47c8bf !important;
+}
+
+[data-theme="dark"] .mtk5 {
+  color: #36adef !important;
+}
+
+[data-theme="dark"] .mtk8 {
+  color: #36adef !important;
+}
+
+.monaco-editor .bracket-highlighting-0 {
+  color: #b93a67 !important;
+}
+
+.monaco-editor .unexpected-closing-bracket {
+  color: #b93a67 !important;
+}
+
+.monaco-editor .bracket-highlighting-1 {
+  color: #b93a67 !important;
+}
+
+.monaco-editor .bracket-highlighting-2 {
+  color: #0178ce !important;
+}

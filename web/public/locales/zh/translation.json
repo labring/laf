@@ -236,6 +236,11 @@
     "FontSize": "字体大小",
     "FuncListDisplay": "函数列表显示",
     "ListDisplay": "列表显示",
+    "EditorLanguageServer": "编辑器语言服务",
+    "isOpenLanguageServer": "是否开启语言服务（仅在应用配置高于 0.5C 1G 时生效）",
+    "Editor": "编辑器",
+    "FuncList": "函数列表",
+    "EditorMode": "使用编辑器模式",
     "OldLogs": "旧版日志",
     "MonitorSetting": "资源监控",
     "DatabaseMonitor": "数据库监控",
@@ -713,6 +718,23 @@
     "PodLogs": "应用实例日志",
     "Export": "导出",
     "logs": "日志"
+  },
+  "KeyCannotBeEmpty": "Key 不能为空",
+  "ValueCannotBeEmpty": "Value 不能为空",
+  "AddENV": "新增环境变量",
+  "LSP": {
+    "InitLanguageServer": "点击以重新连接语言服务器",
+    "LanguageServerClosed": "语言服务器断开",
+    "LanguageServerError": "语言服务器错误",
+    "InitializingLanguageServer": "正在初始化语言服务",
+    "StartLanguageServer": "点击左侧”设置”启用语言服务器",
+    "EnableLanguageServer": "点击左侧”设置”启用语言服务器",
+    "LanguageServerNotEnable": "未启用语言服务"
+  },
+  "KeyAlreadyExists": "key 已经存在",
+  "SettingPanal": {
+    "EditorSettings": "编辑器设置",
+    "FunctionListSettings": "函数列表设置"
   },
   "Deprecated": "已弃用",
   "All": "全部",

@@ -3,13 +3,15 @@ import { LineNumbersType } from "vscode/vscode/vs/editor/common/config/editorOpt
 
 import { COLOR_MODE } from "@/constants";
 
-function JSONEditor(props: {
+const languageId = "dotenv";
+
+function ENVCodeEditor(props: {
   value: string;
   height?: string;
   colorMode?: string;
   onChange?: (value: string | undefined) => void;
 }) {
-  const { value, onChange, height = "90%", colorMode = COLOR_MODE.light } = props;
+  const { value, onChange, height = "100%", colorMode = COLOR_MODE.light } = props;
 
   const options = {
     lineNumbers: "off" as LineNumbersType,
@@ -26,7 +28,7 @@ function JSONEditor(props: {
       alwaysConsumeMouseWheel: false,
     },
     lineNumbersMinChars: 0,
-    fontSize: 12,
+    fontSize: 13,
     scrollBeyondLastLine: false,
     folding: false,
     overviewRulerBorder: false,
@@ -36,16 +38,31 @@ function JSONEditor(props: {
   return (
     <Editor
       height={height}
-      defaultLanguage="json"
       value={value}
       options={options}
       onChange={onChange}
-      theme={colorMode === COLOR_MODE.dark ? "JSONEditorThemeDark" : "JSONEditorTheme"}
+      language={languageId}
+      theme={colorMode === COLOR_MODE.dark ? "dotenvDarkTheme" : "dotenvTheme"}
       beforeMount={(monaco) => {
-        monaco?.editor.defineTheme("JSONEditorTheme", {
+        monaco.languages.register({
+          id: languageId,
+        });
+
+        monaco.languages.setMonarchTokensProvider(languageId, {
+          tokenizer: {
+            root: [
+              [/^\w+(?==)/, "key"],
+              [/(=)([^=]*)$/, ["operator", "value"]],
+              [/^#.*/, "comment"],
+              // new lines
+              [/.*/, "value"],
+            ],
+          },
+        });
+
+        monaco.editor.defineTheme("dotenvTheme", {
           base: "vs",
           inherit: true,
-          rules: [],
           colors: {
             "editor.background": "#ffffff00",
             "editorLineNumber.foreground": "#aaa",
@@ -55,9 +72,15 @@ function JSONEditor(props: {
             "editorIndentGuide.activeBackground": "#ddd",
             "editorIndentGuide.background": "#eee",
           },
+          rules: [
+            { token: "key", foreground: "953800" },
+            { token: "value", foreground: "2E4C7E" },
+            { token: "operator", foreground: "CF212E" },
+            { token: "comment", foreground: "0A3069" },
+          ],
         });
 
-        monaco?.editor.defineTheme("JSONEditorThemeDark", {
+        monaco?.editor.defineTheme("dotenvDarkTheme", {
           base: "vs-dark",
           inherit: true,
           rules: [],
@@ -71,4 +94,4 @@ function JSONEditor(props: {
   );
 }
 
-export default JSONEditor;
+export default ENVCodeEditor;

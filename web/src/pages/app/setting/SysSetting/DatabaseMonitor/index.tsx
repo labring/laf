@@ -181,7 +181,7 @@ export default function DatabaseMonitor() {
                 <Spinner />
               </Center>
             ) : performanceData?.data && Object.keys(performanceData?.data).length !== 0 ? (
-              <div className="mt-6 h-[430px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
+              <div className="mt-5 h-[430px] w-full rounded-xl border bg-[#F8FAFB] pb-4">
                 <AreaCard
                   data={performanceData?.data?.documentOperations}
                   strokeColor="#47C8BF"

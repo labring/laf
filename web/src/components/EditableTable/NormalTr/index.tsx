@@ -1,11 +1,10 @@
-import { EditIcon } from "@chakra-ui/icons";
 import { Td } from "@chakra-ui/react";
+import { useColorMode } from "@chakra-ui/react";
 import { t } from "i18next";
 
-import { RecycleDeleteIcon } from "@/components/CommonIcon";
+import { EditIconLine, RecycleDeleteIcon } from "@/components/CommonIcon";
 import IconWrap from "@/components/IconWrap";
 
-import ConfirmButton from "../../ConfirmButton";
 import { TColumnItem, TConfiguration } from "../EditableTr";
 
 import styles from "../index.module.scss";
@@ -18,6 +17,7 @@ const NormalTr = function (props: {
   configuration: TConfiguration;
 }) {
   const { data, column, configuration, onEdit, onDelete } = props;
+  const darkMode = useColorMode().colorMode === "dark";
   return (
     <>
       {column.map((item: TColumnItem) => {
@@ -27,34 +27,28 @@ const NormalTr = function (props: {
           </Td>
         );
       })}
-      <Td className="mr-2 flex items-end justify-end">
+      <Td className="mr-4 flex items-end justify-end">
         {configuration?.operationButtonsRender ? configuration.operationButtonsRender(data) : null}
         {!configuration?.hiddenEditButton ? (
           <IconWrap
-            className="mr-2"
+            className="mr-4"
             tooltip={
               configuration?.editButtonText ? configuration.editButtonText : t("Edit").toString()
             }
             size={20}
+            onClick={() => onEdit(data[configuration.key])}
           >
-            <EditIcon fontSize={15} onClick={() => onEdit(data[configuration.key])} />
+            <EditIconLine color={darkMode ? "white" : "black"} size={12} />
           </IconWrap>
         ) : null}
-        <ConfirmButton
-          onSuccessAction={() => onDelete(data[configuration.key])}
-          headerText={
+        <IconWrap
+          tooltip={
             configuration?.deleteButtonText ? configuration.deleteButtonText : String(t("Delete"))
           }
-          bodyText={t("DeleteConfirm")}
+          onClick={() => onDelete(data[configuration.key])}
         >
-          <IconWrap
-            tooltip={
-              configuration?.deleteButtonText ? configuration.deleteButtonText : String(t("Delete"))
-            }
-          >
-            <RecycleDeleteIcon fontSize={15} />
-          </IconWrap>
-        </ConfirmButton>
+          <RecycleDeleteIcon fontSize={15} />
+        </IconWrap>
       </Td>
     </>
   );

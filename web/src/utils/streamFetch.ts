@@ -42,11 +42,10 @@ export const streamFetch = ({ url, onMessage, firstResponse, abortSignal }: Stre
           onMessage(text);
           responseText += text;
         }
-        read();
+        await read();
       };
-      read();
+      await read();
     } catch (err: any) {
-      console.log(err, "====");
       reject(typeof err === "string" ? err : err?.message || "请求异常");
     }
   });

@@ -23,6 +23,12 @@ type storagePanel = "SideBar" | string;
 export type panel = functionPanel | collectionPanel | storagePanel;
 export type page = "functionPage" | "collectionPage" | "storagePage";
 
+type TCommonSettings = {
+  fontSize: number;
+  funcListDisplay: string;
+  useLSP: boolean;
+};
+
 type State = {
   layoutInfo: {
     storagePage: {
@@ -46,11 +52,8 @@ type State = {
     position: { width: number; height: number },
   ) => void;
   togglePanel: (pageId: page, panelId: panel) => void;
-  commonSettings: {
-    fontSize: number;
-    funcListDisplay: string;
-  };
-  setCommonSettings: (settings: { fontSize: number; funcListDisplay: String }) => void;
+  commonSettings: TCommonSettings;
+  setCommonSettings: (settings: TCommonSettings) => void;
 };
 
 const useCustomSettingStore = create<State>()(
@@ -173,6 +176,7 @@ const useCustomSettingStore = create<State>()(
         commonSettings: {
           fontSize: 14,
           funcListDisplay: "name",
+          useLSP: true,
         },
 
         setCommonSettings: (settings) => {
