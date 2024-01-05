@@ -1,5 +1,3 @@
-import { RUNTIMES_PATH } from "@/constants";
-
 function useFunctionCache() {
   const CACHE_KEY_PREFIX = "$cached_function@";
 
@@ -15,20 +13,10 @@ function useFunctionCache() {
     localStorage.removeItem(CACHE_KEY_PREFIX + functionId);
   }
 
-  function getPositionCache(path: string, _default: string = ""): string {
-    return localStorage.getItem(CACHE_KEY_PREFIX + path) || _default;
-  }
-
-  function setPositionCache(functionName: string, value: string) {
-    localStorage.setItem(CACHE_KEY_PREFIX + `${RUNTIMES_PATH}/${functionName}.ts`, value);
-  }
-
   return {
     getCache,
     setCache,
     removeCache,
-    getPositionCache,
-    setPositionCache,
   };
 }
 

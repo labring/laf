@@ -48,6 +48,9 @@ export default function DebugPanel(props: { containerRef: any }) {
     getFunctionUrl,
     currentFunction,
     setCurrentRequestId,
+    allFunctionList,
+    setAllFunctionList,
+    setCurrentFunction,
     setCurrentFuncLogs,
     setCurrentFuncTimeUsage,
   } = useFunctionStore((state: any) => state);
@@ -127,10 +130,19 @@ export default function DebugPanel(props: { containerRef: any }) {
         runningMethod: runningMethod,
       };
 
-      await updateDebugFunctionMutation.mutateAsync({
+      const res = await updateDebugFunctionMutation.mutateAsync({
         name: currentFunction?.name,
         params: params,
       });
+
+      if (!res.error) {
+        setCurrentFunction({ ...currentFunction, params: params });
+        setAllFunctionList(
+          allFunctionList.map((item: any) =>
+            item._id === currentFunction._id ? { ...currentFunction, params: params } : item,
+          ),
+        );
+      }
 
       if (!compileRes.error) {
         const _funcData = JSON.stringify(compileRes.data);

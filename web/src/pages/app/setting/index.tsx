@@ -87,8 +87,7 @@ const SettingModal = (props: {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent maxW={"80%"} width={"auto"} minW={1024}>
-          <ModalCloseButton />
-          <ModalBody py={2} minH={550} className="relative">
+          <ModalBody py={2} flex="none" minH={550} className="relative">
             <ModalCloseButton />
             <Box className="flex h-full" borderColor={borderColor}>
               <SectionList
@@ -136,7 +135,7 @@ const SettingModal = (props: {
                   })}
                 </div>
               </SectionList>
-              <div className="ml-[236px] h-full w-full p-2">
+              <div className="ml-[236px] w-full  p-2">
                 {React.cloneElement(item?.component || <></>, {
                   onClose,
                 })}

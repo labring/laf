@@ -92,11 +92,6 @@ export default function LogsModal(props: { children: React.ReactElement }) {
 
         setLogs((pre) => pre + logStr + "\n");
       },
-    }).catch((e) => {
-      if (e.includes("BodyStreamBuffer was aborte")) {
-        return;
-      }
-      throw e;
     });
     return controller;
   }, [podName, containerName, currentApp.appid]);
