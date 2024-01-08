@@ -236,6 +236,11 @@
     "FontSize": "Font Size",
     "FuncListDisplay": "Function List Display",
     "ListDisplay": "List Display",
+    "EditorLanguageServer": "Editor Language Server",
+    "isOpenLanguageServer": "Enable or Close Language server (only effective when the app config is above 0.5C 1G)",
+    "Editor": "Editor",
+    "FuncList": "Function List",
+    "EditorMode": "Editor Mode",
     "OldLogs": "Old Logs",
     "MonitorSetting": "Resource Monitor",
     "DatabaseMonitor": "Database monitor",
@@ -713,6 +718,23 @@
     "PodLogs": "App Instance Logs",
     "Export": "Export",
     "logs": "Logs"
+  },
+  "KeyCannotBeEmpty": "Key can't be empty",
+  "ValueCannotBeEmpty": "Value can't be empty",
+  "AddENV": "Add ENV",
+  "LSP": {
+    "InitLanguageServer": "Click to reconnect to language server",
+    "LanguageServerClosed": "Language Server Disconnected",
+    "LanguageServerError": "Language Server Error",
+    "InitializingLanguageServer": "Initializing Language Server",
+    "StartLanguageServer": "Click on 'Settings' on the left to enable the language server.",
+    "EnableLanguageServer": "Click on 'Settings' on the left to enable the language server.",
+    "LanguageServerNotEnable": "Language server not enabled"
+  },
+  "KeyAlreadyExists": "Key already exists",
+  "SettingPanal": {
+    "EditorSettings": "Editor Settings",
+    "FunctionListSettings": "Function list settings"
   },
   "Deprecated": "Deprecated",
   "All": "All",

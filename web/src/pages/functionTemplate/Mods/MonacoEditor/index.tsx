@@ -1,72 +1,14 @@
-import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import Editor from "@monaco-editor/react";
 import clsx from "clsx";
-import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 import { EditIconLine, RecycleDeleteIcon } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
 import { COLOR_MODE } from "@/constants";
 
-import "@/components/Editor/userWorker";
-
 import AddFunctionModal from "../../CreateFuncTemplate/Mods/AddFunctionModal";
 
 import FunctionPopOver from "./FunctionPopover";
-
-monaco?.editor.defineTheme("lafEditorTheme", {
-  base: "vs",
-  inherit: true,
-  rules: [
-    {
-      foreground: "#0066ff",
-      token: "keyword",
-    },
-  ],
-  colors: {
-    "editorLineNumber.foreground": "#aaa",
-    "editorOverviewRuler.border": "#fff",
-    "editor.lineHighlightBackground": "#F7F8FA",
-    "scrollbarSlider.background": "#E8EAEC",
-    "editorIndentGuide.activeBackground": "#fff",
-    "editorIndentGuide.background": "#eee",
-  },
-});
-
-monaco?.editor.defineTheme("lafEditorThemeDark", {
-  base: "vs-dark",
-  inherit: true,
-  rules: [
-    {
-      foreground: "65737e",
-      token: "punctuation.definition.comment",
-    },
-  ],
-  colors: {
-    // https://github.com/microsoft/monaco-editor/discussions/3838
-    "editor.foreground": "#ffffff",
-    "editor.background": "#202631",
-    "editorIndentGuide.activeBackground": "#fff",
-    "editorIndentGuide.background": "#eee",
-    "editor.selectionBackground": "#101621",
-    "menu.selectionBackground": "#101621",
-    "dropdown.background": "#1a202c",
-    "dropdown.foreground": "#f0f0f0",
-    "dropdown.border": "#fff",
-    "quickInputList.focusBackground": "#1a202c",
-    "editorWidget.background": "#1a202c",
-    "editorWidget.foreground": "#f0f0f0",
-    "editorWidget.border": "#1a202c",
-    "input.background": "#1a202c",
-    "list.hoverBackground": "#2a303c",
-  },
-});
-
-const updateModel = (value: string, editorRef: any) => {
-  const newModel = monaco.editor.createModel(value, "typescript");
-  if (editorRef.current?.getModel() !== newModel) {
-    editorRef.current?.setModel(newModel);
-  }
-};
 
 const MonacoEditor = (props: {
   value: string;
@@ -92,56 +34,40 @@ const MonacoEditor = (props: {
     setFunctionList,
     popover,
   } = props;
-  const monacoEl = useRef<HTMLDivElement | null>(null);
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
-  const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const { t } = useTranslation();
   const darkMode = colorMode === COLOR_MODE.dark;
 
-  useEffect(() => {
-    if (monacoEl && !editorRef.current) {
-      editorRef.current = monaco.editor.create(monacoEl.current!, {
-        value: value,
-        minimap: {
-          enabled: false,
-        },
-        language: "typescript",
-        readOnly: readOnly,
-        scrollBeyondLastLine: false,
-        scrollbar: {
-          verticalScrollbarSize: 4,
-          horizontalScrollbarSize: 8,
-        },
-        mouseWheelScrollSensitivity: 0,
-        formatOnPaste: true,
-        overviewRulerLanes: 0,
-        lineNumbersMinChars: 4,
-        fontSize: popover ? 10 : 14,
-        theme: darkMode ? "lafEditorThemeDark" : "lafEditorTheme",
-      });
-    }
-
-    updateModel(value, editorRef);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
-
-  useEffect(() => {
-    subscriptionRef.current?.dispose();
-    if (onChange) {
-      subscriptionRef.current = editorRef.current?.onDidChangeModelContent(() => {
-        onChange(editorRef.current?.getValue());
-      });
-    }
-  }, [onChange]);
-
-  useEffect(() => {
-    if (monacoEl && editorRef.current) {
-      editorRef.current.updateOptions({
-        theme: darkMode ? "lafEditorThemeDark" : "lafEditorTheme",
-      });
-    }
-  }, [darkMode]);
+  const options = {
+    minimap: {
+      enabled: false,
+    },
+    language: "typescript",
+    readOnly: readOnly,
+    scrollBeyondLastLine: false,
+    scrollbar: {
+      verticalScrollbarSize: 4,
+      horizontalScrollbarSize: 8,
+    },
+    suggest: {
+      showStatusBar: false,
+      showMethods: false,
+      showFunctions: false,
+      showClasses: false,
+      showVariables: false,
+      showConstants: false,
+      showProperties: false,
+      showEvents: false,
+      showOperators: false,
+      showKeywords: false,
+      showWords: false,
+    },
+    mouseWheelScrollSensitivity: 0,
+    formatOnPaste: true,
+    overviewRulerLanes: 0,
+    lineNumbersMinChars: 4,
+    fontSize: popover ? 10 : 14,
+    fontWeight: popover ? "400" : "450",
+  };
 
   return (
     <div
@@ -199,7 +125,65 @@ const MonacoEditor = (props: {
           )}
         </span>
       </div>
-      <div ref={monacoEl} className="mb-2 mt-1 h-[90%] min-h-[300px]" />
+      <Editor
+        defaultLanguage="typescript"
+        value={value}
+        options={options}
+        onChange={onChange}
+        theme={darkMode ? "MonacoEditorThemeDark" : "MonacoEditorTheme"}
+        beforeMount={(monaco) => {
+          monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+            allowNonTsExtensions: true,
+            lib: [],
+          });
+          monaco.editor.defineTheme("MonacoEditorTheme", {
+            base: "vs",
+            inherit: true,
+            rules: [
+              {
+                foreground: "#008189",
+                token: "keyword",
+              },
+            ],
+            colors: {
+              "editorLineNumber.foreground": "#aaa",
+              "editorOverviewRuler.border": "#fff",
+              "editor.lineHighlightBackground": "#F7F8FA",
+              "scrollbarSlider.background": "#E8EAEC",
+              "editorIndentGuide.activeBackground": "#fff",
+              "editorIndentGuide.background": "#eee",
+            },
+          });
+
+          monaco.editor.defineTheme("MonacoEditorThemeDark", {
+            base: "vs-dark",
+            inherit: true,
+            rules: [
+              {
+                foreground: "#65737e",
+                token: "punctuation.definition.comment",
+              },
+            ],
+            colors: {
+              "editor.foreground": "#ffffff",
+              "editor.background": "#202631",
+              "editorIndentGuide.activeBackground": "#fff",
+              "editorIndentGuide.background": "#eee",
+              "editor.selectionBackground": "#101621",
+              "menu.selectionBackground": "#101621",
+              "dropdown.background": "#1a202c",
+              "dropdown.foreground": "#f0f0f0",
+              "dropdown.border": "#fff",
+              "quickInputList.focusBackground": "#1a202c",
+              "editorWidget.background": "#1a202c",
+              "editorWidget.foreground": "#f0f0f0",
+              "editorWidget.border": "#1a202c",
+              "input.background": "#1a202c",
+              "list.hoverBackground": "#2a303c",
+            },
+          });
+        }}
+      />
     </div>
   );
 };
