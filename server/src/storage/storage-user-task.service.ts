@@ -5,7 +5,6 @@ import { Cron, CronExpression } from '@nestjs/schedule'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
 import { SystemDatabase } from 'src/system-database'
 import { MinioService } from './minio/minio.service'
-import { BucketDomainService } from 'src/gateway/bucket-domain.service'
 import {
   StoragePhase,
   StorageState,
@@ -13,12 +12,11 @@ import {
 } from './entities/storage-user'
 
 @Injectable()
-export class BucketTaskService {
+export class StorageUserTaskService {
   readonly lockTimeout = 30 // in second
-  private readonly logger = new Logger(BucketTaskService.name)
+  private readonly logger = new Logger(StorageUserTaskService.name)
 
   constructor(
-    private readonly bucketDomainService: BucketDomainService,
     private readonly minioService: MinioService,
     private readonly regionService: RegionService,
   ) {}
@@ -111,7 +109,7 @@ export class BucketTaskService {
     )
 
     if (updated.modifiedCount > 0)
-      this.logger.debug('storage-user phase updated to Created', doc)
+      this.logger.debug('storage-user phase updated to Created: ', doc)
   }
 
   /**
@@ -156,7 +154,7 @@ export class BucketTaskService {
     )
 
     if (updated.modifiedCount > 0)
-      this.logger.debug('storage-user phase updated to Deleted', doc)
+      this.logger.debug('storage-user phase updated to Deleted: ', doc)
   }
 
   /**
