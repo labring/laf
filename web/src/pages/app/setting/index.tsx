@@ -16,8 +16,11 @@ import { t } from "i18next";
 
 import SectionList from "@/components/SectionList";
 
+import "./index.css";
+
 import { TApplicationDetail } from "@/apis/typing";
 import useGlobalStore from "@/pages/globalStore";
+
 export type TTabItem = {
   key: string;
   name: string;
@@ -81,11 +84,11 @@ const SettingModal = (props: {
             onOpen();
           },
         })}
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent maxW={"80%"} width={"auto"} minW={1024}>
-          <ModalBody py={2} flex="none" minH={500} className="relative">
+          <ModalCloseButton />
+          <ModalBody py={2} minH={550} className="relative">
             <ModalCloseButton />
             <Box className="flex h-full" borderColor={borderColor}>
               <SectionList
@@ -133,7 +136,7 @@ const SettingModal = (props: {
                   })}
                 </div>
               </SectionList>
-              <div className="ml-[236px] w-full overflow-hidden p-2">
+              <div className="ml-[236px] h-full w-full p-2">
                 {React.cloneElement(item?.component || <></>, {
                   onClose,
                 })}

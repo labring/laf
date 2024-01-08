@@ -1,4 +1,4 @@
-import { createStandaloneToast } from "@chakra-ui/react";
+import { createStandaloneToast, ThemeTypings } from "@chakra-ui/react";
 import * as Sentry from "@sentry/react";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
@@ -15,6 +15,8 @@ import { UserControllerGetProfile } from "@/apis/v1/user";
 
 const { toast } = createStandaloneToast();
 
+type CloseFunc = () => void;
+
 type State = {
   userInfo: Definitions.UserWithProfile | undefined;
   loading: boolean;
@@ -30,11 +32,34 @@ type State = {
   avatarUpdatedAt: string;
   updateUserInfo(): void;
   visitedViews: string[];
+  isLSPEffective: boolean;
 
-  showSuccess: (text: string | React.ReactNode) => void;
-  showInfo: (text: string | React.ReactNode, duration?: number, isClosable?: boolean) => void;
-  showWarning: (text: string | React.ReactNode) => void;
-  showError: (text: string | React.ReactNode) => void;
+  showSuccess: (
+    text: string | React.ReactNode,
+    duration?: number | null,
+    isClosable?: boolean,
+  ) => CloseFunc;
+  showInfo: (
+    text: string | React.ReactNode,
+    duration?: number | null,
+    isClosable?: boolean,
+  ) => CloseFunc;
+  showWarning: (
+    text: string | React.ReactNode,
+    duration?: number | null,
+    isClosable?: boolean,
+  ) => CloseFunc;
+  showLoading: (
+    text: string | React.ReactNode,
+    duration?: number | null,
+    color?: ThemeTypings["colorSchemes"],
+    isClosable?: boolean,
+  ) => CloseFunc;
+  showError: (
+    text: string | React.ReactNode,
+    duration?: number | null,
+    isClosable?: boolean,
+  ) => CloseFunc;
 };
 
 const useGlobalStore = create<State>()(
@@ -123,6 +148,9 @@ const useGlobalStore = create<State>()(
       setCurrentApp: (app) => {
         set((state) => {
           state.currentApp = app;
+          state.isLSPEffective =
+            app?.bundle?.resource?.limitCPU! / 1000 >= 0.5 &&
+            app?.bundle?.resource.limitMemory / 1024 >= 1;
 
           if (typeof state.currentApp === "object") {
             const host = `${
@@ -134,54 +162,87 @@ const useGlobalStore = create<State>()(
         });
       },
 
-      showSuccess: (text: string | React.ReactNode) => {
-        toast({
+      isLSPEffective: false,
+
+      showSuccess: (text: string | React.ReactNode, duration = 1000, isClosable = false) => {
+        const id = toast({
           position: "top",
           title: text,
           status: "success",
           variant: localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY) ? "subtle" : "solid",
-          duration: 1000,
+          duration,
+          isClosable,
           containerStyle: {
             maxWidth: "100%",
             minWidth: "100px",
           },
         });
+
+        return () => {
+          toast.close(id);
+        };
       },
 
-      showError: (text: string | React.ReactNode) => {
-        toast({
+      showError: (text: string | React.ReactNode, duration = 1500, isClosable = false) => {
+        const id = toast({
           position: "top",
           title: text,
           status: "error",
           variant: localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY) ? "subtle" : "solid",
-          duration: 1500,
+          duration,
+          isClosable,
           containerStyle: {
             maxWidth: "100%",
             minWidth: "100px",
           },
         });
+
+        return () => {
+          toast.close(id);
+        };
       },
 
-      showWarning: (text: string | React.ReactNode) => {
-        toast({
+      showWarning: (text: string | React.ReactNode, duration = 3000, isClosable = false) => {
+        const id = toast({
           position: "top",
           title: text,
           status: "warning",
           variant: localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY) ? "subtle" : "solid",
-          duration: 3000,
+          duration,
+          isClosable,
           containerStyle: {
             maxWidth: "100%",
             minWidth: "100px",
           },
         });
+
+        return () => {
+          toast.close(id);
+        };
       },
 
-      showInfo: (
-        text: string | React.ReactNode,
-        duration: number = 1000,
-        isClosable: boolean = false,
-      ) => {
-        toast({
+      showLoading: (text: string | React.ReactNode, duration = null, color, isClosable = false) => {
+        const id = toast({
+          position: "top",
+          title: text,
+          status: "loading",
+          variant: localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY) ? "subtle" : "solid",
+          duration,
+          colorScheme: color,
+          isClosable,
+          containerStyle: {
+            maxWidth: "100%",
+            minWidth: "100px",
+          },
+        });
+
+        return () => {
+          toast.close(id);
+        };
+      },
+
+      showInfo: (text: string | React.ReactNode, duration = 1000, isClosable = false) => {
+        const id = toast({
           position: "top",
           title: text,
           variant: localStorage.getItem(CHAKRA_UI_COLOR_MODE_KEY) ? "subtle" : "solid",
@@ -192,6 +253,10 @@ const useGlobalStore = create<State>()(
           },
           isClosable: isClosable,
         });
+
+        return () => {
+          toast.close(id);
+        };
       },
     })),
   ),

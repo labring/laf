@@ -130,7 +130,7 @@ export class DatabaseService {
   async findAndConnect(appid: string) {
     const region = await this.regionService.findByAppId(appid)
     const database = await this.findOne(appid)
-    assert(database, 'Database not found')
+    if (!database) return null
 
     const connectionUri = this.getControlConnectionUri(region, database)
 

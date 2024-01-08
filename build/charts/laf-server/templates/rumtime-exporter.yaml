@@ -1,3 +1,4 @@
+{{- if .Values.default_region.runtime_exporter_secret }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -98,3 +99,18 @@ spec:
           expr: max_over_time(sum by (appid) (laf_runtime_cpu_limit{container!=""})[1h:])
         - record: laf:billing:memory
           expr: max_over_time(sum by (appid) (laf_runtime_memory_limit{container!=""})[1h:])
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kb-mongodb
+spec:
+  endpoints:
+    - interval: 30s
+      path: /metrics
+      port: http-metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mongodb
+      apps.kubeblocks.io/component-name: mongodb
+{{- end }}

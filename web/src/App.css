@@ -1,6 +1,8 @@
+/* stylelint-disable at-rule-no-unknown */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* stylelint-enable at-rule-no-unknown */
 
 :root {
   --bg-color: #fafafa;
@@ -9,7 +11,7 @@
 /* 设置滚动条的样式 */
 ::-webkit-scrollbar {
   width: 4px;
-  height: 6px;
+  height: 4px;
 }
 
 body::-webkit-scrollbar {
@@ -25,7 +27,7 @@ body::-webkit-scrollbar {
 /* 滚动条滑块 */
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgb(0 0 0 / 20%);
 }
 
 html,
@@ -40,18 +42,20 @@ body {
   background-position: center !important;
   font-variant-numeric: lining-nums;
   font-size: 12px;
+  /* stylelint-disable font-family-no-duplicate-names */
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", Helvetica, Arial,
     "PingFang SC", "Noto Sans SC", sans-serif !important;
 }
 
 [data-theme="light"] body {
   background-color: #eef0f2 !important;
+
   /* background-image: url("/bg.png") !important; */
 }
 
 [data-theme="dark"] ::-webkit-scrollbar-thumb {
   /* 滚动条滑块 */
-  background: rgba(21, 22, 26, 0.4);
+  background: rgb(21 22 26 / 40%);
 }
 
 a {
@@ -80,16 +84,17 @@ a {
   font-weight: 400;
   src: url("//lib.baomitu.com/fonts/noto-sans-sc/noto-sans-sc-regular.eot"),
     /* IE9 Compat Modes */
-      url("//lib.baomitu.com/fonts/noto-sans-sc/noto-sans-sc-regular.eot?#iefix")
-      format("embedded-opentype"),
-    /* IE6-IE8 */ url("//lib.baomitu.com/fonts/noto-sans-sc/noto-sans-sc-regular.woff2")
-      format("woff2"),
+    url("//lib.baomitu.com/fonts/noto-sans-sc/noto-sans-sc-regular.eot?#iefix") format("embedded-opentype"),
+    /* IE6-IE8 */
+    url("//lib.baomitu.com/fonts/noto-sans-sc/noto-sans-sc-regular.woff2") format("woff2"),
     /* Super Modern Browsers */
-      url("//lib.baomitu.com/fonts/noto-sans-sc/noto-sans-sc-regular.woff") format("woff"),
-    /* Modern Browsers */ url("//lib.baomitu.com/fonts/noto-sans-sc/noto-sans-sc-regular.ttf")
-      format("truetype"),
+    url("//lib.baomitu.com/fonts/noto-sans-sc/noto-sans-sc-regular.woff") format("woff"),
+    /* Modern Browsers */
+    url("//lib.baomitu.com/fonts/noto-sans-sc/noto-sans-sc-regular.ttf") format("truetype"),
     /* Safari, Android, iOS */
-      url("//lib.baomitu.com/fonts/noto-sans-sc/noto-sans-sc-regular.svg#NotoSans SC") format("svg"); /* Legacy iOS */
+    url("//lib.baomitu.com/fonts/noto-sans-sc/noto-sans-sc-regular.svg#NotoSans SC") format("svg");
+
+  /* Legacy iOS */
 }
 
 @font-face {

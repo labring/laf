@@ -127,7 +127,7 @@ const CreateModal = (props: {
       showSuccess(isEdit ? t("update success") : t("create success"));
       onClose();
       reset(defaultValues);
-      navigate(`/app/${currentApp.appid}/function/${res.data.name}`);
+      navigate(`/app/${currentApp.appid}/function/${res.data.name}`, { replace: true });
     }
   };
 
@@ -160,7 +160,7 @@ const CreateModal = (props: {
                   <input
                     {...register("name", {
                       pattern: {
-                        value: /^[a-zA-Z0-9_.\-/]{1,256}$/,
+                        value: /^[a-zA-Z0-9_.\-](?:[a-zA-Z0-9_.\-/]{0,254}[a-zA-Z0-9_.\-])?$/,
                         message: t("FunctionPanel.FunctionNameRule"),
                       },
                     })}
@@ -278,7 +278,7 @@ const CreateModal = (props: {
         isOpen={templateOpen}
         onClose={() => {
           setTemplateOpen(!templateOpen);
-          navigate(`/app/${currentApp.appid}/function`);
+          navigate(`/app/${currentApp.appid}/function`, { replace: true });
         }}
       >
         <ModalOverlay />
