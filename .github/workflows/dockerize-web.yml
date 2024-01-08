@@ -76,6 +76,7 @@ jobs:
           version: ${{ format('laf@{0}', github.sha) }}
           working_directory: web
           ignore_missing: true
+          ignore_empty: true
 
       - run: |
           rm -rf web/dist/assets/*.map
