@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Button,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -32,6 +33,7 @@ export default function DeployButton() {
   const functionCache = useFunctionCache();
 
   const headerRef = React.useRef(null);
+  const [changelog, setChangelog] = React.useState("");
 
   const { showSuccess, currentPageId } = useGlobalStore((state) => state);
 
@@ -63,6 +65,7 @@ export default function DeployButton() {
       name: store.currentFunction?.name,
       tags: store.currentFunction?.tags,
       params: store.currentFunction?.params,
+      changelog,
     });
     if (!res.error) {
       store.setCurrentFunction(res.data);
@@ -113,6 +116,14 @@ export default function DeployButton() {
             </ModalBody>
 
             <ModalFooter>
+              <div className="mr-2 w-full">
+                <Input
+                  value={changelog}
+                  onChange={(v) => setChangelog(v.target.value)}
+                  variant="filled"
+                  placeholder={String("输入此次函数修改的描述 (可选)")}
+                />
+              </div>
               <Button variant="ghost" mr={3} onClick={onClose}>
                 {t("Cancel")}
               </Button>
