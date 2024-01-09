@@ -40,6 +40,10 @@ export class UpdateFunctionDto {
   @IsNotEmpty({ each: true })
   tags: string[]
 
+  @ApiPropertyOptional()
+  @MaxLength(256)
+  changelog?: string
+
   validate() {
     return null
   }
