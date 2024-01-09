@@ -47,6 +47,10 @@ export class ServerConfig {
     return process.env.DISABLED_STORAGE_TASK === 'true'
   }
 
+  static get DISABLED_STORAGE_USER_TASK() {
+    return process.env.DISABLED_STORAGE_USER_TASK === 'true'
+  }
+
   static get DISABLED_BILLING_CREATION_TASK() {
     return process.env.DISABLED_BILLING_CREATION_TASK === 'true'
   }

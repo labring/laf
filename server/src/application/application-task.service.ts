@@ -25,6 +25,7 @@ import { DomainPhase } from 'src/gateway/entities/runtime-domain'
 import { StoragePhase } from 'src/storage/entities/storage-user'
 import { ApplicationNamespaceMode } from 'src/region/entities/region'
 import { DedicatedDatabaseService } from 'src/database/dedicated-database/dedicated-database.service'
+import { StorageBucket } from 'src/storage/entities/storage-bucket'
 
 @Injectable()
 export class ApplicationTaskService {
@@ -274,6 +275,15 @@ export class ApplicationTaskService {
     // delete application storage
     const storage = await this.storageService.findOne(appid)
     if (storage) {
+      await this.storageService.deleteUsersAndBuckets(appid)
+      return await this.unlock(appid)
+    }
+
+    const buckets = await db
+      .collection<StorageBucket>('StorageBucket')
+      .countDocuments({ appid })
+
+    if (buckets > 0) {
       await this.storageService.deleteUsersAndBuckets(appid)
       return await this.unlock(appid)
     }
