@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, ButtonGroup, Switch } from "@chakra-ui/react";
+import { Button, ButtonGroup, Switch, useColorMode } from "@chakra-ui/react";
 import { Center, Spinner } from "@chakra-ui/react";
 
 import EditableTable from "@/components/EditableTable";
@@ -21,6 +21,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
   const globalStore = useGlobalStore();
   const { t } = useTranslation();
   const [isEditorMode, setIsEditorMode] = useState(false);
+  const { colorMode } = useColorMode();
 
   useEffect(() => {
     let newEnv = pureEnv
@@ -66,6 +67,7 @@ const AppEnvList = (props: { onClose?: () => {} }) => {
                     onChange={(value) => {
                       setPureEnv(value || "");
                     }}
+                    colorMode={colorMode}
                   />
                 </div>
               ) : (
