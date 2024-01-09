@@ -119,22 +119,28 @@ export default function BundleControl(props: {
                 onChange={() => {
                   onBundleItemChange("cpu", item.spec.cpu.value);
                   onBundleItemChange("memory", item.spec.memory.value);
-                  onBundleItemChange("databaseCapacity", undefined);
                   onBundleItemChange("storageCapacity", item.spec.storageCapacity.value);
-                  onBundleItemChange("dedicatedDatabase.cpu", item.spec.dedicatedDatabaseCPU.value);
-                  onBundleItemChange(
-                    "dedicatedDatabase.memory",
-                    item.spec.dedicatedDatabaseMemory.value,
-                  );
-                  if (type !== "change") {
+                  if (bundle.dedicatedDatabase) {
                     onBundleItemChange(
-                      "dedicatedDatabase.capacity",
-                      item.spec.dedicatedDatabaseCapacity.value,
+                      "dedicatedDatabase.cpu",
+                      item.spec.dedicatedDatabaseCPU.value,
                     );
                     onBundleItemChange(
-                      "dedicatedDatabase.replicas",
-                      item.spec.dedicatedDatabaseReplicas.value,
+                      "dedicatedDatabase.memory",
+                      item.spec.dedicatedDatabaseMemory.value,
                     );
+                    if (type !== "change") {
+                      onBundleItemChange(
+                        "dedicatedDatabase.capacity",
+                        item.spec.dedicatedDatabaseCapacity.value,
+                      );
+                      onBundleItemChange(
+                        "dedicatedDatabase.replicas",
+                        item.spec.dedicatedDatabaseReplicas.value,
+                      );
+                    }
+                  } else {
+                    onBundleItemChange("databaseCapacity", item.spec.databaseCapacity.value);
                   }
                 }}
                 bundle={item}
