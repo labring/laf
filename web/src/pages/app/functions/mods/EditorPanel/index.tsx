@@ -44,6 +44,7 @@ function EditorPanel() {
       <div className={functionListQuery.data?.data?.length !== 0 ? "h-full" : "hidden"}>
         {commonSettings.useLSP && isLSPEffective ? (
           <FunctionEditor
+            value={functionCache.getCache(currentFunction!._id, currentFunction!.source?.code)}
             colorMode={colorMode}
             className="h-full flex-grow"
             path={`${RUNTIMES_PATH}/${currentFunction?.name}.ts`}

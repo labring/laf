@@ -34,8 +34,9 @@ function FunctionEditor(props: {
   path: string;
   colorMode?: string;
   fontSize?: number;
+  value?: string;
 }) {
-  const { onChange, path, className, colorMode = COLOR_MODE.light, fontSize = 14 } = props;
+  const { onChange, path, className, colorMode = COLOR_MODE.light, fontSize = 14, value } = props;
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
@@ -155,8 +156,8 @@ function FunctionEditor(props: {
             lineNumbersMinChars: 4,
             fontSize: fontSize,
             theme: colorMode === COLOR_MODE.dark ? "vs-dark" : "vs",
-            fontWeight: "400",
             scrollBeyondLastLine: false,
+            value: value,
           });
         });
     }

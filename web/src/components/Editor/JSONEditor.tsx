@@ -40,33 +40,7 @@ function JSONEditor(props: {
       value={value}
       options={options}
       onChange={onChange}
-      theme={colorMode === COLOR_MODE.dark ? "JSONEditorThemeDark" : "JSONEditorTheme"}
-      beforeMount={(monaco) => {
-        monaco?.editor.defineTheme("JSONEditorTheme", {
-          base: "vs",
-          inherit: true,
-          rules: [],
-          colors: {
-            "editor.background": "#ffffff00",
-            "editorLineNumber.foreground": "#aaa",
-            "editorOverviewRuler.border": "#ffffff00",
-            "editor.lineHighlightBackground": "#F7F8FA",
-            "scrollbarSlider.background": "#E8EAEC",
-            "editorIndentGuide.activeBackground": "#ddd",
-            "editorIndentGuide.background": "#eee",
-          },
-        });
-
-        monaco?.editor.defineTheme("JSONEditorThemeDark", {
-          base: "vs-dark",
-          inherit: true,
-          rules: [],
-          colors: {
-            "editor.foreground": "#ffffff",
-            "editor.background": "#202631",
-          },
-        });
-      }}
+      theme={colorMode === COLOR_MODE.dark ? "vs-dark" : "vs"}
     />
   );
 }
