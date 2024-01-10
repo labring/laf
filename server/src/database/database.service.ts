@@ -17,7 +17,7 @@ import {
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { DatabaseSyncRecord } from './entities/database-sync-record'
-import { ObjectId } from 'mongodb'
+import { MongoClient, ObjectId } from 'mongodb'
 
 const p_exec = promisify(exec)
 
@@ -142,9 +142,13 @@ export class DatabaseService {
     return { db, client }
   }
 
-  async revokeWritePermission(name: string, username: string) {
-    const db = SystemDatabase.client.db(name)
+  async revokeWritePermission(name: string, username: string, region: Region) {
+    const conf = region.databaseConf
+    const client = new MongoClient(conf.connectionUri)
+
     try {
+      await client.connect()
+      const db = client.db(name)
       const result = await db.command({
         updateUser: username,
         roles: [
@@ -163,9 +167,13 @@ export class DatabaseService {
     }
   }
 
-  async grantWritePermission(name: string, username: string) {
-    const db = SystemDatabase.client.db(name)
+  async grantWritePermission(name: string, username: string, region: Region) {
+    const conf = region.databaseConf
+    const client = new MongoClient(conf.connectionUri)
+
     try {
+      await client.connect()
+      const db = client.db(name)
       const result = await db.command({
         updateUser: username,
         roles: [

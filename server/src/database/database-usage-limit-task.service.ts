@@ -6,12 +6,14 @@ import { SystemDatabase } from 'src/system-database'
 import { ServerConfig } from 'src/constants'
 import { BundleService } from 'src/application/bundle.service'
 import pLimit from 'src/utils/p-limit'
+import { RegionService } from 'src/region/region.service'
 
 @Injectable()
 export class DatabaseUsageLimitTaskService {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly bundleService: BundleService,
+    private readonly regionService: RegionService,
   ) {}
 
   private readonly logger = new Logger(DatabaseUsageLimitTaskService.name)
@@ -90,6 +92,7 @@ export class DatabaseUsageLimitTaskService {
       database.name,
       database.user,
     )
+    const region = await this.regionService.findByAppId(appid)
 
     if (databaseCapacity < database.dataSize) {
       // overused
@@ -97,6 +100,7 @@ export class DatabaseUsageLimitTaskService {
         await this.databaseService.revokeWritePermission(
           database.name,
           database.user,
+          region,
         )
       }
     } else {
@@ -104,6 +108,7 @@ export class DatabaseUsageLimitTaskService {
         await this.databaseService.grantWritePermission(
           database.name,
           database.user,
+          region,
         )
       }
     }
