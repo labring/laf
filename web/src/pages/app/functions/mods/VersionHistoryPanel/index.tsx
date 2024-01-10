@@ -30,51 +30,53 @@ export default function VersionHistoryPanel() {
         history.data?.data.map((item: any, index: number) => {
           return (
             <FetchModal key={index} functionCode={item.source.code}>
-              <Tooltip label={item.changelog || "changed"} placement="left">
-                <div className="mx-3">
-                  <div
-                    className={clsx(
-                      "flex h-10 cursor-pointer items-center justify-between rounded",
-                      darkMode ? "hover:bg-grayModern-800" : "hover:bg-primary-100",
-                    )}
-                  >
-                    <div className="relative flex h-full items-center truncate">
-                      <span
-                        className={clsx(
-                          "absolute ml-2 h-2.5 w-2.5 rounded-full border-[2px] border-primary-600",
-                          darkMode ? "bg-grayModern-900" : "bg-white",
-                        )}
-                      />
-                      <div
-                        className={clsx(
-                          "ml-3 flex  h-full",
-                          index === 0 && "items-end",
-                          index === history.data?.data.length - 1 && "items-start",
-                        )}
-                      >
-                        <div
+              <div>
+                <Tooltip label={item.changelog || "changed"} placement="left">
+                  <div className="mx-3">
+                    <div
+                      className={clsx(
+                        "flex h-10 cursor-pointer items-center justify-between rounded",
+                        darkMode ? "hover:bg-grayModern-800" : "hover:bg-primary-100",
+                      )}
+                    >
+                      <div className="relative flex h-full items-center truncate">
+                        <span
                           className={clsx(
-                            "border",
-                            history.data?.data.length === 1 && "border-transparent",
-                            (index === 0 || index === history.data?.data.length - 1) && "h-1/2",
-                            !(index === 0 || index === history.data?.data.length - 1) && "h-full",
+                            "absolute ml-2 h-2.5 w-2.5 rounded-full border-[2px] border-primary-600",
+                            darkMode ? "bg-grayModern-900" : "bg-white",
                           )}
                         />
+                        <div
+                          className={clsx(
+                            "ml-3 flex  h-full",
+                            index === 0 && "items-end",
+                            index === history.data?.data.length - 1 && "items-start",
+                          )}
+                        >
+                          <div
+                            className={clsx(
+                              "border",
+                              history.data?.data.length === 1 && "border-transparent",
+                              (index === 0 || index === history.data?.data.length - 1) && "h-1/2",
+                              !(index === 0 || index === history.data?.data.length - 1) && "h-full",
+                            )}
+                          />
+                        </div>
+                        <div className="truncate pl-4">
+                          <p className="truncat text-[12px] font-medium">
+                            {item.changelog || "changed"}
+                          </p>
+                          <p className="text-[10px] text-gray-500">{formatDate(item.createdAt)}</p>
+                        </div>
                       </div>
-                      <div className="truncate pl-4">
-                        <p className="truncat text-[12px] font-medium">
-                          {item.changelog || "changed"}
-                        </p>
-                        <p className="text-[10px] text-gray-500">{formatDate(item.createdAt)}</p>
-                      </div>
+                      <span className={clsx("px-2", darkMode ? "text-blue-500" : "text-blue-700")}>
+                        #{history.data?.data.length - index}
+                      </span>
                     </div>
-                    <span className={clsx("px-2", darkMode ? "text-blue-500" : "text-blue-700")}>
-                      #{history.data?.data.length - index}
-                    </span>
+                    {index !== history.data?.data.length - 1 && <Divider />}
                   </div>
-                  {index !== history.data?.data.length - 1 && <Divider />}
-                </div>
-              </Tooltip>
+                </Tooltip>
+              </div>
             </FetchModal>
           );
         })
