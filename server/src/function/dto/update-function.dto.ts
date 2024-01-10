@@ -42,6 +42,7 @@ export class UpdateFunctionDto {
 
   @ApiPropertyOptional()
   @MaxLength(256)
+  @IsOptional()
   changelog?: string
 
   validate() {
