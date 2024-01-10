@@ -28,7 +28,7 @@ laf 是开源的云开发平台，提供云函数、云数据库、云存储等�
 ## 🚀 Quick Start
 
 [三分钟体验使用 laf 写一个自己的 ChatGPT (开发到上线)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)  
-[三分钟体验使用 laf 开发一个简单的「Todo List」](./docs/guide/quick-start/Todo.md)
+[三分钟体验使用 laf 开发一个简单的「Todo List」](./docs/zh/quick-start/Todo.md)
 
 ## 🖥 在线体验
 
