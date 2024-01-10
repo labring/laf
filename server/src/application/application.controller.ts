@@ -386,22 +386,23 @@ export class ApplicationController {
     const isAutoscalingCanceled =
       !doc.autoscaling.enable && origin.autoscaling.enable
     const isDedicatedDatabaseChanged =
-      !isEqual(
+      !!origin.resource.dedicatedDatabase &&
+      (!isEqual(
         origin.resource.dedicatedDatabase.limitCPU,
         doc.resource.dedicatedDatabase.limitCPU,
       ) ||
-      !isEqual(
-        origin.resource.dedicatedDatabase.limitMemory,
-        doc.resource.dedicatedDatabase.limitMemory,
-      ) ||
-      !isEqual(
-        origin.resource.dedicatedDatabase.replicas,
-        doc.resource.dedicatedDatabase.replicas,
-      ) ||
-      !isEqual(
-        origin.resource.dedicatedDatabase.capacity,
-        doc.resource.dedicatedDatabase.capacity,
-      )
+        !isEqual(
+          origin.resource.dedicatedDatabase.limitMemory,
+          doc.resource.dedicatedDatabase.limitMemory,
+        ) ||
+        !isEqual(
+          origin.resource.dedicatedDatabase.replicas,
+          doc.resource.dedicatedDatabase.replicas,
+        ) ||
+        !isEqual(
+          origin.resource.dedicatedDatabase.capacity,
+          doc.resource.dedicatedDatabase.capacity,
+        ))
 
     if (!isEqual(doc.autoscaling, origin.autoscaling)) {
       const { hpa, app } = await this.instance.get(appid)
