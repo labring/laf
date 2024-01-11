@@ -46,6 +46,10 @@ const queryClient = new QueryClient({
   },
 });
 
+loader.config({
+  paths: { vs: "https://cdn.bootcdn.net/ajax/libs/monaco-editor/0.43.0/min/vs" },
+});
+
 function APP() {
   const { i18n } = useTranslation();
 
@@ -69,12 +73,6 @@ function APP() {
     getSiteSettings();
     initProviders();
   }, [getSiteSettings, i18n.language, initProviders]);
-
-  useEffect(() => {
-    loader.config({
-      paths: { vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs" },
-    });
-  }, []);
 
   return (
     <Sentry.ErrorBoundary>
