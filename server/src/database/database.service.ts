@@ -144,7 +144,7 @@ export class DatabaseService {
 
   async revokeWritePermission(name: string, username: string, region: Region) {
     const conf = region.databaseConf
-    const client = new MongoClient(conf.connectionUri)
+    const client = new MongoClient(conf.controlConnectionUri)
 
     try {
       await client.connect()
@@ -171,7 +171,7 @@ export class DatabaseService {
 
   async grantWritePermission(name: string, username: string, region: Region) {
     const conf = region.databaseConf
-    const client = new MongoClient(conf.connectionUri)
+    const client = new MongoClient(conf.controlConnectionUri)
 
     try {
       await client.connect()
@@ -198,7 +198,7 @@ export class DatabaseService {
 
   async getUserPermission(name: string, username: string, region: Region) {
     const conf = region.databaseConf
-    const client = new MongoClient(conf.connectionUri)
+    const client = new MongoClient(conf.controlConnectionUri)
 
     try {
       await client.connect()
