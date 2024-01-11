@@ -102,10 +102,17 @@ export default function DebugPanel(props: { containerRef: any }) {
   ];
 
   useEffect(() => {
-    if (currentFunction?.methods) {
-      setRunningMethod(currentFunction.params?.runningMethod || currentFunction.methods[0]);
+    const lastRunningMethod = currentFunction.params?.runningMethod;
+    if (
+      currentFunction?.methods &&
+      lastRunningMethod &&
+      currentFunction.methods.includes(lastRunningMethod)
+    ) {
+      setRunningMethod(lastRunningMethod);
+    } else if (currentFunction?.methods) {
+      setRunningMethod(currentFunction.methods[0]);
     }
-  }, [setRunningMethod, currentFunction]);
+  }, [currentFunction]);
 
   useEffect(() => {
     setBodyParams(currentFunction?.params?.bodyParams);
