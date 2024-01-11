@@ -88,11 +88,12 @@ export class DatabaseUsageLimitTaskService {
     const bundle = await this.bundleService.findOne(appid)
     const { databaseCapacity } = bundle.resource
     const database = await this.databaseService.findOne(appid)
+    const region = await this.regionService.findByAppId(appid)
     const permission = await this.databaseService.getUserPermission(
       database.name,
       database.user,
+      region,
     )
-    const region = await this.regionService.findByAppId(appid)
 
     if (databaseCapacity < database.dataSize) {
       // overused

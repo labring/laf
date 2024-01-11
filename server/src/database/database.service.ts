@@ -164,6 +164,8 @@ export class DatabaseService {
         error,
       )
       throw error
+    } finally {
+      await client.close()
     }
   }
 
@@ -189,12 +191,19 @@ export class DatabaseService {
         error,
       )
       throw error
+    } finally {
+      await client.close()
     }
   }
 
-  async getUserPermission(name: string, username: string) {
+  async getUserPermission(name: string, username: string, region: Region) {
+    const conf = region.databaseConf
+    const client = new MongoClient(conf.connectionUri)
+
     try {
-      const result = await this.db.command({
+      await client.connect()
+      const db = client.db(name)
+      const result = await db.command({
         usersInfo: { user: username, db: name },
       })
       const permission =
@@ -210,6 +219,8 @@ export class DatabaseService {
         error,
       )
       throw error
+    } finally {
+      await client.close()
     }
   }
 
