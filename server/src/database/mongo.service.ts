@@ -51,7 +51,7 @@ export class MongoService {
    */
   async deleteDatabase(region: Region, name: string) {
     const conf = region.databaseConf
-    const client = new MongoClient(conf.connectionUri)
+    const client = new MongoClient(conf.controlConnectionUri)
 
     try {
       await client.connect()
