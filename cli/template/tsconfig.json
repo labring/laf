@@ -6,13 +6,15 @@
     "allowUnusedLabels": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["functions/*"]
+      "@/*": [
+        "functions/*"
+      ]
     },
     "declaration": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "importHelpers": false,
-    "module": "commonjs",
+    "module": "Node16",
     "declarationMap": true,
     // "declarationDir": "types",
     "noEmitOnError": false,
@@ -26,10 +28,17 @@
     "stripInternal": true,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    "target": "es2017",
+    "target": "ES2022",
     "alwaysStrict": true,
-    "lib": ["es2015", "es6"]
+    "lib": [
+      "ES2022"
+    ]
   },
-  "include": ["functions/**/*", "types/**/*"],
-  "exclude": ["tests"]
+  "include": [
+    "functions/**/*",
+    "types/**/*"
+  ],
+  "exclude": [
+    "tests"
+  ]
 }
