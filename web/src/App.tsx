@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { BrowserRouter, useRoutes } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 import { css, Global } from "@emotion/react";
+import { loader } from "@monaco-editor/react";
 import { wrapUseRoutes } from "@sentry/react";
 import * as Sentry from "@sentry/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -68,6 +69,12 @@ function APP() {
     getSiteSettings();
     initProviders();
   }, [getSiteSettings, i18n.language, initProviders]);
+
+  useEffect(() => {
+    loader.config({
+      paths: { vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs" },
+    });
+  }, []);
 
   return (
     <Sentry.ErrorBoundary>

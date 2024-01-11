@@ -119,6 +119,7 @@ const CreateModal = (props: {
       setCurrentFunction({ ...currentFunction, name: data.name });
     } else if (isEdit && functionItem.name === data.name) {
       res = await updateFunctionMutation.mutateAsync(data);
+      setCurrentFunction({ ...currentFunction, ...data });
     } else {
       res = await createFunctionMutation.mutateAsync(data);
     }
