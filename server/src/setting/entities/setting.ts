@@ -21,6 +21,8 @@ export enum SettingKey {
   LafDiscordUrl = 'laf_discord_url',
   LafWeChatUrl = 'laf_wechat_url',
   LafStatusUrl = 'laf_status_url',
+  LafAboutUsUrl = 'laf_about_us_url',
+  LafDocUrl = 'laf_doc_url',
 }
 
 export class Setting {

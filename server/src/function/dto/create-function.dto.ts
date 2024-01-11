@@ -15,7 +15,7 @@ export class CreateFunctionDto {
     description: 'Function name is unique in the application',
   })
   @IsNotEmpty()
-  @Matches(/^[a-zA-Z0-9_.\-\/]{1,256}$/)
+  @Matches(/^[a-zA-Z0-9_.\-](?:[a-zA-Z0-9_.\-/]{0,254}[a-zA-Z0-9_.\-])?$/)
   name: string
 
   @ApiPropertyOptional()
@@ -43,11 +43,9 @@ export class CreateFunctionDto {
     if (this.tags?.length >= 8) {
       return 'tags length must less than 8'
     }
-
-    if (this.name.includes('./') || this.name.includes('../')) {
+    if (this.name.includes('./')) {
       return 'the relative path is not allowed in function name'
     }
-
     return null
   }
 }

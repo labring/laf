@@ -1,4 +1,3 @@
-
 # Intro
 
 `runtime-nodejs` is the application service engine of `laf`, responsible for:

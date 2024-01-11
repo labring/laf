@@ -92,6 +92,11 @@ export default function LogsModal(props: { children: React.ReactElement }) {
 
         setLogs((pre) => pre + logStr + "\n");
       },
+    }).catch((e) => {
+      if (e.includes("BodyStreamBuffer was aborte")) {
+        return;
+      }
+      throw e;
     });
     return controller;
   }, [podName, containerName, currentApp.appid]);
@@ -186,7 +191,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                 style={{ height: "98%", fontSize: settingStore.commonSettings.fontSize - 1 }}
               >
                 <LogViewer
-                  data={logs}
+                  data={logs.replace(/^\s*\n/, "")}
                   hasLineNumbers={false}
                   scrollToRow={100000}
                   height={"100%"}

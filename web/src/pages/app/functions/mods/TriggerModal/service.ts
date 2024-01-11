@@ -24,7 +24,6 @@ export const useTriggerListQuery = (onSuccess: (data: any) => void) => {
 };
 
 export const useCreateTriggerMutation = (onSuccess: (data: any) => void) => {
-  const globalStore = useGlobalStore();
   const queryClient = useQueryClient();
   return useMutation(
     (values: any) => {
@@ -32,11 +31,8 @@ export const useCreateTriggerMutation = (onSuccess: (data: any) => void) => {
     },
     {
       onSuccess: async (data) => {
-        if (data.error) {
-          globalStore.showError(data.error);
-        } else {
+        if (!data.error) {
           await queryClient.invalidateQueries(queryKeys.useTriggerQuery);
-          onSuccess && onSuccess(data);
         }
       },
     },

@@ -24,7 +24,7 @@ on:
 #   pull-requests: write
 #   packages: write
 #   contents: read
-  
+
 concurrency:
   group: dockerize-runtime-nodejs-${{ github.ref }}
   cancel-in-progress: true
@@ -88,6 +88,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
+        id: docker-build
         uses: docker/build-push-action@v3
         with:
           context: ./runtimes/nodejs
@@ -101,12 +102,13 @@ jobs:
         if: github.event_name == 'pull_request_target'
         uses: mshick/add-pr-comment@v2
         with:
-          message-id: 'dockerize-runtime-nodejs'
+          message-id: "dockerize-runtime-nodejs"
           message: |
             **:boom: laf nodejs runtime image built successfully for pr ${{ github.event.pull_request.number }}**
             ```
             ${{ steps.meta.outputs.tags }}
             ```
+            digest: `${{ steps.docker-build.outputs.digest }}`
 
   dockerize-init-image:
     runs-on: ubuntu-latest
@@ -152,6 +154,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
+        id: docker-build
         uses: docker/build-push-action@v3
         with:
           context: ./runtimes/nodejs
@@ -165,14 +168,13 @@ jobs:
         if: github.event_name == 'pull_request_target'
         uses: mshick/add-pr-comment@v2
         with:
-          message-id: 'dockerize-runtime-nodejs-init'
+          message-id: "dockerize-runtime-nodejs-init"
           message: |
             **:boom: laf nodejs runtime init image built successfully for pr ${{ github.event.pull_request.number }}**
             ```
             ${{ steps.meta.outputs.tags }}
             ```
-
-        
+            digest: `${{ steps.docker-build.outputs.digest }}`
 
   # trigger-workflow-e2e:
   #   needs: [dockerize-main-image]

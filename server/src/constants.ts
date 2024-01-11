@@ -3,6 +3,10 @@ dotenv.config({ path: '.env.local' })
 dotenv.config()
 
 export class ServerConfig {
+  static get DEFAULT_REGION_DEPLOY_MANIFEST() {
+    return process.env.DEFAULT_REGION_DEPLOY_MANIFEST
+  }
+
   static get DATABASE_URL() {
     if (!process.env.DATABASE_URL) {
       throw new Error('DATABASE_URL is not defined')
@@ -41,6 +45,10 @@ export class ServerConfig {
 
   static get DISABLED_STORAGE_TASK() {
     return process.env.DISABLED_STORAGE_TASK === 'true'
+  }
+
+  static get DISABLED_STORAGE_USER_TASK() {
+    return process.env.DISABLED_STORAGE_USER_TASK === 'true'
   }
 
   static get DISABLED_BILLING_CREATION_TASK() {

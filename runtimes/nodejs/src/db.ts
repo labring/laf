@@ -6,6 +6,7 @@
 import { MongoAccessor } from 'database-proxy'
 import Config from './config'
 import { MongoClient } from 'mongodb'
+import { logger } from './support/logger'
 
 /**
  * Database Management
@@ -29,9 +30,27 @@ export class DatabaseAgent {
     return this.client.db()
   }
 
-  static initialize() {
-    this._client = new MongoClient(Config.DB_URI)
-    return this._client.connect()
+  static async initialize() {
+    const client = new MongoClient(Config.DB_URI)
+
+    let retryDelay = 1000 // 1s
+    const maxDelay = 30 * 1000 // 30s
+
+    while (true) {
+      try {
+        this._client = await client.connect()
+        logger.info('db connected')
+        return this._client
+      } catch (error) {
+        if (retryDelay > maxDelay) {
+          retryDelay = 1000
+          logger.warn('connect db failed, try again...')
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, retryDelay))
+        retryDelay *= 2
+      }
+    }
   }
 
   /**

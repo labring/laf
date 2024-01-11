@@ -194,6 +194,18 @@ export class BillingCreationTaskService {
             usage: priceInput.storageCapacity,
             amount: priceResult.storageCapacity,
           },
+          dedicatedDatabaseCPU: {
+            usage: priceInput.dedicatedDatabase.cpu,
+            amount: priceResult.dedicatedDatabase.cpu,
+          },
+          dedicatedDatabaseMemory: {
+            usage: priceInput.dedicatedDatabase.memory,
+            amount: priceResult.dedicatedDatabase.memory,
+          },
+          dedicatedDatabaseCapacity: {
+            usage: priceInput.dedicatedDatabase.capacity,
+            amount: priceResult.dedicatedDatabase.capacity,
+          },
         },
         startAt: startAt,
         endAt: nextMeteringTime,
@@ -223,6 +235,13 @@ export class BillingCreationTaskService {
     dto.memory = meteringData.memory
     dto.storageCapacity = bundle.resource.storageCapacity
     dto.databaseCapacity = bundle.resource.databaseCapacity
+
+    dto.dedicatedDatabase = {
+      cpu: bundle.resource.dedicatedDatabase?.limitCPU || 0,
+      memory: bundle.resource.dedicatedDatabase?.limitMemory || 0,
+      capacity: bundle.resource.dedicatedDatabase?.capacity || 0,
+      replicas: bundle.resource.dedicatedDatabase?.replicas || 0,
+    }
 
     return dto
   }

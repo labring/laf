@@ -21,6 +21,9 @@ import xmlparser from 'express-xml-bodyparser'
 import './support/cloud-sdk'
 import storageServer from './storage-server'
 import { DatabaseChangeStream } from './support/database-change-stream'
+import url from 'url'
+
+import { LspWebSocket } from './support/lsp'
 import { createCloudSdk } from './support/cloud-sdk'
 
 // hack: set createCloudSdk to global object to make it available in @lafjs/cloud package
@@ -97,6 +100,12 @@ const server = app.listen(Config.PORT, () =>
  * WebSocket upgrade & connect
  */
 server.on('upgrade', (req, socket, head) => {
+  const pathname = req.url ? url.parse(req.url).pathname : undefined
+  if (pathname === '/_/lsp') {
+    LspWebSocket.handleUpgrade(req, socket, head)
+    return
+  }
+
   WebSocketAgent.server.handleUpgrade(req, socket as any, head, (client) => {
     WebSocketAgent.server.emit('connection', client, req)
   })

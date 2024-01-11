@@ -9,29 +9,24 @@ import {
 } from "@chakra-ui/react";
 import clsx from "clsx";
 import { find } from "lodash";
+import _ from "lodash";
 
 import { RecommendIcon, TextIcon } from "@/components/CommonIcon";
 import { COLOR_MODE } from "@/constants";
 
 import BundleItem from "../BundleItem";
+import { TypeBundle } from "..";
 
 import { TBundle } from "@/apis/typing";
 
-export type TypeBundle = {
-  cpu: number;
-  memory: number;
-  databaseCapacity: number;
-  storageCapacity: number;
-};
-
 export default function BundleControl(props: {
   bundle: TypeBundle;
-  setBundle: any;
+  type: "create" | "change";
   sortedBundles: TBundle[];
-  billingResourceOptionsRes: any;
-  setCalculating: any;
+  onBundleItemChange: (k: string, v?: number) => any;
+  resourceOptions: any;
 }) {
-  const { bundle, setBundle, sortedBundles, billingResourceOptionsRes, setCalculating } = props;
+  const { bundle, onBundleItemChange, resourceOptions, sortedBundles, type } = props;
   const { t } = useTranslation();
   const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
 
@@ -43,14 +38,65 @@ export default function BundleControl(props: {
       memory: {
         value: bundle.memory,
       },
-      databaseCapacity: {
-        value: bundle.databaseCapacity,
-      },
       storageCapacity: {
         value: bundle.storageCapacity,
       },
     },
   });
+
+  const buildSlider = (props: {
+    type: string;
+    specs: { value: number }[];
+    value: number;
+    onChange: (value: number) => void;
+  }) => {
+    const { type, specs, value, onChange } = props;
+    const idx = specs.findIndex((spec) => spec.value === value);
+
+    return (
+      <div className="ml-8 mt-8 flex" key={type}>
+        <span className={clsx("w-2/12", darkMode ? "" : "text-grayModern-600")}>
+          {t(`SpecItem.${type}`)}
+        </span>
+        <Slider
+          id="slider"
+          className="mr-12"
+          value={idx}
+          min={0}
+          max={specs.length - 1}
+          colorScheme="primary"
+          onChange={(v) => {
+            onChange(specs[v].value);
+          }}
+        >
+          {specs.map((spec: any, i: number) => (
+            <SliderMark
+              key={spec.value}
+              value={i}
+              className={clsx("mt-2 whitespace-nowrap", darkMode ? "" : "text-grayModern-600")}
+              ml={"-3"}
+            >
+              {spec.label}
+            </SliderMark>
+          ))}
+
+          <SliderTrack>
+            <SliderFilledTrack bg={"primary.200"} />
+          </SliderTrack>
+          {idx >= 0 ? (
+            <SliderThumb bg={"primary.500"} />
+          ) : (
+            <SliderThumb
+              onClick={() => {
+                onChange(specs[0].value);
+              }}
+              style={{ opacity: 0 }}
+            />
+          )}
+        </Slider>
+      </div>
+    );
+  };
 
   return (
     <div className="w-full flex-1 rounded-md border">
@@ -62,7 +108,7 @@ export default function BundleControl(props: {
       >
         <div className="flex items-center">
           <TextIcon boxSize={4} mr={2} color={darkMode ? "" : "grayModern.600"} />
-          <span className="text-lg font-semibold">{t("application.ChooseSpecifications")}</span>
+          <span className="text-lg font-semibold">{t("application.ApplicationSecification")}</span>
         </div>
         <div className="flex items-center">
           <RecommendIcon boxSize={"14px"} mr={2} color={"primary.600"} />
@@ -71,13 +117,31 @@ export default function BundleControl(props: {
             return (
               <BundleItem
                 onChange={() => {
-                  setBundle({
-                    cpu: item.spec.cpu.value,
-                    memory: item.spec.memory.value,
-                    databaseCapacity: item.spec.databaseCapacity.value,
-                    storageCapacity: item.spec.storageCapacity.value,
-                  });
-                  setCalculating(true);
+                  onBundleItemChange("cpu", item.spec.cpu.value);
+                  onBundleItemChange("memory", item.spec.memory.value);
+                  onBundleItemChange("storageCapacity", item.spec.storageCapacity.value);
+                  if (bundle.dedicatedDatabase) {
+                    onBundleItemChange(
+                      "dedicatedDatabase.cpu",
+                      item.spec.dedicatedDatabaseCPU.value,
+                    );
+                    onBundleItemChange(
+                      "dedicatedDatabase.memory",
+                      item.spec.dedicatedDatabaseMemory.value,
+                    );
+                    if (type !== "change") {
+                      onBundleItemChange(
+                        "dedicatedDatabase.capacity",
+                        item.spec.dedicatedDatabaseCapacity.value,
+                      );
+                      onBundleItemChange(
+                        "dedicatedDatabase.replicas",
+                        item.spec.dedicatedDatabaseReplicas.value,
+                      );
+                    }
+                  } else {
+                    onBundleItemChange("databaseCapacity", item.spec.databaseCapacity.value);
+                  }
                 }}
                 bundle={item}
                 isActive={activeBundle?._id === item._id}
@@ -88,67 +152,15 @@ export default function BundleControl(props: {
         </div>
       </div>
       <div className="pb-8">
-        {billingResourceOptionsRes?.data?.map(
-          (item: {
-            type: "cpu" | "memory" | "databaseCapacity" | "storageCapacity";
-            specs: { value: number; price: number }[];
-            price: number;
-          }) => {
-            const value = item.specs.findIndex((spec) => spec.value === bundle[item.type]);
-            return item.specs.length > 0 ? (
-              <div className="ml-8 mt-8 flex" key={item.type}>
-                <span className={clsx("w-2/12", darkMode ? "" : "text-grayModern-600")}>
-                  {t(`SpecItem.${item.type}`)}
-                </span>
-                <Slider
-                  id="slider"
-                  className="mr-12"
-                  value={value}
-                  min={0}
-                  max={item.specs.length - 1}
-                  colorScheme="primary"
-                  onChange={(v) => {
-                    setBundle({
-                      ...bundle,
-                      [item.type]: item.specs[v].value,
-                    });
-                    setCalculating(true);
-                  }}
-                >
-                  {item.specs.map((spec: any, i: number) => (
-                    <SliderMark
-                      key={spec.value}
-                      value={i}
-                      className={clsx(
-                        "mt-2 whitespace-nowrap",
-                        darkMode ? "" : "text-grayModern-600",
-                      )}
-                      ml={"-3"}
-                    >
-                      {spec.label}
-                    </SliderMark>
-                  ))}
-
-                  <SliderTrack>
-                    <SliderFilledTrack bg={"primary.200"} />
-                  </SliderTrack>
-                  {value >= 0 ? (
-                    <SliderThumb bg={"primary.500"} />
-                  ) : (
-                    <SliderThumb
-                      onClick={() => {
-                        setBundle({
-                          ...bundle,
-                          [item.type]: item.specs[0].value,
-                        });
-                      }}
-                      style={{ opacity: 0 }}
-                    />
-                  )}
-                </Slider>
-              </div>
-            ) : null;
-          },
+        {["cpu", "memory", "storageCapacity"].map((type) =>
+          buildSlider({
+            type,
+            value: _.get(bundle, type),
+            specs: find(resourceOptions, { type })?.specs || [],
+            onChange: (value) => {
+              onBundleItemChange(type, value);
+            },
+          }),
         )}
       </div>
     </div>

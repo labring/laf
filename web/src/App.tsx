@@ -10,6 +10,7 @@ import { ClickToComponent } from "click-to-react-component";
 
 import "@/utils/i18n";
 
+import UpgradePrompt from "./components/UpgradePrompt";
 import useAuthStore from "./pages/auth/store";
 import useSiteSettingStore from "./pages/siteSetting";
 import theme from "./chakraTheme";
@@ -74,6 +75,7 @@ function APP() {
         {process.env.NODE_ENV === "development" ? <ClickToComponent /> : null}
         <ChakraProvider theme={colorMode === "light" ? theme : darkTheme}>
           <Global styles={GlobalStyles} />
+          <UpgradePrompt />
           <BrowserRouter>
             <RouteElement />
           </BrowserRouter>
