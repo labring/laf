@@ -87,7 +87,7 @@ export class BillingPaymentTaskService {
           .collection<Account>('Account')
           .updateOne(
             { _id: account._id },
-            { $inc: { balance: -amount } },
+            { $inc: { balance: -amount }, $set: { updatedAt: new Date() } },
             { session },
           )
 
