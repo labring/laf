@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   HStack,
@@ -23,14 +23,14 @@ export default function DatabaseBundleControl(props: {
   bundle: TypeBundle;
   originCapacity?: number;
   resourceOptions: any;
-  disabledChangeType: boolean;
+  type: "create" | "change";
   defaultDatabaseCapacity?: number;
   defaultDedicatedDatabaseBundle?: any;
   onBundleItemChange: (k: string, v?: number) => any;
 }) {
   const {
     bundle,
-    disabledChangeType,
+    type,
     onBundleItemChange,
     resourceOptions,
     defaultDatabaseCapacity,
@@ -39,9 +39,26 @@ export default function DatabaseBundleControl(props: {
   } = props;
   const { t } = useTranslation();
   const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
+  const { regions } = useGlobalStore();
+  const currentRegion = useMemo(() => regions?.[0], [regions]);
+
   const [databaseType, setDatabaseType] = useState<"dedicated" | "shared">(
-    bundle.dedicatedDatabase ? "dedicated" : "shared",
+    (type === "change" && bundle.dedicatedDatabase) ||
+      (type === "create" && currentRegion?.dedicatedDatabase)
+      ? "dedicated"
+      : "shared",
   );
+
+  const disabledChangeType = useMemo(
+    () => type === "change" || !currentRegion?.dedicatedDatabase,
+    [type, currentRegion],
+  );
+
+  useEffect(() => {
+    if (type === "create" && currentRegion) {
+      setDatabaseType(currentRegion?.dedicatedDatabase ? "dedicated" : "shared");
+    }
+  }, [currentRegion, type]);
 
   const { showInfo } = useGlobalStore(({ showInfo }) => ({ showInfo }));
 

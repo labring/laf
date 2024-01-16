@@ -359,7 +359,7 @@ const CreateAppModal = (props: {
                         });
                         setCalculating(true);
                       }}
-                      disabledChangeType={type === "change"}
+                      type={type}
                       defaultDatabaseCapacity={defaultBundle.databaseCapacity}
                       defaultDedicatedDatabaseBundle={defaultBundle.dedicatedDatabase}
                       resourceOptions={billingResourceOptionsRes?.data}
