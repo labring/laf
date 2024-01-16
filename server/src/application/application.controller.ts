@@ -119,6 +119,10 @@ export class ApplicationController {
       }
     }
 
+    if (!region.databaseConf.dedicatedDatabase.enabled) {
+      return ResponseUtil.error('dedicated database is not enabled')
+    }
+
     // check if a user exceeds the resource limit in a region
     const limitResource = await this.quotaServiceTsService.resourceLimit(
       user._id,
@@ -204,6 +208,7 @@ export class ApplicationController {
 
       /** This is the redundant field of Region */
       tls: region.gatewayConf.tls.enabled,
+      dedicatedDatabase: region.databaseConf.dedicatedDatabase.enabled,
     }
 
     return ResponseUtil.ok(res)

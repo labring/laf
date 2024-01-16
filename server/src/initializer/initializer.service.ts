@@ -75,6 +75,9 @@ export class InitializerService {
         driver: 'mongodb',
         connectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
         controlConnectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
+        dedicatedDatabase: {
+          enabled: true,
+        },
       },
       storageConf: {
         driver: 'minio',
