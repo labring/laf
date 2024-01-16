@@ -89,9 +89,7 @@ export class ApplicationController {
     }
 
     // check regionId exists
-    const region = await this.region.findOneDesensitized(
-      new ObjectId(dto.regionId),
-    )
+    const region = await this.region.findOne(new ObjectId(dto.regionId))
     if (!region) {
       return ResponseUtil.error(`region ${dto.regionId} not found`)
     }
@@ -119,7 +117,10 @@ export class ApplicationController {
       }
     }
 
-    if (!region.databaseConf.dedicatedDatabase.enabled) {
+    if (
+      dto.dedicatedDatabase &&
+      !region.databaseConf.dedicatedDatabase.enabled
+    ) {
       return ResponseUtil.error('dedicated database is not enabled')
     }
 
