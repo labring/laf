@@ -64,10 +64,7 @@ export default function DatabaseBundleControl(props: {
 
   useEffect(() => {
     if (databaseType === "dedicated") {
-      showInfo(
-        "数据库一旦创建后，暂时无法修改类型和实例数，容量只增不减，如有特殊需要请联系客服",
-        5000,
-      );
+      showInfo(t("application.DatabaseCreateTip"), 5000);
     }
   }, [databaseType]);
 

@@ -592,7 +592,7 @@
     "DedicatedType": "专用型",
     "SharedType": "共享型",
     "ApplicationSecification": "应用规格",
-    "DatabaseCreateTip": "数据库一旦创建后，暂时无法修改类型和实例数，容量只增不减，如有特殊需要请联系客服"
+    "DatabaseCreateTip": "数据库一旦创建，暂时无法修改类型和实例数，容量只增不减，如有特殊需要请联系客服"
   },
   "Storage Threshold": "内存阈值",
   "Yesterday": "昨天",
@@ -747,7 +747,6 @@
     "Performance": "性能",
     "Capacity": "容量"
   },
-  "DatabaseBundleControlTip": "数据库一旦创建后，暂时无法修改类型和实例数，容量只增不减，如有特殊需要请联系客服",
   "MoveFunction": "移动函数",
   "UpgradeVersionTip": {
     "Title": "Laf 新版本已经准备好了！",
