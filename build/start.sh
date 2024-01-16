@@ -27,12 +27,12 @@ set -e
 set -x
 
 sed "s/\$CAPACITY/${DB_PV_SIZE:-5Gi}/g" mongodb.yaml | kubectl apply -n ${NAMESPACE} -f -
-kubectl wait --for=condition=exists --timeout=120s secret/mongodb-conn-credential -n ${NAMESPACE}
+kubectl wait --for=condition=Ready --timeout=120s cluster.apps.kubeblocks.io/mongodb -n ${NAMESPACE}
 
 DB_USERNAME=$(kubectl get secret -n ${NAMESPACE} mongodb-conn-credential -ojsonpath='{.data.username}' | base64 -d)
 DB_PASSWORD=$(kubectl get secret -n ${NAMESPACE} mongodb-conn-credential -ojsonpath='{.data.password}' | base64 -d)
 DB_ENDPOINT=$(kubectl get secret -n ${NAMESPACE} mongodb-conn-credential -ojsonpath='{.data.headlessEndpoint}' | base64 -d)
-DATABASE_URL="mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_ENDPOINT}/sys_db?authSource=admin&replicaSet=rs0&w=majority"
+DATABASE_URL="mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_ENDPOINT}/sys_db?authSource=admin&replicaSet=mongodb-mongodb&w=majority"
 
 ## 2. install prometheus
 PROMETHEUS_URL=http://prometheus-operated.${NAMESPACE}.svc.cluster.local:9090
