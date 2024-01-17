@@ -6,7 +6,7 @@ import {
   registerFileSystemOverlay,
 } from "vscode/service-override/files";
 
-import { APP_STATUS, COLOR_MODE, Pages, RUNTIMES_PATH } from "@/constants";
+import { APP_STATUS, COLOR_MODE, RUNTIMES_PATH } from "@/constants";
 
 import "./useWorker";
 
@@ -14,7 +14,6 @@ import { createUrl, createWebSocketAndStartClient, performInit } from "./Languag
 
 import { TFunction } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
-import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useFunctionStore from "@/pages/app/functions/store";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -53,16 +52,6 @@ function FunctionEditor(props: {
       return "";
     }
   }, [baseUrl]);
-
-  useHotKey(
-    DEFAULT_SHORTCUTS.send_request,
-    () => {
-      editorRef.current?.trigger("keyboard", "editor.action.formatDocument", {});
-    },
-    {
-      enabled: globalStore.currentPageId === Pages.function,
-    },
-  );
 
   useEffect(() => {
     const startLSP = () => {
@@ -159,6 +148,10 @@ function FunctionEditor(props: {
             scrollBeyondLastLine: false,
             value: value,
           });
+          monaco.editor.addKeybindingRule({
+            keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyP,
+            command: null,
+          })
         });
     }
 
