@@ -47,7 +47,7 @@ const queryClient = new QueryClient({
 });
 
 loader.config({
-  paths: { vs: "https://cdn.bootcdn.net/ajax/libs/monaco-editor/0.43.0/min/vs" },
+  paths: { vs: "/js/monaco-editor.0.43.0" },
 });
 
 function APP() {
