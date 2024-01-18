@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   Button,
@@ -25,7 +25,7 @@ import "./index.scss";
 import { PodControllerGetContainerNameList, PodControllerGetPodNameList } from "@/apis/v1/apps";
 import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
-import { ContinueIcon, PauseIcon, RefreshIcon } from "@/components/CommonIcon";
+import { ContinueIcon, DownIcon, PauseIcon, RefreshIcon } from "@/components/CommonIcon";
 
 export default function LogsModal(props: { children: React.ReactElement }) {
   const { children } = props;
@@ -125,6 +125,13 @@ export default function LogsModal(props: { children: React.ReactElement }) {
     };
   }, [podName, containerName, isOpen, refresh]);
 
+  document.addEventListener('wheel', event => {
+    if (event.deltaY < 0 && !isPaused) {
+      setIsPaused(true);
+      setPausedRowNumber(rowNumber);
+    }
+  });
+
   return (
     <>
       {React.cloneElement(children, {
@@ -194,7 +201,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
               </span>
               <span>
                 <Button
-                  leftIcon={isPaused ? <ContinueIcon boxSize={3} /> : <PauseIcon boxSize={5} />}
+                  leftIcon={isPaused ? <ContinueIcon boxSize={3} width={5} /> : <PauseIcon boxSize={5} />}
                   variant={"text"}
                   px={2}
                   onClick={() => {
@@ -202,7 +209,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                     setPausedRowNumber(rowNumber);
                   }}
                 >
-                  {isPaused ? t("Logs.ContinueRow") : t("Logs.PauseRaw")}
+                  {isPaused ? t("Logs.Resume") : t("Logs.Pause")}
                 </Button>
               </span>
             </HStack>
@@ -221,7 +228,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                 <LogViewer
                   data={renderLogs}
                   hasLineNumbers={false}
-                  scrollToRow={isPaused ? pausedRowNumber : rowNumber}
+                  scrollToRow={isPaused ? pausedRowNumber : rowNumber + 1}
                   height={"98%"}
                   toolbar={
                     <div className="absolute right-24 top-4">
@@ -236,8 +243,10 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                 <div className="w-[95%] absolute bottom-1">
                   {isPaused && (
                     <Button
-                      onClick={() => { setIsPaused(false) }}
-                      className="w-full"
+                      onClick={() => { setIsPaused(false); console.log("rowNumber", rowNumber); console.log("pausedRowNumber", pausedRowNumber) }}
+                      className="w-full !bg-none"
+                      leftIcon={<DownIcon color={'#33BAB1'} size={24} />}
+                      variant={"text"}
                     >
                       <Trans
                         t={t}

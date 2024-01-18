@@ -753,3 +753,22 @@ export const ContinueIcon = createIcon({
   viewBox: "0 0 1024 1024",
   d: "M104 0v1024l816-512z"
 });
+
+export const DownIcon = (props: any) => {
+  return (
+    <svg
+      viewBox="0 0 1024 1024"
+      xmlns="http://www.w3.org/2000/svg"
+      width={props.size}
+      height={props.size}
+    >
+      <path d="M486.4 537.6C492.8 544 505.6 544 512 544s19.2 0 25.6-6.4l224-224c12.8-12.8 12.8-32 0-44.8s-32-12.8-44.8 0L512 467.2 313.6 262.4C300.8 256 275.2 256 262.4 262.4S256 300.8 262.4 313.6L486.4 537.6z"
+        fill={props.color}
+      ></path>
+      <path d="M710.4 486.4 512 691.2 313.6 486.4c-12.8-12.8-32-12.8-44.8 0S256 524.8 262.4 537.6l224 224C492.8 768 505.6 768 512 768s19.2 0 25.6-6.4l224-224c12.8-12.8 12.8-32 0-44.8S723.2 480 710.4 486.4z"
+        fill={props.color}
+      ></path>
+
+    </svg>
+  );
+};

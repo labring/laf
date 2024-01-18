@@ -127,7 +127,7 @@ const Button = defineStyleConfig({
     text: {
       color: "primary.500",
       _hover: {
-        bg: "primary.100",
+        bg: "primary.900",
       },
     },
 
