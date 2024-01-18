@@ -53,6 +53,9 @@ export class FunctionModule {
 
       // build function module
       const data = FunctionCache.get(fn)
+      if (!data) {
+        throw new Error(`function ${fn} not found`)
+      }
       const mod = this.compile(fn, data.source.compiled, fromModule)
 
       // cache module
@@ -78,15 +81,16 @@ export class FunctionModule {
     code: string,
     fromModules: string[],
     consoleInstance?: Console,
+    isDebugMode?: boolean,
   ): any {
-    const wrapped = this.wrap(code)
+    const wrapped = this.wrap(code, functionName, isDebugMode)
     const sandbox = this.buildSandbox(
       functionName,
       fromModules,
       consoleInstance,
     )
     const options: RunningScriptOptions = {
-      filename: `FunctionModule.${functionName}`,
+      filename: functionName,
       displayErrors: true,
       contextCodeGeneration: {
         strings: true,
@@ -94,7 +98,7 @@ export class FunctionModule {
       },
     } as any
 
-    const script = this.createScript(wrapped, {})
+    const script = this.createScript(wrapped, options)
     return script.runInNewContext(sandbox, options)
   }
 
@@ -102,16 +106,27 @@ export class FunctionModule {
     FunctionModule.cache.clear()
   }
 
-  protected static wrap(code: string): string {
-    return `
-    const require = (name) => {
-      __from_modules.push(__filename)
-      return __require(name, __from_modules, __filename)
-    }
-
-    ${code}
-    module.exports;
-    `
+  protected static wrap(
+    code: string,
+    functionName: string,
+    isDebugMode = false,
+  ): string {
+    const tmpCode = Buffer.from(code).toString('base64')
+    // ensure  1 line to balance line offset of error stack
+    return [
+      `function require(name){__from_modules.push(__filename);return __require(name,__from_modules,__filename);}`,
+      `(()=>{
+        const code = Buffer.from('${tmpCode}','base64').toString('utf-8');
+        __require('source-map-support').install({
+          overrideRetrieveFile: true,
+          retrieveFile: path => ${isDebugMode} && '${functionName}' === path ? code : __getFunction(path)?.source.compiled
+        });
+       })();`
+        .split('\n')
+        .join(''),
+      `${code}`,
+      `\nmodule.exports;`,
+    ].join(' ')
   }
 
   /**
@@ -162,6 +177,8 @@ export class FunctionModule {
       exports: _module.exports,
       console: fConsole,
       __require: this.require.bind(this),
+      __getFunction: FunctionCache.get,
+      RegExp: RegExp,
       Buffer: Buffer,
       setImmediate: setImmediate,
       clearImmediate: clearImmediate,

@@ -46,7 +46,7 @@ export class FunctionService {
       name: dto.name,
       source: {
         code: dto.code,
-        compiled: compileTs2js(dto.code),
+        compiled: compileTs2js(dto.code, dto.name),
         version: 0,
       },
       desc: dto.description,
@@ -110,6 +110,7 @@ export class FunctionService {
             {
               $set: {
                 name: dto.newName,
+                'source.compiled': compileTs2js(func.source.code, dto.newName),
                 desc: dto.description,
                 methods: dto.methods,
                 tags: dto.tags || [],
@@ -163,7 +164,7 @@ export class FunctionService {
         $set: {
           source: {
             code: dto.code,
-            compiled: compileTs2js(dto.code),
+            compiled: compileTs2js(dto.code, func.name),
             version: func.source.version + 1,
           },
           desc: dto.description,
@@ -311,7 +312,7 @@ export class FunctionService {
       source: {
         ...func.source,
         code: dto.code,
-        compiled: compileTs2js(dto.code),
+        compiled: compileTs2js(dto.code, func.name),
         version: func.source.version + 1,
       },
       updatedAt: new Date(),

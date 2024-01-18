@@ -115,7 +115,13 @@ export class FunctionDebugExecutor extends FunctionExecutor {
   protected getModule() {
     const name = this.data.name
     const code = this.data.source.compiled
-    const mod = FunctionModule.compile(name, code, [], this.consoleInstance)
+    const mod = FunctionModule.compile(
+      name,
+      code,
+      [],
+      this.consoleInstance,
+      true,
+    )
     return mod
   }
 }

@@ -38,6 +38,13 @@ export default class Config {
   }
 
   /**
+   * the logger display line level : 'info', 'warn', 'error', 'debug'
+   */
+  static get DISPLAY_LINE_LOG_LEVEL(): 'debug' | 'info' | 'warn' | 'error' {
+    return (process.env['DISPLAY_LINE_LOG_LEVEL'] as any) || 'error'
+  }
+
+  /**
    * the object depth limit when logging
    */
   static get LOG_DEPTH(): number {
