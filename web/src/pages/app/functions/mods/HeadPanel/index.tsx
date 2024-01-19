@@ -21,6 +21,7 @@ import CollaborateButton from "@/pages/app/collaboration/CollaborateButton";
 import DeployButton from "@/pages/app/functions/mods/DeployButton";
 import SysSetting from "@/pages/app/setting/SysSetting";
 import useGlobalStore from "@/pages/globalStore";
+import { useEffect } from "react";
 
 function HeadPanel() {
   const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
@@ -35,10 +36,27 @@ function HeadPanel() {
   const navigate = useNavigate();
   const { currentApp } = useGlobalStore();
 
+  useEffect(() => {
+    const element = document.getElementById('reverse_scroll');
+    if (element) {
+      const handleWheel = (event: WheelEvent) => {
+        event.preventDefault();
+        const elementToScroll = element.querySelector('.simplebar-content-wrapper');
+        elementToScroll?.scrollTo({
+          left: elementToScroll.scrollLeft + event.deltaY / 2
+        });
+      };
+      element.addEventListener('wheel', handleWheel);
+      return () => {
+        element.removeEventListener('wheel', handleWheel);
+      };
+    }
+  }, []);
+
   return (
     <Panel className="recentList !flex-row justify-between !px-0">
-      <SimpleBar style={{ flex: 1, overflowY: "hidden" }}>
-        <HStack className="flex-1" height="36px" data-simplebar>
+      <SimpleBar style={{ flex: 1, overflowY: "hidden" }} id="reverse_scroll">
+        <HStack className="flex-1 flex-nowrap" height="36px" data-simplebar>
           <div className="flex h-full">
             {recentFunctionList.length > 0 &&
               recentFunctionList.map((item, index) => {
@@ -53,15 +71,15 @@ function HeadPanel() {
                       selected
                         ? "border-b-transparent border-t-primary-600 text-primary-700"
                         : darkMode
-                        ? "border-t-lafDark-200 text-grayModern-400"
-                        : "border-t-lafWhite-200 text-grayModern-600",
+                          ? "border-t-lafDark-200 text-grayModern-400"
+                          : "border-t-lafWhite-200 text-grayModern-600",
                       selected
                         ? index === 0
                           ? "border-r-[2px]"
                           : "border-x-[2px]"
                         : index === 0
-                        ? "pr-[14px]"
-                        : "px-[14px]",
+                          ? "pr-[14px]"
+                          : "px-[14px]",
                     )}
                     onClick={() => {
                       navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`, {
@@ -80,7 +98,7 @@ function HeadPanel() {
                       </Tooltip>
                     </div>
                     {functionCache.getCache(item?._id, (item as any)?.source?.code) !==
-                    (item as any)?.source?.code ? (
+                      (item as any)?.source?.code ? (
                       <span
                         className={clsx(
                           "ml-2 inline-block h-1 w-1 flex-none rounded-full bg-rose-500",
