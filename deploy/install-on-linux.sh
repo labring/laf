@@ -37,7 +37,7 @@ EOF
   # yum update
   yum clean all
   yum install -y bind-utils iptables
-  yum install sealos=4.3.5 -y
+  yum install sealos=4.3.7 -y
   yum install jq -y
 fi
 
