@@ -17,7 +17,6 @@ export interface FunctionModuleGlobalContext {
   exports: object
   console: any
   __require: RequireFuncType
-  __getFunction: (name: string) => ICloudFunctionData
   Buffer: typeof Buffer
   RegExp: typeof RegExp
   setTimeout: typeof setTimeout

@@ -162,7 +162,6 @@ export class FunctionModule {
       exports: _module.exports,
       console: fConsole,
       __require: this.require.bind(this),
-      __getFunction: FunctionCache.get,
       RegExp: RegExp,
       Buffer: Buffer,
       setImmediate: setImmediate,
