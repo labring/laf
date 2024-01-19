@@ -81,9 +81,8 @@ export class FunctionModule {
     code: string,
     fromModules: string[],
     consoleInstance?: Console,
-    isDebugMode?: boolean,
   ): any {
-    const wrapped = this.wrap(code, functionName, isDebugMode)
+    const wrapped = this.wrap(code)
     const sandbox = this.buildSandbox(
       functionName,
       fromModules,
@@ -106,24 +105,10 @@ export class FunctionModule {
     FunctionModule.cache.clear()
   }
 
-  protected static wrap(
-    code: string,
-    functionName: string,
-    isDebugMode = false,
-  ): string {
-    const tmpCode = Buffer.from(code).toString('base64')
+  protected static wrap(code: string): string {
     // ensure 1 line to balance line offset of error stack
     return [
       `function require(name){__from_modules.push(__filename);return __require(name,__from_modules,__filename);}`,
-      `(()=>{
-        const code = Buffer.from('${tmpCode}','base64').toString('utf-8');
-        __require('source-map-support').install({
-          overrideRetrieveFile: true,
-          retrieveFile: path => ${isDebugMode} && '${functionName}' === path ? code : __getFunction(path)?.source.compiled
-        });
-       })();`
-        .split('\n')
-        .join(''),
       `${code}`,
       `\nmodule.exports;`,
     ].join(' ')
