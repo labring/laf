@@ -47,7 +47,7 @@ export class InitializerService {
 
     const files = readdirSync('./deploy-manifest')
     const manifest = files.reduce((prev, file) => {
-      const key = path.basename(file)
+      const key = file.slice(0, -path.extname(file).length)
       const value = readFileSync(key, 'utf8')
       prev[key] = value
       return prev
@@ -76,7 +76,7 @@ export class InitializerService {
         connectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
         controlConnectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
         dedicatedDatabase: {
-          enabled: true,
+          enabled: false,
         },
       },
       storageConf: {
