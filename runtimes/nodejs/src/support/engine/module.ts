@@ -112,7 +112,7 @@ export class FunctionModule {
     isDebugMode = false,
   ): string {
     const tmpCode = Buffer.from(code).toString('base64')
-    // ensure  1 line to balance line offset of error stack
+    // ensure 1 line to balance line offset of error stack
     return [
       `function require(name){__from_modules.push(__filename);return __require(name,__from_modules,__filename);}`,
       `(()=>{

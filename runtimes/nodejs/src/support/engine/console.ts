@@ -36,7 +36,9 @@ export class Console {
         try {
           // exclude involuntary log
           if (e.stack.includes('Executor.invoke')) {
-            const msgs = e.stack.split('\n')[4].split(':')
+            const msgs = e.stack.includes('at DebugConsole._format')
+              ? e.stack.split('\n')[4].split(':')
+              : e.stack.split('\n')[3].split(':')
             const line = msgs[1]
             let loc = msgs[0].match(/at (.*?) \(/)[1]
             loc = loc === 'default_1' ? 'MAIN' : loc
