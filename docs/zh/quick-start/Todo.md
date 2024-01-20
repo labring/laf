@@ -2,7 +2,7 @@
 title: 快速开始
 ---
 
-# {{ $frontmatter.title }}
+# 快速开始
 
 我们将在 [laf.run](https://laf.run) 上，通过开发一个简单的「Todo」的功能，快速体验 `laf` 云开发。
 

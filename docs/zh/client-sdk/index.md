@@ -2,7 +2,7 @@
 title: laf-client-sdk
 ---
 
-# {{ $frontmatter.title }}
+# laf-client-sdk
 
 ## 介绍
 

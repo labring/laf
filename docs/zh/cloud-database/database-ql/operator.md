@@ -2,7 +2,7 @@
 title: 数据库运算
 ---
 
-# {{ $frontmatter.title }}
+# 数据库运算
 
 **等同于 mongoDB 聚合操作符概念**
 

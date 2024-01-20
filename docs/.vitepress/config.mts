@@ -4,12 +4,20 @@ import { NavItemsInZh, SidebarItemsInZh } from './zh.mts'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  rewrites: {
+    'zh/index.md': 'index.md',
+  },
+  themeConfig: {
+    search: {
+      provider: 'local'
+    }
+  },
   lastUpdated: true,
   markdown: {
     lineNumbers: true,
   },
 
-  locales: {
+  locales: {  
     root: {
       label: '简体中文',
       lang: 'zh-CN',

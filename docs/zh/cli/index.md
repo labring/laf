@@ -2,7 +2,7 @@
 title: laf-cli 命令行工具
 ---
 
-# {{ $frontmatter.title }}
+# laf-cli 命令行工具
 
 ## 简介
 
