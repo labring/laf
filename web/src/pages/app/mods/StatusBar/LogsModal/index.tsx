@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
   Button,
   Center,
@@ -12,6 +12,7 @@ import {
   ModalOverlay,
   Select,
   Spinner,
+  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import { LogViewer, LogViewerSearch } from "@patternfly/react-log-viewer";
@@ -25,7 +26,9 @@ import "./index.scss";
 import { PodControllerGetContainerNameList, PodControllerGetPodNameList } from "@/apis/v1/apps";
 import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
-import { ContinueIcon, DownIcon, PauseIcon, RefreshIcon } from "@/components/CommonIcon";
+import { DownIcon, RefreshIcon } from "@/components/CommonIcon";
+import clsx from "clsx";
+import { debounce } from "lodash";
 
 export default function LogsModal(props: { children: React.ReactElement }) {
   const { children } = props;
@@ -46,9 +49,27 @@ export default function LogsModal(props: { children: React.ReactElement }) {
   const [renderLogs, setRenderLogs] = useState("");
   const [refresh, setRefresh] = useState(true);
 
+  const logViewerRef = useRef<any>(null);
+
+  const darkMode = useColorMode().colorMode === "dark";
+
+  useEffect(() => {
+    const resizeHandler = debounce(() => {
+      if (!isPaused) {
+        setRefresh((pre) => !pre);
+      }
+    }, 200)
+
+    window.addEventListener("resize", resizeHandler);
+
+    return () => {
+      window.removeEventListener("resize", resizeHandler);
+    };
+  }, [isPaused])
+
   useEffect(() => {
     if (!isPaused) {
-      setRenderLogs(logs);
+      setRenderLogs(logs.trim());
     }
   }, [isPaused, logs]);
 
@@ -125,13 +146,6 @@ export default function LogsModal(props: { children: React.ReactElement }) {
     };
   }, [podName, containerName, isOpen, refresh]);
 
-  document.addEventListener('wheel', event => {
-    if (event.deltaY < 0 && !isPaused) {
-      setIsPaused(true);
-      setPausedRowNumber(rowNumber);
-    }
-  });
-
   return (
     <>
       {React.cloneElement(children, {
@@ -199,19 +213,6 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                   {t("Refresh")}
                 </Button>
               </span>
-              <span>
-                <Button
-                  leftIcon={isPaused ? <ContinueIcon boxSize={3} width={5} /> : <PauseIcon boxSize={5} />}
-                  variant={"text"}
-                  px={2}
-                  onClick={() => {
-                    setIsPaused((pre) => !pre);
-                    setPausedRowNumber(rowNumber);
-                  }}
-                >
-                  {isPaused ? t("Logs.Resume") : t("Logs.Pause")}
-                </Button>
-              </span>
             </HStack>
           </ModalHeader>
           <ModalBody pr={0} py={0}>
@@ -222,14 +223,26 @@ export default function LogsModal(props: { children: React.ReactElement }) {
             ) : (
               <div
                 id="log-viewer-container"
-                className="text-sm flex flex-col overflow-y-auto px-2 font-mono h-full"
+                className="text-sm flex flex-col px-2 font-mono h-full"
                 style={{ fontSize: settingStore.commonSettings.fontSize - 1 }}
+                onWheel={(e) => {
+                  if (e.deltaY < 0 && !isPaused) {
+                    setIsPaused(true);
+                    setPausedRowNumber(rowNumber);
+                  }
+                }}
               >
                 <LogViewer
                   data={renderLogs}
+                  ref={logViewerRef}
                   hasLineNumbers={false}
                   scrollToRow={isPaused ? pausedRowNumber : rowNumber + 1}
                   height={"98%"}
+                  onScroll={(e) => {
+                    if (e.scrollOffsetToBottom <= 0) {
+                      setIsPaused(false);
+                    }
+                  }}
                   toolbar={
                     <div className="absolute right-24 top-4">
                       <LogViewerSearch
@@ -242,14 +255,15 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                 />
                 <div className="w-[95%] absolute bottom-1">
                   {isPaused && (
-                    <Button
+                    <HStack
                       onClick={() => { setIsPaused(false) }}
-                      className="w-full !bg-none backdrop-blur-sm"
-                      leftIcon={<DownIcon color={'#33BAB1'} size={24} />}
-                      variant={"text"}
+                      className={clsx("w-full flex justify-center items-center cursor-pointer",
+                        darkMode ? "bg-[#212630]" : "bg-white"
+                      )}
                     >
-                      {t("Logs.RowToBottom")}
-                    </Button>
+                      <DownIcon color={'#33BAB1'} size={24} />
+                      <span className="text-primary-500 font-medium text-lg">{t("Logs.RowToBottom")}</span>
+                    </HStack>
                   )}
                 </div>
               </div>

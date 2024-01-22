@@ -719,10 +719,7 @@
     "PodLogs": "App Instance Logs",
     "Export": "Export",
     "logs": "Logs",
-    "ContinueRowandShow": "resume and show {{number}} lines",
-    "Pause": "Pause",
-    "Resume": "Resume",
-    "RowToBottom": "resume and row to bottom"
+    "RowToBottom": "row to bottom"
   },
   "KeyCannotBeEmpty": "Key can't be empty",
   "ValueCannotBeEmpty": "Value can't be empty",
