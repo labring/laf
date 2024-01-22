@@ -243,18 +243,12 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                 <div className="w-[95%] absolute bottom-1">
                   {isPaused && (
                     <Button
-                      onClick={() => { setIsPaused(false); console.log("rowNumber", rowNumber); console.log("pausedRowNumber", pausedRowNumber) }}
-                      className="w-full !bg-none"
+                      onClick={() => { setIsPaused(false) }}
+                      className="w-full !bg-none backdrop-blur-sm"
                       leftIcon={<DownIcon color={'#33BAB1'} size={24} />}
                       variant={"text"}
                     >
-                      <Trans
-                        t={t}
-                        i18nKey="Logs.ContinueRowandShow"
-                        values={{
-                          number: rowNumber - pausedRowNumber,
-                        }}
-                      />
+                      {t("Logs.RowToBottom")}
                     </Button>
                   )}
                 </div>

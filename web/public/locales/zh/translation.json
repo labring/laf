@@ -721,7 +721,8 @@
     "logs": "日志",
     "ContinueRowandShow": "恢复并展示最新 {{number}} 行",
     "Pause": "暂停",
-    "Resume": "恢复"
+    "Resume": "恢复",
+    "RowToBottom": "恢复并滚动到底部"
   },
   "KeyCannotBeEmpty": "Key 不能为空",
   "ValueCannotBeEmpty": "Value 不能为空",
