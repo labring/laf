@@ -13,6 +13,8 @@ import {
   AuthProviderState,
 } from 'src/authentication/entities/auth-provider'
 import { Setting, SettingKey } from 'src/setting/entities/setting'
+import * as path from 'path'
+import { readFileSync, readdirSync } from 'node:fs'
 
 @Injectable()
 export class InitializerService {
@@ -42,6 +44,15 @@ export class InitializerService {
     if (ServerConfig.DEFAULT_REGION_NAMESPACE) {
       mode = ApplicationNamespaceMode.Fixed
     }
+
+    const files = readdirSync('./deploy-manifest')
+    const manifest = files.reduce((prev, file) => {
+      const key = file.slice(0, -path.extname(file).length)
+      const value = readFileSync(key, 'utf8')
+      prev[key] = value
+      return prev
+    }, {})
+
     const res = await this.db.collection<Region>('Region').insertOne({
       name: 'default',
       displayName: 'Default',
@@ -64,6 +75,9 @@ export class InitializerService {
         driver: 'mongodb',
         connectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
         controlConnectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
+        dedicatedDatabase: {
+          enabled: false,
+        },
       },
       storageConf: {
         driver: 'minio',
@@ -94,9 +108,7 @@ export class InitializerService {
       prometheusConf: {
         apiUrl: ServerConfig.DEFAULT_REGION_PROMETHEUS_URL,
       },
-      deployManifest: JSON.parse(
-        ServerConfig.DEFAULT_REGION_DEPLOY_MANIFEST || '{}',
-      ),
+      deployManifest: manifest,
       updatedAt: new Date(),
       createdAt: new Date(),
       state: 'Active',

@@ -747,11 +747,9 @@
     "Performance": "Performance",
     "Capacity": "Capacity"
   },
-  "DatabaseBundleControlTip": "Once a database is created, its type and number of instances cannot be temporarily modified, and its capacity can only increase and not decrease. If you have special needs, please contact customer service",
   "MoveFunction": "Move function",
   "UpgradeVersionTip": {
     "Title": "Laf is ready to update!",
     "Description": "Click to update"
   }
 }
-

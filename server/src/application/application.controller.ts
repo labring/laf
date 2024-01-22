@@ -89,9 +89,7 @@ export class ApplicationController {
     }
 
     // check regionId exists
-    const region = await this.region.findOneDesensitized(
-      new ObjectId(dto.regionId),
-    )
+    const region = await this.region.findOne(new ObjectId(dto.regionId))
     if (!region) {
       return ResponseUtil.error(`region ${dto.regionId} not found`)
     }
@@ -117,6 +115,13 @@ export class ApplicationController {
           `you can only create ${limitOfFreeTier} trial applications`,
         )
       }
+    }
+
+    if (
+      dto.dedicatedDatabase &&
+      !region.databaseConf.dedicatedDatabase.enabled
+    ) {
+      return ResponseUtil.error('dedicated database is not enabled')
     }
 
     // check if a user exceeds the resource limit in a region
@@ -204,6 +209,7 @@ export class ApplicationController {
 
       /** This is the redundant field of Region */
       tls: region.gatewayConf.tls.enabled,
+      dedicatedDatabase: region.databaseConf.dedicatedDatabase.enabled,
     }
 
     return ResponseUtil.ok(res)

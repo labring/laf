@@ -27,12 +27,12 @@ set -e
 set -x
 
 sed "s/\$CAPACITY/${DB_PV_SIZE:-5Gi}/g" mongodb.yaml | kubectl apply -n ${NAMESPACE} -f -
-kubectl wait --for=condition=exists --timeout=120s secret/mongodb-conn-credential -n ${NAMESPACE}
+kubectl wait --for=condition=Ready --timeout=120s cluster.apps.kubeblocks.io/mongodb -n ${NAMESPACE}
 
 DB_USERNAME=$(kubectl get secret -n ${NAMESPACE} mongodb-conn-credential -ojsonpath='{.data.username}' | base64 -d)
 DB_PASSWORD=$(kubectl get secret -n ${NAMESPACE} mongodb-conn-credential -ojsonpath='{.data.password}' | base64 -d)
 DB_ENDPOINT=$(kubectl get secret -n ${NAMESPACE} mongodb-conn-credential -ojsonpath='{.data.headlessEndpoint}' | base64 -d)
-DATABASE_URL="mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_ENDPOINT}/sys_db?authSource=admin&replicaSet=rs0&w=majority"
+DATABASE_URL="mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_ENDPOINT}/sys_db?authSource=admin&replicaSet=mongodb-mongodb&w=majority"
 
 ## 2. install prometheus
 PROMETHEUS_URL=http://prometheus-operated.${NAMESPACE}.svc.cluster.local:9090
@@ -67,15 +67,6 @@ helm install minio -n ${NAMESPACE} \
 ## 4. install laf-server
 SERVER_JWT_SECRET=$PASSWD_OR_SECRET
 RUNTIME_EXPORTER_SECRET=$PASSWD_OR_SECRET
-
-DEPLOY_MANIFEST=$(jq -n '{}')
-for file in deploy-manifest/*.yaml; do
-    content=$(cat "$file" | jq -Rs .)
-    key=$(basename "$file")
-    DEPLOY_MANIFEST=$(echo "$DEPLOY_MANIFEST" | jq --arg key "$key" --arg value "$content" '. + {($key): $value}')
-done
-DEPLOY_MANIFEST=$(echo "$DEPLOY_MANIFEST" | sed "s/\$NAMESPACE/$NAMESPACE/g")
-
 helm install server -n ${NAMESPACE} \
     --set databaseUrl=${DATABASE_URL} \
     --set jwt.secret=${SERVER_JWT_SECRET} \
@@ -94,7 +85,6 @@ helm install server -n ${NAMESPACE} \
     --set default_region.tls.enabled=false \
     $([ "$ENABLE_MONITOR" = "true" ] && echo "--set default_region.runtime_exporter_secret=${RUNTIME_EXPORTER_SECRET}") \
     $([ "$ENABLE_MONITOR" = "true" ] && echo "--set default_region.prometheus_url=${PROMETHEUS_URL}") \
-    --set default_region.deploy_manifest=${DEPLOY_MANIFEST}
     ./charts/laf-server
 
 ## 5. install laf-web

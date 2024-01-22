@@ -194,6 +194,7 @@ export type TRegion = {
   displayName: string;
   state: string;
   bundles: TBundle[];
+  dedicatedDatabase: boolean;
 };
 
 export type TBucket = {

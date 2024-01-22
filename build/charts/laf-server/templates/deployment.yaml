@@ -81,8 +81,6 @@ spec:
               value: {{ .Values.default_region.tls.wildcard_certificate_secret_name | quote}}
             - name: DEFAULT_REGION_PROMETHEUS_URL
               value: {{ .Values.default_region.prometheus_url }}
-            - name: DEFAULT_REGION_DEPLOY_MANIFEST
-              value: {{ .Values.default_region.deploy_manifest }}
             - name: SITE_NAME
               value: {{ .Values.siteName | quote}}
       {{- with .Values.nodeSelector }}

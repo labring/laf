@@ -27,7 +27,6 @@ default_region:
   runtime_exporter_secret: ""
   # prometheus
   prometheus_url: ""
-  deploy_manifest: ""
 jwt:
   secret: laf_server_abc123
   expires_in: 7d
