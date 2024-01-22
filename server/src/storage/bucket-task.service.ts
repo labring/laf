@@ -96,8 +96,10 @@ export class BucketTaskService {
 
       this.logger.debug('minio bucket created:', doc.name)
     } else {
-      this.logger.debug('minio bucket exists:', doc.name)
-      this.logger.debug('update bucket policy:', doc.name)
+      this.logger.debug(
+        'minio bucket exists, try to update bucket policy:',
+        doc.name,
+      )
       await this.minioService.updateBucketPolicy(region, doc.name, doc.policy)
     }
 
