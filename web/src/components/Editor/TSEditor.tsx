@@ -1,13 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Spinner } from "@chakra-ui/react";
 import { Editor, Monaco } from "@monaco-editor/react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
 import { AutoImportTypings } from "@/components/Editor/typesResolve";
-import { COLOR_MODE } from "@/constants";
+import { COLOR_MODE, RUNTIMES_PATH } from "@/constants";
 
 import "./useWorker";
-
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useFunctionStore from "@/pages/app/functions/store";
 
@@ -23,18 +22,41 @@ export default function TSEditor(props: {
   const { value, path, fontSize, onChange, colorMode } = props;
 
   const functionCache = useFunctionCache();
-  const { currentFunction } = useFunctionStore((state) => state);
+  const { currentFunction, allFunctionList } = useFunctionStore((state) => state);
 
   const monacoRef = useRef<Monaco>();
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
+  const loadModalsRef = useRef(loadModals);
+
+  loadModalsRef.current = loadModals
+
+  function loadModals(monaco: Monaco) {
+    allFunctionList.forEach((item: any) => {
+      const uri = monaco.Uri.file(`${RUNTIMES_PATH}/${item.name}.ts`);
+      if (!monaco.editor.getModel(uri)) {
+        monaco.editor.createModel(
+          functionCache.getCache(item._id, item.source?.code),
+          "typescript",
+          uri,
+        );
+      }
+    });
+  }
 
   function handleEditorDidMount(editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) {
     monacoRef.current = monaco;
     editorRef.current = editor;
     setTimeout(() => {
+      loadModalsRef.current(monacoRef.current!);
       autoImportTypings.loadDefaults(monacoRef.current);
     }, 10);
   }
+
+  useEffect(() => {
+    if (monacoRef.current) {
+      loadModalsRef.current(monacoRef.current!);
+    }
+  }, [allFunctionList]);
 
   useEffect(() => {
     const pos = JSON.parse(functionCache.getPositionCache(path) || "{}");

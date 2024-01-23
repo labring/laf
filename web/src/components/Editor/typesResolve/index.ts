@@ -42,7 +42,7 @@ export class ImportParser {
     // parse static imports
     const staticImports = [...cleaned.matchAll(this.REGEX_DETECT_IMPORT)]
       .map((x) => x[1] ?? x[2])
-      .filter((x) => !!x)
+      .filter((x) => !!x && !x.startsWith("./") && !x.startsWith("../"))
       .map((imp) => {
         return imp;
       });
