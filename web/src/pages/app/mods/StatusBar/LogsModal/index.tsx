@@ -49,8 +49,6 @@ export default function LogsModal(props: { children: React.ReactElement }) {
   const [renderLogs, setRenderLogs] = useState("");
   const [refresh, setRefresh] = useState(true);
 
-  const logViewerRef = useRef<any>(null);
-
   const darkMode = useColorMode().colorMode === "dark";
 
   useEffect(() => {
@@ -234,7 +232,6 @@ export default function LogsModal(props: { children: React.ReactElement }) {
               >
                 <LogViewer
                   data={renderLogs}
-                  ref={logViewerRef}
                   hasLineNumbers={false}
                   scrollToRow={isPaused ? pausedRowNumber : rowNumber + 1}
                   height={"98%"}
@@ -262,7 +259,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                       )}
                     >
                       <DownIcon color={'#33BAB1'} size={24} />
-                      <span className="text-primary-500 font-medium text-lg">{t("Logs.RowToBottom")}</span>
+                      <span className="text-primary-500 font-medium text-lg">{t("Logs.ScrollToBottom")}</span>
                     </HStack>
                   )}
                 </div>

@@ -719,7 +719,7 @@
     "PodLogs": "App Instance Logs",
     "Export": "Export",
     "logs": "Logs",
-    "RowToBottom": "row to bottom"
+    "ScrollToBottom": "Scroll to bottom"
   },
   "KeyCannotBeEmpty": "Key can't be empty",
   "ValueCannotBeEmpty": "Value can't be empty",
