@@ -718,7 +718,8 @@
   "Logs": {
     "PodLogs": "应用实例日志",
     "Export": "导出",
-    "logs": "日志"
+    "logs": "日志",
+    "ScrollToBottom": "滚动到底部"
   },
   "KeyCannotBeEmpty": "Key 不能为空",
   "ValueCannotBeEmpty": "Value 不能为空",
