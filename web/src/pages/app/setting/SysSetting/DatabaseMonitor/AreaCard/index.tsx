@@ -71,7 +71,7 @@ function mergeArrays(dataArrays: (DataPoint[] | null)[]): DataPoint[] {
       } else {
         Object.keys(arr[0]).forEach((key) => {
           if (key !== "xData") {
-            mergedPoint[key] = 0;
+            mergedPoint[key] = undefined;
           }
         });
       }

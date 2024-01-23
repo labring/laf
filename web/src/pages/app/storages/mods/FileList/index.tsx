@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import {
   Button,
@@ -21,10 +21,13 @@ import { t } from "i18next";
 import { Key } from "ts-key-enum";
 
 import {
+  AscendingIcon,
+  DescendingIcon,
   LinkIcon,
   OutlineViewOnIcon,
   RecycleDeleteIcon,
   RefreshIcon,
+  SortingIcon,
   UploadIcon,
 } from "@/components/CommonIcon";
 import ConfirmButton from "@/components/ConfirmButton";
@@ -45,6 +48,33 @@ import UploadButton from "../UploadButton";
 
 import useAwsS3 from "@/hooks/useAwsS3";
 import useGlobalStore from "@/pages/globalStore";
+
+type TOrderType = null | "ascFilename" | "descFilename" | "ascFileType" | "descFileType" | "ascSize" | "descSize" | "ascDate" | "descDate"
+
+const SortIcon = ({ currentOrderType, orderTypeAsc, orderTypeDesc, onSort }: {
+  currentOrderType: TOrderType,
+  orderTypeAsc: TOrderType,
+  orderTypeDesc: TOrderType,
+  onSort: () => void
+}) => {
+  const isAsc = currentOrderType === orderTypeAsc;
+  const isDesc = currentOrderType === orderTypeDesc;
+
+  let icon = <SortingIcon boxSize={3} className="absolute top-[1.5px]" />;
+
+  if (isAsc) {
+    icon = <AscendingIcon boxSize={3} className="absolute top-[1.5px]" />;
+  } else if (isDesc) {
+    icon = <DescendingIcon boxSize={3} className="absolute top-[1.5px]" />;
+  }
+
+  return (
+    <span onClick={onSort} className="cursor-pointer relative">
+      {icon}
+    </span>
+  );
+};
+
 export default function FileList() {
   const { getList, getFileUrl, deleteFile } = useAwsS3();
   const { currentStorage, prefix, setPrefix, markerArray, setMarkerArray, getFilePath } =
@@ -59,6 +89,8 @@ export default function FileList() {
 
   const confirmDialog = useConfirmDialog();
   const { showError, showLoading, showSuccess } = useGlobalStore();
+
+  const [orderType, setOrderType] = useState<TOrderType>(null);
 
   const {
     data: queryData,
@@ -76,6 +108,74 @@ export default function FileList() {
       enabled: !!bucketName,
     },
   );
+
+  const compareFilename = (a: any, b: any) => {
+    if (a.Key && b.Key) {
+      return a.Key.localeCompare(b.Key);
+    } else if (a.Key) {
+      return 1;
+    } else if (b.Key) {
+      return -1;
+    } else {
+      return a.Prefix.localeCompare(b.Prefix);
+    }
+  }
+
+  const compareFileType = (a: any, b: any) => {
+    const fileNameA = a.Key?.split('/');
+    const fileNameB = b.Key?.split('/');
+
+    if (!fileNameA && fileNameB) return 1;
+    if (fileNameA && !fileNameB) return -1;
+    if (!fileNameA && !fileNameB) return 0;
+
+    return formateType(fileNameA[fileNameA.length - 1])
+      .localeCompare(formateType(fileNameB[fileNameB.length - 1]));
+  }
+
+  const compareDate = (a: any, b: any) => {
+    const dateA = new Date(a.LastModified);
+    const dateB = new Date(b.LastModified);
+
+    if (dateA > dateB) {
+      return 1;
+    } else if (dateA < dateB) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
+
+  const sortData = (data: any, orderType: TOrderType) => {
+    if (!data) return [];
+
+    const sorted = [...data].sort((a, b) => {
+      switch (orderType) {
+        case 'ascFilename':
+          return compareFilename(a, b);
+        case 'descFilename':
+          return compareFilename(b, a);
+        case 'ascFileType':
+          return compareFileType(a, b);
+        case 'descFileType':
+          return compareFileType(b, a);
+        case 'ascSize':
+          return (a.Size || 0) - (b.Size || 0);
+        case 'descSize':
+          return (b.Size || 0) - (a.Size || 0);
+        case 'ascDate':
+          return compareDate(a, b);
+        case 'descDate':
+          return compareDate(b, a);
+        default:
+          return 0;
+      }
+    });
+
+    return sorted;
+  }
+
+  const renderData = useMemo(() => sortData(queryData?.data, orderType), [queryData, orderType]);
 
   useHotkeys(
     ["ctrl+a", "meta+a"],
@@ -260,17 +360,49 @@ export default function FileList() {
                     })}
                   >
                     <Tr>
-                      <Th>{t("StoragePanel.FileName")}</Th>
-                      <Th>{t("StoragePanel.FileType")}</Th>
-                      <Th>{t("StoragePanel.Size")}</Th>
-                      <Th>{t("StoragePanel.Time")}</Th>
+                      <Th>
+                        <span>{t("StoragePanel.FileName")}</span>
+                        <SortIcon
+                          currentOrderType={orderType}
+                          orderTypeAsc="ascFilename"
+                          orderTypeDesc="descFilename"
+                          onSort={() => setOrderType(orderType === "ascFilename" ? "descFilename" : "ascFilename")}
+                        />
+                      </Th>
+                      <Th>
+                        <span>{t("StoragePanel.FileType")}</span>
+                        <SortIcon
+                          currentOrderType={orderType}
+                          orderTypeAsc="ascFileType"
+                          orderTypeDesc="descFileType"
+                          onSort={() => setOrderType(orderType === "ascFileType" ? "descFileType" : "ascFileType")}
+                        />
+                      </Th>
+                      <Th>
+                        <span>{t("StoragePanel.Size")}</span>
+                        <SortIcon
+                          currentOrderType={orderType}
+                          orderTypeAsc="ascSize"
+                          orderTypeDesc="descSize"
+                          onSort={() => setOrderType(orderType === "ascSize" ? "descSize" : "ascSize")}
+                        />
+                      </Th>
+                      <Th>
+                        <span>{t("StoragePanel.Time")}</span>
+                        <SortIcon
+                          currentOrderType={orderType}
+                          orderTypeAsc="ascDate"
+                          orderTypeDesc="descDate"
+                          onSort={() => setOrderType(orderType === "ascDate" ? "descDate" : "ascDate")}
+                        />
+                      </Th>
                       <Th isNumeric>
                         <span className="mr-2">{t("Operation")}</span>
                       </Th>
                     </Tr>
                   </Thead>
                   <Tbody className="text-grayModern-500">
-                    {queryData.data.map((file: TFile) => {
+                    {renderData?.map((file: TFile) => {
                       const fileName = file.Key?.split("/");
                       const dirName = file.Prefix?.split("/") || [];
                       const fileType = file.Prefix
