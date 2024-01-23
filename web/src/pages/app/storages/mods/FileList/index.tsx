@@ -63,9 +63,9 @@ const SortIcon = ({ currentOrderType, orderTypeAsc, orderTypeDesc, onSort }: {
   let icon = <SortingIcon boxSize={3} className="absolute top-[1.5px]" />;
 
   if (isAsc) {
-    icon = <DescendingIcon boxSize={3} className="absolute top-[1.5px]" />;
-  } else if (isDesc) {
     icon = <AscendingIcon boxSize={3} className="absolute top-[1.5px]" />;
+  } else if (isDesc) {
+    icon = <DescendingIcon boxSize={3} className="absolute top-[1.5px]" />;
   }
 
   return (
