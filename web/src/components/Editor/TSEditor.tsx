@@ -32,9 +32,9 @@ export default function TSEditor(props: {
 
   function loadModals(monaco: Monaco) {
     allFunctionList.forEach((item: any) => {
-      const uri = monaco!.Uri.file(`${RUNTIMES_PATH}/${item.name}.ts`);
-      if (!monaco!.editor.getModel(uri)) {
-        monaco!.editor.createModel(
+      const uri = monaco.Uri.file(`${RUNTIMES_PATH}/${item.name}.ts`);
+      if (!monaco.editor.getModel(uri)) {
+        monaco.editor.createModel(
           functionCache.getCache(item._id, item.source?.code),
           "typescript",
           uri,
