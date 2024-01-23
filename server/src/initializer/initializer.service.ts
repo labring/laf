@@ -45,10 +45,13 @@ export class InitializerService {
       mode = ApplicationNamespaceMode.Fixed
     }
 
-    const files = readdirSync('./deploy-manifest')
+    const files = readdirSync(path.resolve(__dirname, './deploy-manifest'))
     const manifest = files.reduce((prev, file) => {
       const key = file.slice(0, -path.extname(file).length)
-      const value = readFileSync(key, 'utf8')
+      const value = readFileSync(
+        path.resolve(__dirname, './deploy-manifest', file),
+        'utf8',
+      )
       prev[key] = value
       return prev
     }, {})
