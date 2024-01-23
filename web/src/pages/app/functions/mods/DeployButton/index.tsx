@@ -25,6 +25,7 @@ import useFunctionStore from "../../store";
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
+import { TFunction } from "@/apis/typing";
 
 export default function DeployButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -69,6 +70,7 @@ export default function DeployButton() {
     });
     if (!res.error) {
       store.setCurrentFunction(res.data);
+      store.setRecentFunctionList([res.data as TFunction, ...store.recentFunctionList.filter((item) => item.name !== res.data.name)]);
       // delete cache after deploy
       functionCache.removeCache(store.currentFunction!._id);
       onClose();
