@@ -772,3 +772,20 @@ export const DownIcon = (props: any) => {
     </svg>
   );
 };
+export const AscendingIcon = createIcon({
+  displayName: "AscendingIcon",
+  viewBox: "0 0 1024 1024",
+  d: "M666.656 452.992l45.888-44.608-258.24-265.664v782.816h64V300.352z"
+});
+
+export const DescendingIcon = createIcon({
+  displayName: "DescendingIcon",
+  viewBox: "0 0 1024 1024",
+  d: "M372.16 615.264l-45.888 44.608 258.272 265.664V142.72h-64v625.152z"
+});
+
+export const SortingIcon = createIcon({
+  displayName: "SortingIcon",
+  viewBox: "0 0 1024 1024",
+  d: "M610.624 128l258.24 265.664-45.856 44.608-148.384-152.64v625.184h-64V128zM160 659.84l45.888-44.576 148.384 152.64V142.72h64v782.816L160 659.872z"
+});

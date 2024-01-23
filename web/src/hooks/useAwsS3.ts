@@ -27,7 +27,7 @@ function useAwsS3() {
 
     const files = res.Contents || [];
     const dirs = res.CommonPrefixes || [];
-    // console.log(files, dirs)
+
     return { data: [...files, ...dirs], marker: res.NextMarker };
   };
 

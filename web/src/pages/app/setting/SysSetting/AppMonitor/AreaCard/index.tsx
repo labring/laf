@@ -64,7 +64,7 @@ function mergeArrays(dataArrays: (DataPoint[] | null)[]): DataPoint[] {
       if (matchingPoint) {
         mergedPoint[`value${index}`] = matchingPoint[`value${index}`] ?? 0;
       } else {
-        mergedPoint[`value${index}`] = 0;
+        mergedPoint[`value${index}`] = undefined;
       }
     });
     return mergedPoint;
@@ -203,9 +203,9 @@ export default function AreaCard(props: {
               <Tooltip
                 formatter={(value, index) => [
                   podsArray[extractNumber(index as string) + 1] +
-                    ": " +
-                    Number(value).toFixed(3) +
-                    unit,
+                  ": " +
+                  Number(value).toFixed(3) +
+                  unit,
                 ]}
                 labelFormatter={(value) => formatDate(new Date(value)).split(" ")[1]}
                 labelStyle={{ color: "#24282C" }}
