@@ -25,6 +25,13 @@ import url from 'url'
 
 import { LspWebSocket } from './support/lsp'
 import { createCloudSdk } from './support/cloud-sdk'
+import { FunctionCache } from './support/engine'
+
+require('source-map-support').install({
+  emptyCacheBetweenOperations: true,
+  overrideRetrieveFile: true,
+  retrieveFile: (path) => FunctionCache.get(path)?.source.compiled,
+})
 
 // hack: set createCloudSdk to global object to make it available in @lafjs/cloud package
 globalThis.createCloudSdk = createCloudSdk

@@ -4,12 +4,19 @@ import * as ts from 'typescript'
  * compile typescript code to javascript
  * @param source typescript source code
  */
-export function compileTs2js(source: string) {
-  const jscode = ts.transpile(source, {
-    module: ts.ModuleKind.Node16,
-    target: ts.ScriptTarget.ES2022,
-    removeComments: true,
-  })
+export function compileTs2js(source: string, name: string) {
+  const jscode = ts.transpile(
+    source,
+    {
+      module: ts.ModuleKind.Node16,
+      target: ts.ScriptTarget.ES2022,
+      removeComments: true,
+      inlineSourceMap: true,
+    },
+    name,
+    undefined,
+    name,
+  )
 
   return jscode
 }

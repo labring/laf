@@ -161,6 +161,17 @@ async function invokeDebug(
       requestId,
     })
   }
+
+  // for debug usage
+  require('source-map-support').install({
+    emptyCacheBetweenOperations: true,
+    overrideRetrieveFile: true,
+    retrieveFile: (path) =>
+      funcName === path
+        ? funcData.source.compiled
+        : FunctionCache.get(path)?.source.compiled,
+  })
+
   const debugConsole = new DebugConsole(funcName)
   const executor = new FunctionDebugExecutor(funcData, debugConsole)
 
@@ -218,5 +229,12 @@ async function invokeDebug(
   } catch (error) {
     debugConsole.error(requestId, 'failed to invoke error', error)
     return ctx.response.status(500).send('Internal Server Error')
+  } finally {
+    // restore
+    require('source-map-support').install({
+      emptyCacheBetweenOperations: true,
+      overrideRetrieveFile: true,
+      retrieveFile: (path) => FunctionCache.get(path)?.source.compiled,
+    })
   }
 }
