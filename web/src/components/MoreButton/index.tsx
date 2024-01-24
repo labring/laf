@@ -17,8 +17,9 @@ export default function MoreButton(props: {
   label: string;
   maxWidth?: string;
   className?: string;
+  refItem?: React.RefObject<HTMLDivElement>;
 }) {
-  const { children, isHidden, maxWidth, label = t("openPopover"), className } = props;
+  const { children, isHidden, maxWidth, label = t("openPopover"), className, refItem } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <div className={clsx("flex group-hover:visible ", isHidden ? "invisible" : "visible")}>
@@ -32,13 +33,13 @@ export default function MoreButton(props: {
         <Tooltip aria-label="tooltip" placement="bottom" label={label}>
           <Box display="inline-block">
             <PopoverTrigger>
-              <div className="px-1">
+              <div className="px-1" ref={refItem}>
                 <MoreIcon className="cursor-pointer align-middle" fontSize={12} />
               </div>
             </PopoverTrigger>
           </Box>
         </Tooltip>
-        <PopoverContent p="2" maxWidth={maxWidth ? maxWidth : "100px"} className={className}>
+        <PopoverContent p="2" maxWidth={maxWidth ? maxWidth : "120px"} className={className}>
           <div className="flex justify-around">{children}</div>
         </PopoverContent>
       </Popover>
