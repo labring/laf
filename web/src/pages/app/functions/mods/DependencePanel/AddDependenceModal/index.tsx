@@ -27,7 +27,6 @@ import { debounce } from "lodash";
 import { EditIconLine } from "@/components/CommonIcon";
 import DependenceList from "@/components/DependenceList";
 import IconWrap from "@/components/IconWrap";
-import { APP_STATUS } from "@/constants";
 
 import {
   TDependenceItem,
@@ -40,11 +39,8 @@ import {
 } from "../service";
 import { openDependenceDetail } from "..";
 
-import useGlobalStore from "@/pages/globalStore";
-
 const AddDependenceModal = () => {
   const { t } = useTranslation();
-  const globalStore = useGlobalStore((state) => state);
   const [checkList, setCheckList] = useState<TDependenceItem[]>([]);
   const [name, setName] = useState("");
   const [clickItem, setClickItem] = useState({ package: "", loading: false });
@@ -74,22 +70,10 @@ const AddDependenceModal = () => {
 
   const addPackageMutation = useAddPackageMutation(() => {
     onClose();
-    globalStore.updateCurrentApp(
-      globalStore.currentApp!,
-      globalStore.currentApp!.state === APP_STATUS.Stopped
-        ? APP_STATUS.Running
-        : APP_STATUS.Restarting,
-    );
   });
 
   const editPackageMutation = useEditPackageMutation(() => {
     onClose();
-    globalStore.updateCurrentApp(
-      globalStore.currentApp!,
-      globalStore.currentApp!.state === APP_STATUS.Stopped
-        ? APP_STATUS.Running
-        : APP_STATUS.Restarting,
-    );
   });
 
   const packageSearchQuery = usePackageSearchQuery(name, (data) => {
