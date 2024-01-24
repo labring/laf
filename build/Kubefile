@@ -4,7 +4,6 @@ USER 65532:65532
 COPY charts  ./charts
 # COPY manifests ./manifests
 COPY registry ./registry
-COPY deploy-manifest ./deploy-manifest
 COPY start.sh ./start.sh
 COPY prometheus-helm.yaml ./prometheus-helm.yaml
 COPY mongodb.yaml ./mongodb.yaml
