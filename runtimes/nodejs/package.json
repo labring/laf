@@ -32,6 +32,7 @@
     "@lafjs/cloud": "^1.0.0-beta.14-patch0",
     "@types/pako": "^2.0.2",
     "axios": "^1.4.0",
+    "callsites": "^4.1.0",
     "chalk": "^4.1.2",
     "chatgpt": "^5.2.5",
     "cors": "^2.8.5",

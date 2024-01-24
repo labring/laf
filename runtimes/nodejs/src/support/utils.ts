@@ -143,6 +143,7 @@ export function GetClientIPFromRequest(req: IRequest) {
 
 export function installDependency(packageName: string) {
   return new Promise((resolve, reject) => {
+    logger.info(`Installing package ${packageName} ...`)
     exec(
       `cd ${Config.CUSTOM_DEPENDENCY_BASE_PATH} && npm install ${packageName}`,
       (error, stdout, stderr) => {
@@ -168,6 +169,7 @@ export function installDependencies(packageName: string[]) {
 
 export function uninstallDependency(packageName: string) {
   return new Promise((resolve, reject) => {
+    logger.info(`Uninstalling package ${packageName} ...`)
     exec(
       `cd ${Config.CUSTOM_DEPENDENCY_BASE_PATH} && npm uninstall ${packageName}`,
       (error, stdout, stderr) => {
@@ -224,13 +226,13 @@ const resolveFrom = (fromDirectory: string, moduleId: string) => {
   return resolveFileName()
 }
 
-const resolve = (moduleId) => {
+const resolve = (moduleId: string) => {
   try {
     return resolveFrom(path.dirname(parentModule(__filename)), moduleId)
   } catch (_) {}
 }
 
-export default function parentModule(filePath) {
+export default function parentModule(filePath: string) {
   const stacks = callsites()
 
   if (!filePath) {
