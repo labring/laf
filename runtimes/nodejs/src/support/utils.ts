@@ -1,5 +1,12 @@
 import * as crypto from 'crypto'
+import { exec } from 'child_process'
+import callsites from 'callsites'
+import * as fs from 'fs'
+import Module from 'module'
+import path from 'path'
+import Config from '../config'
 import { IRequest } from './types'
+import { logger } from './logger'
 
 /**
  * Generate UUID v4
@@ -133,3 +140,158 @@ export function GetClientIPFromRequest(req: IRequest) {
 
   return null
 }
+
+export function installDependency(packageName: string) {
+  return new Promise((resolve, reject) => {
+    exec(
+      `cd ${Config.CUSTOM_DEPENDENCY_BASE_PATH} && npm install ${packageName}`,
+      (error, stdout, stderr) => {
+        if (error) {
+          logger.error(`Error installing package ${packageName}: ${error}`)
+          return reject(error)
+        }
+        if (stderr) {
+          logger.error(`Error installing package ${packageName}: ${stderr}`)
+          return reject(new Error(stderr))
+        }
+        clearModuleCache(packageName)
+        logger.info(`Package ${packageName} installed success`)
+        resolve(stdout)
+      },
+    )
+  })
+}
+
+export function installDependencies(packageName: string[]) {
+  return installDependency(packageName.join(' '))
+}
+
+export function uninstallDependency(packageName: string) {
+  return new Promise((resolve, reject) => {
+    exec(
+      `cd ${Config.CUSTOM_DEPENDENCY_BASE_PATH} && npm uninstall ${packageName}`,
+      (error, stdout, stderr) => {
+        if (error) {
+          logger.error(`Error uninstalling package ${packageName}: ${error}`)
+          return reject(error)
+        }
+        if (stderr) {
+          logger.error(`Error uninstalling package ${packageName}: ${stderr}`)
+          return reject(new Error(stderr))
+        }
+        clearModuleCache(packageName)
+        logger.info(`Package ${packageName} uninstalled success`)
+        resolve(stdout)
+      },
+    )
+  })
+}
+
+export function uninstallDependencies(packageName: string[]) {
+  // the raw name is packageName@version, so we need to trim version
+  return uninstallDependency(
+    packageName.map((v) => v.slice(0, packageName.indexOf('@', 1))).join(' '),
+  )
+}
+
+// === clear module cache
+const resolveFrom = (fromDirectory: string, moduleId: string) => {
+  try {
+    fromDirectory = fs.realpathSync(fromDirectory)
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      fromDirectory = path.resolve(fromDirectory)
+    } else {
+      throw error
+    }
+  }
+
+  const fromFile = path.join(fromDirectory, 'noop.js')
+
+  const resolveFileName = () =>
+    // @ts-ignore
+    Module._resolveFilename(moduleId, {
+      id: fromFile,
+      filename: fromFile,
+      paths: [
+        // our custom node_modules
+        `${Config.CUSTOM_DEPENDENCY_BASE_PATH}/node_modules`,
+        // @ts-ignore
+        ...Module._nodeModulePaths(fromDirectory),
+      ],
+    })
+
+  return resolveFileName()
+}
+
+const resolve = (moduleId) => {
+  try {
+    return resolveFrom(path.dirname(parentModule(__filename)), moduleId)
+  } catch (_) {}
+}
+
+export default function parentModule(filePath) {
+  const stacks = callsites()
+
+  if (!filePath) {
+    return stacks[2].getFileName()
+  }
+
+  let hasSeenValue = false
+
+  stacks.shift()
+
+  for (const stack of stacks) {
+    const parentFilePath = stack.getFileName()
+
+    if (typeof parentFilePath !== 'string') {
+      continue
+    }
+
+    if (parentFilePath === filePath) {
+      hasSeenValue = true
+      continue
+    }
+
+    // Skip native modules
+    if (parentFilePath === 'module.js') {
+      continue
+    }
+
+    if (hasSeenValue && parentFilePath !== filePath) {
+      return parentFilePath
+    }
+  }
+}
+
+export const clearModuleCache = (moduleId: string) => {
+  const filePath = resolve(moduleId)
+
+  if (!filePath) {
+    return
+  }
+
+  // Delete itself from module parent
+  if (require.cache[filePath] && require.cache[filePath].parent) {
+    let i = require.cache[filePath].parent.children.length
+
+    while (i--) {
+      if (require.cache[filePath].parent.children[i].id === filePath) {
+        require.cache[filePath].parent.children.splice(i, 1)
+      }
+    }
+  }
+
+  // Remove all descendants from cache as well
+  if (require.cache[filePath]) {
+    const children = require.cache[filePath].children.map((child) => child.id)
+
+    // Delete module from cache
+    delete require.cache[filePath]
+
+    for (const id of children) {
+      clearModuleCache(id)
+    }
+  }
+}
+// ===
