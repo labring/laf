@@ -1,6 +1,5 @@
 import * as crypto from 'crypto'
 import { exec } from 'child_process'
-import callsites from 'callsites'
 import * as fs from 'fs'
 import Module from 'module'
 import path from 'path'
@@ -232,7 +231,24 @@ const resolve = (moduleId: string) => {
   } catch (_) {}
 }
 
-export default function parentModule(filePath: string) {
+export function callsites() {
+  const _prepareStackTrace = Error.prepareStackTrace
+  try {
+    let result = []
+    Error.prepareStackTrace = (_, callSites) => {
+      const callSitesWithoutCurrent = callSites.slice(1)
+      result = callSitesWithoutCurrent
+      return callSitesWithoutCurrent
+    }
+
+    new Error().stack
+    return result
+  } finally {
+    Error.prepareStackTrace = _prepareStackTrace
+  }
+}
+
+function parentModule(filePath: string) {
   const stacks = callsites()
 
   if (!filePath) {
@@ -266,7 +282,7 @@ export default function parentModule(filePath: string) {
   }
 }
 
-export const clearModuleCache = (moduleId: string) => {
+export function clearModuleCache(moduleId: string) {
   const filePath = resolve(moduleId)
 
   if (!filePath) {
