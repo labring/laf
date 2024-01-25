@@ -129,21 +129,21 @@ const CreateAppModal = (props: {
       application?.bundle.resource.databaseCapacity || sortedBundles[0].spec.databaseCapacity.value,
     storageCapacity:
       application?.bundle.resource.storageCapacity || sortedBundles[0].spec.storageCapacity.value,
-    dedicatedDatabase: !application?.bundle.resource.databaseCapacity
+    dedicatedDatabase: !application?.bundle.resource.databaseCapacity && sortedBundles[0].spec.dedicatedDatabaseCPU
       ? {
-          cpu:
-            application?.bundle.resource.dedicatedDatabase?.limitCPU ||
-            sortedBundles[0].spec.dedicatedDatabaseCPU.value,
-          memory:
-            application?.bundle.resource.dedicatedDatabase?.limitMemory ||
-            sortedBundles[0].spec.dedicatedDatabaseMemory.value,
-          capacity:
-            application?.bundle.resource.dedicatedDatabase?.capacity ||
-            sortedBundles[0].spec.dedicatedDatabaseCapacity.value,
-          replicas:
-            application?.bundle.resource.dedicatedDatabase?.replicas ||
-            sortedBundles[0].spec.dedicatedDatabaseReplicas.value,
-        }
+        cpu:
+          application?.bundle.resource.dedicatedDatabase?.limitCPU ||
+          sortedBundles[0].spec.dedicatedDatabaseCPU.value,
+        memory:
+          application?.bundle.resource.dedicatedDatabase?.limitMemory ||
+          sortedBundles[0].spec.dedicatedDatabaseMemory.value,
+        capacity:
+          application?.bundle.resource.dedicatedDatabase?.capacity ||
+          sortedBundles[0].spec.dedicatedDatabaseCapacity.value,
+        replicas:
+          application?.bundle.resource.dedicatedDatabase?.replicas ||
+          sortedBundles[0].spec.dedicatedDatabaseReplicas.value,
+      }
       : undefined,
   };
 
@@ -411,8 +411,8 @@ const CreateAppModal = (props: {
                       {totalPrice > accountRes?.data?.balance!
                         ? t("balance is insufficient")
                         : type === "change"
-                        ? t("Confirm")
-                        : t("CreateNow")}
+                          ? t("Confirm")
+                          : t("CreateNow")}
                     </Button>
                   )}
                   {type === "edit" && (
