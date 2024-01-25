@@ -24,9 +24,8 @@ export class ConfChangeStream {
       return
     }
 
-    ConfChangeStream.dependencies = conf.dependencies
-
     if (init) {
+      ConfChangeStream.dependencies = conf.dependencies
       return
     }
 
@@ -44,6 +43,8 @@ export class ConfChangeStream {
         unneededDeps.push(dep)
       }
     }
+
+    ConfChangeStream.dependencies = conf.dependencies
 
     if (newDeps.length > 0) {
       installDependencies(newDeps)

@@ -4,4 +4,8 @@ WORKDIR /app
 
 COPY ./init.sh /app/init.sh
 
+RUN chown -R node:node /app
+
+USER node
+
 CMD [ "sh", "/app/init.sh" ]

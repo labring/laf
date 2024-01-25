@@ -69,7 +69,7 @@ echo "Dependencies to install: $DEPENDENCIES"
 # if $CACHED_DEPENDENCIES is equal to $DEPENDENCIES
 if [ "$CACHED_DEPENDENCIES" = "$DEPENDENCIES" ]; then
   echo "No dependencies changed since last cache build."
-  npm install $DEPENDENCIES $NPM_INSTALL_FLAGS
+  [ -n "$DEPENDENCIES" ] && npm install $DEPENDENCIES $NPM_INSTALL_FLAGS
   exit 0
 else
   echo "Dependencies changed since last cache build."
