@@ -13,7 +13,7 @@ export function compileTs2js(source: string, name: string) {
       removeComments: true,
       inlineSourceMap: true,
     },
-    name,
+    `${name}.ts`,
     undefined,
     name,
   )
