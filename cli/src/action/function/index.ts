@@ -82,7 +82,7 @@ async function pull(funcName: string) {
   const func = await functionControllerFindOne(appSchema.appid, urlencode(funcName))
   const functionSchema: FunctionSchema = {
     name: func.name,
-    description: func.description,
+    desc: func.desc,
     methods: func.methods,
     tags: func.tags,
   }
@@ -131,7 +131,7 @@ async function push(funcName: string, isCreate: boolean) {
   if (isCreate) {
     const createDto: CreateFunctionDto = {
       name: funcName,
-      description: funcSchema.description || '',
+      description: funcSchema.desc || '',
       methods: funcSchema.methods as any,
       code,
       tags: funcSchema.tags,
@@ -139,7 +139,7 @@ async function push(funcName: string, isCreate: boolean) {
     await functionControllerCreate(appSchema.appid, createDto)
   } else {
     const updateDto: UpdateFunctionDto = {
-      description: funcSchema.description || '',
+      description: funcSchema.desc || '',
       methods: funcSchema.methods as any,
       code,
       tags: funcSchema.tags,
