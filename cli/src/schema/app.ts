@@ -46,10 +46,9 @@ export class AppSchema {
     }
 
     appSchema.storage = {
-      endpoint: app.storage.credentials.endpoint,
-      accessKeyId: app.storage.credentials.accessKeyId,
-      accessKeySecret: app.storage.credentials.secretAccessKey,
-      sessionToken: app.storage.credentials.sessionToken,
+      endpoint: app.storage.endpoint,
+      accessKeyId: app.storage.accessKey,
+      accessKeySecret: app.storage.secretKey,
       expire: timestamp + STORAGE_TOKEN_EXPIRE,
     }
 
