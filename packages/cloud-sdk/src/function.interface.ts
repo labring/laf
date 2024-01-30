@@ -1,5 +1,5 @@
 import { IncomingHttpHeaders } from 'http'
-import { Request, Response } from 'express'
+import { Request, Response, Router } from 'express'
 import WebSocket = require('ws')
 
 export type RequireFuncType = (module: string) => any
@@ -23,6 +23,7 @@ export interface FunctionContext {
   socket?: WebSocket
   request?: Request
   response?: Response
+  router?: Router
   __function_name?: string
   [key: string]: any
 }
