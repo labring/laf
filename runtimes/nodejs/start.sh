@@ -4,7 +4,14 @@ ln -s $CUSTOM_DEPENDENCY_BASE_PATH/node_modules $PWD/functions/node_modules > /d
 
 # generate package.json
 (
-  cd $CUSTOM_DEPENDENCY_BASE_PATH && npm install
+  cd $CUSTOM_DEPENDENCY_BASE_PATH
+  echo '
+{
+  "scripts": {
+    "postinstall": "sh ./post-install.sh"
+  }
+}' > package.json
+  npm install
 )
 
 # source .env
