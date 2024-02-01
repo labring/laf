@@ -8,10 +8,10 @@ ln -s $CUSTOM_DEPENDENCY_BASE_PATH/node_modules $PWD/functions/node_modules > /d
   echo '
 {
   "scripts": {
-    "postinstall": "sh ./post-install.sh"
+    "postinstall": "sh /app/post-install.sh"
   }
 }' > package.json
-  npm install
+  npm install $NPM_INSTALL_FLAGS
 )
 
 # source .env

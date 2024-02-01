@@ -66,18 +66,9 @@ fi
 echo "Cached dependencies: $CACHED_DEPENDENCIES"
 echo "Dependencies to install: $DEPENDENCIES"
 
-# npm init
-echo '{
-  "scripts": {
-    "postinstall": "sh ./post-install.sh"
-  },
-  "dependencies": {}
-}' > package.json
-
 # if $CACHED_DEPENDENCIES is equal to $DEPENDENCIES
 if [ "$CACHED_DEPENDENCIES" = "$DEPENDENCIES" ]; then
   echo "No dependencies changed since last cache build."
-  npm install $DEPENDENCIES $NPM_INSTALL_FLAGS
   exit 0
 else
   echo "Dependencies changed since last cache build."
