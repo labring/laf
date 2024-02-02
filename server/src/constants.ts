@@ -35,6 +35,10 @@ export class ServerConfig {
     return process.env.DISABLED_GATEWAY_TASK === 'true'
   }
 
+  static get DISABLED_BUCKET_DOMAIN_TASK() {
+    return process.env.DISABLED_BUCKET_DOMAIN_TASK === 'true'
+  }
+
   static get DISABLED_TRIGGER_TASK() {
     return process.env.DISABLED_TRIGGER_TASK === 'true'
   }
