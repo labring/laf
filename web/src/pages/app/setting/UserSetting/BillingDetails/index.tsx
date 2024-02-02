@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { DateRange, DayPicker, SelectRangeEventHandler } from "react-day-picker";
 import { useTranslation } from "react-i18next";
 import {
+  Button,
   Center,
   Popover,
   PopoverBody,
@@ -102,7 +103,9 @@ export default function BillingDetails() {
                     </span>
                     <Popover>
                       <PopoverTrigger>
-                        <FilterIcon className="cursor-pointer !text-grayModern-400" />
+                        <Button variant="none" px={0} minW={0} h={0}>
+                          <FilterIcon className="cursor-pointer !text-grayModern-400" fontSize={12} />
+                        </Button>
                       </PopoverTrigger>
                       <PopoverContent zIndex={99} w={24}>
                         <PopoverBody>
@@ -150,10 +153,12 @@ export default function BillingDetails() {
                     </span>
                     <Popover>
                       <PopoverTrigger>
-                        <CalendarIcon
-                          className="cursor-pointer !text-grayModern-400"
-                          boxSize="14px"
-                        />
+                        <Button variant="none" p={0} h={0} minW={0}>
+                          <CalendarIcon
+                            className="cursor-pointer !text-grayModern-400"
+                            boxSize="14px"
+                          />
+                        </Button>
                       </PopoverTrigger>
                       <PopoverContent zIndex={99}>
                         <PopoverBody>
@@ -226,11 +231,13 @@ export default function BillingDetails() {
                     </span>
                     <Popover>
                       <PopoverTrigger>
-                        <FilterIcon className="cursor-pointer !text-grayModern-400" />
+                        <Button variant="none" p={0} h={0} minW={0}>
+                          <FilterIcon className="cursor-pointer !text-grayModern-400" fontSize={12} />
+                        </Button>
                       </PopoverTrigger>
                       <PopoverContent w={28}>
                         <PopoverBody>
-                          <RadioGroup className="flex flex-col lowercase">
+                          <RadioGroup className="flex flex-col lowercase space-y-2">
                             {STATE_LIST.map((item) => (
                               <Radio
                                 key={item}

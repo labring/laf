@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -27,15 +28,12 @@ export default function MoreButton(props: {
         isOpen={isOpen}
         onOpen={onOpen}
         onClose={onClose}
-        closeOnBlur={true}
         placement="bottom"
       >
         <Tooltip aria-label="tooltip" placement="bottom" label={label}>
           <Box display="inline-block">
             <PopoverTrigger>
-              <div className="px-1" ref={refItem}>
-                <MoreIcon className="cursor-pointer align-middle" fontSize={12} />
-              </div>
+              <Button variant="none" p={0} minW={0} h={0} w={5}><MoreIcon className="cursor-pointer align-middle" fontSize={12} /></Button>
             </PopoverTrigger>
           </Box>
         </Tooltip>

@@ -356,6 +356,7 @@ export default function FunctionList() {
             data-is-func-dir={!!item.children?.length}
             onContextMenu={(e) => {
               const sidebarWidth = JSON.parse(localStorage.getItem("laf_custom_setting") || "").state.layoutInfo.functionPage.SideBar.style.width || 0
+              if (!!item.children?.length) return;
               if (e.clientX > sidebarWidth - 120) {
                 show({
                   event: e,
