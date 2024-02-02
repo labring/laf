@@ -7,21 +7,25 @@ export class ConfChangeStream {
   static dependencies = []
 
   static initialize() {
-    this.updateEnvironments(true)
+    this.updateConfig(true)
 
-    DatabaseChangeStream.onStreamChange(
-      CONFIG_COLLECTION,
-      this.updateEnvironments,
+    DatabaseChangeStream.onStreamChange(CONFIG_COLLECTION, () =>
+      this.updateConfig(false),
     )
   }
 
-  private static async updateEnvironments(init = false) {
+  private static async updateConfig(init = false) {
     const conf = await DatabaseAgent.db
       .collection(CONFIG_COLLECTION)
       .findOne({})
 
     if (!conf) {
       return
+    }
+
+    const environments = conf.environments || []
+    for (const env of environments) {
+      process.env[env.name] = env.value
     }
 
     if (init) {

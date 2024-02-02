@@ -145,15 +145,15 @@ export function installDependency(packageName: string) {
     logger.info(`Installing package ${packageName} ...`)
     exec(
       `cd ${Config.CUSTOM_DEPENDENCY_BASE_PATH} && npm install ${packageName}`,
-      (error, stdout, stderr) => {
+      (error, stdout) => {
         if (error) {
           logger.error(`Error installing package ${packageName}: ${error}`)
           return reject(error)
         }
-        if (stderr) {
-          logger.error(`Error installing package ${packageName}: ${stderr}`)
-          return reject(new Error(stderr))
-        }
+        // if (stderr) {
+        //   logger.error(`Error installing package ${packageName}: ${stderr}`)
+        //   return reject(new Error(stderr))
+        // }
         clearModuleCache(packageName)
         logger.info(`Package ${packageName} installed success`)
         resolve(stdout)
@@ -163,7 +163,7 @@ export function installDependency(packageName: string) {
 }
 
 export function installDependencies(packageName: string[]) {
-  return installDependency(packageName.join(' '))
+  return installDependency(packageName.join(' ')).catch(() => {})
 }
 
 export function uninstallDependency(packageName: string) {
@@ -171,15 +171,15 @@ export function uninstallDependency(packageName: string) {
     logger.info(`Uninstalling package ${packageName} ...`)
     exec(
       `cd ${Config.CUSTOM_DEPENDENCY_BASE_PATH} && npm uninstall ${packageName}`,
-      (error, stdout, stderr) => {
+      (error, stdout) => {
         if (error) {
           logger.error(`Error uninstalling package ${packageName}: ${error}`)
           return reject(error)
         }
-        if (stderr) {
-          logger.error(`Error uninstalling package ${packageName}: ${stderr}`)
-          return reject(new Error(stderr))
-        }
+        // if (stderr) {
+        //   logger.error(`Error uninstalling package ${packageName}: ${stderr}`)
+        //   return reject(new Error(stderr))
+        // }
         clearModuleCache(packageName)
         logger.info(`Package ${packageName} uninstalled success`)
         resolve(stdout)
@@ -191,8 +191,8 @@ export function uninstallDependency(packageName: string) {
 export function uninstallDependencies(packageName: string[]) {
   // the raw name is packageName@version, so we need to trim version
   return uninstallDependency(
-    packageName.map((v) => v.slice(0, packageName.indexOf('@', 1))).join(' '),
-  )
+    packageName.map((v) => v.slice(0, v.indexOf('@', 1))).join(' '),
+  ).catch(() => {})
 }
 
 // === clear module cache
