@@ -68,8 +68,8 @@ import cloud from '@lafjs/cloud'
 export default async function (ctx: FunctionContext) {
   const bucket = cloud.storage.bucket('data')
 
-  // 第二个参数为上传地址有效期，单位为秒
-  const url = bucket.getUploadUrl('index.html', 3600 * 24 * 7)
+  // 第二个参数为下载地址有效期，单位为秒
+  const url = bucket.getDownloadUrl('index.html', 3600 * 24 * 7)
   return url
 }
 ```

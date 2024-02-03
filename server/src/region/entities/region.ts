@@ -28,6 +28,9 @@ export type RegionDatabaseConf = {
   driver: string
   connectionUri: string
   controlConnectionUri: string
+  dedicatedDatabase: {
+    enabled: boolean
+  }
 }
 
 export type TLSConf = {

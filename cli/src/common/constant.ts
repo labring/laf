@@ -15,7 +15,6 @@ export const TEMPLATE_DIR = 'template'
 export const TYPE_DIR = 'types'
 export const GLOBAL_FILE = 'global.d.ts'
 export const PACKAGE_FILE = 'package.json'
-export const RESPONSE_FILE = 'response.d.ts'
 export const TSCONFIG_FILE = 'tsconfig.json'
 export const GITIGNORE_FILE = 'gitignore'
 

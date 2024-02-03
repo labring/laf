@@ -21,7 +21,6 @@ const nodeModulesRoot = path.resolve(__dirname, '../../node_modules')
  * Gets declaration files of a dependency package
  */
 export async function handlePackageTypings(req: IRequest, res: Response) {
-
   // verify the debug token
   const token = req.get('x-laf-develop-token')
   if (!token) {
@@ -87,9 +86,12 @@ export async function handlePackageTypings(req: IRequest, res: Response) {
   }
 }
 
-
-
-async function getThreePartyPackageTypings(req: IRequest, res: Response, basePath: string, packageName: string) {
+async function getThreePartyPackageTypings(
+  req: IRequest,
+  res: Response,
+  basePath: string,
+  packageName: string,
+) {
   const requestId = req['requestId']
   try {
     // Gets other three-party package types

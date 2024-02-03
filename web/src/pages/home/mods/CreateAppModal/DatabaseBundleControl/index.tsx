@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   HStack,
@@ -23,14 +23,14 @@ export default function DatabaseBundleControl(props: {
   bundle: TypeBundle;
   originCapacity?: number;
   resourceOptions: any;
-  disabledChangeType: boolean;
+  type: "create" | "change";
   defaultDatabaseCapacity?: number;
   defaultDedicatedDatabaseBundle?: any;
   onBundleItemChange: (k: string, v?: number) => any;
 }) {
   const {
     bundle,
-    disabledChangeType,
+    type,
     onBundleItemChange,
     resourceOptions,
     defaultDatabaseCapacity,
@@ -39,18 +39,34 @@ export default function DatabaseBundleControl(props: {
   } = props;
   const { t } = useTranslation();
   const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
+  const { regions } = useGlobalStore();
+  const currentRegion = useMemo(() => regions?.[0], [regions]);
+
   const [databaseType, setDatabaseType] = useState<"dedicated" | "shared">(
-    bundle.dedicatedDatabase ? "dedicated" : "shared",
+    (type === "change" && bundle.dedicatedDatabase) ||
+      (type === "create" && currentRegion?.dedicatedDatabase)
+      ? "dedicated"
+      : "shared",
   );
+
+  const disabledChangeType = useMemo(
+    () => type === "change" || !currentRegion?.dedicatedDatabase,
+    [type, currentRegion],
+  );
+
+  useEffect(() => {
+    if (type === "create" && currentRegion) {
+      setDatabaseType(currentRegion?.dedicatedDatabase ? "dedicated" : "shared");
+    }
+  }, [currentRegion, type]);
 
   const { showInfo } = useGlobalStore(({ showInfo }) => ({ showInfo }));
 
   useEffect(() => {
-    showInfo(
-      "数据库一旦创建后，暂时无法修改类型和实例数，容量只增不减，如有特殊需要请联系客服",
-      5000,
-    );
-  }, []);
+    if (databaseType === "dedicated") {
+      showInfo(t("application.DatabaseCreateTip"), 5000);
+    }
+  }, [databaseType]);
 
   useEffect(() => {
     if (databaseType === "dedicated") {

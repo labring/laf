@@ -259,10 +259,10 @@ export class BillingCreationTaskService {
     dto.databaseCapacity = bundle.resource.databaseCapacity
 
     dto.dedicatedDatabase = {
-      cpu: bundle.resource.dedicatedDatabase.limitCPU,
-      memory: bundle.resource.dedicatedDatabase.limitMemory,
-      capacity: bundle.resource.dedicatedDatabase.capacity,
-      replicas: bundle.resource.dedicatedDatabase.replicas,
+      cpu: bundle.resource.dedicatedDatabase?.limitCPU || 0,
+      memory: bundle.resource.dedicatedDatabase?.limitMemory || 0,
+      capacity: bundle.resource.dedicatedDatabase?.capacity || 0,
+      replicas: bundle.resource.dedicatedDatabase?.replicas || 0,
     }
 
     return dto

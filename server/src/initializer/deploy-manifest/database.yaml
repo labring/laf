@@ -1,0 +1,43 @@
+apiVersion: apps.kubeblocks.io/v1alpha1
+kind: Cluster
+metadata:
+  finalizers:
+    - cluster.kubeblocks.io/finalizer
+  labels:
+    clusterdefinition.kubeblocks.io/name: mongodb
+    clusterversion.kubeblocks.io/name: mongodb-5.0
+    sealos-db-provider-cr: <%- name %>
+  annotations: {}
+  name: <%- name %>
+  namespace: laf-system
+spec:
+  affinity:
+    nodeLabels: {}
+    podAntiAffinity: Preferred
+    tenancy: SharedNode
+    topologyKeys: []
+  clusterDefinitionRef: mongodb
+  clusterVersionRef: mongodb-5.0
+  componentSpecs:
+    - componentDefRef: mongodb
+      monitor: true
+      name: mongodb
+      replicas: <%- replicas %>
+      resources:
+        limits:
+          cpu: <%- limitCPU %>m
+          memory: <%- limitMemory %>Mi
+        requests:
+          cpu: <%- requestCPU %>m
+          memory: <%- requestMemory %>Mi
+      serviceAccountName: laf-mongodb-<%- name %>
+      volumeClaimTemplates:
+        - name: data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: <%- capacity %>Mi
+  terminationPolicy: Delete
+  tolerations: []

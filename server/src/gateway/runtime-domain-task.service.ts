@@ -170,7 +170,13 @@ export class RuntimeDomainTaskService {
       this.logger.debug(JSON.stringify(res))
     }
 
-    if (doc.state === DomainState.Deleted) {
+    /* Certificates are only removed when you delete the application and unbind the custom runtime domain.
+    Starting, restarting and stopping the application does not remove certificates */
+
+    if (
+      doc.state === DomainState.Deleted ||
+      (doc.state === DomainState.Active && doc.phase === DomainPhase.Deleting)
+    ) {
       // delete app custom certificate if custom domain is set
       const waitingTime = Date.now() - doc.updatedAt.getTime()
 

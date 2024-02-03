@@ -18,6 +18,7 @@ export interface FunctionModuleGlobalContext {
   console: any
   __require: RequireFuncType
   Buffer: typeof Buffer
+  RegExp: typeof RegExp
   setTimeout: typeof setTimeout
   clearTimeout: typeof clearTimeout
   setInterval: typeof setInterval

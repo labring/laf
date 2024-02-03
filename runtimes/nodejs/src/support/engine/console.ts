@@ -28,6 +28,26 @@ export class Console {
 
     const fn = chalk.blueBright(`[${this.category}]`)
 
+    let location = ''
+    if (this._shouldDisplayLine(level)) {
+      try {
+        throw new Error()
+      } catch (e) {
+        try {
+          // exclude involuntary log
+          if (e.stack.includes('Executor.invoke')) {
+            const msgs = e.stack.includes('at DebugConsole._format')
+              ? e.stack.split('\n')[4].split(':')
+              : e.stack.split('\n')[3].split(':')
+            const line = msgs[1]
+            let loc = msgs[0].match(/at (.*?) \(/)[1]
+            loc = loc === 'default_1' ? 'MAIN' : loc
+            location = chalk.gray(`(${loc}:${line})`)
+          }
+        } catch {}
+      }
+    }
+
     const content = params
       .map((param) => {
         if (typeof param === 'string') return this._colorize(level, param)
@@ -42,7 +62,7 @@ export class Console {
       .join(' ')
 
     // content = this._colorize(level, content)
-    const data = `${time} ${levelStr} ${fn} ${content}`
+    const data = `${time} ${levelStr} ${fn}${location} ${content}`
     return data
   }
 
@@ -104,6 +124,18 @@ export class Console {
     }
     const configLevel = (Config.LOG_LEVEL || 'debug').toUpperCase()
     const configLevelValue = LogLevelValue[configLevel] ?? 0
+    return LogLevelValue[level] >= configLevelValue
+  }
+
+  protected _shouldDisplayLine(level: LogLevel) {
+    const LogLevelValue = {
+      [LogLevel.INFO]: 1,
+      [LogLevel.WARN]: 2,
+      [LogLevel.ERROR]: 3,
+      [LogLevel.DEBUG]: 4,
+    }
+    const configLevel = (Config.DISPLAY_LINE_LOG_LEVEL || 'error').toUpperCase()
+    const configLevelValue = LogLevelValue[configLevel] ?? 3
     return LogLevelValue[level] >= configLevelValue
   }
 }

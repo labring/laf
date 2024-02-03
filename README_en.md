@@ -23,7 +23,6 @@
 ## 🚀 Quick Start
 
 [Three minutes experience using fans write an own ChatGPT (development to online)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)  
-[Three minutes to experience using fans develop a simple "Todo List"](./docs/guide/quick-start/Todo.md)
 
 ## 🖥 Online experience
 

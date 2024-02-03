@@ -7,7 +7,9 @@ declare namespace Definitions {
     tags?: string[];
   };
 
-  export type CloudFunction = {};
+  export type CloudFunction = {
+    name: string;
+  };
 
   export type UpdateFunctionDto = {
     newName?: string /* Function name is unique in the application */;

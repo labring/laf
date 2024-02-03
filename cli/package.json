@@ -1,6 +1,6 @@
 {
   "name": "laf-cli",
-  "version": "1.0.0-beta.14-fix0",
+  "version": "1.0.0-beta.14-fix1",
   "description": "",
   "main": "dist/main.js",
   "bin": {
@@ -38,6 +38,7 @@
     "commander": "^9.3.0",
     "dayjs": "^1.11.7",
     "dotenv": "^16.3.1",
+    "form-data": "^4.0.0",
     "mime": "^3.0.0",
     "node-emoji": "^1.11.0",
     "prompts": "^2.4.1",

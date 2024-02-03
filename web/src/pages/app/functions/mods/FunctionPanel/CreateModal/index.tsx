@@ -119,6 +119,7 @@ const CreateModal = (props: {
       setCurrentFunction({ ...currentFunction, name: data.name });
     } else if (isEdit && functionItem.name === data.name) {
       res = await updateFunctionMutation.mutateAsync(data);
+      setCurrentFunction({ ...currentFunction, ...data });
     } else {
       res = await createFunctionMutation.mutateAsync(data);
     }
@@ -127,7 +128,7 @@ const CreateModal = (props: {
       showSuccess(isEdit ? t("update success") : t("create success"));
       onClose();
       reset(defaultValues);
-      navigate(`/app/${currentApp.appid}/function/${res.data.name}`);
+      navigate(`/app/${currentApp.appid}/function/${res.data.name}`, { replace: true });
     }
   };
 
@@ -278,7 +279,7 @@ const CreateModal = (props: {
         isOpen={templateOpen}
         onClose={() => {
           setTemplateOpen(!templateOpen);
-          navigate(`/app/${currentApp.appid}/function`);
+          navigate(`/app/${currentApp.appid}/function`, { replace: true });
         }}
       >
         <ModalOverlay />

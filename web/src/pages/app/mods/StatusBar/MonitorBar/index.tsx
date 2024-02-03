@@ -54,7 +54,7 @@ export default function MonitorBar() {
   useEffect(() => {
     if (allDataLoaded) {
       const { cpuUsage, memoryUsage, storageUsage } = instantMonitorData || {};
-      if ("cpu" in resourceData) {
+      if (resourceData && "cpu" in resourceData) {
         const databaseUsage = resourceData.dataSize.find(
           (item: any) => item.metric.database === appid,
         );

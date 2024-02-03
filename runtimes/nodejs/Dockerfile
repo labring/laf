@@ -17,6 +17,7 @@ COPY . /app
 # COPY --chown=node:node . /app
 RUN mkdir /app/data || true
 RUN chown node:node /app/data
+RUN chown node:node /app/functions
 # RUN npm install
 # RUN npm run build
 RUN chown -R node:node /app/node_modules

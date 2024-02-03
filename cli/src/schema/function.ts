@@ -6,7 +6,7 @@ import { mkdirSync } from 'fs'
 
 export class FunctionSchema {
   name: string
-  description?: string
+  desc?: string
   tags?: string[]
   methods: string[]
 

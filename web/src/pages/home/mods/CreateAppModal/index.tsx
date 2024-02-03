@@ -74,7 +74,14 @@ const CreateAppModal = (props: {
   const { application, type, isCurrentApp } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const queryClient = useQueryClient();
-  const { runtimes = [], regions = [], showSuccess, currentApp, setCurrentApp } = useGlobalStore();
+  const {
+    runtimes = [],
+    regions = [],
+    showSuccess,
+    currentApp,
+    setCurrentApp,
+    updateCurrentApp,
+  } = useGlobalStore();
   const { data: accountRes } = useAccountQuery();
 
   const title = useMemo(
@@ -243,6 +250,17 @@ const CreateAppModal = (props: {
           };
           setCurrentApp({ ...currentApp, bundle: newBundle });
         }
+
+        if (
+          currentApp &&
+          (bundle.cpu !== application?.bundle.resource.limitCPU ||
+            bundle.memory !== application?.bundle.resource.limitMemory)
+        ) {
+          updateCurrentApp(
+            currentApp!,
+            currentApp!.state === APP_STATUS.Stopped ? APP_STATUS.Running : APP_STATUS.Restarting,
+          );
+        }
         break;
 
       case "create":
@@ -341,7 +359,7 @@ const CreateAppModal = (props: {
                         });
                         setCalculating(true);
                       }}
-                      disabledChangeType={type === "change"}
+                      type={type}
                       defaultDatabaseCapacity={defaultBundle.databaseCapacity}
                       defaultDedicatedDatabaseBundle={defaultBundle.dedicatedDatabase}
                       resourceOptions={billingResourceOptionsRes?.data}
