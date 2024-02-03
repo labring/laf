@@ -1,7 +1,10 @@
 import { CONFIG_COLLECTION } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { DatabaseChangeStream } from '.'
-import { installDependencies, uninstallDependencies } from '../utils'
+import {
+  installDependencies,
+  uninstallDependencies,
+} from '../module-hot-reload'
 
 export class ConfChangeStream {
   static dependencies = []

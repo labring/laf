@@ -5,12 +5,7 @@ ln -s $CUSTOM_DEPENDENCY_BASE_PATH/node_modules $PWD/functions/node_modules > /d
 # generate package.json
 (
   cd $CUSTOM_DEPENDENCY_BASE_PATH
-  echo '
-{
-  "scripts": {
-    "postinstall": "sh /app/post-install.sh > /dev/null 2>&1"
-  }
-}' > package.json
+  echo '{}' > package.json
   npm install $NPM_INSTALL_FLAGS > /dev/null 2>&1
 )
 
