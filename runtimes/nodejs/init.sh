@@ -82,3 +82,5 @@ npm install $DEPENDENCIES $NPM_INSTALL_FLAGS
 end_time=$(date +%s)
 elapsed_time=$(expr $end_time - $start_time)
 echo "Installed dependencies in $elapsed_time seconds."
+
+sh /app/upload-dependencies.sh /app

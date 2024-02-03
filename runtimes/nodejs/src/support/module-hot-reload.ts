@@ -92,7 +92,11 @@ export function installDependency(packageName: string) {
   return new Promise((resolve, reject) => {
     logger.info(`Installing package ${packageName} ...`)
     exec(
-      `cd ${Config.CUSTOM_DEPENDENCY_BASE_PATH} && npm install ${packageName} && (sh /app/post-install.sh > /dev/null 2>&1) &`,
+      `cd ${
+        Config.CUSTOM_DEPENDENCY_BASE_PATH
+      } && npm install ${packageName} && (sh ${process.cwd()}/upload-dependencies.sh ${
+        Config.CUSTOM_DEPENDENCY_BASE_PATH
+      } > /dev/null 2>&1) &`,
       (error, stdout) => {
         if (error) {
           logger.error(`Error installing package ${packageName}: ${error}`)
@@ -124,7 +128,11 @@ export function uninstallDependency(packageName: string) {
   return new Promise((resolve, reject) => {
     logger.info(`Uninstalling package ${packageName} ...`)
     exec(
-      `cd ${Config.CUSTOM_DEPENDENCY_BASE_PATH} && npm uninstall ${packageName} && (sh /app/post-install.sh > /dev/null 2>&1) &`,
+      `cd ${
+        Config.CUSTOM_DEPENDENCY_BASE_PATH
+      } && npm uninstall ${packageName} && (sh ${process.cwd()}/upload-dependencies.sh ${
+        Config.CUSTOM_DEPENDENCY_BASE_PATH
+      } > /dev/null 2>&1) &`,
       (error, stdout) => {
         if (error) {
           logger.error(`Error uninstalling package ${packageName}: ${error}`)
