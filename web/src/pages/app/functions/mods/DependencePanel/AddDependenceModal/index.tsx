@@ -364,7 +364,7 @@ const AddDependenceModal = () => {
                 submitDependence();
               }}
             >
-              {t("SaveAndRestart")}
+              {t("Save")}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -5,19 +5,37 @@ import { globalDeclare } from "./globals";
 import useGlobalStore from "@/pages/globalStore";
 
 async function loadPackageTypings(packageName: string) {
-  const { currentApp } = useGlobalStore.getState();
+  const cacheKey = `package-typings-${packageName}`;
+  const cache = localStorage.getItem(cacheKey);
 
-  const url = `//${currentApp?.host}`;
+  const getType = async (packageName: string) => {
+    const { currentApp } = useGlobalStore.getState();
 
-  const res = await axios({
-    url: `${url}/_/typing/package?packageName=${packageName}`,
-    method: "GET",
-    headers: {
-      "x-laf-develop-token": `${currentApp?.develop_token}`,
-    },
-  });
+    const url = `//${currentApp?.host}`;
 
-  return res.data;
+    const res = await axios({
+      url: `${url}/_/typing/package?packageName=${packageName}`,
+      method: "GET",
+      headers: {
+        "x-laf-develop-token": `${currentApp?.develop_token}`,
+      },
+    });
+
+    if (res.data?.code === 1 || !res.data?.data) {
+      localStorage.removeItem(cacheKey);
+    } else {
+      localStorage.setItem(cacheKey, JSON.stringify(res.data));
+    }
+    return res.data;
+  };
+
+  if (cache) {
+    getType(packageName);
+    return JSON.parse(cache);
+  }
+
+  const r = await getType(packageName);
+  return r;
 }
 
 /**
@@ -82,36 +100,22 @@ export class AutoImportTypings {
    */
   loadDefaults(monaco: any) {
     this.addExtraLib({ path: "globals.d.ts", content: globalDeclare, monaco });
-    if (!this.isLoaded("@lafjs/cloud")) {
-      this.loadDeclaration("@lafjs/cloud", monaco);
-    }
-    if (!this.isLoaded("globals")) {
-      this.loadDeclaration("globals", monaco);
-    }
-    if (!this.isLoaded("database-proxy")) {
-      this.loadDeclaration("database-proxy", monaco);
-    }
-    if (!this.isLoaded("database-ql")) {
-      this.loadDeclaration("database-ql", monaco);
-    }
-    if (!this.isLoaded("axios")) {
-      this.loadDeclaration("axios", monaco);
-    }
-    if (!this.isLoaded("mongodb")) {
-      this.loadDeclaration("mongodb", monaco);
-    }
-    if (!this.isLoaded("@types/node")) {
-      this.loadDeclaration("@types/node", monaco);
-    }
-    if (!this.isLoaded("ws")) {
-      this.loadDeclaration("ws", monaco);
-    }
-    if (!this.isLoaded("@aws-sdk/client-s3")) {
-      this.loadDeclaration("@aws-sdk/client-s3", monaco);
-    }
-    if (!this.isLoaded("@aws-sdk/s3-request-presigner")) {
-      this.loadDeclaration("@aws-sdk/s3-request-presigner", monaco);
-    }
+    [
+      "@lafjs/cloud",
+      "globals",
+      "database-proxy",
+      "database-ql",
+      "axios",
+      "mongodb",
+      "@types/node",
+      "ws",
+      "@aws-sdk/client-s3",
+      "@aws-sdk/s3-request-presigner",
+    ].forEach((v) => {
+      if (!this.isLoaded(v)) {
+        this.loadDeclaration(v, monaco);
+      }
+    });
   }
 
   /**
@@ -133,7 +137,7 @@ export class AutoImportTypings {
     try {
       this._loaded.push(packageName);
 
-      const r = await loadPackageTypings(packageName).catch((err: any) => console.error(err));
+      const r = await loadPackageTypings(packageName);
       if (r?.code) {
         this._loaded = this._loaded.filter((x) => x !== packageName);
         return;
@@ -170,7 +174,6 @@ export class AutoImportTypings {
     }
     try {
       defaults.addExtraLib(content, fullPath);
-      monaco.editor.createModel(content, "typescript", monaco.Uri.parse(fullPath));
     } catch (error) {
       console.log(error, fullPath);
       throw error;

@@ -586,7 +586,7 @@
     "AddMore": "Add More",
     "Save": "Save",
     "Recommended": "Recommended Template",
-    "Confirm": "If there are missing dependencies, the application will be automatically restarted. Are you sure you want to use this template?",
+    "Confirm": "Are you sure you want to use this template?",
     "ConfirmDeleteTemplate": "Are you sure you want to delete this function template?",
     "DeveloperInfo": "Developer Info",
     "NoRecommended": "No Recommended Template",

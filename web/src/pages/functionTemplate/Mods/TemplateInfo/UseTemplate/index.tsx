@@ -12,7 +12,7 @@ import UseTemplateModal from "./UseTemplateModal";
 import { TFunctionTemplate } from "@/apis/typing";
 
 const UseTemplate = ({ template }: { template: TFunctionTemplate }) => {
-  const { star, _id: templateId, dependencies } = template;
+  const { star, _id: templateId } = template;
 
   const { t } = useTranslation();
   const [starState, setStarState] = useState(false);
@@ -51,7 +51,7 @@ const UseTemplate = ({ template }: { template: TFunctionTemplate }) => {
         {starState ? <FilledHeartIcon /> : <HeartIcon />}
         <span className="pl-1">{starNum}</span>
       </button>
-      <UseTemplateModal templateId={templateId || ""} packageList={dependencies}>
+      <UseTemplateModal templateId={templateId || ""}>
         <Button height={9}>{t("Template.useTemplate")}</Button>
       </UseTemplateModal>
     </Box>
