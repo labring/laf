@@ -40,11 +40,12 @@ const CreateModal = (props: {
   children?: React.ReactElement;
   tagList?: any;
   aiCode?: string;
+  hideContextMenu?: () => void;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { showSuccess, currentApp } = useGlobalStore();
 
-  const { functionItem, children = null, tagList, aiCode } = props;
+  const { functionItem, children = null, tagList, aiCode, hideContextMenu } = props;
   const isEdit = !!functionItem;
   const navigate = useNavigate();
   const [searchKey, setSearchKey] = useState("");
@@ -129,6 +130,7 @@ const CreateModal = (props: {
       onClose();
       reset(defaultValues);
       navigate(`/app/${currentApp.appid}/function/${res.data.name}`, { replace: true });
+      hideContextMenu && hideContextMenu();
     }
   };
 

@@ -14,8 +14,8 @@ import { COLOR_MODE } from "@/constants";
 import { useColorMode } from "@chakra-ui/react";
 
 
-export default function ContextMenu(props: { functionItem: TFunction, tagsList: string[] }) {
-  const { functionItem, tagsList } = props;
+export default function ContextMenu(props: { functionItem: TFunction, tagsList: string[], hideAll: () => void }) {
+  const { functionItem, tagsList, hideAll } = props;
   const { t } = useTranslation();
   const deleteFunctionMutation = useDeleteFunctionMutation();
   const { showSuccess, currentApp } = useGlobalStore();
@@ -25,7 +25,7 @@ export default function ContextMenu(props: { functionItem: TFunction, tagsList: 
     <Menu id={functionItem._id} animation="fade" className="flex" theme={darkMode ? "dark" : "light"}>
       <Item closeOnClick={false}>
         <CreateModal
-          functionItem={functionItem} tagList={tagsList}>
+          functionItem={functionItem} tagList={tagsList} hideContextMenu={hideAll}>
           <IconText
             icon={
               <div className="flex h-5 items-center">
@@ -46,6 +46,7 @@ export default function ContextMenu(props: { functionItem: TFunction, tagsList: 
           }}
           headerText={String(t("Delete"))}
           bodyText={String(t("FunctionPanel.DeleteConfirm"))}
+          hideContextMenu={hideAll}
         >
           <IconText
             icon={<div className="h-5 flex items-center"><RecycleDeleteIcon fontSize={16} /></div>}

@@ -119,7 +119,7 @@ export default function FunctionList() {
 
   const [currentTag, setCurrentTag] = useState<TagItem | null>(null);
 
-  const { show } = useContextMenu();
+  const { show, hideAll } = useContextMenu();
 
   const generateRoot = useCallback(
     (data: TFunction[]) => {
@@ -434,6 +434,7 @@ export default function FunctionList() {
           {item._id && <ContextMenu
             functionItem={item as unknown as TFunction}
             tagsList={tagsList.map((item) => item.tagName)}
+            hideAll={hideAll}
           />}
           {item.isExpanded && item?.children?.length && renderSectionItems(item.children)}
         </React.Fragment>
