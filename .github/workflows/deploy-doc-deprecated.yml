@@ -21,6 +21,8 @@ jobs:
 
       - name: Build Docs
         uses: ./.github/actions/build-docs
+        with:
+          docs-path: docs_deprecated
 
       - name: Setup laf-cli
         run: npm i laf-cli -g
