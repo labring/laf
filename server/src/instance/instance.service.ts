@@ -376,6 +376,9 @@ export class InstanceService {
                 allowPrivilegeEscalation: false,
                 readOnlyRootFilesystem: false,
                 privileged: false,
+                capabilities: {
+                  drop: ['ALL'],
+                },
               },
             },
           ],
@@ -419,6 +422,15 @@ export class InstanceService {
               },
             },
           ],
+          securityContext: {
+            runAsUser: 1000, // node
+            runAsGroup: 2000,
+            runAsNonRoot: true,
+            fsGroup: 2000,
+            seccompProfile: {
+              type: 'RuntimeDefault',
+            },
+          },
         }, // end of spec {}
       }, // end of template {}
     }

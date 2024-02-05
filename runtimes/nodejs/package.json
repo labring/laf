@@ -7,7 +7,7 @@
   "private": "true",
   "scripts": {
     "start": "node ./dist/index.js",
-    "dev": "npx concurrently npm:dev:*",
+    "dev": "npx ts-node ./src/index.ts",
     "dev:start": "npx nodemon ./dist/index.js",
     "dev:watch": "npm run watch",
     "build": "tsc -p tsconfig.json",

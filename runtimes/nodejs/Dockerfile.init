@@ -3,5 +3,10 @@ FROM node:20.10.0
 WORKDIR /app
 
 COPY ./init.sh /app/init.sh
+COPY ./upload-dependencies.sh /app/upload-dependencies.sh
+
+RUN chown -R node:node /app
+
+USER node
 
 CMD [ "sh", "/app/init.sh" ]
