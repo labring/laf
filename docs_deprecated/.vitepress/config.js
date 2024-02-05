@@ -323,6 +323,7 @@ const examplesSideBarConfig = [
 ];
 
 export default defineConfig({
+  base: '/old/',
   locales: {
     root: {
       label: "简体中文",

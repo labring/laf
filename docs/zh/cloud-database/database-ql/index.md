@@ -2,7 +2,7 @@
 title: 云数据库介绍
 ---
 
-# {{ $frontmatter.title }}
+# 云数据库介绍
 
 Laf 云数据库提供了开箱即用的数据库，无需复杂配置和连接。在云函数中可通过 `cloud.database()` 新建 DB 实例去操作数据库。
 

@@ -7,7 +7,8 @@ function wrapGray(content: string) {
 
 export const NavItemsInZh: DefaultTheme.NavItem[] = [
   { text: '开发指南', link: '/zh/' },
-  { text: '使用实例', link: '/zh/examples/' }
+  { text: '使用实例', link: '/zh/examples/' },
+  { text: '旧版文档', link: 'https://doc.laf.run/old/' }
 ]
 
 export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
