@@ -118,7 +118,6 @@ export function installDependencies(packageName: string[]) {
     .catch(() => {})
     .finally(() => {
       packageName.forEach((v) => {
-        // @ts-ignore
         clearModuleCache(getPackageNameWithoutVersion(v))
       })
     })
