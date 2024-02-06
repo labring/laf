@@ -4,9 +4,6 @@ import { NavItemsInZh, SidebarItemsInZh } from './zh.mts'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  rewrites: {
-    'zh/index.md': 'index.md',
-  },
   themeConfig: {
     search: {
       provider: 'local'
