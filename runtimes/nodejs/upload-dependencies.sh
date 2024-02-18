@@ -24,7 +24,7 @@ if [ -n "$NODE_MODULES_PUSH_URL" ]; then
     echo "Failed to upload node_modules cache."
   else
     end_time_2=$(date +%s)
-    elapsed_time_2=$(expr $end_time_2 - $end_time)
+    elapsed_time_2=$(expr $end_time_2 - $end_time_1)
     echo "Uploaded node_modules.tar in $elapsed_time_2 seconds."
   fi
 
