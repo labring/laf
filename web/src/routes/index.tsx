@@ -149,13 +149,12 @@ function LazyElement(props: any) {
 }
 
 function dealRoutes(routesArr: any) {
-  const changeIndex = true;
   const { siteSettings } = useSiteSettingStore();
   if (routesArr && Array.isArray(routesArr) && routesArr.length > 0) {
     if (siteSettings.enable_web_promo_page?.value === "false") { 
       for (let i = 0; i < routesArr.length; i++) {
         const route = routesArr[i];
-        if (route.index && changeIndex) {
+        if (route.index) {
           console.log("route.index", route.index);
           routesArr[i] = {
             path: "/",
