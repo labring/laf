@@ -139,7 +139,7 @@ async function register(username, password) {
 }
 
 // login
-async function register(username, password) {
+async function login(username, password) {
   try {
     const response = await axios.post(baseUrl + "/login", {
       username: username,
