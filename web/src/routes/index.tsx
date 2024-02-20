@@ -155,7 +155,6 @@ function dealRoutes(routesArr: any) {
       for (let i = 0; i < routesArr.length; i++) {
         const route = routesArr[i];
         if (route.index) {
-          console.log("route.index", route.index);
           routesArr[i] = {
             path: "/",
             element: <BasicLayout />,
