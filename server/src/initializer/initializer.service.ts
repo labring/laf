@@ -519,6 +519,12 @@ export class InitializerService {
         value: 'https://doc.laf.run/zh/',
         desc: 'laf doc site url',
       },
+      {
+        public: true,
+        key: SettingKey.EnableWebPromoPage,
+        value: 'true',
+        desc: 'Whether to enable WebPromoPage',
+      },
     ])
 
     this.logger.verbose('Created default settings')
