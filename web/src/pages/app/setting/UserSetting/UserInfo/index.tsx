@@ -31,7 +31,7 @@ export default function UserInfo() {
   const { colorMode } = useColorMode();
   const darkMode = colorMode === "dark";
   const { siteSettings } = useSiteSettingStore((state) => state);
-  const { phoneProvider, githubProvider } = useAuthStore((state) => state);
+  const { phoneProvider, githubProvider, emailProvider } = useAuthStore((state) => state);
   const githubAuthControllerUnbindMutation = useGithubAuthControllerUnbindMutation();
 
   const handleClick = () => {
@@ -187,24 +187,26 @@ export default function UserInfo() {
                 </span>
               </div>
             )}
-            {/* <div className="flex flex-col pb-4">
-              <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
-                {t("SettingPanel.Email")}
-              </span>
-              <span className="flex justify-between text-base">
-                <span className={!darkMode ? "text-grayModern-700" : ""}>
-                  {userInfo?.email ? userInfo?.email : t("NoInfo")}
+            {emailProvider && (
+              <div className="flex flex-col pb-4">
+                <span className={clsx("pb-3 text-xl", !darkMode && "text-grayModern-900")}>
+                  {t("SettingPanel.Email")}
                 </span>
-                <span
-                  className="flex cursor-pointer items-center text-[#0884DD]"
-                  onClick={() => {
-                    setShowItem("email");
-                  }}
-                >
-                  {t("UserInfo.Change")} <ChevronRightIcon boxSize={5} />
+                <span className="flex justify-between text-base">
+                  <span className={!darkMode ? "text-grayModern-700" : ""}>
+                    {userInfo?.email ? userInfo?.email : t("NoInfo")}
+                  </span>
+                  <span
+                    className="flex cursor-pointer items-center text-[#0884DD]"
+                    onClick={() => {
+                      setShowItem("email");
+                    }}
+                  >
+                    {t("UserInfo.Change")} <ChevronRightIcon boxSize={5} />
+                  </span>
                 </span>
-              </span>
-            </div> */}
+              </div>
+            )}
             {githubProvider && (
               <div className="flex flex-col pb-4">
                 <span
