@@ -139,7 +139,8 @@
     "DeployChangelog": "Input the description of this function modification (optional)",
     "MoveFunctionTip": "Are you sure to move {{srcFunc}} to {{targetDir}} directory?",
     "MoveFunctionToRootTip": "Are you sure to move {{srcFunc}} to the root directory?",
-    "MovingFunction": "Moving functions..."
+    "MovingFunction": "Moving functions...",
+    "DependenceInstallTip": "The installation may take some time, please refer to the logs to track progress"
   },
   "HomePanel": {
     "APP": "Android or iOS app",

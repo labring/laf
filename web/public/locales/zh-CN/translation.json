@@ -139,7 +139,8 @@
     "DeployChangelog": "输入此次函数修改的描述 (可选)",
     "MoveFunctionTip": "是否要将 {{srcFunc}} 移动到 {{targetDir}} 目录？",
     "MoveFunctionToRootTip": "是否要将 {{srcFunc}} 移动到根目录？",
-    "MovingFunction": "移动函数中..."
+    "MovingFunction": "移动函数中...",
+    "DependenceInstallTip": "安装过程可能需要一些时间，请查看日志以跟踪进度"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",

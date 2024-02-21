@@ -65,7 +65,7 @@ const useStorageStore = create<State>()(
 
       getFilePath: (bucket: string, file: string) => {
         const currentApp = useGlobalStore.getState().currentApp;
-        return `${currentApp.storage.endpoint}/${bucket}${formatPort(currentApp?.port)}/${file}`;
+        return `${currentApp.storage.endpoint}/${bucket}/${file}`;
       },
     })),
   ),
