@@ -12,14 +12,14 @@ import LoginByPhonePanel from "./mods/LoginByPhonePanel";
 
 import useAuthStore from "@/pages/auth/store";
 import useGlobalStore from "@/pages/globalStore";
+import LoginByEmailPanel from "./mods/LoginByEmailPanel";
 
-type providersTypes = "user-password" | "phone" | "github" | "wechat";
+type providersTypes = "user-password" | "phone" | "github" | "wechat" | "email";
 
 export default function SignIn() {
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
-  const { githubProvider, phoneProvider, passwordProvider, defaultProvider } = useAuthStore();
-
+  const { githubProvider, passwordProvider, phoneProvider, emailProvider, defaultProvider } = useAuthStore();
   const [currentProvider, setCurrentProvider] = useState<providersTypes>();
 
   const isBindGithub = !!sessionStorage.getItem("githubToken");
@@ -64,11 +64,18 @@ export default function SignIn() {
               switchLoginType={() => setCurrentProvider("user-password")}
               isDarkMode={darkMode}
             />
+          ) : currentProvider === "email" ? (
+            <LoginByEmailPanel
+              showPasswordSigninBtn={!!passwordProvider}
+              switchLoginType={() => setCurrentProvider("user-password")}
+              isDarkMode={darkMode}
+            />
           ) : currentProvider === "user-password" ? (
             <LoginByPasswordPanel
               showSignupBtn={!!passwordProvider?.register}
               showPhoneSigninBtn={!!phoneProvider}
-              switchLoginType={() => setCurrentProvider("phone")}
+              showEmailSigninBtn={!!emailProvider}      
+              switchLoginType={() => !!phoneProvider ? setCurrentProvider("phone") : setCurrentProvider("email")}
               isDarkMode={darkMode}
             />
           ) : null}

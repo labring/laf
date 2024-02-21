@@ -417,7 +417,10 @@
     "BindGitHub": "绑定 GitHub",
     "BindSuccess": "绑定成功",
     "GitHubLogin": "GitHub 登录",
-    "PleaseBindUser": "请绑定对应用户"
+    "PleaseBindUser": "请绑定对应用户",
+    "Email": "邮箱",
+    "EmailPlaceholder": "请输入你的邮箱",
+    "EmailLogin": "验证码登录"
   },
   "Time": "时间",
   "CreateTime": "创建时间",

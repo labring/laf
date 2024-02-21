@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
   EmailControllerSendCode,
+  EmailControllerSignin,
   GithubAuthControllerBind,
   GithubAuthControllerJumpLogin,
   GithubAuthControllerSignin,
@@ -53,6 +54,22 @@ export const useSigninBySmsCodeMutation = (config?: { onSuccess: (result: any) =
     },
   );
 };
+
+export const useSigninByEmailMutation = (config?: { onSuccess: (result: any) => void }) => {
+  return useMutation(
+    (values: any) => {
+      return EmailControllerSignin(values);
+    },
+    {
+      onSuccess: async (result) => {
+        if (!result.error) {
+          localStorage.setItem("token", result?.data);
+          config?.onSuccess(result);
+        }
+      },
+    },
+  );
+}
 
 export const useSignupMutation = (config?: { onSuccess: (result: any) => void }) => {
   return useMutation(

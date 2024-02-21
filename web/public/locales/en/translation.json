@@ -417,7 +417,10 @@
     "BindGitHub": "Bind GitHub",
     "BindSuccess": "Bind Successfully",
     "GitHubLogin": "GitHub Login",
-    "PleaseBindUser": "Please bind your user"
+    "PleaseBindUser": "Please bind your user",
+    "Email": "Email",
+    "EmailPlaceholder": "Please input your Email",
+    "EmailLogin": "Email Login"
   },
   "Time": "Time",
   "CreateTime": "Created",
