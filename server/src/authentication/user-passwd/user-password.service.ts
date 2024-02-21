@@ -43,6 +43,7 @@ export class UserPasswordService {
     username: string,
     password: string,
     phone: string,
+    email: string,
     inviteCode: string,
   ) {
     const client = SystemDatabase.client
@@ -55,7 +56,7 @@ export class UserPasswordService {
         {
           username,
           phone,
-          email: null,
+          email,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

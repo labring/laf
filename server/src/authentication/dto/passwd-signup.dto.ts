@@ -1,13 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
-  IsEnum,
+  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
   Length,
   Matches,
 } from 'class-validator'
-import { SmsVerifyCodeType } from '../entities/sms-verify-code'
 
 export class PasswdSignupDto {
   @ApiProperty({
@@ -40,6 +39,14 @@ export class PasswdSignupDto {
   phone: string
 
   @ApiPropertyOptional({
+    description: 'email',
+  })
+  @IsOptional()
+  @IsString()
+  @IsEmail()
+  email: string
+
+  @ApiPropertyOptional({
     description: 'verify code',
     example: '032456',
   })
@@ -47,14 +54,6 @@ export class PasswdSignupDto {
   @IsString()
   @Length(6, 6)
   code: string
-
-  @ApiPropertyOptional({
-    description: 'type',
-    example: 'Signup',
-  })
-  @IsOptional()
-  @IsEnum(SmsVerifyCodeType)
-  type: SmsVerifyCodeType
 
   @ApiPropertyOptional({
     description: 'invite code',

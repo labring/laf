@@ -10,13 +10,45 @@ import {
   LIMIT_CODE_PER_IP_PER_DAY,
   MILLISECONDS_PER_DAY,
   MILLISECONDS_PER_MINUTE,
+  TASK_LOCK_INIT_TIME,
 } from 'src/constants'
 import { isEmail } from 'class-validator'
 import { Injectable } from '@nestjs/common'
+import { ObjectId } from 'mongodb'
+import { User } from 'src/user/entities/user'
+import {
+  InviteCode,
+  InviteCodeState,
+  InviteRelation,
+} from '../entities/invite-code'
+import { Setting, SettingKey } from 'src/setting/entities/setting'
+import {
+  AccountChargeOrder,
+  AccountChargePhase,
+  Currency,
+  PaymentChannelType,
+} from 'src/account/entities/account-charge-order'
+import { AccountTransaction } from 'src/account/entities/account-transaction'
+import { Account } from 'src/account/entities/account'
+import { UserProfile } from 'src/user/entities/user-profile'
+import {
+  UserPassword,
+  UserPasswordState,
+} from 'src/user/entities/user-password'
+import { hashPassword } from 'src/utils/crypto'
+import { EmailSigninDto } from '../dto/email-signin.dto'
+import { AuthenticationService } from '../authentication.service'
+import { UserService } from 'src/user/user.service'
+import { AccountService } from 'src/account/account.service'
 
 @Injectable()
 export class EmailService {
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(
+    private readonly mailerService: MailerService,
+    private readonly authService: AuthenticationService,
+    private readonly userService: UserService,
+    private readonly accountService: AccountService,
+  ) {}
   private readonly db = SystemDatabase.db
 
   async sendCode(email: string, type: EmailVerifyCodeType, ip: string) {
@@ -120,5 +152,165 @@ export class EmailService {
     }
 
     return null
+  }
+
+  /**
+   * Signup a user by email
+   * @param dto
+   * @returns
+   */
+  async signup(dto: EmailSigninDto, withUsername = false) {
+    const { email, username, password, inviteCode } = dto
+
+    const client = SystemDatabase.client
+    const session = client.startSession()
+
+    try {
+      session.startTransaction()
+      const randomUsername = new ObjectId()
+      // create user
+      const user = await this.db.collection<User>('User').insertOne(
+        {
+          email,
+          username: username || randomUsername.toString(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        { session },
+      )
+
+      // create invite relation and add invite profit
+      if (inviteCode) {
+        const inviteCodeInfo = await this.db
+          .collection<InviteCode>('InviteCode')
+          .findOne({
+            code: inviteCode,
+            state: InviteCodeState.Enabled,
+          })
+
+        if (inviteCodeInfo) {
+          const account = await this.accountService.findOne(inviteCodeInfo.uid)
+          // get invitation Profit Amount
+          let amount = 0
+          const inviteProfit = await this.db
+            .collection<Setting>('Setting')
+            .findOne({
+              key: SettingKey.InvitationProfit,
+              public: true,
+            })
+          if (inviteProfit) {
+            amount = parseFloat(inviteProfit.value)
+          }
+          // add invite-code charge order
+          await this.db
+            .collection<AccountChargeOrder>('AccountChargeOrder')
+            .insertOne(
+              {
+                accountId: account._id,
+                amount: amount,
+                currency: Currency.CNY,
+                phase: AccountChargePhase.Paid,
+                channel: PaymentChannelType.InviteCode,
+                createdBy: new ObjectId(inviteCodeInfo.uid),
+                lockedAt: TASK_LOCK_INIT_TIME,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              },
+              { session },
+            )
+          // update account balance
+          const accountAfterUpdate = await this.db
+            .collection<Account>('Account')
+            .findOneAndUpdate(
+              { _id: account._id },
+              {
+                $inc: { balance: amount },
+                $set: { updatedAt: new Date() },
+              },
+              { session, returnDocument: 'after' },
+            )
+
+          // add transaction record
+          const transaction = await this.db
+            .collection<AccountTransaction>('AccountTransaction')
+            .insertOne(
+              {
+                accountId: account._id,
+                amount: amount,
+                balance: accountAfterUpdate.value.balance,
+                message: 'Invitation profit',
+                createdAt: new Date(),
+              },
+              { session },
+            )
+
+          await this.db.collection<InviteRelation>('InviteRelation').insertOne(
+            {
+              uid: user.insertedId,
+              invitedBy: inviteCodeInfo.uid,
+              codeId: inviteCodeInfo._id,
+              createdAt: new Date(),
+              transactionId: transaction.insertedId,
+            },
+            { session },
+          )
+        }
+      }
+
+      // create profile
+      await this.db.collection<UserProfile>('UserProfile').insertOne(
+        {
+          uid: user.insertedId,
+          name: username,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        { session },
+      )
+
+      if (withUsername) {
+        // create password
+        await this.db.collection<UserPassword>('UserPassword').insertOne(
+          {
+            uid: user.insertedId,
+            password: hashPassword(password),
+            state: UserPasswordState.Active,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          { session },
+        )
+      }
+
+      await session.commitTransaction()
+      return await this.userService.findOneById(user.insertedId)
+    } catch (err) {
+      await session.abortTransaction()
+      throw err
+    } finally {
+      await session.endSession()
+    }
+  }
+
+  /**
+   * signin a user, return token and if bind password
+   * @param user user
+   * @returns token and if bind password
+   */
+  signin(user: User) {
+    const token = this.authService.getAccessTokenByUser(user)
+    return token
+  }
+
+  // check if current user has bind password
+  async ifBindPassword(user: User) {
+    const count = await this.db
+      .collection<UserPassword>('UserPassword')
+      .countDocuments({
+        uid: user._id,
+        state: UserPasswordState.Active,
+      })
+
+    return count > 0
   }
 }
