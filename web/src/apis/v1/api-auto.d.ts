@@ -7,7 +7,19 @@ declare namespace Definitions {
     tags?: string[];
   };
 
-  export type CloudFunction = {};
+  export type CloudFunction = {
+    _id?: string;
+    appid?: string;
+    name?: string;
+    source?: Definitions.CloudFunctionSource;
+    desc?: string;
+    tags?: string[];
+    methods?: string[];
+    params?: {};
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+  };
 
   export type UpdateFunctionDto = {
     newName?: string /* Function name is unique in the application */;
@@ -274,8 +286,8 @@ declare namespace Definitions {
   export type PasswdResetDto = {
     password?: string /* new password, 8-64 characters */;
     phone?: string /* phone */;
+    email?: string /* email */;
     code?: string /* verify code */;
-    type?: string /* type */;
   };
 
   export type PasswdCheckDto = {
@@ -456,6 +468,15 @@ declare namespace Definitions {
 
   export type UpdateGroupMemberRoleDto = {
     role?: string;
+  };
+
+  export type CloudFunctionSource = {
+    code?: string;
+    compiled?: string;
+    uri?: string;
+    version?: number;
+    hash?: string;
+    lang?: string;
   };
 
   export type CreateAutoscalingDto = {

@@ -45,7 +45,7 @@ export default function SignUp() {
   const sendSmsCodeMutation = useSendSmsCodeMutation();
   const sendEmailCodeMutation = useSendEmailCodeMutation();
   const [isNeedPhone, setIsNeedPhone] = useState(false);
-  const [isNeedEmail, setIsNeedEmail] = useState(true);
+  const [isNeedEmail, setIsNeedEmail] = useState(false);
   const { passwordProvider } = useAuthStore();
 
   const { colorMode } = useColorMode();
