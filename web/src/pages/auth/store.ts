@@ -21,7 +21,9 @@ const useAuthStore = create<State>()(
         set((state) => {
           state.githubProvider = res.data.find((provider: any) => provider.name === "github");
           state.phoneProvider = res.data.find((provider: any) => provider.name === "phone");
-          state.passwordProvider = res.data.find((provider: any) => provider.name === "user-password");
+          state.passwordProvider = res.data.find(
+            (provider: any) => provider.name === "user-password",
+          );
           state.emailProvider = res.data.find((provider: any) => provider.name === "email");
           state.defaultProvider = res.data.find((provider: any) => provider.default);
         });

@@ -69,7 +69,7 @@ export const useSigninByEmailMutation = (config?: { onSuccess: (result: any) => 
       },
     },
   );
-}
+};
 
 export const useSignupMutation = (config?: { onSuccess: (result: any) => void }) => {
   return useMutation(

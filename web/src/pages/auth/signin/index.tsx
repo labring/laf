@@ -7,19 +7,20 @@ import { GithubIcon } from "@/components/CommonIcon";
 import { Logo, LogoText } from "@/components/LogoIcon";
 import { COLOR_MODE } from "@/constants";
 
+import LoginByEmailPanel from "./mods/LoginByEmailPanel";
 import LoginByPasswordPanel from "./mods/LoginByPasswordPanel";
 import LoginByPhonePanel from "./mods/LoginByPhonePanel";
 
 import useAuthStore from "@/pages/auth/store";
 import useGlobalStore from "@/pages/globalStore";
-import LoginByEmailPanel from "./mods/LoginByEmailPanel";
 
 type providersTypes = "user-password" | "phone" | "github" | "wechat" | "email";
 
 export default function SignIn() {
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
-  const { githubProvider, passwordProvider, phoneProvider, emailProvider, defaultProvider } = useAuthStore();
+  const { githubProvider, passwordProvider, phoneProvider, emailProvider, defaultProvider } =
+    useAuthStore();
   const [currentProvider, setCurrentProvider] = useState<providersTypes>();
 
   const isBindGithub = !!sessionStorage.getItem("githubToken");
@@ -74,8 +75,10 @@ export default function SignIn() {
             <LoginByPasswordPanel
               showSignupBtn={!!passwordProvider?.register}
               showPhoneSigninBtn={!!phoneProvider}
-              showEmailSigninBtn={!!emailProvider}      
-              switchLoginType={() => !!phoneProvider ? setCurrentProvider("phone") : setCurrentProvider("email")}
+              showEmailSigninBtn={!!emailProvider}
+              switchLoginType={() =>
+                !!phoneProvider ? setCurrentProvider("phone") : setCurrentProvider("email")
+              }
               isDarkMode={darkMode}
             />
           ) : null}

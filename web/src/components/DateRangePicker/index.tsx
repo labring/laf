@@ -101,7 +101,7 @@ export default function DateRangePicker(props: {
       <Popover onClose={onClose}>
         <PopoverTrigger>
           <Button variant="none" px={0} mr={2} minW={4}>
-            <CalendarIcon className="!text-grayModern-500 pb-[2px]" fontSize="18" />
+            <CalendarIcon className="pb-[2px] !text-grayModern-500" fontSize="18" />
           </Button>
         </PopoverTrigger>
         <PopoverContent zIndex={99}>

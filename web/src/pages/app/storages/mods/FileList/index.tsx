@@ -49,13 +49,27 @@ import UploadButton from "../UploadButton";
 import useAwsS3 from "@/hooks/useAwsS3";
 import useGlobalStore from "@/pages/globalStore";
 
-type TOrderType = null | "ascFilename" | "descFilename" | "ascFileType" | "descFileType" | "ascSize" | "descSize" | "ascDate" | "descDate"
+type TOrderType =
+  | null
+  | "ascFilename"
+  | "descFilename"
+  | "ascFileType"
+  | "descFileType"
+  | "ascSize"
+  | "descSize"
+  | "ascDate"
+  | "descDate";
 
-const SortIcon = ({ currentOrderType, orderTypeAsc, orderTypeDesc, onSort }: {
-  currentOrderType: TOrderType,
-  orderTypeAsc: TOrderType,
-  orderTypeDesc: TOrderType,
-  onSort: () => void
+const SortIcon = ({
+  currentOrderType,
+  orderTypeAsc,
+  orderTypeDesc,
+  onSort,
+}: {
+  currentOrderType: TOrderType;
+  orderTypeAsc: TOrderType;
+  orderTypeDesc: TOrderType;
+  onSort: () => void;
 }) => {
   const isAsc = currentOrderType === orderTypeAsc;
   const isDesc = currentOrderType === orderTypeDesc;
@@ -69,7 +83,7 @@ const SortIcon = ({ currentOrderType, orderTypeAsc, orderTypeDesc, onSort }: {
   }
 
   return (
-    <span onClick={onSort} className="cursor-pointer relative">
+    <span onClick={onSort} className="relative cursor-pointer">
       {icon}
     </span>
   );
@@ -119,19 +133,20 @@ export default function FileList() {
     } else {
       return a.Prefix.localeCompare(b.Prefix);
     }
-  }
+  };
 
   const compareFileType = (a: any, b: any) => {
-    const fileNameA = a.Key?.split('/');
-    const fileNameB = b.Key?.split('/');
+    const fileNameA = a.Key?.split("/");
+    const fileNameB = b.Key?.split("/");
 
     if (!fileNameA && fileNameB) return 1;
     if (fileNameA && !fileNameB) return -1;
     if (!fileNameA && !fileNameB) return 0;
 
-    return formateType(fileNameA[fileNameA.length - 1])
-      .localeCompare(formateType(fileNameB[fileNameB.length - 1]));
-  }
+    return formateType(fileNameA[fileNameA.length - 1]).localeCompare(
+      formateType(fileNameB[fileNameB.length - 1]),
+    );
+  };
 
   const compareDate = (a: any, b: any) => {
     const dateA = new Date(a.LastModified);
@@ -144,28 +159,28 @@ export default function FileList() {
     } else {
       return 0;
     }
-  }
+  };
 
   const sortData = (data: any, orderType: TOrderType) => {
     if (!data) return [];
 
     const sorted = [...data].sort((a, b) => {
       switch (orderType) {
-        case 'ascFilename':
+        case "ascFilename":
           return compareFilename(a, b);
-        case 'descFilename':
+        case "descFilename":
           return compareFilename(b, a);
-        case 'ascFileType':
+        case "ascFileType":
           return compareFileType(a, b);
-        case 'descFileType':
+        case "descFileType":
           return compareFileType(b, a);
-        case 'ascSize':
+        case "ascSize":
           return (a.Size || 0) - (b.Size || 0);
-        case 'descSize':
+        case "descSize":
           return (b.Size || 0) - (a.Size || 0);
-        case 'ascDate':
+        case "ascDate":
           return compareDate(a, b);
-        case 'descDate':
+        case "descDate":
           return compareDate(b, a);
         default:
           return 0;
@@ -173,7 +188,7 @@ export default function FileList() {
     });
 
     return sorted;
-  }
+  };
 
   const renderData = useMemo(() => sortData(queryData?.data, orderType), [queryData, orderType]);
 
@@ -366,7 +381,11 @@ export default function FileList() {
                           currentOrderType={orderType}
                           orderTypeAsc="ascFilename"
                           orderTypeDesc="descFilename"
-                          onSort={() => setOrderType(orderType === "ascFilename" ? "descFilename" : "ascFilename")}
+                          onSort={() =>
+                            setOrderType(
+                              orderType === "ascFilename" ? "descFilename" : "ascFilename",
+                            )
+                          }
                         />
                       </Th>
                       <Th>
@@ -375,7 +394,11 @@ export default function FileList() {
                           currentOrderType={orderType}
                           orderTypeAsc="ascFileType"
                           orderTypeDesc="descFileType"
-                          onSort={() => setOrderType(orderType === "ascFileType" ? "descFileType" : "ascFileType")}
+                          onSort={() =>
+                            setOrderType(
+                              orderType === "ascFileType" ? "descFileType" : "ascFileType",
+                            )
+                          }
                         />
                       </Th>
                       <Th>
@@ -384,7 +407,9 @@ export default function FileList() {
                           currentOrderType={orderType}
                           orderTypeAsc="ascSize"
                           orderTypeDesc="descSize"
-                          onSort={() => setOrderType(orderType === "ascSize" ? "descSize" : "ascSize")}
+                          onSort={() =>
+                            setOrderType(orderType === "ascSize" ? "descSize" : "ascSize")
+                          }
                         />
                       </Th>
                       <Th>
@@ -393,7 +418,9 @@ export default function FileList() {
                           currentOrderType={orderType}
                           orderTypeAsc="ascDate"
                           orderTypeDesc="descDate"
-                          onSort={() => setOrderType(orderType === "ascDate" ? "descDate" : "ascDate")}
+                          onSort={() =>
+                            setOrderType(orderType === "ascDate" ? "descDate" : "ascDate")
+                          }
                         />
                       </Th>
                       <Th isNumeric>

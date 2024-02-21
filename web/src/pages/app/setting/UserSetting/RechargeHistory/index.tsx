@@ -140,12 +140,15 @@ export default function RechargeHistory() {
                     <Popover>
                       <PopoverTrigger>
                         <Button p={0} minW={0} h={0}>
-                          <FilterIcon className="cursor-pointer !text-grayModern-400" fontSize={12} />
+                          <FilterIcon
+                            className="cursor-pointer !text-grayModern-400"
+                            fontSize={12}
+                          />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent w={28}>
                         <PopoverBody>
-                          <RadioGroup className="flex flex-col lowercase space-y-2">
+                          <RadioGroup className="flex flex-col space-y-2 lowercase">
                             {STATE_LIST.map((item) => (
                               <Radio
                                 key={item}

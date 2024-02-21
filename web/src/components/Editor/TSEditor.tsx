@@ -7,6 +7,7 @@ import { AutoImportTypings } from "@/components/Editor/typesResolve";
 import { COLOR_MODE, RUNTIMES_PATH } from "@/constants";
 
 import "./useWorker";
+
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useFunctionStore from "@/pages/app/functions/store";
 
@@ -28,7 +29,7 @@ export default function TSEditor(props: {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
   const loadModalsRef = useRef(loadModals);
 
-  loadModalsRef.current = loadModals
+  loadModalsRef.current = loadModals;
 
   function loadModals(monaco: Monaco) {
     allFunctionList.forEach((item: any) => {

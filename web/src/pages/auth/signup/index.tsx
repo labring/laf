@@ -43,7 +43,7 @@ type FormData = {
 export default function SignUp() {
   const signupMutation = useSignupMutation();
   const sendSmsCodeMutation = useSendSmsCodeMutation();
-  const sendEmailCodeMutation = useSendEmailCodeMutation()
+  const sendEmailCodeMutation = useSendEmailCodeMutation();
   const [isNeedPhone, setIsNeedPhone] = useState(false);
   const [isNeedEmail, setIsNeedEmail] = useState(true);
   const { passwordProvider } = useAuthStore();
