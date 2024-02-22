@@ -116,6 +116,7 @@ export class ApplicationService {
           regionId: new ObjectId(dto.regionId),
           runtimeId: new ObjectId(dto.runtimeId),
           billingLockedAt: TASK_LOCK_INIT_TIME,
+          latestBillingTime: this.getHourTime(),
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -498,5 +499,13 @@ export class ApplicationService {
       ...dto.autoscaling,
     }
     return autoscaling
+  }
+
+  private getHourTime() {
+    const latestTime = new Date()
+    latestTime.setMinutes(0)
+    latestTime.setSeconds(0)
+    latestTime.setMilliseconds(0)
+    return latestTime
   }
 }

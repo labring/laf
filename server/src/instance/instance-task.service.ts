@@ -220,7 +220,6 @@ export class InstanceTaskService {
           state: toState,
           phase: ApplicationPhase.Started,
           lockedAt: TASK_LOCK_INIT_TIME,
-          latestBillingTime: this.getHourTime(),
           updatedAt: new Date(),
         },
       },

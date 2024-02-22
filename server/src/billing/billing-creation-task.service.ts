@@ -62,7 +62,6 @@ export class BillingCreationTaskService {
           latestBillingTime: {
             $lt: new Date(Date.now() - 1000 * this.billingInterval),
           },
-          state: ApplicationState.Running,
         },
         { $set: { billingLockedAt: new Date() } },
       )
@@ -81,32 +80,6 @@ export class BillingCreationTaskService {
         this.logger.warn(`No billing time found for application: ${app.appid}`)
         return
       }
-
-      // unlock billing if billing time is not the latest
-      if (Date.now() - billingTime.getTime() > 1000 * this.billingInterval) {
-        this.logger.warn(
-          `Unlocking billing for application: ${app.appid} since billing time is not the latest`,
-        )
-
-        await db.collection<Application>('Application').updateOne(
-          { appid: app.appid },
-          {
-            $set: {
-              billingLockedAt: TASK_LOCK_INIT_TIME,
-              latestBillingTime: billingTime,
-            },
-          },
-        )
-      } else {
-        await db.collection<Application>('Application').updateOne(
-          { appid: app.appid },
-          {
-            $set: {
-              latestBillingTime: billingTime,
-            },
-          },
-        )
-      }
     } catch (err) {
       this.logger.error(
         'handleApplicationBillingCreating error',
@@ -122,13 +95,9 @@ export class BillingCreationTaskService {
     this.logger.debug(`Start creating billing for application: ${app.appid}`)
 
     const appid = app.appid
-    const db = SystemDatabase.db
 
     // determine latest billing time & next metering time
-    const latestBillingTime =
-      app.latestBillingTime > TASK_LOCK_INIT_TIME
-        ? app.latestBillingTime
-        : await this.getLatestBillingTime(appid)
+    const latestBillingTime = app.latestBillingTime
     const nextMeteringTime = new Date(
       latestBillingTime.getTime() + 1000 * this.billingInterval,
     )
@@ -142,9 +111,14 @@ export class BillingCreationTaskService {
       app,
       nextMeteringTime,
     )
-    if (!meteringData) {
-      this.logger.warn(`No metering data found for application: ${appid}`)
-      return nextMeteringTime
+    if (meteringData.cpu === 0 && meteringData.memory === 0) {
+      if (
+        [ApplicationState.Running, ApplicationState.Restarting].includes(
+          app.state,
+        )
+      ) {
+        this.logger.warn(`No metering data found for application: ${appid}`)
+      }
     }
 
     // get application bundle
@@ -168,59 +142,107 @@ export class BillingCreationTaskService {
     const startAt = new Date(
       nextMeteringTime.getTime() - 1000 * this.billingInterval,
     )
-    const inserted = await db
-      .collection<ApplicationBilling>('ApplicationBilling')
-      .insertOne({
-        appid,
-        state:
-          priceResult.total === 0
-            ? ApplicationBillingState.Done
-            : ApplicationBillingState.Pending,
-        amount: priceResult.total,
-        detail: {
-          cpu: {
-            usage: priceInput.cpu,
-            amount: priceResult.cpu,
-          },
-          memory: {
-            usage: priceInput.memory,
-            amount: priceResult.memory,
-          },
-          databaseCapacity: {
-            usage: priceInput.databaseCapacity,
-            amount: priceResult.databaseCapacity,
-          },
-          storageCapacity: {
-            usage: priceInput.storageCapacity,
-            amount: priceResult.storageCapacity,
-          },
-          dedicatedDatabaseCPU: {
-            usage: priceInput.dedicatedDatabase.cpu,
-            amount: priceResult.dedicatedDatabase.cpu,
-          },
-          dedicatedDatabaseMemory: {
-            usage: priceInput.dedicatedDatabase.memory,
-            amount: priceResult.dedicatedDatabase.memory,
-          },
-          dedicatedDatabaseCapacity: {
-            usage: priceInput.dedicatedDatabase.capacity,
-            amount: priceResult.dedicatedDatabase.capacity,
-          },
-        },
-        startAt: startAt,
-        endAt: nextMeteringTime,
-        lockedAt: TASK_LOCK_INIT_TIME,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        createdBy: app.createdBy,
-      })
 
-    this.logger.log(
-      `Billing creation complete for application: ${appid} from ${startAt.toISOString()} to ${nextMeteringTime.toISOString()} for billing ${
-        inserted.insertedId
-      }`,
-    )
-    return nextMeteringTime
+    const db = SystemDatabase.db
+    const client = SystemDatabase.client
+    const session = client.startSession()
+    session.startTransaction()
+
+    try {
+      const inserted = await db
+        .collection<ApplicationBilling>('ApplicationBilling')
+        .insertOne(
+          {
+            appid,
+            state:
+              priceResult.total === 0
+                ? ApplicationBillingState.Done
+                : ApplicationBillingState.Pending,
+            amount: priceResult.total,
+            detail: {
+              cpu: {
+                usage: priceInput.cpu,
+                amount: priceResult.cpu,
+              },
+              memory: {
+                usage: priceInput.memory,
+                amount: priceResult.memory,
+              },
+              databaseCapacity: {
+                usage: priceInput.databaseCapacity,
+                amount: priceResult.databaseCapacity,
+              },
+              storageCapacity: {
+                usage: priceInput.storageCapacity,
+                amount: priceResult.storageCapacity,
+              },
+              dedicatedDatabaseCPU: {
+                usage: priceInput.dedicatedDatabase.cpu,
+                amount: priceResult.dedicatedDatabase.cpu,
+              },
+              dedicatedDatabaseMemory: {
+                usage: priceInput.dedicatedDatabase.memory,
+                amount: priceResult.dedicatedDatabase.memory,
+              },
+              dedicatedDatabaseCapacity: {
+                usage: priceInput.dedicatedDatabase.capacity,
+                amount: priceResult.dedicatedDatabase.capacity,
+              },
+            },
+            startAt: startAt,
+            endAt: nextMeteringTime,
+            lockedAt: TASK_LOCK_INIT_TIME,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            createdBy: app.createdBy,
+          },
+          {
+            session,
+          },
+        )
+
+      const billingTime = nextMeteringTime
+      // unlock billing if billing time is not the latest
+      if (Date.now() - billingTime.getTime() > 1000 * this.billingInterval) {
+        this.logger.warn(
+          `Unlocking billing for application: ${app.appid} since billing time is not the latest`,
+        )
+
+        await db.collection<Application>('Application').updateOne(
+          { appid: app.appid },
+          {
+            $set: {
+              billingLockedAt: TASK_LOCK_INIT_TIME,
+              latestBillingTime: billingTime,
+            },
+          },
+          { session },
+        )
+      } else {
+        await db.collection<Application>('Application').updateOne(
+          { appid: app.appid },
+          {
+            $set: {
+              latestBillingTime: billingTime,
+            },
+          },
+          { session },
+        )
+      }
+      await session.commitTransaction()
+
+      this.logger.log(
+        `Billing creation complete for application: ${appid} from ${startAt.toISOString()} to ${nextMeteringTime.toISOString()} for billing ${
+          inserted.insertedId
+        }`,
+      )
+      return billingTime
+    } catch (err) {
+      await session.abortTransaction()
+      throw err
+    } finally {
+      session.endSession()
+    }
   }
 
   private buildCalculatePriceInput(
@@ -244,37 +266,5 @@ export class BillingCreationTaskService {
     }
 
     return dto
-  }
-
-  private async getLatestBillingTime(appid: string) {
-    const db = SystemDatabase.db
-
-    // get latest billing
-    // TODO: perf issue?
-    const latestBilling = await db
-      .collection<ApplicationBilling>('ApplicationBilling')
-      .findOne({ appid }, { sort: { endAt: -1 } })
-
-    if (latestBilling) {
-      this.logger.debug(`Found latest billing record for application: ${appid}`)
-      return latestBilling.endAt
-    }
-
-    this.logger.debug(
-      `No previous billing record, setting latest time to last hour for application: ${appid}`,
-    )
-
-    const latestTime = this.getHourTime()
-    latestTime.setHours(latestTime.getHours() - 1)
-
-    return latestTime
-  }
-
-  private getHourTime() {
-    const latestTime = new Date()
-    latestTime.setMinutes(0)
-    latestTime.setSeconds(0)
-    latestTime.setMilliseconds(0)
-    return latestTime
   }
 }

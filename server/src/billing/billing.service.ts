@@ -295,15 +295,9 @@ export class BillingService {
       .then((res) => res.result[0])
       .then((res) => Number(res.value.value))
 
-    let error = false
-
     const [cpu, memory] = await Promise.all([cpuTask, memoryTask]).catch(() => {
-      error = true
       return [0, 0]
     })
-    if (error) {
-      return null
-    }
 
     return {
       cpu,
