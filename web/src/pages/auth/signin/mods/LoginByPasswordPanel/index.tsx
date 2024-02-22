@@ -155,14 +155,9 @@ export default function LoginByPasswordPanel({
             </Button>
           </div>
           <div className="flex">
-            {showPhoneSigninBtn && (
+            {(showPhoneSigninBtn || showEmailSigninBtn) && (
               <Button className="!px-2 text-lg" variant={"text"} onClick={switchLoginType}>
-                {t("AuthPanel.PhoneLogin")}
-              </Button>
-            )}
-            {showEmailSigninBtn && (
-              <Button className="!px-2 text-lg" variant={"text"} onClick={switchLoginType}>
-                {t("AuthPanel.EmailLogin")}
+                {showPhoneSigninBtn ? t("AuthPanel.PhoneLogin") : t("AuthPanel.EmailLogin")}
               </Button>
             )}
             {showSignupBtn && (

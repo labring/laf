@@ -97,4 +97,11 @@ export enum APP_SETTING_KEY {
   COMMON = "common",
 }
 
+export enum PROVIDER_NAME {
+  PHONE = "phone",
+  EMAIL = "email",
+  GITHUB = "github",
+  PASSWORD = "user-password",
+}
+
 export const RUNTIMES_PATH = "/app/functions";

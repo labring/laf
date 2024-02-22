@@ -5,7 +5,7 @@ import { t } from "i18next";
 
 import { GithubIcon } from "@/components/CommonIcon";
 import { Logo, LogoText } from "@/components/LogoIcon";
-import { COLOR_MODE } from "@/constants";
+import { COLOR_MODE, PROVIDER_NAME } from "@/constants";
 
 import LoginByEmailPanel from "./mods/LoginByEmailPanel";
 import LoginByPasswordPanel from "./mods/LoginByPasswordPanel";
@@ -14,7 +14,11 @@ import LoginByPhonePanel from "./mods/LoginByPhonePanel";
 import useAuthStore from "@/pages/auth/store";
 import useGlobalStore from "@/pages/globalStore";
 
-type providersTypes = "user-password" | "phone" | "github" | "wechat" | "email";
+type providersTypes =
+  | PROVIDER_NAME.EMAIL
+  | PROVIDER_NAME.GITHUB
+  | PROVIDER_NAME.PHONE
+  | PROVIDER_NAME.PASSWORD;
 
 export default function SignIn() {
   const { colorMode } = useColorMode();
@@ -59,25 +63,27 @@ export default function SignIn() {
 
       {currentProvider ? (
         <div>
-          {currentProvider === "phone" ? (
+          {currentProvider === PROVIDER_NAME.PHONE ? (
             <LoginByPhonePanel
               showPasswordSigninBtn={!!passwordProvider}
-              switchLoginType={() => setCurrentProvider("user-password")}
+              switchLoginType={() => setCurrentProvider(PROVIDER_NAME.PASSWORD)}
               isDarkMode={darkMode}
             />
-          ) : currentProvider === "email" ? (
+          ) : currentProvider === PROVIDER_NAME.EMAIL ? (
             <LoginByEmailPanel
               showPasswordSigninBtn={!!passwordProvider}
-              switchLoginType={() => setCurrentProvider("user-password")}
+              switchLoginType={() => setCurrentProvider(PROVIDER_NAME.PASSWORD)}
               isDarkMode={darkMode}
             />
-          ) : currentProvider === "user-password" ? (
+          ) : currentProvider === PROVIDER_NAME.PASSWORD ? (
             <LoginByPasswordPanel
-              showSignupBtn={!!passwordProvider?.register}
-              showPhoneSigninBtn={!!phoneProvider}
-              showEmailSigninBtn={!!emailProvider}
+              showSignupBtn={!!passwordProvider?.register && (!!emailProvider || !!phoneProvider)}
+              showPhoneSigninBtn={defaultProvider.name === PROVIDER_NAME.PHONE}
+              showEmailSigninBtn={defaultProvider.name === PROVIDER_NAME.EMAIL}
               switchLoginType={() =>
-                !!phoneProvider ? setCurrentProvider("phone") : setCurrentProvider("email")
+                defaultProvider.name === PROVIDER_NAME.PHONE
+                  ? setCurrentProvider(PROVIDER_NAME.PHONE)
+                  : setCurrentProvider(PROVIDER_NAME.EMAIL)
               }
               isDarkMode={darkMode}
             />

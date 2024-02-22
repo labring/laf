@@ -102,9 +102,16 @@ export default function SignUp() {
           inviteCode: inviteCode,
           type: "Signup",
         }
-      : {
+      : isNeedEmail
+      ? {
           email: data.email,
           code: data.validationCode,
+          username: data.account,
+          password: data.password,
+          inviteCode: inviteCode,
+          type: "Signup",
+        }
+      : {
           username: data.account,
           password: data.password,
           inviteCode: inviteCode,

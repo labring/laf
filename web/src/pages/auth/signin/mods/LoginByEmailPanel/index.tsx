@@ -37,10 +37,10 @@ export default function LoginByEmailPanel({
   isDarkMode: boolean;
 }) {
   const navigate = useNavigate();
-  const sendSmsCodeMutation = useSendEmailCodeMutation();
-  const signinBySmsCodeMutation = useSigninByEmailMutation();
+  const sendEmailCodeMutation = useSendEmailCodeMutation();
+  const signinByEmailCodeMutation = useSigninByEmailMutation();
   const { showSuccess, showError } = useGlobalStore();
-  const [isSendSmsCode, setIsSendSmsCode] = useState(false);
+  const [isSendEmailCode, setIsSendEmailCode] = useState(false);
   const [countdown, setCountdown] = useState(60);
   const joinGroupMutation = useGroupMemberAddMutation();
   const githubAuthControllerBindMutation = useGithubAuthControllerBindMutation();
@@ -60,7 +60,7 @@ export default function LoginByEmailPanel({
   const inviteCode = useInviteCode();
 
   const onSubmit = async (data: FormData) => {
-    const res = await signinBySmsCodeMutation.mutateAsync({
+    const res = await signinByEmailCodeMutation.mutateAsync({
       email: data.email,
       code: data.validationCode,
       inviteCode: inviteCode,
@@ -89,8 +89,8 @@ export default function LoginByEmailPanel({
     }
   };
 
-  const handleSendSmsCode = async () => {
-    if (isSendSmsCode) {
+  const handleSendEmailCode = async () => {
+    if (isSendEmailCode) {
       return;
     }
     const email = getValues("email");
@@ -99,9 +99,9 @@ export default function LoginByEmailPanel({
       showError(t("AuthPanel.EmailTip"));
       return;
     }
-    switchSmsCodeStatus();
+    switchEmailCodeStatus();
 
-    const res = await sendSmsCodeMutation.mutateAsync({
+    const res = await sendEmailCodeMutation.mutateAsync({
       email,
       type: "Signin",
     });
@@ -111,14 +111,14 @@ export default function LoginByEmailPanel({
     }
   };
 
-  const switchSmsCodeStatus = () => {
-    setIsSendSmsCode(true);
+  const switchEmailCodeStatus = () => {
+    setIsSendEmailCode(true);
     setCountdown(60);
     const timer = setInterval(() => {
       setCountdown((countdown) => {
         if (countdown === 0) {
           clearInterval(timer);
-          setIsSendSmsCode(false);
+          setIsSendEmailCode(false);
           return 0;
         }
         return countdown - 1;
@@ -152,10 +152,10 @@ export default function LoginByEmailPanel({
           <InputRightElement width="6rem" height="100%">
             <Button
               className="w-20"
-              variant={isSendSmsCode ? "text_disabled" : "text"}
-              onClick={handleSendSmsCode}
+              variant={isSendEmailCode ? "text_disabled" : "text"}
+              onClick={handleSendEmailCode}
             >
-              {isSendSmsCode ? `${countdown}s` : t("AuthPanel.getValidationCode")}
+              {isSendEmailCode ? `${countdown}s` : t("AuthPanel.getValidationCode")}
             </Button>
           </InputRightElement>
         </InputGroup>
@@ -190,7 +190,7 @@ export default function LoginByEmailPanel({
         <Button
           type="submit"
           className="!h-[42px] w-full !bg-primary-500 hover:!bg-primary-600"
-          isLoading={signinBySmsCodeMutation.isLoading}
+          isLoading={signinByEmailCodeMutation.isLoading}
           onClick={handleSubmit(onSubmit)}
         >
           {t("AuthPanel.LoginOrRegister")}

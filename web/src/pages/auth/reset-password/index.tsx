@@ -17,7 +17,7 @@ import { OutlineViewOffIcon, OutlineViewOnIcon } from "@/components/CommonIcon";
 import { Logo, LogoText } from "@/components/LogoIcon";
 import { SendEmailCodeButton } from "@/components/SendEmailCodeButton";
 import { SendSmsCodeButton } from "@/components/SendSmsCodeButton";
-import { COLOR_MODE } from "@/constants";
+import { COLOR_MODE, PROVIDER_NAME } from "@/constants";
 
 import useAuthStore from "../store";
 
@@ -37,7 +37,7 @@ export default function ResetPassword() {
   const resetPasswordMutation = useResetPasswordMutation();
   const { showSuccess, showError } = useGlobalStore();
   const navigate = useNavigate();
-  const { phoneProvider, emailProvider } = useAuthStore();
+  const { defaultProvider } = useAuthStore();
 
   const [isShowPassword, setIsShowPassword] = useState(false);
 
@@ -64,19 +64,20 @@ export default function ResetPassword() {
       return;
     }
 
-    const params = !!phoneProvider
-      ? {
-          phone: data.phone,
-          code: data.validationCode,
-          password: data.password,
-          type: "ResetPassword",
-        }
-      : {
-          email: data.email,
-          code: data.validationCode,
-          password: data.password,
-          type: "ResetPassword",
-        };
+    const params =
+      defaultProvider.name === PROVIDER_NAME.PHONE
+        ? {
+            phone: data.phone,
+            code: data.validationCode,
+            password: data.password,
+            type: "ResetPassword",
+          }
+        : {
+            email: data.email,
+            code: data.validationCode,
+            password: data.password,
+            type: "ResetPassword",
+          };
 
     const res = await resetPasswordMutation.mutateAsync(params);
 
@@ -98,7 +99,7 @@ export default function ResetPassword() {
         <LogoText size="51px" color={darkMode ? "#33BABB" : "#363C42"} />
       </div>
       <div>
-        {!!phoneProvider && (
+        {defaultProvider.name === PROVIDER_NAME.PHONE && (
           <FormControl isInvalid={!!errors?.phone} className="mb-6 flex items-center">
             <FormLabel className="w-20" htmlFor="phone">
               {t("AuthPanel.Phone")}
@@ -130,7 +131,7 @@ export default function ResetPassword() {
             </InputGroup>
           </FormControl>
         )}
-        {!!emailProvider && (
+        {defaultProvider.name === PROVIDER_NAME.EMAIL && (
           <FormControl isInvalid={!!errors?.phone} className="mb-6 flex items-center">
             <FormLabel className="w-20" htmlFor="email">
               {t("AuthPanel.Email")}

@@ -20,7 +20,7 @@ export default function MoreButton(props: {
   className?: string;
   refItem?: React.RefObject<HTMLDivElement>;
 }) {
-  const { children, isHidden, maxWidth, label = t("openPopover"), className, refItem } = props;
+  const { children, isHidden, maxWidth, label = t("openPopover"), className } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <div className={clsx("flex group-hover:visible ", isHidden ? "invisible" : "visible")}>
