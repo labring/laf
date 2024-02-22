@@ -132,7 +132,7 @@ export default function ResetPassword() {
           </FormControl>
         )}
         {defaultProvider.name === PROVIDER_NAME.EMAIL && (
-          <FormControl isInvalid={!!errors?.phone} className="mb-6 flex items-center">
+          <FormControl isInvalid={!!errors?.email} className="mb-6 flex items-center">
             <FormLabel className="w-20" htmlFor="email">
               {t("AuthPanel.Email")}
             </FormLabel>
