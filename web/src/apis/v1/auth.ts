@@ -191,6 +191,26 @@ export async function EmailControllerSendCode(
 }
 
 /**
+* Signin by email and verify code
+*/
+export async function EmailControllerSignin(
+  params: Definitions.EmailSigninDto,
+): Promise<{
+    error: string;
+    data: Paths.EmailControllerSignin.Responses
+}> {
+  // /v1/auth/email/signin
+  let _params: { [key: string]: any } = {
+    appid: useGlobalStore.getState().currentApp?.appid || '',
+    ...params,
+  };
+  return request(`/v1/auth/email/signin`, {
+    method: 'POST',
+    data : params,
+  });
+}
+
+/**
 * Redirect to the login page of github
 */
 export async function GithubAuthControllerJumpLogin(

@@ -20,20 +20,17 @@ export default function MoreButton(props: {
   className?: string;
   refItem?: React.RefObject<HTMLDivElement>;
 }) {
-  const { children, isHidden, maxWidth, label = t("openPopover"), className, refItem } = props;
+  const { children, isHidden, maxWidth, label = t("openPopover"), className } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <div className={clsx("flex group-hover:visible ", isHidden ? "invisible" : "visible")}>
-      <Popover
-        isOpen={isOpen}
-        onOpen={onOpen}
-        onClose={onClose}
-        placement="bottom"
-      >
+      <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="bottom">
         <Tooltip aria-label="tooltip" placement="bottom" label={label}>
           <Box display="inline-block">
             <PopoverTrigger>
-              <Button variant="none" p={0} minW={0} h={0} w={5}><MoreIcon className="cursor-pointer align-middle" fontSize={12} /></Button>
+              <Button variant="none" p={0} minW={0} h={0} w={5}>
+                <MoreIcon className="cursor-pointer align-middle" fontSize={12} />
+              </Button>
             </PopoverTrigger>
           </Box>
         </Tooltip>

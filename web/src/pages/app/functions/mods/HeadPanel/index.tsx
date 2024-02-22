@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CloseIcon } from "@chakra-ui/icons";
 import { HStack, Input, Tooltip, useColorMode } from "@chakra-ui/react";
@@ -21,7 +22,6 @@ import CollaborateButton from "@/pages/app/collaboration/CollaborateButton";
 import DeployButton from "@/pages/app/functions/mods/DeployButton";
 import SysSetting from "@/pages/app/setting/SysSetting";
 import useGlobalStore from "@/pages/globalStore";
-import { useEffect } from "react";
 
 function HeadPanel() {
   const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
@@ -37,18 +37,18 @@ function HeadPanel() {
   const { currentApp } = useGlobalStore();
 
   useEffect(() => {
-    const element = document.getElementById('reverse_scroll');
+    const element = document.getElementById("reverse_scroll");
     if (element) {
       const handleWheel = (event: WheelEvent) => {
         event.preventDefault();
-        const elementToScroll = element.querySelector('.simplebar-content-wrapper');
+        const elementToScroll = element.querySelector(".simplebar-content-wrapper");
         elementToScroll?.scrollTo({
-          left: elementToScroll.scrollLeft + event.deltaY / 2
+          left: elementToScroll.scrollLeft + event.deltaY / 2,
         });
       };
-      element.addEventListener('wheel', handleWheel);
+      element.addEventListener("wheel", handleWheel);
       return () => {
-        element.removeEventListener('wheel', handleWheel);
+        element.removeEventListener("wheel", handleWheel);
       };
     }
   }, []);
@@ -71,15 +71,15 @@ function HeadPanel() {
                       selected
                         ? "border-b-transparent border-t-primary-600 text-primary-700"
                         : darkMode
-                          ? "border-t-lafDark-200 text-grayModern-400"
-                          : "border-t-lafWhite-200 text-grayModern-600",
+                        ? "border-t-lafDark-200 text-grayModern-400"
+                        : "border-t-lafWhite-200 text-grayModern-600",
                       selected
                         ? index === 0
                           ? "border-r-[2px]"
                           : "border-x-[2px]"
                         : index === 0
-                          ? "pr-[14px]"
-                          : "px-[14px]",
+                        ? "pr-[14px]"
+                        : "px-[14px]",
                     )}
                     onClick={() => {
                       navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`, {
@@ -98,7 +98,7 @@ function HeadPanel() {
                       </Tooltip>
                     </div>
                     {functionCache.getCache(item?._id, (item as any)?.source?.code) !==
-                      (item as any)?.source?.code ? (
+                    (item as any)?.source?.code ? (
                       <span
                         className={clsx(
                           "ml-2 inline-block h-1 w-1 flex-none rounded-full bg-rose-500",

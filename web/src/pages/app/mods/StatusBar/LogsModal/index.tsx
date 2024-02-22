@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
@@ -17,7 +17,10 @@ import {
 } from "@chakra-ui/react";
 import { LogViewer, LogViewerSearch } from "@patternfly/react-log-viewer";
 import { useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
+import { debounce } from "lodash";
 
+import { DownIcon, RefreshIcon } from "@/components/CommonIcon";
 import { formatDate } from "@/utils/format";
 import { streamFetch } from "@/utils/streamFetch";
 
@@ -26,9 +29,6 @@ import "./index.scss";
 import { PodControllerGetContainerNameList, PodControllerGetPodNameList } from "@/apis/v1/apps";
 import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
-import { DownIcon, RefreshIcon } from "@/components/CommonIcon";
-import clsx from "clsx";
-import { debounce } from "lodash";
 
 export default function LogsModal(props: { children: React.ReactElement }) {
   const { children } = props;
@@ -56,14 +56,14 @@ export default function LogsModal(props: { children: React.ReactElement }) {
       if (!isPaused) {
         setRefresh((pre) => !pre);
       }
-    }, 200)
+    }, 200);
 
     window.addEventListener("resize", resizeHandler);
 
     return () => {
       window.removeEventListener("resize", resizeHandler);
     };
-  }, [isPaused])
+  }, [isPaused]);
 
   useEffect(() => {
     if (!isPaused) {
@@ -221,7 +221,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
             ) : (
               <div
                 id="log-viewer-container"
-                className="text-sm flex flex-col px-2 font-mono h-full"
+                className="text-sm flex h-full flex-col px-2 font-mono"
                 style={{ fontSize: settingStore.commonSettings.fontSize - 1 }}
                 onWheel={(e) => {
                   if (e.deltaY < 0 && !isPaused) {
@@ -250,16 +250,21 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                     </div>
                   }
                 />
-                <div className="w-[95%] absolute bottom-1">
+                <div className="absolute bottom-1 w-[95%]">
                   {isPaused && (
                     <HStack
-                      onClick={() => { setIsPaused(false) }}
-                      className={clsx("w-full flex justify-center items-center cursor-pointer",
-                        darkMode ? "bg-[#212630]" : "bg-white"
+                      onClick={() => {
+                        setIsPaused(false);
+                      }}
+                      className={clsx(
+                        "flex w-full cursor-pointer items-center justify-center",
+                        darkMode ? "bg-[#212630]" : "bg-white",
                       )}
                     >
-                      <DownIcon color={'#33BAB1'} size={24} />
-                      <span className="text-primary-500 font-medium text-lg">{t("Logs.ScrollToBottom")}</span>
+                      <DownIcon color={"#33BAB1"} size={24} />
+                      <span className="text-lg font-medium text-primary-500">
+                        {t("Logs.ScrollToBottom")}
+                      </span>
                     </HStack>
                   )}
                 </div>

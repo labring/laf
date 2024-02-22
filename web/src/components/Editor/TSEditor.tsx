@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Spinner } from "@chakra-ui/react";
 import { Editor, Monaco } from "@monaco-editor/react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
@@ -7,6 +7,7 @@ import { AutoImportTypings } from "@/components/Editor/typesResolve";
 import { COLOR_MODE, RUNTIMES_PATH } from "@/constants";
 
 import "./useWorker";
+
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useFunctionStore from "@/pages/app/functions/store";
 
@@ -28,7 +29,7 @@ export default function TSEditor(props: {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
   const loadModalsRef = useRef(loadModals);
 
-  loadModalsRef.current = loadModals
+  loadModalsRef.current = loadModals;
 
   function loadModals(monaco: Monaco) {
     allFunctionList.forEach((item: any) => {

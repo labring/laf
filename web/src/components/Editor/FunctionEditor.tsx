@@ -151,7 +151,7 @@ function FunctionEditor(props: {
           monaco.editor.addKeybindingRule({
             keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyP,
             command: null,
-          })
+          });
         });
     }
 

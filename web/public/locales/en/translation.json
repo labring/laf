@@ -413,12 +413,15 @@
     "ResetPasswordSuccess": "Reset password successfully",
     "NewPassword": "New Password",
     "SignUpSuccess": "Sign up successfully",
-    "EmailTip": "Please input a valid Email",
+    "EmailTip": "Please input a valid email",
     "LoginOrRegister": "Login / Register",
     "BindGitHub": "Bind GitHub",
     "BindSuccess": "Bind Successfully",
     "GitHubLogin": "GitHub Login",
-    "PleaseBindUser": "Please bind your user"
+    "PleaseBindUser": "Please bind your user",
+    "Email": "Email",
+    "EmailPlaceholder": "Please input your email",
+    "EmailLogin": "Email Login"
   },
   "Time": "Time",
   "CreateTime": "Created",

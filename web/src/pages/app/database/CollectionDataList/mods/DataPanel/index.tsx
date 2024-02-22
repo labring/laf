@@ -79,7 +79,7 @@ export default function DataPanel() {
     }
   }, [store.currentDB, setCurrentData]);
 
-  const entryDataQuery = useEntryDataQuery({ ...queryData }, (data: any) => { });
+  const entryDataQuery = useEntryDataQuery({ ...queryData }, (data: any) => {});
   const updateDataMutation = useUpdateDataMutation();
   const deleteDataMutation = useDeleteDataMutation({
     onSuccess() {
