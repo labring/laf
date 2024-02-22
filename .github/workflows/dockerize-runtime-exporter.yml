@@ -38,6 +38,19 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
 
+      - name: Use Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+
+      - name: Install Package
+        working-directory: services/runtime-exporter
+        run: npm cache clean --force && npm install
+
+      - name: Build Packages
+        working-directory: services/runtime-exporter
+        run: npm run build
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
