@@ -77,7 +77,7 @@ export default function SignIn() {
             />
           ) : currentProvider === PROVIDER_NAME.PASSWORD ? (
             <LoginByPasswordPanel
-              showSignupBtn={!!passwordProvider?.register && (!!emailProvider || !!phoneProvider)}
+              showSignupBtn={!!passwordProvider?.register}
               showPhoneSigninBtn={defaultProvider.name === PROVIDER_NAME.PHONE}
               showEmailSigninBtn={defaultProvider.name === PROVIDER_NAME.EMAIL}
               switchLoginType={() =>
