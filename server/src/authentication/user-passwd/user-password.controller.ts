@@ -64,9 +64,9 @@ export class UserPasswordController {
       }
     }
 
-    // valid phone code if needed
+    // valid email code if needed
     if (bind.email === AuthBindingType.Required) {
-      // valid phone has been binded
+      // valid email has been binded
       const user = await this.userService.findOneByEmail(email)
       if (user) {
         return ResponseUtil.error('email has been binded')
@@ -165,7 +165,7 @@ export class UserPasswordController {
       }
     }
 
-    // find user by phone
+    // find user by phone or email
     const user = phone
       ? await this.userService.findOneByPhone(phone)
       : await this.userService.findOneByEmail(email)
