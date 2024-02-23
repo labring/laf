@@ -181,7 +181,13 @@ export class WebsiteTaskService {
     }
 
     // delete website custom certificate if custom domain is set
-    if (site.state === DomainState.Deleted && site.isCustom) {
+
+    /* Certificates are only removed when you delete the application and unbind the custom runtime domain.
+    Starting, restarting and stopping the application does not remove certificates */
+    if (
+      (site.state === DomainState.Deleted && site.isCustom) ||
+      (site.state === DomainState.Active && site.phase === DomainPhase.Deleting)
+    ) {
       const waitingTime = Date.now() - site.updatedAt.getTime()
 
       // delete custom domain certificate
