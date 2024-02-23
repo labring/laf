@@ -1,4 +1,4 @@
-import { request, RequestParams } from "../../util/request";
+import { request, RequestParams } from '../../util/request'
 import {
   CreateFunctionTemplateDto,
   FunctionTemplateControllerGetAllFunctionTemplateParams,
@@ -6,7 +6,7 @@ import {
   FunctionTemplateControllerGetMyFunctionTemplateParams,
   FunctionTemplateControllerGetRecommendFunctionTemplateParams,
   UpdateFunctionTemplateDto,
-} from "./data-contracts";
+} from './data-contracts'
 
 /**
  * No description
@@ -23,10 +23,10 @@ export async function functionTemplateControllerCreateFunctionTemplate(
 ): Promise<any> {
   return request({
     url: `/v1/function-templates`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -43,10 +43,10 @@ export async function functionTemplateControllerGetAllFunctionTemplate(
 ): Promise<any> {
   return request({
     url: `/v1/function-templates`,
-    method: "GET",
+    method: 'GET',
     params: query,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -64,9 +64,9 @@ export async function functionTemplateControllerUseFunctionTemplate(
 ): Promise<any> {
   return request({
     url: `/v1/function-templates/${templateId}/${appid}`,
-    method: "POST",
+    method: 'POST',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -84,10 +84,10 @@ export async function functionTemplateControllerUpdateFunctionTemplate(
 ): Promise<any> {
   return request({
     url: `/v1/function-templates/update/${id}`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -104,9 +104,9 @@ export async function functionTemplateControllerDeleteFunctionTemplate(
 ): Promise<any> {
   return request({
     url: `/v1/function-templates/${id}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -123,9 +123,9 @@ export async function functionTemplateControllerGetOneFunctionTemplate(
 ): Promise<any> {
   return request({
     url: `/v1/function-templates/${id}`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -142,9 +142,9 @@ export async function functionTemplateControllerStarFunctionTemplate(
 ): Promise<any> {
   return request({
     url: `/v1/function-templates/${templateId}/star`,
-    method: "PUT",
+    method: 'PUT',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -161,9 +161,9 @@ export async function functionTemplateControllerGetUserFunctionTemplateStarState
 ): Promise<any> {
   return request({
     url: `/v1/function-templates/${id}/star-state`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -180,10 +180,10 @@ export async function functionTemplateControllerGetFunctionTemplateUsedBy(
 ): Promise<any> {
   return request({
     url: `/v1/function-templates/${id}/used-by`,
-    method: "GET",
+    method: 'GET',
     params: query,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -200,10 +200,10 @@ export async function functionTemplateControllerGetMyFunctionTemplate(
 ): Promise<any> {
   return request({
     url: `/v1/function-templates/my`,
-    method: "GET",
+    method: 'GET',
     params: query,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -220,8 +220,8 @@ export async function functionTemplateControllerGetRecommendFunctionTemplate(
 ): Promise<any> {
   return request({
     url: `/v1/function-templates/recommend`,
-    method: "GET",
+    method: 'GET',
     params: query,
     ...configParams,
-  });
+  })
 }

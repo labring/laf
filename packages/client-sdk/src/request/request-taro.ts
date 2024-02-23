@@ -18,8 +18,8 @@ export class TaroRequest extends Request {
   /**
    * Taro 环境请求方法
    * @override
-   * @param data 
-   * @returns 
+   * @param data
+   * @returns
    */
   async request(url: string, data: any, _options?: any) {
     if (this.options.environment !== EnvironmentType.TARO) {
@@ -33,7 +33,7 @@ export class TaroRequest extends Request {
       header,
       method: _options?.method ?? 'POST',
       data,
-      dataType: 'json'
+      dataType: 'json',
     }
 
     const res = await taro.request(options)

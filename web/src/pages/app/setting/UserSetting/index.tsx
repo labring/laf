@@ -1,6 +1,7 @@
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Avatar,
+  Button,
   Divider,
   Popover,
   PopoverBody,
@@ -35,16 +36,18 @@ export default function UserSetting(props: { name: string; avatar?: string; widt
   return (
     <Popover>
       <PopoverTrigger>
-        <Avatar
-          size="sm"
-          name={props.name}
-          src={props.avatar}
-          bgColor="primary.500"
-          color="white"
-          boxShadow="base"
-          boxSize={props.width}
-          className="cursor-pointer"
-        />
+        <Button variant="none" p={0} minW={0} h={0} w={5}>
+          <Avatar
+            size="sm"
+            name={props.name}
+            src={props.avatar}
+            bgColor="primary.500"
+            color="white"
+            boxShadow="base"
+            boxSize={props.width}
+            className="cursor-pointer"
+          />
+        </Button>
       </PopoverTrigger>
       <PopoverContent
         w={300}

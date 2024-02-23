@@ -15,7 +15,7 @@ export class ProjectSchema {
   }
   spec: {
     runtime: string
-    dependencies?: {}
+    dependencies?: object
     baseDir?: string
     bucket?: string[]
   }

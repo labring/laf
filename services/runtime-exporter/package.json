@@ -1,6 +1,6 @@
 {
   "name": "runtime-exporter",
-  "version": "1.0.0-beta.13",
+  "version": "1.0.0-beta.14",
   "description": "the runtime metrics exporter of laf",
   "main": "./dist/index.js",
   "private": true,
@@ -9,7 +9,7 @@
     "build": "tsc -p tsconfig.json",
     "watch": "tsc -p tsconfig.json -w",
     "start": "NODE_ENV=production node ./dist/index.js",
-    "prettier": "npx prettier --write ./src"
+    "lint": "eslint . --fix --ext .ts --ext .js"
   },
   "devDependencies": {
     "@types/express": "^4.17.20",
@@ -18,11 +18,14 @@
   },
   "dependencies": {
     "@kubernetes/client-node": "^0.19.0",
-    "database-proxy": "^1.0.0-beta.2",
+    "database-proxy": "^1.0.0-beta.14",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
     "log4js": "^6.9.1",
     "prom-client": "^15.0.0"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

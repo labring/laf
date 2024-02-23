@@ -47,12 +47,20 @@ export class ServerConfig {
     return process.env.DISABLED_GATEWAY_TASK === 'true'
   }
 
+  static get DISABLED_BUCKET_DOMAIN_TASK() {
+    return process.env.DISABLED_BUCKET_DOMAIN_TASK === 'true'
+  }
+
   static get DISABLED_TRIGGER_TASK() {
     return process.env.DISABLED_TRIGGER_TASK === 'true'
   }
 
   static get DISABLED_STORAGE_TASK() {
     return process.env.DISABLED_STORAGE_TASK === 'true'
+  }
+
+  static get DISABLED_STORAGE_USER_TASK() {
+    return process.env.DISABLED_STORAGE_USER_TASK === 'true'
   }
 
   static get DISABLED_BILLING_CREATION_TASK() {
@@ -88,6 +96,13 @@ export class ServerConfig {
 
   static get APPID_LENGTH(): number {
     return parseInt(process.env.APPID_LENGTH || '6')
+  }
+
+  static get RUNTIME_CUSTOM_DEPENDENCY_BASE_PATH() {
+    return (
+      process.env.RUNTIME_CUSTOM_DEPENDENCY_BASE_PATH ||
+      '/tmp/custom_dependency'
+    )
   }
 
   static get DEFAULT_RUNTIME_IMAGE() {

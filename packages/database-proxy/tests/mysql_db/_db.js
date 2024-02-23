@@ -1,4 +1,3 @@
-
 // docker run --name mysqldb -e MYSQL_ROOT_PASSWORD=kissme -e MYSQL_DATABASE=testdb -d -p 3306:3306 mysql
 const dbconfig = {
   db: 'testdb',

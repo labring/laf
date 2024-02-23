@@ -3,6 +3,7 @@ import { DateRange, DayPicker, SelectRangeEventHandler } from "react-day-picker"
 import { useTranslation } from "react-i18next";
 import {
   Box,
+  Button,
   Input,
   Popover,
   PopoverContent,
@@ -99,9 +100,9 @@ export default function DateRangePicker(props: {
       />
       <Popover onClose={onClose}>
         <PopoverTrigger>
-          <div>
-            <CalendarIcon className="mr-3 cursor-pointer !text-grayModern-500" fontSize="16" />
-          </div>
+          <Button variant="none" px={0} mr={2} minW={4}>
+            <CalendarIcon className="pb-[2px] !text-grayModern-500" fontSize="18" />
+          </Button>
         </PopoverTrigger>
         <PopoverContent zIndex={99}>
           <DayPicker

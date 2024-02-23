@@ -4,16 +4,14 @@ export interface RequestInterface extends BaseRequestInterface {
   request(url: string, data: any, options?: any): Promise<any>
 }
 
-
 export enum EnvironmentType {
   H5 = 'h5',
   WX_MP = 'wxmp',
   UNI_APP = 'uniapp',
-  TARO = 'taro'
+  TARO = 'taro',
 }
 
 type GetAccessTokenFuncType = () => string
-
 
 export interface CloudOptions {
   /**
@@ -25,18 +23,17 @@ export interface CloudOptions {
   /**
    * 数据库访问代理的入口地址， 如： `/proxy/app`，`/proxy/admin`
    */
-  dbProxyUrl?: string,
-
+  dbProxyUrl?: string
 
   /**
    * 获取访问令牌的函数
    */
-  getAccessToken?: GetAccessTokenFuncType,
+  getAccessToken?: GetAccessTokenFuncType
 
   /**
    * 请求头
    */
-  headers?: Object
+  headers?: object
   /**
    * 请求超时时间
    */
@@ -70,8 +67,6 @@ export interface CloudOptions {
    */
   primaryKey?: string
 }
-
-
 
 export interface UploadFileOption {
   /**

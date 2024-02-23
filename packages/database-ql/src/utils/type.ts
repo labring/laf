@@ -1,20 +1,26 @@
 import { Binary, ObjectId } from 'bson'
 import { InternalSymbol } from './symbol'
 
-export const getType = (x: any): string => Object.prototype.toString.call(x).slice(8, -1).toLowerCase()
+export const getType = (x: any): string =>
+  Object.prototype.toString.call(x).slice(8, -1).toLowerCase()
 
-export const isObject = <T extends object>(x: any): x is T => getType(x) === 'object'
+export const isObject = <T extends object>(x: any): x is T =>
+  getType(x) === 'object'
 
 export const isString = (x: any): x is string => getType(x) === 'string'
 
 export const isNumber = (x: any): x is number => getType(x) === 'number'
 
-export const isPromise = <T extends Promise<any> = Promise<any>>(x: any): x is T => getType(x) === 'promise'
+export const isPromise = <T extends Promise<any> = Promise<any>>(
+  x: any
+): x is T => getType(x) === 'promise'
 
 type AnyFn = (...args: any[]) => any
-export const isFunction = <T extends AnyFn = AnyFn>(x: any): x is T => typeof x === 'function'
+export const isFunction = <T extends AnyFn = AnyFn>(x: any): x is T =>
+  typeof x === 'function'
 
-export const isArray = <T extends any[] = any[]>(x: any): x is T => Array.isArray(x)
+export const isArray = <T extends any[] = any[]>(x: any): x is T =>
+  Array.isArray(x)
 
 export const isDate = (x: any): x is Date => getType(x) === 'date'
 
@@ -22,10 +28,11 @@ export const isRegExp = (x: any): x is RegExp => getType(x) === 'regexp'
 
 /**
  * Internal Object can be:  `LogicCommand` | `QueryCommand` | `UpdateCommand`
- * @param x 
- * @returns 
+ * @param x
+ * @returns
  */
-export const isInternalObject = (x: any): boolean => x && (x._internalType instanceof InternalSymbol)
+export const isInternalObject = (x: any): boolean =>
+  x && x._internalType instanceof InternalSymbol
 
 export const isPlainObject = (obj: any): obj is object => {
   if (typeof obj !== 'object' || obj === null) return false
@@ -39,7 +46,7 @@ export const isPlainObject = (obj: any): obj is object => {
 }
 
 export const isObjectId = (x: any): x is ObjectId => {
-  return x?._bsontype === 'ObjectID'
+  return x?._bsontype === 'ObjectID' || x?._bsontype === 'ObjectId'
 }
 
 export const isBinary = (x: any): x is Binary => {

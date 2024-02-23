@@ -32,6 +32,7 @@ import { InterceptorModule } from './interceptor/interceptor.module'
 import { MonitorModule } from './monitor/monitor.module'
 import { NotificationModule } from './notification/notification.module'
 import { ServerConfig } from './constants'
+import { EventEmitterModule } from '@nestjs/event-emitter'
 
 @Module({
   imports: [
@@ -60,7 +61,7 @@ import { ServerConfig } from './constants'
       fallbackLanguage: ServerConfig.DEFAULT_LANGUAGE,
       loaderOptions: {
         path: path.join(__dirname, '/i18n/'),
-        watch: true,
+        watch: false,
       },
       resolvers: [
         { use: QueryResolver, options: ['lang'] },
@@ -79,6 +80,7 @@ import { ServerConfig } from './constants'
     InterceptorModule,
     MonitorModule,
     NotificationModule,
+    EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [

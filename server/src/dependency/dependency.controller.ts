@@ -5,6 +5,7 @@ import {
   Get,
   Logger,
   Param,
+  ParseArrayPipe,
   Patch,
   Post,
   UseGuards,
@@ -43,7 +44,11 @@ export class DependencyController {
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Post()
   @ApiBody({ type: [CreateDependencyDto] })
-  async add(@Param('appid') appid: string, @Body() dto: CreateDependencyDto[]) {
+  async add(
+    @Param('appid') appid: string,
+    @Body(new ParseArrayPipe({ items: CreateDependencyDto, whitelist: true }))
+    dto: CreateDependencyDto[],
+  ) {
     const res = await this.depsService.add(appid, dto)
     return ResponseUtil.ok(res)
   }
@@ -61,7 +66,8 @@ export class DependencyController {
   @ApiBody({ type: [UpdateDependencyDto] })
   async update(
     @Param('appid') appid: string,
-    @Body() dto: UpdateDependencyDto[],
+    @Body(new ParseArrayPipe({ items: UpdateDependencyDto, whitelist: true }))
+    dto: UpdateDependencyDto[],
   ) {
     const res = await this.depsService.update(appid, dto)
     return ResponseUtil.ok(res)

@@ -10,12 +10,7 @@ import {
 } from '@nestjs/common'
 import { PolicyService } from './policy.service'
 import { CreatePolicyDto } from '../dto/create-policy.dto'
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { UpdatePolicyDto } from '../dto/update-policy.dto'
 import {
   ApiResponseArray,

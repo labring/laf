@@ -1,0 +1,23 @@
+.code .property {
+  color: #A31515
+}
+
+.code .number {
+  color: #01a99d
+}
+
+.code .string {
+  color: #0451a5
+}
+
+[data-theme="dark"] .code .property {
+  color: #9BDCFE
+}
+
+[data-theme="dark"] .code .number {
+  color: #B0CAA4
+}
+
+[data-theme="dark"] .code .string {
+  color: #CE9178
+}

@@ -83,15 +83,13 @@ export class ApplicationController {
   @ApiResponseObject(ApplicationWithRelations)
   @Post()
   async create(@Body() dto: CreateApplicationDto, @InjectUser() user: User) {
-    const error = dto.autoscaling.validate()
+    const error = dto.validate() || dto.autoscaling.validate()
     if (error) {
       return ResponseUtil.error(error)
     }
 
     // check regionId exists
-    const region = await this.region.findOneDesensitized(
-      new ObjectId(dto.regionId),
-    )
+    const region = await this.region.findOne(new ObjectId(dto.regionId))
     if (!region) {
       return ResponseUtil.error(`region ${dto.regionId} not found`)
     }
@@ -104,7 +102,7 @@ export class ApplicationController {
       return ResponseUtil.error(`runtime ${dto.runtimeId} not found`)
     }
 
-    const regionId = new ObjectId(dto.regionId)
+    const regionId = region._id
 
     // check if trial tier
     const isTrialTier = await this.resource.isTrialBundle(dto)
@@ -117,6 +115,13 @@ export class ApplicationController {
           `you can only create ${limitOfFreeTier} trial applications`,
         )
       }
+    }
+
+    if (
+      dto.dedicatedDatabase &&
+      !region.databaseConf.dedicatedDatabase.enabled
+    ) {
+      return ResponseUtil.error('dedicated database is not enabled')
     }
 
     // check if a user exceeds the resource limit in a region
@@ -143,7 +148,7 @@ export class ApplicationController {
 
     // create application
     const appid = await this.application.tryGenerateUniqueAppid()
-    await this.application.create(user._id, appid, dto, isTrialTier)
+    await this.application.create(regionId, user._id, appid, dto, isTrialTier)
 
     const app = await this.application.findOne(appid)
     return ResponseUtil.ok(app)
@@ -204,6 +209,7 @@ export class ApplicationController {
 
       /** This is the redundant field of Region */
       tls: region.gatewayConf.tls.enabled,
+      dedicatedDatabase: region.databaseConf.dedicatedDatabase.enabled,
     }
 
     return ResponseUtil.ok(res)
@@ -334,9 +340,35 @@ export class ApplicationController {
       }
     }
 
+    const origin = app.bundle
+    if (
+      (origin.resource.dedicatedDatabase?.limitCPU && dto.databaseCapacity) ||
+      (origin.resource.databaseCapacity && dto.dedicatedDatabase?.cpu)
+    ) {
+      return ResponseUtil.error('cannot change database type')
+    }
+
     const checkSpec = await this.checkResourceSpecification(dto, regionId)
     if (!checkSpec) {
       return ResponseUtil.error('invalid resource specification')
+    }
+
+    if (
+      dto.dedicatedDatabase?.capacity &&
+      origin.resource.dedicatedDatabase?.capacity &&
+      dto.dedicatedDatabase?.capacity <
+        origin.resource.dedicatedDatabase?.capacity
+    ) {
+      return ResponseUtil.error('cannot reduce database capacity')
+    }
+
+    if (
+      dto.dedicatedDatabase?.replicas &&
+      origin.resource.dedicatedDatabase?.replicas &&
+      dto.dedicatedDatabase?.replicas !==
+        origin.resource.dedicatedDatabase?.replicas
+    ) {
+      return ResponseUtil.error('cannot change database replicas')
     }
 
     // check if a user exceeds the resource limit in a region
@@ -353,13 +385,30 @@ export class ApplicationController {
     const doc = await this.application.updateBundle(appid, dto, isTrialTier)
 
     // restart running application if cpu or memory changed
-    const origin = app.bundle
     const isRunning = app.phase === ApplicationPhase.Started
     const isCpuChanged = origin.resource.limitCPU !== doc.resource.limitCPU
     const isMemoryChanged =
       origin.resource.limitMemory !== doc.resource.limitMemory
     const isAutoscalingCanceled =
       !doc.autoscaling.enable && origin.autoscaling.enable
+    const isDedicatedDatabaseChanged =
+      !!origin.resource.dedicatedDatabase &&
+      (!isEqual(
+        origin.resource.dedicatedDatabase.limitCPU,
+        doc.resource.dedicatedDatabase.limitCPU,
+      ) ||
+        !isEqual(
+          origin.resource.dedicatedDatabase.limitMemory,
+          doc.resource.dedicatedDatabase.limitMemory,
+        ) ||
+        !isEqual(
+          origin.resource.dedicatedDatabase.replicas,
+          doc.resource.dedicatedDatabase.replicas,
+        ) ||
+        !isEqual(
+          origin.resource.dedicatedDatabase.capacity,
+          doc.resource.dedicatedDatabase.capacity,
+        ))
 
     if (!isEqual(doc.autoscaling, origin.autoscaling)) {
       const { hpa, app } = await this.instance.get(appid)
@@ -368,7 +417,10 @@ export class ApplicationController {
 
     if (
       isRunning &&
-      (isCpuChanged || isMemoryChanged || isAutoscalingCanceled)
+      (isCpuChanged ||
+        isMemoryChanged ||
+        isAutoscalingCanceled ||
+        isDedicatedDatabaseChanged)
     ) {
       await this.application.updateState(appid, ApplicationState.Restarting)
     }
@@ -489,15 +541,46 @@ export class ApplicationController {
         case 'memory':
           return option.specs.some((spec) => spec.value === dto.memory)
         case 'databaseCapacity':
+          if (!dto.databaseCapacity) return true
           return option.specs.some(
             (spec) => spec.value === dto.databaseCapacity,
           )
         case 'storageCapacity':
           return option.specs.some((spec) => spec.value === dto.storageCapacity)
+        // dedicated database
+        case 'dedicatedDatabaseCPU':
+          return (
+            !dto.dedicatedDatabase?.cpu ||
+            option.specs.some(
+              (spec) => spec.value === dto.dedicatedDatabase.cpu,
+            )
+          )
+        case 'dedicatedDatabaseMemory':
+          return (
+            !dto.dedicatedDatabase?.memory ||
+            option.specs.some(
+              (spec) => spec.value === dto.dedicatedDatabase.memory,
+            )
+          )
+        case 'dedicatedDatabaseCapacity':
+          return (
+            !dto.dedicatedDatabase?.capacity ||
+            option.specs.some(
+              (spec) => spec.value === dto.dedicatedDatabase.capacity,
+            )
+          )
+        case 'dedicatedDatabaseReplicas':
+          return (
+            !dto.dedicatedDatabase?.replicas ||
+            option.specs.some(
+              (spec) => spec.value === dto.dedicatedDatabase.replicas,
+            )
+          )
         default:
           return true
       }
     })
+
     return checkSpec
   }
 }

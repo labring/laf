@@ -1,4 +1,4 @@
-import { ActionType, OrderByDirection } from "./constant"
+import { ActionType, OrderByDirection } from './constant'
 
 export interface ResponseStruct {
   code: number
@@ -22,18 +22,17 @@ export interface ProjectionType {
 }
 
 export interface AggregateStage {
-  stageKey: string,
+  stageKey: string
   stageValue: any
 }
 
 export interface QueryParam {
-
   collectionName: string
 
   /**
    * Query options
    */
-  query?: Object
+  query?: object
   order?: QueryOrder[]
   offset?: number
   limit?: number

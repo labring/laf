@@ -1,4 +1,3 @@
-
 import { Request } from './request'
 import { CloudOptions, EnvironmentType } from '../types'
 
@@ -19,8 +18,8 @@ export class UniRequest extends Request {
   /**
    * uni-app 环境请求方法
    * @override
-   * @param data 
-   * @returns 
+   * @param data
+   * @returns
    */
   async request(url: string, data: any, _options?: any) {
     if (this.options.environment !== EnvironmentType.UNI_APP) {
@@ -34,7 +33,7 @@ export class UniRequest extends Request {
       header,
       method: _options?.method ?? 'POST',
       data,
-      dataType: 'json'
+      dataType: 'json',
     }
 
     const res = await uni.request(options)

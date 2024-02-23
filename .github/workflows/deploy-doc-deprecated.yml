@@ -1,0 +1,38 @@
+name: deploy deprecated docs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "docs_deprecated/**"
+      - ".github/workflows/deploy-doc-deprecated.yml"
+env:
+  LAF_CI_DOCS_PAT: ${{ secrets.LAF_CI_DOCS_PAT }}
+  LAF_CI_DOCS_APPID: ${{ secrets.LAF_CI_DOCS_APPID }}
+  LAF_CI_DOCS_BUCKET_NAME: ${{ secrets.LAF_CI_DEPRECATED_DOCS_BUCKET_NAME }}
+  LAF_API_URL: ${{ secrets.LAF_API_URL }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docs
+        uses: ./.github/actions/build-docs
+        with:
+          docs-path: docs_deprecated
+
+      - name: Setup laf-cli
+        run: npm i laf-cli -g
+      - name: Login laf-cli
+        run: |
+          laf user add doc -r ${{ env.LAF_API_URL }}
+          laf user switch doc
+          laf login ${{ env.LAF_CI_DOCS_PAT }}
+      - name: Deploy to laf
+        working-directory: docs_deprecated/.vitepress
+        run: |
+          laf app init ${{ env.LAF_CI_DOCS_APPID }}
+          laf storage push -f ${{ env.LAF_CI_DOCS_BUCKET_NAME }} dist/

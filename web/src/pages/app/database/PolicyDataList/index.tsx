@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { AddIcon } from "@chakra-ui/icons";
-import { Button, Center, Input, Spinner, Text, useColorMode } from "@chakra-ui/react";
+import { Center, Input, Spinner, Text, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import { t } from "i18next";
 
@@ -14,7 +13,6 @@ import Panel from "@/components/Panel";
 import { COLOR_MODE } from "@/constants";
 
 import AddPolicyModal from "../mods/AddPolicyModal";
-import AddRulesModal from "../mods/AddRulesModal";
 import policyTemplate from "../mods/AddRulesModal/policyTemplate";
 import RightPanelEditBox from "../RightComponent/EditBox";
 import RightPanelList from "../RightComponent/List";
@@ -87,23 +85,7 @@ export default function PolicyDataList() {
   return (
     <>
       <Panel.Header className="h-[60px] w-full flex-shrink-0 pr-2">
-        <AddRulesModal
-          onSuccessSubmit={(data) => {
-            setCurrentData(data);
-            setRecord(JSON.stringify(data?.value, null, 2));
-            rulesListQuery.refetch();
-          }}
-        >
-          <Button
-            disabled={store.currentPolicy === undefined}
-            leftIcon={<AddIcon fontSize={10} className="text-grayModern-500" />}
-            variant="textGhost"
-            size="xs"
-          >
-            {t("CollectionPanel.AddRules")}
-          </Button>
-        </AddRulesModal>
-        <span>
+        <span className="flex w-full justify-end">
           {t("CollectionPanel.RulesNum")} : {rulesListQuery?.data?.data?.length || 0}
         </span>
       </Panel.Header>
@@ -157,7 +139,7 @@ export default function PolicyDataList() {
                       size={32}
                       className="group/icon"
                     >
-                      <OutlineCopyIcon size="14" color="#24282C" />
+                      <OutlineCopyIcon size="14" color={darkMode ? "#ffffff" : "#24282C"} />
                     </IconWrap>
                   </CopyText>
                 );
@@ -200,17 +182,6 @@ export default function PolicyDataList() {
           <EmptyBox>
             <div>
               <span>{t("CollectionPanel.EmptyRuleTip")}</span>
-              <AddRulesModal
-                onSuccessSubmit={(data) => {
-                  setCurrentData(data);
-                  setRecord(JSON.stringify(data.value, null, 2));
-                  rulesListQuery.refetch();
-                }}
-              >
-                <span className="ml-2 cursor-pointer text-primary-600 hover:border-b-2 hover:border-primary-600">
-                  {t("CreateNow")}
-                </span>
-              </AddRulesModal>
             </div>
           </EmptyBox>
         )}

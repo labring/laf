@@ -18,6 +18,7 @@ interface ConfirmButtonProps {
   headerText: string;
   bodyText: string | React.ReactElement | any;
   confirmButtonText?: string;
+  hideContextMenu?: () => void;
   children: React.ReactElement;
 }
 
@@ -26,6 +27,7 @@ const ConfirmButton = ({
   headerText,
   bodyText,
   confirmButtonText,
+  hideContextMenu,
   children,
 }: ConfirmButtonProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,6 +36,7 @@ const ConfirmButton = ({
   const onSubmit: React.MouseEventHandler<HTMLButtonElement> = (event) => {
     onSuccessAction(event);
     onClose();
+    hideContextMenu && hideContextMenu();
   };
 
   return (

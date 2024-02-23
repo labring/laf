@@ -1,14 +1,21 @@
-import { Controller, Get, Logger, Param, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Logger,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ApplicationAuthGuard } from 'src/authentication/application.auth.guard'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
-import { ApiResponseArray, ResponseUtil } from 'src/utils/response'
-import { PodNamesDto } from './dto/pod.dto'
+import { ApiResponseObject, ResponseUtil } from 'src/utils/response'
+import { ContainerNameListDto, PodNameListDto } from './dto/pod.dto'
 import { PodService } from './pod.service'
 
 @ApiTags('Application')
 @ApiBearerAuth('Authorization')
-@Controller('apps/:appid/pods')
+@Controller('apps/:appid/pod')
 export class PodController {
   private readonly logger = new Logger(PodController.name)
 
@@ -19,14 +26,41 @@ export class PodController {
    * @param appid
    * @returns
    */
-  @ApiResponseArray(PodNamesDto)
+  @ApiResponseObject(PodNameListDto)
   @ApiOperation({ summary: 'Get app all pod name' })
   @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
   @Get()
-  async get(@Param('appid') appid: string) {
-    const podNames: PodNamesDto = await this.podService.getPodNameListByAppid(
-      appid,
-    )
+  async getPodNameList(@Param('appid') appid: string) {
+    const podNames: PodNameListDto =
+      await this.podService.getPodNameListByAppid(appid)
     return ResponseUtil.ok(podNames)
+  }
+
+  /**
+   * Get pod's containers
+   * @param appid
+   * @returns
+   */
+  @ApiResponseObject(ContainerNameListDto)
+  @ApiOperation({ summary: "Get pod's containers" })
+  @UseGuards(JwtAuthGuard, ApplicationAuthGuard)
+  @Get('container')
+  async getContainerNameList(
+    @Param('appid') appid: string,
+    @Query('podName') podName: string,
+  ) {
+    if (!podName) {
+      return ResponseUtil.error('no podName')
+    }
+    const podNames: PodNameListDto =
+      await this.podService.getPodNameListByAppid(appid)
+
+    if (!podNames.podNameList.includes(podName)) {
+      return ResponseUtil.error('podName not exist')
+    }
+
+    const containerNames: ContainerNameListDto =
+      await this.podService.getContainerNameListByPodName(appid, podName)
+    return ResponseUtil.ok(containerNames)
   }
 }

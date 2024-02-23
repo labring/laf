@@ -35,7 +35,7 @@ export async function deploy() {
       bucketMap.set(bucket.shortName, bucket.name)
     })
 
-    for (let bucket of deploySchema?.resources?.buckets) {
+    for (const bucket of deploySchema?.resources?.buckets) {
       if (!bucketMap.has(bucket.name)) {
         await createBucket(bucket.name, { policy: bucket.policy })
       } else {
@@ -51,7 +51,7 @@ export async function deploy() {
       websiteMap.set(website.bucketName, true)
     })
 
-    for (let website of deploySchema?.resources?.websites) {
+    for (const website of deploySchema?.resources?.websites) {
       if (!websiteMap.has(website.bucketName) && !websiteMap.has(appSchema.appid + '-' + website.bucketName)) {
         await createWebsite(website.bucketName, {})
       } else {
@@ -62,7 +62,7 @@ export async function deploy() {
 
   if (deploySchema?.actions?.buckets) {
     // push all buckets
-    for (let bucket of deploySchema?.actions?.buckets) {
+    for (const bucket of deploySchema?.actions?.buckets) {
       await pushBucket(bucket.bucketName, bucket.srcDir, { force: true, detail: false })
     }
   }

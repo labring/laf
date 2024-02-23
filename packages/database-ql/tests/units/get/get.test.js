@@ -1,13 +1,11 @@
-
-const { Actions, getDb  } = require('../_utils')
+const { Actions, getDb } = require('../_utils')
 const assert = require('assert')
 
 describe('db-ql(unit): db::get()', () => {
   it('get() without query options should be ok', async () => {
     const { db, req } = getDb()
-    const res = await db.collection('tasks')
-      .get()
-    
+    const res = await db.collection('tasks').get()
+
     assert.strictEqual(req.action, Actions.get)
     assert.strictEqual(req.params.collectionName, 'tasks')
     assert.equal(req.params.limit, 100)
@@ -19,9 +17,8 @@ describe('db-ql(unit): db::get()', () => {
 
   it('getOne() without query options should be ok', async () => {
     const { db, req } = getDb()
-    const res = await db.collection('tasks')
-      .getOne()
-    
+    const res = await db.collection('tasks').getOne()
+
     assert.strictEqual(req.action, Actions.get)
     assert.strictEqual(req.params.collectionName, 'tasks')
     assert.equal(req.params.limit, 1)

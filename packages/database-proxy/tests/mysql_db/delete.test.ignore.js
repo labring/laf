@@ -1,4 +1,3 @@
-
 const assert = require('assert')
 const { MysqlAccessor, Proxy, ActionType } = require('../../dist')
 const config = require('./_db')
@@ -11,19 +10,29 @@ describe('Database Mysql delete', function () {
     user: config.user,
     password: config.password,
     host: config.host,
-    port: config.port
+    port: config.port,
   })
 
   const table = 'test_table'
 
-  let entry = new Proxy(accessor)
+  const entry = new Proxy(accessor)
 
   before(async () => {
-    await accessor.conn.execute(`create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, age int, primary key(id))`)
-    await accessor.conn.execute(`insert into ${table} (id,name, age) values(111, 'less-api-1', 2)`)
-    await accessor.conn.execute(`insert into ${table} (id,name, age) values(112, 'less-api-2', 18)`)
-    await accessor.conn.execute(`insert into ${table} (id,name, age) values(113, 'less-api-3', 28)`)
-    await accessor.conn.execute(`insert into ${table} (id,name, age) values(114, 'less-api-3', 38)`)
+    await accessor.conn.execute(
+      `create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, age int, primary key(id))`
+    )
+    await accessor.conn.execute(
+      `insert into ${table} (id,name, age) values(111, 'less-api-1', 2)`
+    )
+    await accessor.conn.execute(
+      `insert into ${table} (id,name, age) values(112, 'less-api-2', 18)`
+    )
+    await accessor.conn.execute(
+      `insert into ${table} (id,name, age) values(113, 'less-api-3', 28)`
+    )
+    await accessor.conn.execute(
+      `insert into ${table} (id,name, age) values(114, 'less-api-3', 38)`
+    )
   })
 
   it('delete one should be ok', async () => {
@@ -53,7 +62,7 @@ describe('Database Mysql delete', function () {
       collection: table,
       action: ActionType.REMOVE,
       query: {},
-      multi: true
+      multi: true,
     }
     const r = await entry.execute(params)
     assert.strictEqual(r.deleted, 2)

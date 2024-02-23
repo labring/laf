@@ -1,4 +1,3 @@
-
 const assert = require('assert')
 const { MysqlAccessor, Proxy, ActionType } = require('../../dist')
 const config = require('./_db')
@@ -11,17 +10,23 @@ describe('Database Mysql read', function () {
     user: config.user,
     password: config.password,
     host: config.host,
-    port: config.port
+    port: config.port,
   })
 
   const table = 'test_table'
 
-  let entry = new Proxy(accessor)
+  const entry = new Proxy(accessor)
 
   before(async () => {
-    await accessor.conn.execute(`create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, age int, primary key(id))`)
-    await accessor.conn.execute(`insert into ${table} (id,name, age) values(111, 'less-api-1', 2)`)
-    await accessor.conn.execute(`insert into ${table} (id,name, age) values(112, 'less-api-2', 18)`)
+    await accessor.conn.execute(
+      `create table IF NOT EXISTS ${table} (id int(11) NOT NULL AUTO_INCREMENT, name varchar(255) NOT NULL, age int, primary key(id))`
+    )
+    await accessor.conn.execute(
+      `insert into ${table} (id,name, age) values(111, 'less-api-1', 2)`
+    )
+    await accessor.conn.execute(
+      `insert into ${table} (id,name, age) values(112, 'less-api-2', 18)`
+    )
   })
 
   it('read one should be ok', async () => {
@@ -75,9 +80,7 @@ describe('Database Mysql read', function () {
       collection: table,
       action: ActionType.READ,
       query: {},
-      order: [
-        { field: 'age', direction: 'desc' }
-      ]
+      order: [{ field: 'age', direction: 'desc' }],
     }
     const r = await entry.execute(params)
 
@@ -93,9 +96,7 @@ describe('Database Mysql read', function () {
       collection: table,
       action: ActionType.READ,
       query: {},
-      order: [
-        { field: 'age', direction: 'asc' }
-      ]
+      order: [{ field: 'age', direction: 'asc' }],
     }
     const r = await entry.execute(params)
 
@@ -111,7 +112,7 @@ describe('Database Mysql read', function () {
       collection: table,
       action: ActionType.READ,
       query: {},
-      projection: { name: 1, age: 1 }
+      projection: { name: 1, age: 1 },
     }
     const r = await entry.execute(params)
 
@@ -128,12 +129,15 @@ describe('Database Mysql read', function () {
       collection: table,
       action: ActionType.READ,
       query: {},
-      projection: { name: 0, age: 0 }
+      projection: { name: 0, age: 0 },
     }
     try {
       await entry.execute(params)
     } catch (error) {
-      assert.strictEqual(error.message, 'invalid query: value of projection MUST be {true} or {1}, {false} or {0} is not supported in sql')
+      assert.strictEqual(
+        error.message,
+        'invalid query: value of projection MUST be {true} or {1}, {false} or {0} is not supported in sql'
+      )
     }
   })
 
@@ -143,8 +147,8 @@ describe('Database Mysql read', function () {
       action: ActionType.READ,
       query: {
         name: {
-          $like: "less-api%"
-        }
+          $like: 'less-api%',
+        },
       },
     }
     const r = await entry.execute(params)

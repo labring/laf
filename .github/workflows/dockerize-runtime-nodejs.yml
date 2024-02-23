@@ -2,16 +2,28 @@ name: dockerize-runtime-nodejs
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - v*.*.*
-    branches:
-      - main
+  pull_request_target:
+    branches: [main]
+    types: [opened, synchronize, reopened]
     paths:
       - "runtimes/nodejs/**"
       - ".github/workflows/dockerize-runtime-nodejs.yml"
       - "!**/*.md"
       - "!runtimes/nodejs/package-lock.json"
+  push:
+    tags:
+      - v*.*.*
+    branches: [main]
+    paths:
+      - "runtimes/nodejs/**"
+      - ".github/workflows/dockerize-runtime-nodejs.yml"
+      - "!**/*.md"
+      - "!runtimes/nodejs/package-lock.json"
+
+# permissions:
+#   pull-requests: write
+#   packages: write
+#   contents: read
 
 concurrency:
   group: dockerize-runtime-nodejs-${{ github.ref }}
@@ -25,11 +37,13 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: Use Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18.x
+          node-version: 20.x
 
       - name: Install Package
         working-directory: runtimes/nodejs
@@ -49,8 +63,10 @@ jobs:
           # https://github.com/docker/metadata-action#typesemver
           tags: |
             type=semver,pattern={{version}}
-            type=raw,value=latest,enable=true
-            type=sha,enable=true,format=short
+            type=ref,event=pr
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request_target' }}
+            type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request_target' }}
+            type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request_target' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -72,6 +88,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
+        id: docker-build
         uses: docker/build-push-action@v3
         with:
           context: ./runtimes/nodejs
@@ -81,27 +98,26 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64, linux/arm64
 
-  dockerize-init-image:
-    needs: [dockerize-main-image]
-    runs-on: ubuntu-latest
+      - name: Comment docker image tags to PR
+        if: github.event_name == 'pull_request_target'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-id: "dockerize-runtime-nodejs"
+          message: |
+            **:boom: laf nodejs runtime image built successfully for pr ${{ github.event.pull_request.number }}**
+            ```
+            ${{ steps.meta.outputs.tags }}
+            ```
+            digest: `${{ steps.docker-build.outputs.digest }}`
 
+  dockerize-init-image:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Use Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-
-      - name: Install Package
-        working-directory: runtimes/nodejs
-        run: npm cache clean --force && npm install
-
-      - name: Build Packages
-        working-directory: runtimes/nodejs
-        run: npm run build
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: Docker meta
         id: meta
@@ -113,8 +129,10 @@ jobs:
           # https://github.com/docker/metadata-action#typesemver
           tags: |
             type=semver,pattern={{version}}
-            type=raw,value=latest,enable=true
-            type=sha,enable=true,format=short
+            type=ref,event=pr
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request_target' }}
+            type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request_target' }}
+            type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request_target' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -136,6 +154,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
+        id: docker-build
         uses: docker/build-push-action@v3
         with:
           context: ./runtimes/nodejs
@@ -145,12 +164,24 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64, linux/arm64
 
-  trigger-workflow-e2e:
-    needs: [dockerize-main-image, dockerize-init-image]
-    runs-on: ubuntu-latest
-    steps:
-      - name: trigger cluster image workflow
-        uses: peter-evans/repository-dispatch@v2
+      - name: Comment docker image tags to PR
+        if: github.event_name == 'pull_request_target'
+        uses: mshick/add-pr-comment@v2
         with:
-          event-type: dockerize-runtime-success
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "latest"}'
+          message-id: "dockerize-runtime-nodejs-init"
+          message: |
+            **:boom: laf nodejs runtime init image built successfully for pr ${{ github.event.pull_request.number }}**
+            ```
+            ${{ steps.meta.outputs.tags }}
+            ```
+            digest: `${{ steps.docker-build.outputs.digest }}`
+
+  # trigger-workflow-e2e:
+  #   needs: [dockerize-main-image]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: trigger cluster image workflow
+  #       uses: peter-evans/repository-dispatch@v2
+  #       with:
+  #         event-type: dockerize-runtime-success
+  #         client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "latest"}'

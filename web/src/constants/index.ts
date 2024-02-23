@@ -69,10 +69,8 @@ export const Routes = {
 };
 
 export const site_url = {
-  laf_doc: "https://doc.laf.run/guide/",
   laf_github: "https://github.com/labring/laf",
   laf_index_video: "https://itceb8-video.oss.laf.run/laf-website.mp4",
-  laf_about_us: "https://sealos.run/zh-Hans/company/",
 };
 
 export const CHAKRA_UI_COLOR_MODE_KEY = "chakra-ui-color-mode";
@@ -93,8 +91,17 @@ export default async function (ctx: FunctionContext) {
 export enum APP_SETTING_KEY {
   INFO = "info",
   ENV = "env",
-  MONITOR = "monitor",
+  MONITOR_RUNTIME = "monitorRuntime",
+  MONITOR_DATABASE = "monitorDatabase",
   DOMAIN = "domain",
   COMMON = "common",
-  OLD_LOGS = "oldLogs",
 }
+
+export enum PROVIDER_NAME {
+  PHONE = "phone",
+  EMAIL = "email",
+  GITHUB = "github",
+  PASSWORD = "user-password",
+}
+
+export const RUNTIMES_PATH = "/app/functions";

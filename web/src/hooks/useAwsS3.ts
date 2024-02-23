@@ -13,7 +13,7 @@ function useAwsS3() {
   });
 
   const getList = async (bucketName: string | undefined, { marker, maxKeys, prefix }: any) => {
-    if (!bucketName || bucketName === "") return [];
+    if (!bucketName || bucketName === "") return { data: [] };
 
     const res = await s3
       .listObjects({
@@ -27,7 +27,7 @@ function useAwsS3() {
 
     const files = res.Contents || [];
     const dirs = res.CommonPrefixes || [];
-    // console.log(files, dirs)
+
     return { data: [...files, ...dirs], marker: res.NextMarker };
   };
 

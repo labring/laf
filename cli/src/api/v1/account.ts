@@ -1,4 +1,4 @@
-import { request, RequestParams } from "../../util/request";
+import { request, RequestParams } from '../../util/request'
 import {
   AccountControllerGetChargeOrderAmountParams,
   AccountControllerGetChargeRecordsParams,
@@ -6,7 +6,7 @@ import {
   AccountControllerWechatNotifyData,
   CreateChargeOrderDto,
   UseGiftCodeDto,
-} from "./data-contracts";
+} from './data-contracts'
 
 /**
  * No description
@@ -20,9 +20,9 @@ import {
 export async function accountControllerFindOne(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/accounts`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -39,10 +39,10 @@ export async function accountControllerGetChargeOrderAmount(
 ): Promise<any> {
   return request({
     url: `/v1/accounts/charge-order/amount`,
-    method: "GET",
+    method: 'GET',
     params: query,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -56,9 +56,9 @@ export async function accountControllerGetChargeOrderAmount(
 export async function accountControllerGetChargeOrder(id: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/accounts/charge-order/${id}`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -75,10 +75,10 @@ export async function accountControllerGetChargeRecords(
 ): Promise<any> {
   return request({
     url: `/v1/accounts/charge-orders`,
-    method: "GET",
+    method: 'GET',
     params: query,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -95,10 +95,10 @@ export async function accountControllerCharge(
 ): Promise<any> {
   return request({
     url: `/v1/accounts/charge-order`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -112,9 +112,9 @@ export async function accountControllerCharge(
 export async function accountControllerGetChargeRewardList(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/accounts/charge-reward`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -129,9 +129,9 @@ export async function accountControllerWechatNotify(
 ): Promise<AccountControllerWechatNotifyData> {
   return request({
     url: `/v1/accounts/payment/wechat-notify`,
-    method: "POST",
+    method: 'POST',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -145,10 +145,10 @@ export async function accountControllerWechatNotify(
 export async function accountControllerGiftCode(data: UseGiftCodeDto, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/accounts/gift-code`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -162,9 +162,9 @@ export async function accountControllerGiftCode(data: UseGiftCodeDto, configPara
 export async function accountControllerInviteCode(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/accounts/invite-code`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -181,8 +181,8 @@ export async function accountControllerInviteCodeProfit(
 ): Promise<any> {
   return request({
     url: `/v1/accounts/invite-profit`,
-    method: "GET",
+    method: 'GET',
     params: query,
     ...configParams,
-  });
+  })
 }

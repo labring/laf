@@ -1,9 +1,9 @@
-import { request, RequestParams } from "../../util/request";
+import { request, RequestParams } from '../../util/request'
 import {
   DeleteRecycleBinItemsDto,
   FunctionRecycleBinControllerGetRecycleBinParams,
   RestoreRecycleBinItemsDto,
-} from "./data-contracts";
+} from './data-contracts'
 
 /**
  * No description
@@ -21,10 +21,10 @@ export async function functionRecycleBinControllerDeleteRecycleBinItems(
 ): Promise<any> {
   return request({
     url: `/v1/recycle-bin/${appid}/functions/delete`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -41,9 +41,9 @@ export async function functionRecycleBinControllerEmptyRecycleBin(
 ): Promise<any> {
   return request({
     url: `/v1/recycle-bin/${appid}/functions`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -60,10 +60,10 @@ export async function functionRecycleBinControllerGetRecycleBin(
 ): Promise<any> {
   return request({
     url: `/v1/recycle-bin/${appid}/functions`,
-    method: "GET",
+    method: 'GET',
     params: query,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -81,8 +81,8 @@ export async function functionRecycleBinControllerRestoreRecycleBinItems(
 ): Promise<any> {
   return request({
     url: `/v1/recycle-bin/${appid}/functions/restore`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }

@@ -1,4 +1,3 @@
-
 import { Params } from '../types'
 import { Handler, Processor } from '../processor'
 import { AccessorInterface } from '../accessor'
@@ -10,13 +9,13 @@ export interface PermissionRule {
 
 // Validate Error Struct
 export interface ValidateError {
-  type: string | number,
+  type: string | number
   error: string | object
 }
 
 // Validate Result Struct
 export interface ValidateResult {
-  errors?: ValidateError[],
+  errors?: ValidateError[]
   matched?: PermissionRule
 }
 
@@ -44,15 +43,15 @@ export interface PolicyInterface {
 
   /**
    * validate the request params
-   * @param params 
-   * @param injections 
+   * @param params
+   * @param injections
    */
   validate(params: Params, injections: object): Promise<ValidateResult>
 
   /**
    * register a validator for using in rules
-   * @param name 
-   * @param handler 
+   * @param name
+   * @param handler
    */
   register(name: string, handler: Handler): void
 }

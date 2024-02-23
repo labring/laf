@@ -24,6 +24,8 @@ import { DatabasePhase } from 'src/database/entities/database'
 import { DomainPhase } from 'src/gateway/entities/runtime-domain'
 import { StoragePhase } from 'src/storage/entities/storage-user'
 import { ApplicationNamespaceMode } from 'src/region/entities/region'
+import { DedicatedDatabaseService } from 'src/database/dedicated-database/dedicated-database.service'
+import { StorageBucket } from 'src/storage/entities/storage-bucket'
 
 @Injectable()
 export class ApplicationTaskService {
@@ -35,6 +37,7 @@ export class ApplicationTaskService {
     private readonly clusterService: ClusterService,
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
+    private readonly dedicatedDatabaseService: DedicatedDatabaseService,
     private readonly runtimeDomainService: RuntimeDomainService,
     private readonly bucketDomainService: BucketDomainService,
     private readonly triggerService: TriggerService,
@@ -119,18 +122,25 @@ export class ApplicationTaskService {
       storage = await this.storageService.create(app.appid)
     }
 
-    // reconcile database
-    let database = await this.databaseService.findOne(appid)
-    if (!database) {
-      this.logger.log(`Creating database for application ${appid}`)
-      database = await this.databaseService.create(app.appid)
-    }
-
     // reconcile runtime domain
     let runtimeDomain = await this.runtimeDomainService.findOne(appid)
     if (!runtimeDomain) {
       this.logger.log(`Creating gateway for application ${appid}`)
       runtimeDomain = await this.runtimeDomainService.create(appid)
+    }
+
+    // reconcile database
+    const dedicatedDatabase = await this.dedicatedDatabaseService.findOne(appid)
+    if (!dedicatedDatabase) {
+      let database = await this.databaseService.findOne(appid)
+      if (!database) {
+        this.logger.log(`Creating database for application ${appid}`)
+        database = await this.databaseService.create(app.appid)
+      }
+
+      if (database?.phase !== DatabasePhase.Created) {
+        return await this.unlock(appid)
+      }
     }
 
     // waiting resources' phase to be `Created`
@@ -139,10 +149,6 @@ export class ApplicationTaskService {
     }
 
     if (storage?.phase !== StoragePhase.Created) {
-      return await this.unlock(appid)
-    }
-
-    if (database?.phase !== DatabasePhase.Created) {
       return await this.unlock(appid)
     }
 
@@ -260,9 +266,24 @@ export class ApplicationTaskService {
       return await this.unlock(appid)
     }
 
+    const dedicatedDatabase = await this.dedicatedDatabaseService.findOne(appid)
+    if (dedicatedDatabase) {
+      await this.dedicatedDatabaseService.remove(appid)
+      return await this.unlock(appid)
+    }
+
     // delete application storage
     const storage = await this.storageService.findOne(appid)
     if (storage) {
+      await this.storageService.deleteUsersAndBuckets(appid)
+      return await this.unlock(appid)
+    }
+
+    const buckets = await db
+      .collection<StorageBucket>('StorageBucket')
+      .countDocuments({ appid })
+
+    if (buckets > 0) {
       await this.storageService.deleteUsersAndBuckets(appid)
       return await this.unlock(appid)
     }

@@ -16,6 +16,7 @@ import { DomainPhase, DomainState } from './entities/runtime-domain'
 import { BucketDomain } from './entities/bucket-domain'
 import { WebsiteHostingGatewayService } from './ingress/website-ingress.service'
 import { DatabaseService } from 'src/database/database.service'
+import { DedicatedDatabaseService } from 'src/database/dedicated-database/dedicated-database.service'
 
 @Injectable()
 export class WebsiteTaskService {
@@ -27,6 +28,7 @@ export class WebsiteTaskService {
     private readonly websiteGateway: WebsiteHostingGatewayService,
     private readonly certService: CertificateService,
     private readonly databaseService: DatabaseService,
+    private readonly dedicatedDatabaseService: DedicatedDatabaseService,
   ) {}
 
   @Cron(CronExpression.EVERY_SECOND)
@@ -179,7 +181,13 @@ export class WebsiteTaskService {
     }
 
     // delete website custom certificate if custom domain is set
-    if (site.state === DomainState.Deleted && site.isCustom) {
+
+    /* Certificates are only removed when you delete the application and unbind the custom runtime domain.
+    Starting, restarting and stopping the application does not remove certificates */
+    if (
+      (site.state === DomainState.Deleted && site.isCustom) ||
+      (site.state === DomainState.Active && site.phase === DomainPhase.Deleting)
+    ) {
       const waitingTime = Date.now() - site.updatedAt.getTime()
 
       // delete custom domain certificate
@@ -304,9 +312,9 @@ export class WebsiteTaskService {
   }
 
   async publish(website: WebsiteHosting) {
-    const { db, client } = await this.databaseService.findAndConnect(
-      website.appid,
-    )
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(website.appid)) ||
+      (await this.databaseService.findAndConnect(website.appid))
     const session = client.startSession()
 
     try {
@@ -323,9 +331,9 @@ export class WebsiteTaskService {
   }
 
   async unpublish(website: WebsiteHosting) {
-    const { db, client } = await this.databaseService.findAndConnect(
-      website.appid,
-    )
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(website.appid)) ||
+      (await this.databaseService.findAndConnect(website.appid))
 
     try {
       const coll = db.collection(CN_PUBLISHED_WEBSITE_HOSTING)

@@ -24,6 +24,7 @@ import { HttpService } from '@nestjs/axios'
 import { RegionService } from 'src/region/region.service'
 import { GetApplicationNamespace } from 'src/utils/getter'
 import { Region } from 'src/region/entities/region'
+import { DedicatedDatabaseService } from 'src/database/dedicated-database/dedicated-database.service'
 
 @Injectable()
 export class FunctionService {
@@ -32,6 +33,7 @@ export class FunctionService {
 
   constructor(
     private readonly databaseService: DatabaseService,
+    private readonly dedicatedDatabaseService: DedicatedDatabaseService,
     private readonly jwtService: JwtService,
     private readonly triggerService: TriggerService,
     private readonly functionRecycleBinService: FunctionRecycleBinService,
@@ -44,7 +46,7 @@ export class FunctionService {
       name: dto.name,
       source: {
         code: dto.code,
-        compiled: compileTs2js(dto.code),
+        compiled: compileTs2js(dto.code, dto.name),
         version: 0,
       },
       desc: dto.description,
@@ -57,7 +59,7 @@ export class FunctionService {
 
     const fn = await this.findOne(appid, dto.name)
 
-    await this.addOneHistoryRecord(fn)
+    await this.addOneHistoryRecord(fn, 'created')
     await this.publish(fn)
     return fn
   }
@@ -108,6 +110,7 @@ export class FunctionService {
             {
               $set: {
                 name: dto.newName,
+                'source.compiled': compileTs2js(func.source.code, dto.newName),
                 desc: dto.description,
                 methods: dto.methods,
                 tags: dto.tags || [],
@@ -161,7 +164,7 @@ export class FunctionService {
         $set: {
           source: {
             code: dto.code,
-            compiled: compileTs2js(dto.code),
+            compiled: compileTs2js(dto.code, func.name),
             version: func.source.version + 1,
           },
           desc: dto.description,
@@ -173,7 +176,7 @@ export class FunctionService {
     )
 
     const fn = await this.findOne(func.appid, func.name)
-    await this.addOneHistoryRecord(fn)
+    await this.addOneHistoryRecord(fn, dto.changelog)
     await this.publish(fn)
 
     return fn
@@ -234,7 +237,10 @@ export class FunctionService {
   }
 
   async publish(func: CloudFunction, oldFuncName?: string) {
-    const { db, client } = await this.databaseService.findAndConnect(func.appid)
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(func.appid)) ||
+      (await this.databaseService.findAndConnect(func.appid))
+
     const session = client.startSession()
     try {
       await session.withTransaction(async () => {
@@ -252,9 +258,10 @@ export class FunctionService {
   }
 
   async publishMany(funcs: CloudFunction[]) {
-    const { db, client } = await this.databaseService.findAndConnect(
-      funcs[0].appid,
-    )
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(funcs[0].appid)) ||
+      (await this.databaseService.findAndConnect(funcs[0].appid))
+
     const session = client.startSession()
     try {
       await session.withTransaction(async () => {
@@ -270,9 +277,10 @@ export class FunctionService {
   }
 
   async publishFunctionTemplateItems(funcs: CloudFunction[]) {
-    const { db, client } = await this.databaseService.findAndConnect(
-      funcs[0].appid,
-    )
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(funcs[0].appid)) ||
+      (await this.databaseService.findAndConnect(funcs[0].appid))
+
     const session = client.startSession()
     try {
       await session.withTransaction(async () => {
@@ -287,7 +295,9 @@ export class FunctionService {
   }
 
   async unpublish(appid: string, name: string) {
-    const { db, client } = await this.databaseService.findAndConnect(appid)
+    const { db, client } =
+      (await this.dedicatedDatabaseService.findAndConnect(appid)) ||
+      (await this.databaseService.findAndConnect(appid))
     try {
       const coll = db.collection(CN_PUBLISHED_FUNCTIONS)
       await coll.deleteOne({ name })
@@ -302,7 +312,7 @@ export class FunctionService {
       source: {
         ...func.source,
         code: dto.code,
-        compiled: compileTs2js(dto.code),
+        compiled: compileTs2js(dto.code, func.name),
         version: func.source.version + 1,
       },
       updatedAt: new Date(),
@@ -405,7 +415,7 @@ export class FunctionService {
     return history
   }
 
-  async addOneHistoryRecord(func: CloudFunction) {
+  async addOneHistoryRecord(func: CloudFunction, changelog = '') {
     await this.db
       .collection<CloudFunctionHistory>('CloudFunctionHistory')
       .insertOne({
@@ -415,6 +425,7 @@ export class FunctionService {
           code: func.source.code,
         },
         createdAt: new Date(),
+        changelog,
       })
   }
 

@@ -12,17 +12,21 @@ import {
   ModalOverlay,
   Select,
   Spinner,
+  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import { LogViewer, LogViewerSearch } from "@patternfly/react-log-viewer";
 import { useQuery } from "@tanstack/react-query";
+import clsx from "clsx";
+import { debounce } from "lodash";
 
+import { DownIcon, RefreshIcon } from "@/components/CommonIcon";
 import { formatDate } from "@/utils/format";
 import { streamFetch } from "@/utils/streamFetch";
 
 import "./index.scss";
 
-import { PodControllerGet } from "@/apis/v1/apps";
+import { PodControllerGetContainerNameList, PodControllerGetPodNameList } from "@/apis/v1/apps";
 import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -36,26 +40,73 @@ export default function LogsModal(props: { children: React.ReactElement }) {
 
   const [logs, setLogs] = useState("");
   const [podName, setPodName] = useState("");
+  const [containerName, setContainerName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [rowNumber, setRowNumber] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [pausedRowNumber, setPausedRowNumber] = useState(0);
+
+  const [renderLogs, setRenderLogs] = useState("");
+  const [refresh, setRefresh] = useState(true);
+
+  const darkMode = useColorMode().colorMode === "dark";
+
+  useEffect(() => {
+    const resizeHandler = debounce(() => {
+      if (!isPaused) {
+        setRefresh((pre) => !pre);
+      }
+    }, 200);
+
+    window.addEventListener("resize", resizeHandler);
+
+    return () => {
+      window.removeEventListener("resize", resizeHandler);
+    };
+  }, [isPaused]);
+
+  useEffect(() => {
+    if (!isPaused) {
+      setRenderLogs(logs.trim());
+    }
+  }, [isPaused, logs]);
 
   const { data: podData } = useQuery(
     ["GetPodQuery"],
     () => {
-      return PodControllerGet({});
+      return PodControllerGetPodNameList({});
     },
     {
       onSuccess: (data) => {
-        setPodName(data.data.pods[0]);
+        if (data.data.podNameList) {
+          setPodName(data.data.podNameList[0]);
+        }
       },
-      enabled: !!isOpen,
+      enabled: isOpen,
+    },
+  );
+
+  const { data: containerData } = useQuery(
+    ["GetContainerQuery"],
+    () => {
+      return PodControllerGetContainerNameList({ podName });
+    },
+    {
+      onSuccess: (data) => {
+        if (data.data.containerNameList) {
+          const length = data.data.containerNameList.length;
+          setContainerName(data.data.containerNameList[length - 1]);
+        }
+      },
+      enabled: isOpen && !!podName && podName !== "all",
     },
   );
 
   const fetchLogs = useCallback(() => {
-    if (!podName) return;
+    if (!podName && !containerName) return;
     const controller = new AbortController();
     streamFetch({
-      url: `/v1/apps/${currentApp.appid}/logs/${podName}`,
+      url: `/v1/apps/${currentApp.appid}/logs/${podName}?containerName=${containerName}`,
       abortSignal: controller,
       firstResponse() {
         setIsLoading(false);
@@ -71,11 +122,17 @@ export default function LogsModal(props: { children: React.ReactElement }) {
           )
           .join("\n");
 
+        setRowNumber((pre) => pre + logs.length);
         setLogs((pre) => pre + logStr + "\n");
       },
+    }).catch((e) => {
+      if (e.includes("BodyStreamBuffer was aborted")) {
+        return;
+      }
+      throw e;
     });
     return controller;
-  }, [podName, currentApp.appid]);
+  }, [podName, containerName, currentApp.appid]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -85,7 +142,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
     return () => {
       controller?.abort();
     };
-  }, [podName, isOpen, fetchLogs]);
+  }, [podName, containerName, isOpen, refresh]);
 
   return (
     <>
@@ -109,22 +166,46 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                     setIsLoading(true);
                     setLogs("");
                   }}
+                  value={podName}
                 >
-                  {podData?.data?.pods &&
-                    podData?.data?.pods.map((item: string) => (
+                  {podData?.data?.podNameList &&
+                    (podData?.data?.podNameList.length > 1
+                      ? ["all", ...podData?.data?.podNameList]
+                      : podData?.data?.podNameList
+                    ).map((item: string) => (
                       <option key={item} value={item}>
                         {item}
                       </option>
                     ))}
                 </Select>
               </span>
+              {containerData?.data?.containerNameList && (
+                <span>
+                  <Select
+                    className="ml-1 !h-8 !w-32"
+                    onChange={(e) => {
+                      setContainerName(e.target.value);
+                      setIsLoading(true);
+                      setLogs("");
+                    }}
+                    value={containerName}
+                  >
+                    {...containerData?.data?.containerNameList.map((item: string) => (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </Select>
+                </span>
+              )}
               <span>
                 <Button
-                  variant={"outline"}
+                  variant={"text"}
+                  leftIcon={<RefreshIcon boxSize={5} />}
+                  px={2}
                   onClick={() => {
-                    setIsLoading(true);
-                    setLogs("");
-                    fetchLogs();
+                    setRefresh((pre) => !pre);
+                    setIsPaused(false);
                   }}
                 >
                   {t("Refresh")}
@@ -140,16 +221,27 @@ export default function LogsModal(props: { children: React.ReactElement }) {
             ) : (
               <div
                 id="log-viewer-container"
-                className="text-sm relative flex flex-col overflow-y-auto px-2 font-mono"
-                style={{ height: "98%", fontSize: settingStore.commonSettings.fontSize - 1 }}
+                className="text-sm flex h-full flex-col px-2 font-mono"
+                style={{ fontSize: settingStore.commonSettings.fontSize - 1 }}
+                onWheel={(e) => {
+                  if (e.deltaY < 0 && !isPaused) {
+                    setIsPaused(true);
+                    setPausedRowNumber(rowNumber);
+                  }
+                }}
               >
                 <LogViewer
-                  data={logs}
+                  data={renderLogs}
                   hasLineNumbers={false}
-                  scrollToRow={100000}
-                  height={"100%"}
+                  scrollToRow={isPaused ? pausedRowNumber : rowNumber + 1}
+                  height={"98%"}
+                  onScroll={(e) => {
+                    if (e.scrollOffsetToBottom <= 0) {
+                      setIsPaused(false);
+                    }
+                  }}
                   toolbar={
-                    <div className="absolute right-16 top-4 z-10">
+                    <div className="absolute right-24 top-4">
                       <LogViewerSearch
                         placeholder="Search"
                         minSearchChars={1}
@@ -158,6 +250,24 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                     </div>
                   }
                 />
+                <div className="absolute bottom-1 w-[95%]">
+                  {isPaused && (
+                    <HStack
+                      onClick={() => {
+                        setIsPaused(false);
+                      }}
+                      className={clsx(
+                        "flex w-full cursor-pointer items-center justify-center",
+                        darkMode ? "bg-[#212630]" : "bg-white",
+                      )}
+                    >
+                      <DownIcon color={"#33BAB1"} size={24} />
+                      <span className="text-lg font-medium text-primary-500">
+                        {t("Logs.ScrollToBottom")}
+                      </span>
+                    </HStack>
+                  )}
+                </div>
               </div>
             )}
           </ModalBody>

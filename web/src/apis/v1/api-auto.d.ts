@@ -7,7 +7,19 @@ declare namespace Definitions {
     tags?: string[];
   };
 
-  export type CloudFunction = {};
+  export type CloudFunction = {
+    _id?: string;
+    appid?: string;
+    name?: string;
+    source?: Definitions.CloudFunctionSource;
+    desc?: string;
+    tags?: string[];
+    methods?: string[];
+    params?: {};
+    createdAt?: string;
+    updatedAt?: string;
+    createdBy?: string;
+  };
 
   export type UpdateFunctionDto = {
     newName?: string /* Function name is unique in the application */;
@@ -15,6 +27,7 @@ declare namespace Definitions {
     methods?: string[];
     code?: string /* The source code of the function */;
     tags?: string[];
+    changelog?: string;
   };
 
   export type UpdateFunctionDebugDto = {
@@ -31,6 +44,7 @@ declare namespace Definitions {
     databaseCapacity?: number;
     storageCapacity?: number;
     autoscaling?: Definitions.CreateAutoscalingDto;
+    dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto;
     name?: string;
     state?: string;
     regionId?: string;
@@ -84,6 +98,7 @@ declare namespace Definitions {
     databaseCapacity?: number;
     storageCapacity?: number;
     autoscaling?: Definitions.CreateAutoscalingDto;
+    dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto;
   };
 
   export type ApplicationBundle = {
@@ -114,6 +129,16 @@ declare namespace Definitions {
   export type CreateEnvironmentDto = {
     name?: string;
     value?: string;
+  };
+
+  export type PodNameListDto = {
+    appid?: string;
+    podNameList?: string[] /* List of pod identifiers */;
+  };
+
+  export type ContainerNameListDto = {
+    podName?: string;
+    containerNameList?: string[] /* List of container identifiers */;
   };
 
   export type CreateBucketDto = {
@@ -248,8 +273,8 @@ declare namespace Definitions {
     username?: string /* username, 3-64 characters */;
     password?: string /* password, 8-64 characters */;
     phone?: string /* phone */;
+    email?: string /* email */;
     code?: string /* verify code */;
-    type?: string /* type */;
     inviteCode?: string /* invite code */;
   };
 
@@ -261,8 +286,8 @@ declare namespace Definitions {
   export type PasswdResetDto = {
     password?: string /* new password, 8-64 characters */;
     phone?: string /* phone */;
+    email?: string /* email */;
     code?: string /* verify code */;
-    type?: string /* type */;
   };
 
   export type PasswdCheckDto = {
@@ -289,6 +314,14 @@ declare namespace Definitions {
   export type SendEmailCodeDto = {
     email?: string;
     type?: string /* verify code type */;
+  };
+
+  export type EmailSigninDto = {
+    email?: string /* email */;
+    code?: string;
+    username?: string /* username */;
+    password?: string /* password, 8-64 characters */;
+    inviteCode?: string /* invite code */;
   };
 
   export type GithubSigninDto = {
@@ -348,6 +381,7 @@ declare namespace Definitions {
     databaseCapacity?: number;
     storageCapacity?: number;
     autoscaling?: Definitions.CreateAutoscalingDto;
+    dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto;
     regionId?: string;
   };
 
@@ -436,12 +470,28 @@ declare namespace Definitions {
     role?: string;
   };
 
+  export type CloudFunctionSource = {
+    code?: string;
+    compiled?: string;
+    uri?: string;
+    version?: number;
+    hash?: string;
+    lang?: string;
+  };
+
   export type CreateAutoscalingDto = {
     enable?: boolean;
     minReplicas?: number;
     maxReplicas?: number;
     targetCPUUtilizationPercentage?: number;
     targetMemoryUtilizationPercentage?: number;
+  };
+
+  export type CreateDedicatedDatabaseDto = {
+    cpu?: number;
+    memory?: number;
+    capacity?: number;
+    replicas?: number;
   };
 
   export type Region = {
@@ -464,6 +514,14 @@ declare namespace Definitions {
     limitCountOfTrigger?: number;
     limitCountOfWebsiteHosting?: number;
     reservedTimeAfterExpired?: number;
+    dedicatedDatabase?: Definitions.DedicatedDatabaseSpec;
+  };
+
+  export type DedicatedDatabaseSpec = {
+    limitCPU?: number;
+    limitMemory?: number;
+    capacity?: number;
+    replicas?: number;
   };
 
   export type Autoscaling = {
@@ -733,7 +791,15 @@ declare namespace Paths {
     export type Responses = any;
   }
 
-  namespace PodControllerGet {
+  namespace PodControllerGetPodNameList {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace PodControllerGetContainerNameList {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -902,6 +968,30 @@ declare namespace Paths {
   }
 
   namespace PolicyRuleControllerRemove {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace DedicatedDatabaseMonitorControllerGetResource {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace DedicatedDatabaseMonitorControllerGetConnection {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace DedicatedDatabaseMonitorControllerGetPerformance {
     export type QueryParameters = any;
 
     export type BodyParameters = any;
@@ -1105,6 +1195,14 @@ declare namespace Paths {
     export type QueryParameters = any;
 
     export type BodyParameters = Definitions.SendEmailCodeDto;
+
+    export type Responses = any;
+  }
+
+  namespace EmailControllerSignin {
+    export type QueryParameters = any;
+
+    export type BodyParameters = Definitions.EmailSigninDto;
 
     export type Responses = any;
   }

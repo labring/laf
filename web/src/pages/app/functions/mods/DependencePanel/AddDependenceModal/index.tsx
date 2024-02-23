@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AddIcon, ExternalLinkIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import { AddIcon, ExternalLinkIcon, InfoOutlineIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
   Center,
   Checkbox,
+  HStack,
   Input,
   InputGroup,
   InputLeftElement,
@@ -27,7 +28,6 @@ import { debounce } from "lodash";
 import { EditIconLine } from "@/components/CommonIcon";
 import DependenceList from "@/components/DependenceList";
 import IconWrap from "@/components/IconWrap";
-import { APP_STATUS } from "@/constants";
 
 import {
   TDependenceItem,
@@ -40,11 +40,8 @@ import {
 } from "../service";
 import { openDependenceDetail } from "..";
 
-import useGlobalStore from "@/pages/globalStore";
-
 const AddDependenceModal = () => {
   const { t } = useTranslation();
-  const globalStore = useGlobalStore((state) => state);
   const [checkList, setCheckList] = useState<TDependenceItem[]>([]);
   const [name, setName] = useState("");
   const [clickItem, setClickItem] = useState({ package: "", loading: false });
@@ -74,22 +71,10 @@ const AddDependenceModal = () => {
 
   const addPackageMutation = useAddPackageMutation(() => {
     onClose();
-    globalStore.updateCurrentApp(
-      globalStore.currentApp!,
-      globalStore.currentApp!.state === APP_STATUS.Stopped
-        ? APP_STATUS.Running
-        : APP_STATUS.Restarting,
-    );
   });
 
   const editPackageMutation = useEditPackageMutation(() => {
     onClose();
-    globalStore.updateCurrentApp(
-      globalStore.currentApp!,
-      globalStore.currentApp!.state === APP_STATUS.Stopped
-        ? APP_STATUS.Running
-        : APP_STATUS.Restarting,
-    );
   });
 
   const packageSearchQuery = usePackageSearchQuery(name, (data) => {
@@ -351,37 +336,45 @@ const AddDependenceModal = () => {
             )}
           </ModalBody>
 
-          <ModalFooter>
-            {checkList.length > 0 && (
-              <span
-                className="mr-2 text-lg hover:cursor-pointer "
+          <ModalFooter justifyContent={'space-between'}>
+            <HStack>
+              <span className="flex items-center text-grayModern-600">
+                <InfoOutlineIcon className="mx-1" />
+                {t("FunctionPanel.DependenceInstallTip")}
+              </span>
+            </HStack>
+            <HStack>
+              {checkList.length > 0 && (
+                <span
+                  className="mr-2 text-lg hover:cursor-pointer "
+                  onClick={() => {
+                    if (!isEdit) {
+                      setIsShowChecked((pre) => !pre);
+                    }
+                  }}
+                >
+                  {t("FunctionPanel.Select")}:
+                  <span className="mx-2 text-blue-500 ">
+                    {isEdit ? (
+                      packageList.length
+                    ) : isShowChecked ? (
+                      <SmallCloseIcon fontSize={16} className="align-middle" />
+                    ) : (
+                      checkList.length
+                    )}
+                  </span>
+                </span>
+              )}
+
+              <Button
+                isLoading={editPackageMutation.isLoading || addPackageMutation.isLoading}
                 onClick={() => {
-                  if (!isEdit) {
-                    setIsShowChecked((pre) => !pre);
-                  }
+                  submitDependence();
                 }}
               >
-                {t("FunctionPanel.Select")}:
-                <span className="mx-2 text-blue-500 ">
-                  {isEdit ? (
-                    packageList.length
-                  ) : isShowChecked ? (
-                    <SmallCloseIcon fontSize={16} className="align-middle" />
-                  ) : (
-                    checkList.length
-                  )}
-                </span>
-              </span>
-            )}
-
-            <Button
-              isLoading={editPackageMutation.isLoading || addPackageMutation.isLoading}
-              onClick={() => {
-                submitDependence();
-              }}
-            >
-              {t("SaveAndRestart")}
-            </Button>
+                {t("Save")}
+              </Button>
+            </HStack>
           </ModalFooter>
         </ModalContent>
       </Modal>

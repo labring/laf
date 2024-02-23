@@ -294,7 +294,7 @@ export class AccountController {
           .collection<Account>('Account')
           .findOneAndUpdate(
             { _id: order.accountId },
-            { $inc: { balance: realAmount } },
+            { $inc: { balance: realAmount }, $set: { updatedAt: new Date() } },
             { session, returnDocument: 'after' },
           )
 

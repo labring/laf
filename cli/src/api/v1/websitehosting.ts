@@ -1,5 +1,5 @@
-import { request, RequestParams } from "../../util/request";
-import { BindCustomDomainDto, CreateWebsiteDto } from "./data-contracts";
+import { request, RequestParams } from '../../util/request'
+import { BindCustomDomainDto, CreateWebsiteDto } from './data-contracts'
 
 /**
  * No description
@@ -17,10 +17,10 @@ export async function websiteControllerCreate(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/websites`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -34,9 +34,9 @@ export async function websiteControllerCreate(
 export async function websiteControllerFindAll(appid: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/websites`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -54,9 +54,9 @@ export async function websiteControllerFindOne(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/websites/${id}`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -75,10 +75,10 @@ export async function websiteControllerBindDomain(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/websites/${id}`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -96,9 +96,9 @@ export async function websiteControllerRemove(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/websites/${id}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -117,8 +117,8 @@ export async function websiteControllerCheckResolved(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/websites/${id}/resolved`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }

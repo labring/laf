@@ -17,7 +17,12 @@ async function bootstrap() {
 
   app.enableCors()
 
-  app.useGlobalPipes(new ValidationPipe({ transform: true }))
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  )
 
   app.enableVersioning({
     defaultVersion: ['1'],
@@ -53,6 +58,7 @@ async function bootstrap() {
     const initService = app.get(InitializerService)
     await initService.init()
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error)
     process.exit(1)
   }

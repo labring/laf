@@ -1,4 +1,4 @@
-import { request, RequestParams } from "../../util/request";
+import { request, RequestParams } from '../../util/request'
 import {
   CreateCollectionDto,
   CreatePolicyDto,
@@ -7,7 +7,7 @@ import {
   UpdateCollectionDto,
   UpdatePolicyDto,
   UpdatePolicyRuleDto,
-} from "./data-contracts";
+} from './data-contracts'
 
 /**
  * No description
@@ -25,10 +25,10 @@ export async function collectionControllerCreate(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/collections`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -42,9 +42,9 @@ export async function collectionControllerCreate(
 export async function collectionControllerFindAll(appid: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/collections`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -62,9 +62,9 @@ export async function collectionControllerFindOne(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/collections/${name}`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -83,10 +83,10 @@ export async function collectionControllerUpdate(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/collections/${name}`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -104,9 +104,9 @@ export async function collectionControllerRemove(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/collections/${name}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -124,10 +124,10 @@ export async function policyControllerCreate(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/policies`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -141,9 +141,9 @@ export async function policyControllerCreate(
 export async function policyControllerFindAll(appid: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/policies`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -162,10 +162,10 @@ export async function policyControllerUpdate(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/policies/${name}`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -183,9 +183,9 @@ export async function policyControllerRemove(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/policies/${name}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -202,9 +202,9 @@ export async function databaseControllerProxy(
 ): Promise<DatabaseControllerProxyData> {
   return request({
     url: `/v1/apps/${appid}/databases/proxy`,
-    method: "POST",
+    method: 'POST',
     ...configParams,
-  });
+  })
 }
 
 /**
@@ -224,10 +224,10 @@ export async function policyRuleControllerCreate(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/policies/${name}/rules`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -245,9 +245,9 @@ export async function policyRuleControllerFindAll(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/policies/${name}/rules`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -267,10 +267,10 @@ export async function policyRuleControllerUpdate(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/policies/${name}/rules/${collection}`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -289,7 +289,7 @@ export async function policyRuleControllerRemove(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/policies/${name}/rules/${collection}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }

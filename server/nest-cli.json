@@ -7,6 +7,10 @@
       {
         "include": "i18n/**/*",
         "watchAssets": true
+      },
+      {
+        "include": "initializer/deploy-manifest/*",
+        "watchAssets": true
       }
     ]
   }

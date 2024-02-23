@@ -12,6 +12,8 @@ import { logger } from '../support/logger'
 import { IRequest } from '../support/types'
 import { parseToken } from '../support/token'
 import { FunctionCache } from '../support/engine'
+import Config from '../config'
+import * as fs from 'fs'
 
 const nodeModulesRoot = path.resolve(__dirname, '../../node_modules')
 
@@ -19,8 +21,6 @@ const nodeModulesRoot = path.resolve(__dirname, '../../node_modules')
  * Gets declaration files of a dependency package
  */
 export async function handlePackageTypings(req: IRequest, res: Response) {
-  const requestId = req['requestId']
-
   // verify the debug token
   const token = req.get('x-laf-develop-token')
   if (!token) {
@@ -77,9 +77,25 @@ export async function handlePackageTypings(req: IRequest, res: Response) {
     })
   }
 
+  // get custom dependency types
+  const customDependencyPath = `${Config.CUSTOM_DEPENDENCY_BASE_PATH}/node_modules/`
+  if (fs.existsSync(`${customDependencyPath}/${packageName}`)) {
+    getThreePartyPackageTypings(req, res, customDependencyPath, packageName)
+  } else {
+    getThreePartyPackageTypings(req, res, nodeModulesRoot, packageName)
+  }
+}
+
+async function getThreePartyPackageTypings(
+  req: IRequest,
+  res: Response,
+  basePath: string,
+  packageName: string,
+) {
+  const requestId = req['requestId']
   try {
     // Gets other three-party package types
-    const pkd = new PackageDeclaration(packageName, nodeModulesRoot)
+    const pkd = new PackageDeclaration(packageName, basePath)
     await pkd.load()
     return res.send({
       code: 0,

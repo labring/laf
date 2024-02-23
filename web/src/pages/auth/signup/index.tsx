@@ -24,6 +24,7 @@ import useInviteCode from "@/hooks/useInviteCode";
 import { useGroupMemberAddMutation } from "@/pages/app/collaboration/service";
 import {
   useGithubAuthControllerBindMutation,
+  useSendEmailCodeMutation,
   useSendSmsCodeMutation,
   useSignupMutation,
 } from "@/pages/auth/service";
@@ -32,6 +33,7 @@ import useGlobalStore from "@/pages/globalStore";
 
 type FormData = {
   phone?: string;
+  email?: string;
   validationCode?: string;
   account: string;
   password: string;
@@ -41,7 +43,9 @@ type FormData = {
 export default function SignUp() {
   const signupMutation = useSignupMutation();
   const sendSmsCodeMutation = useSendSmsCodeMutation();
+  const sendEmailCodeMutation = useSendEmailCodeMutation();
   const [isNeedPhone, setIsNeedPhone] = useState(false);
+  const [isNeedEmail, setIsNeedEmail] = useState(false);
   const { passwordProvider } = useAuthStore();
 
   const { colorMode } = useColorMode();
@@ -53,6 +57,7 @@ export default function SignUp() {
   useEffect(() => {
     if (passwordProvider) {
       setIsNeedPhone(passwordProvider.bind?.phone === "required");
+      setIsNeedEmail(passwordProvider.bind?.email === "required");
     }
   }, [passwordProvider]);
 
@@ -91,6 +96,15 @@ export default function SignUp() {
     const params = isNeedPhone
       ? {
           phone: data.phone,
+          code: data.validationCode,
+          username: data.account,
+          password: data.password,
+          inviteCode: inviteCode,
+          type: "Signup",
+        }
+      : isNeedEmail
+      ? {
+          email: data.email,
           code: data.validationCode,
           username: data.account,
           password: data.password,
@@ -136,18 +150,35 @@ export default function SignUp() {
     }
 
     const phone = getValues("phone") || "";
-    const isValidate = /^1[2-9]\d{9}$/.test(phone);
-    if (!isValidate) {
-      showError(t("AuthPanel.PhoneTip"));
-      return;
+    const email = getValues("email") || "";
+
+    let res;
+
+    if (isNeedPhone) {
+      const isValidate = /^1[2-9]\d{9}$/.test(phone);
+      if (!isValidate) {
+        showError(t("AuthPanel.PhoneTip"));
+        return;
+      }
+      res = await sendSmsCodeMutation.mutateAsync({
+        phone,
+        type: "Signup",
+      });
+    }
+
+    if (isNeedEmail) {
+      const isValidate = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
+      if (!isValidate) {
+        showError(t("AuthPanel.EmailTip"));
+        return;
+      }
+      res = await sendEmailCodeMutation.mutateAsync({
+        email,
+        type: "Signup",
+      });
     }
 
     switchSmsCodeStatus();
-
-    const res = await sendSmsCodeMutation.mutateAsync({
-      phone,
-      type: "Signup",
-    });
 
     if (res?.data) {
       showSuccess(t("AuthPanel.SmsCodeSendSuccess"));
@@ -302,7 +333,41 @@ export default function SignUp() {
             </InputGroup>
           </FormControl>
         )}
-        {isNeedPhone && (
+        {isNeedEmail && (
+          <FormControl isInvalid={!!errors?.email} className="mb-6 flex items-center">
+            <FormLabel className={darkMode ? "w-20" : "w-20 text-grayModern-700"} htmlFor="email">
+              {t("AuthPanel.Email")}
+            </FormLabel>
+            <InputGroup>
+              <Input
+                {...register("email", {
+                  required: true,
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: t("AuthPanel.EmailTip"),
+                  },
+                })}
+                type="email"
+                id="email"
+                placeholder={t("AuthPanel.EmailPlaceholder") || ""}
+                bg={darkMode ? "#363C42" : "#F8FAFB"}
+                border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
+                height="48px"
+                rounded="4px"
+              />
+              <InputRightElement width="6rem" height="100%">
+                <Button
+                  className="w-20"
+                  variant={isSendSmsCode ? "text_disabled" : "text"}
+                  onClick={handleSendSmsCode}
+                >
+                  {isSendSmsCode ? `${countdown}s` : t("AuthPanel.getValidationCode")}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
+        )}
+        {(isNeedPhone || isNeedEmail) && (
           <FormControl isInvalid={!!errors.validationCode} className="mb-10 flex items-center">
             <FormLabel
               className={darkMode ? "w-20" : "w-20 text-grayModern-700"}

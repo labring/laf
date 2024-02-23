@@ -1,12 +1,9 @@
-import { LOGIC_COMMANDS, QUERY_COMMANDS, UPDATE_COMMANDS } from "../types"
-
-
+import { LOGIC_COMMANDS, QUERY_COMMANDS, UPDATE_COMMANDS } from '../types'
 
 /**
  * 安全工具
  */
 export class SecurityUtil {
-
   // 检查字段名是否合法：data field, query field
   static checkField(name: string): boolean {
     if (this.isQueryOrLogicOperator(name)) {
@@ -26,7 +23,7 @@ export class SecurityUtil {
       '*',
       '\\',
       '+',
-      '%'
+      '%',
     ]
     if (this.containChars(name, black_list)) {
       return false
@@ -60,9 +57,9 @@ export class SecurityUtil {
   /**
    * 递归收集 query 中的字段列表，去除操作符（逻辑、查询操作符）
    * @param query 请求 query 对象
-   * @returns 
+   * @returns
    */
-  static resolveFieldFromQuery(query: Object): string[] {
+  static resolveFieldFromQuery(query: object): string[] {
     const sets = []
     for (const key in query) {
       if (this.isQueryOrLogicOperator(key)) {
@@ -78,9 +75,9 @@ export class SecurityUtil {
 
   /**
    * 递归收集 data 中的字段列表，去除更新操作符
-   * @param data 
+   * @param data
    */
-  static resolveFieldFromData(data: Object): string[] {
+  static resolveFieldFromData(data: object): string[] {
     const sets = []
     for (const key in data) {
       if (this.isUpdateOperator(key)) {
@@ -99,10 +96,12 @@ export class SecurityUtil {
    * @param input_fields [string] 输入字段列表
    * @param allow_fields [string] 允许的字段列表
    */
-  static isAllowedFields(input_fields: string[], allow_fields: string[]): string | null {
-    for (let fd of input_fields) {
-      if (!allow_fields.includes(fd))
-        return `the field '${fd}' is NOT allowed]`
+  static isAllowedFields(
+    input_fields: string[],
+    allow_fields: string[]
+  ): string | null {
+    for (const fd of input_fields) {
+      if (!allow_fields.includes(fd)) return `the field '${fd}' is NOT allowed]`
     }
     return null
   }
@@ -111,12 +110,11 @@ export class SecurityUtil {
    * 检查给定字符串中是否包含指定字符
    * @param source 字符串
    * @param str_list 字符白名单或黑名单
-   * @returns 
+   * @returns
    */
   static containChars(source: string, str_list: string[]): boolean {
     for (const ch of str_list) {
-      if (source.indexOf(ch) >= 0)
-        return true
+      if (source.indexOf(ch) >= 0) return true
     }
 
     return false
@@ -124,15 +122,13 @@ export class SecurityUtil {
 
   // 是否为逻辑操作符
   static isLogicOperator(key: string): boolean {
-    const keys = Object.keys(LOGIC_COMMANDS)
-      .map(k => LOGIC_COMMANDS[k])
+    const keys = Object.keys(LOGIC_COMMANDS).map((k) => LOGIC_COMMANDS[k])
     return keys.includes(key)
   }
 
   // 是否为查询操作符(QUERY_COMMANDS)
   static isQueryOperator(key: string): boolean {
-    const keys = Object.keys(QUERY_COMMANDS)
-      .map(k => QUERY_COMMANDS[k])
+    const keys = Object.keys(QUERY_COMMANDS).map((k) => QUERY_COMMANDS[k])
     return keys.includes(key)
   }
 
@@ -146,10 +142,10 @@ export class SecurityUtil {
     const OPTRS = Object.values(UPDATE_COMMANDS)
 
     let has = false
-    const checkMixed = objs => {
+    const checkMixed = (objs) => {
       if (typeof objs !== 'object') return
 
-      for (let key in objs) {
+      for (const key in objs) {
         if (OPTRS.includes(key)) {
           has = true
         } else if (typeof objs[key] === 'object') {
@@ -164,11 +160,9 @@ export class SecurityUtil {
 
   // 是否为更新操作符
   static isUpdateOperator(key: string): boolean {
-    const keys = Object.keys(UPDATE_COMMANDS)
-      .map(k => UPDATE_COMMANDS[k])
+    const keys = Object.keys(UPDATE_COMMANDS).map((k) => UPDATE_COMMANDS[k])
     return keys.includes(key)
   }
-
 
   /**
    * 将带操作符的 data 对象平铺

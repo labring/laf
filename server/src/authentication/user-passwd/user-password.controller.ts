@@ -10,6 +10,9 @@ import { AuthBindingType, AuthProviderBinding } from '../entities/types'
 import { SmsService } from '../phone/sms.service'
 import { PasswdResetDto } from '../dto/passwd-reset.dto'
 import { PasswdCheckDto } from '../dto/passwd-check.dto'
+import { EmailService } from '../email/email.service'
+import { EmailVerifyCodeType } from '../entities/email-verify-code'
+import { SmsVerifyCodeType } from '../entities/sms-verify-code'
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -20,6 +23,7 @@ export class UserPasswordController {
     private readonly passwdService: UserPasswordService,
     private readonly authService: AuthenticationService,
     private readonly smsService: SmsService,
+    private readonly emailService: EmailService,
   ) {}
 
   /**
@@ -29,7 +33,7 @@ export class UserPasswordController {
   @ApiResponse({ type: ResponseUtil })
   @Post('passwd/signup')
   async signup(@Body() dto: PasswdSignupDto) {
-    const { username, password, phone, inviteCode } = dto
+    const { username, password, phone, email, inviteCode, code } = dto
     // check if user exists
     const doc = await this.userService.findOneByUsername(username)
     if (doc) {
@@ -45,13 +49,33 @@ export class UserPasswordController {
     // valid phone code if needed
     const bind = provider.bind as any as AuthProviderBinding
     if (bind.phone === AuthBindingType.Required) {
-      const { phone, code, type } = dto
       // valid phone has been binded
       const user = await this.userService.findOneByPhone(phone)
       if (user) {
         return ResponseUtil.error('phone has been binded')
       }
-      const err = await this.smsService.validateCode(phone, code, type)
+      const err = await this.smsService.validateCode(
+        phone,
+        code,
+        SmsVerifyCodeType.Signup,
+      )
+      if (err) {
+        return ResponseUtil.error(err)
+      }
+    }
+
+    // valid email code if needed
+    if (bind.email === AuthBindingType.Required) {
+      // valid email has been binded
+      const user = await this.userService.findOneByEmail(email)
+      if (user) {
+        return ResponseUtil.error('email has been binded')
+      }
+      const err = await this.emailService.validateCode(
+        email,
+        code,
+        EmailVerifyCodeType.Signup,
+      )
       if (err) {
         return ResponseUtil.error(err)
       }
@@ -62,6 +86,7 @@ export class UserPasswordController {
       username,
       password,
       phone,
+      email,
       inviteCode,
     )
 
@@ -113,14 +138,37 @@ export class UserPasswordController {
   @Post('passwd/reset')
   async reset(@Body() dto: PasswdResetDto) {
     // valid phone code
-    const { phone, code, type } = dto
-    const err = await this.smsService.validateCode(phone, code, type)
-    if (err) {
-      return ResponseUtil.error(err)
+    const { phone, code, email } = dto
+    if (!phone && !email) {
+      return ResponseUtil.error('phone or email should be provided')
     }
 
-    // find user by phone
-    const user = await this.userService.findOneByPhone(phone)
+    if (phone) {
+      const err = await this.smsService.validateCode(
+        phone,
+        code,
+        SmsVerifyCodeType.ResetPassword,
+      )
+      if (err) {
+        return ResponseUtil.error(err)
+      }
+    }
+
+    if (email) {
+      const err = await this.emailService.validateCode(
+        email,
+        code,
+        EmailVerifyCodeType.ResetPassword,
+      )
+      if (err) {
+        return ResponseUtil.error(err)
+      }
+    }
+
+    // find user by phone or email
+    const user = phone
+      ? await this.userService.findOneByPhone(phone)
+      : await this.userService.findOneByEmail(email)
     if (!user) {
       return ResponseUtil.error('user not found')
     }

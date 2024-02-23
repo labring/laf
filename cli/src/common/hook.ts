@@ -10,7 +10,7 @@ export function checkApplication() {
 export async function checkFunctionDebugToken() {
   const appSchema = AppSchema.read()
   const { developToken, developTokenExpire } = appSchema.function
-  let timestamp = Date.parse(new Date().toString()) / 1000
+  const timestamp = Date.parse(new Date().toString()) / 1000
   if (!developToken || developTokenExpire < timestamp) {
     await AppSchema.refresh()
   }
@@ -19,7 +19,7 @@ export async function checkFunctionDebugToken() {
 export async function checkStorageToken() {
   const appSchema = AppSchema.read()
   const { expire } = appSchema.storage
-  let timestamp = Date.parse(new Date().toString()) / 1000
+  const timestamp = Date.parse(new Date().toString()) / 1000
   if (expire < timestamp) {
     await AppSchema.refresh()
   }

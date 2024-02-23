@@ -19,21 +19,21 @@
 ---
 
 > 中文 | [English](README_en.md)
+## 👀 `laf` 是什么
+
+laf 是开源的云开发平台，提供云函数、云数据库、云存储等开箱即用的应用资源。让开发者专注于业务开发，无需折腾服务器，快速释放创意。
+
+![](https://sif268-laf-image.oss.laf.dev/dev.png)
 
 ## 🚀 Quick Start
 
 [三分钟体验使用 laf 写一个自己的 ChatGPT (开发到上线)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)  
-[三分钟体验使用 laf 开发一个简单的「Todo List」](./docs/guide/quick-start/Todo.md)
+[三分钟体验使用 laf 开发一个简单的「Todo List」](./docs/zh/quick-start/Todo.md)
 
 ## 🖥 在线体验
 
-🎉 [laf.run](https://laf.run) （国内版）
-
+🎉 [laf.run](https://laf.run) （国内版）<br/>
 🎉 [laf.dev](https://laf.dev) （海外版）
-
-## 👀 `laf` 是什么
-
-laf 是开源的云开发平台，提供云函数、云数据库、云存储等开箱即用的应用资源。让开发者专注于业务开发，无需折腾服务器，快速释放创意。
 
 ## 🎉 `laf` 有什么
 
@@ -44,7 +44,6 @@ laf 是开源的云开发平台，提供云函数、云数据库、云存储等�
 - 网站托管
 - WebSocket 支持
 
-![](https://sif268-laf-image.oss.laf.dev/dev.png)
 
 ## 👨‍💻 谁适合使用 `laf` ?
 
@@ -80,11 +79,17 @@ laf 是开源的云开发平台，提供云函数、云数据库、云存储等�
 
 ## 🎉 Self-hosted Deployment
 
+> 快速部署：Sealos 提供开箱即用的域名、证书、网关、数据库、监控、备份等，无需配置，点击下面按钮，快速一键部署：
+
+[![](https://cdn.jsdelivr.us/gh/labring-actions/templates@main/Deploy-on-Sealos.svg)](https://cloud.sealos.io/?openapp=system-fastdeploy%3FtemplateName%3Dlaf)
+
+> 本地部署：需要自己配置域名、证书、网关等并且熟悉 kubernetes 的运维，可参考下面的文档。
+
 [Deployment](./deploy/README.md)
 
 ## 🏘️ Community Groups
 
-- [微信群](https://w4mci7-images.oss.laf.run/wechat.png)
+- [微信群](https://oss.laf.run/htr4n1-images/laf-qr-code.jpg)
 - [QQ 群：603059673](https://jq.qq.com/?_wv=1027&k=DdRCCiuz)
 
 ## 🌟 Star History

@@ -6,10 +6,10 @@ const COLL_NAME = 'test_remove'
 const TEST_DATA = [
   { title: 'title-1', content: 'content-1' },
   { title: 'title-2', content: 'content-2' },
-  { title: 'title-3', content: 'content-3' }
+  { title: 'title-3', content: 'content-3' },
 ]
 
-async function restoreTestData (coll) {
+async function restoreTestData(coll) {
   await coll.deleteMany({})
   const r = await coll.insertMany(TEST_DATA)
   assert.equal(r.insertedCount, TEST_DATA.length)
@@ -18,8 +18,12 @@ async function restoreTestData (coll) {
 describe('db-proxy(mongo): db.remove()', function () {
   this.timeout(10000)
 
-  const accessor = new MongoAccessor(dbconfig.dbName, dbconfig.url, dbconfig.connSettings)
-  let entry = new Proxy(accessor)
+  const accessor = new MongoAccessor(
+    dbconfig.dbName,
+    dbconfig.url,
+    dbconfig.connSettings
+  )
+  const entry = new Proxy(accessor)
   let coll = null
 
   before(async () => {
@@ -36,7 +40,7 @@ describe('db-proxy(mongo): db.remove()', function () {
     const params = {
       collection: COLL_NAME,
       action: ActionType.REMOVE,
-      multi: true
+      multi: true,
     }
     const r = await entry.execute(params)
     assert.equal(r.deleted, 3)
@@ -51,7 +55,7 @@ describe('db-proxy(mongo): db.remove()', function () {
     const params = {
       collection: COLL_NAME,
       action: ActionType.REMOVE,
-      query: { title: 'title-1' }
+      query: { title: 'title-1' },
     }
     const r = await entry.execute(params)
     assert.equal(r.deleted, 1)
@@ -69,9 +73,9 @@ describe('db-proxy(mongo): db.remove()', function () {
       collection: COLL_NAME,
       action: ActionType.REMOVE,
       query: {
-        $or: [{ title: 'title-1' }, { title: 'title-2' }]
+        $or: [{ title: 'title-1' }, { title: 'title-2' }],
       },
-      multi: true
+      multi: true,
     }
     const r = await entry.execute(params)
     assert.equal(r.deleted, 2)

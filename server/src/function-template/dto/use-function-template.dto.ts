@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, Length } from 'class-validator'
+import { IsNotEmpty, IsString, Length } from 'class-validator'
 import { ObjectId } from 'mongodb'
 
 export class UseFunctionTemplateDto {
@@ -11,7 +11,8 @@ export class UseFunctionTemplateDto {
   @Length(24, 24)
   functionTemplateId: ObjectId
 
-  @IsNotEmpty()
   @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   appid: string
 }

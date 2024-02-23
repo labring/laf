@@ -1,4 +1,4 @@
-import { request, RequestParams } from "../../util/request";
+import { request, RequestParams } from '../../util/request'
 import {
   CreatePATDto,
   PasswdCheckDto,
@@ -9,7 +9,7 @@ import {
   PhoneSigninDto,
   SendEmailCodeDto,
   SendPhoneCodeDto,
-} from "./data-contracts";
+} from './data-contracts'
 
 /**
  * No description
@@ -25,10 +25,10 @@ export async function userPasswordControllerSignup(
 ): Promise<any> {
   return request({
     url: `/v1/auth/passwd/signup`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -44,10 +44,10 @@ export async function userPasswordControllerSignin(
 ): Promise<any> {
   return request({
     url: `/v1/auth/passwd/signin`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -63,10 +63,10 @@ export async function userPasswordControllerReset(
 ): Promise<any> {
   return request({
     url: `/v1/auth/passwd/reset`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -82,10 +82,10 @@ export async function userPasswordControllerCheck(
 ): Promise<any> {
   return request({
     url: `/v1/auth/passwd/check`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -98,10 +98,10 @@ export async function userPasswordControllerCheck(
 export async function phoneControllerSendCode(data: SendPhoneCodeDto, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/auth/phone/sms/code`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -114,10 +114,10 @@ export async function phoneControllerSendCode(data: SendPhoneCodeDto, configPara
 export async function phoneControllerSignin(data: PhoneSigninDto, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/auth/phone/signin`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -130,9 +130,9 @@ export async function phoneControllerSignin(data: PhoneSigninDto, configParams: 
 export async function authenticationControllerGetProviders(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/auth/providers`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -148,10 +148,10 @@ export async function authenticationControllerPat2Token(
 ): Promise<any> {
   return request({
     url: `/v1/auth/pat2token`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -164,10 +164,10 @@ export async function authenticationControllerPat2Token(
 export async function emailControllerSendCode(data: SendEmailCodeDto, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/auth/email/code`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -181,10 +181,10 @@ export async function emailControllerSendCode(data: SendEmailCodeDto, configPara
 export async function patControllerCreate(data: CreatePATDto, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/pats`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -198,9 +198,9 @@ export async function patControllerCreate(data: CreatePATDto, configParams: Requ
 export async function patControllerFindAll(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/pats`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -214,7 +214,7 @@ export async function patControllerFindAll(configParams: RequestParams = {}): Pr
 export async function patControllerRemove(id: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/pats/${id}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }

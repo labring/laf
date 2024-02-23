@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Button,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -21,6 +22,7 @@ import { Pages } from "@/constants";
 import { useFunctionDetailQuery, useUpdateFunctionMutation } from "../../service";
 import useFunctionStore from "../../store";
 
+import { TFunction } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useHotKey, { DEFAULT_SHORTCUTS } from "@/hooks/useHotKey";
 import useGlobalStore from "@/pages/globalStore";
@@ -32,6 +34,7 @@ export default function DeployButton() {
   const functionCache = useFunctionCache();
 
   const headerRef = React.useRef(null);
+  const [changelog, setChangelog] = React.useState("");
 
   const { showSuccess, currentPageId } = useGlobalStore((state) => state);
 
@@ -63,9 +66,14 @@ export default function DeployButton() {
       name: store.currentFunction?.name,
       tags: store.currentFunction?.tags,
       params: store.currentFunction?.params,
+      changelog,
     });
     if (!res.error) {
       store.setCurrentFunction(res.data);
+      store.setRecentFunctionList([
+        res.data as TFunction,
+        ...store.recentFunctionList.filter((item) => item.name !== res.data.name),
+      ]);
       // delete cache after deploy
       functionCache.removeCache(store.currentFunction!._id);
       onClose();
@@ -77,7 +85,7 @@ export default function DeployButton() {
   return (
     <>
       <Tooltip
-        label={`快捷键: ${displayName.toUpperCase()}，调试可直接点击下方「运行」按扭`}
+        label={`快捷键: ${displayName.toUpperCase()}，调试可直接点击下方「运行」按钮`}
         placement="bottom-end"
       >
         <Button
@@ -113,6 +121,14 @@ export default function DeployButton() {
             </ModalBody>
 
             <ModalFooter>
+              <div className="mr-2 w-full">
+                <Input
+                  value={changelog}
+                  onChange={(v) => setChangelog(v.target.value)}
+                  variant="filled"
+                  placeholder={String("输入此次函数修改的描述 (可选)")}
+                />
+              </div>
               <Button variant="ghost" mr={3} onClick={onClose}>
                 {t("Cancel")}
               </Button>

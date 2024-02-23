@@ -30,11 +30,13 @@ export default function LoginByPasswordPanel({
   switchLoginType,
   showSignupBtn,
   showPhoneSigninBtn,
+  showEmailSigninBtn,
   isDarkMode,
 }: {
   switchLoginType: () => void;
   showSignupBtn: boolean;
   showPhoneSigninBtn: boolean;
+  showEmailSigninBtn: boolean;
   isDarkMode: boolean;
 }) {
   const signinByPasswordMutation = useSigninByPasswordMutation();
@@ -143,22 +145,26 @@ export default function LoginByPasswordPanel({
           {t("AuthPanel.Login")}
         </Button>
         <div className="mt-5 flex justify-between">
-          <div>
-            <Button
-              className="!pl-2 !pr-0 text-lg"
-              variant={"text"}
-              onClick={() => navigate("/reset-password", { replace: true })}
-            >
-              {t("AuthPanel.ForgotPassword")}
-            </Button>
-          </div>
+          {showPhoneSigninBtn || showEmailSigninBtn ? (
+            <div>
+              <Button
+                className="!pl-2 !pr-0 text-lg"
+                variant={"text"}
+                onClick={() => navigate("/reset-password", { replace: true })}
+              >
+                {t("AuthPanel.ForgotPassword")}
+              </Button>
+            </div>
+          ) : (
+            <div></div>
+          )}
           <div className="flex">
-            {showPhoneSigninBtn && (
+            {(showPhoneSigninBtn || showEmailSigninBtn) && (
               <Button className="!px-2 text-lg" variant={"text"} onClick={switchLoginType}>
-                {t("AuthPanel.PhoneLogin")}
+                {showPhoneSigninBtn ? t("AuthPanel.PhoneLogin") : t("AuthPanel.EmailLogin")}
               </Button>
             )}
-            {showPhoneSigninBtn && showSignupBtn && (
+            {showSignupBtn && (showPhoneSigninBtn || showEmailSigninBtn) && (
               <div className="mx-3 flex items-center">
                 <span className="h-3 w-[1px] bg-primary-500 text-primary-500"></span>
               </div>

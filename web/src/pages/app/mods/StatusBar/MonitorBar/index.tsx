@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Center, Spinner, Tooltip, useColorMode } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import clsx from "clsx";
 
 import { MonitorIcon } from "@/components/CommonIcon";
 import { uniformCapacity, uniformCPU, uniformMemory, uniformStorage } from "@/utils/format";
 
 import { TInstantMonitorData } from "@/apis/typing";
+import { DedicatedDatabaseMonitorControllerGetResource } from "@/apis/v1/apps";
 import { MonitorControllerGetData } from "@/apis/v1/monitor";
 import SysSetting from "@/pages/app/setting/SysSetting";
 import useGlobalStore from "@/pages/globalStore";
@@ -17,29 +18,65 @@ export const MonitorDataType = ["cpuUsage", "memoryUsage", "databaseUsage", "sto
 export default function MonitorBar() {
   const { currentApp } = useGlobalStore();
   const { t } = useTranslation();
-  const { limitCPU, limitMemory, databaseCapacity, storageCapacity } = currentApp.bundle.resource;
+  const { limitCPU, limitMemory, storageCapacity, dedicatedDatabase } = currentApp.bundle.resource;
+  const dedicatedDatabaseLimitCPU = dedicatedDatabase?.limitCPU;
+  let { databaseCapacity } = currentApp.bundle.resource;
+  databaseCapacity = dedicatedDatabaseLimitCPU ? dedicatedDatabase.capacity : databaseCapacity;
 
   const [resources, setResources] = useState<any>([]);
   const [instantData, setInstantData] = useState<TInstantMonitorData>();
 
   const darkMode = useColorMode().colorMode === "dark";
-
-  useQuery(
-    ["useGetInstantMonitorDataQuery"],
-    () => {
-      return MonitorControllerGetData({
-        q: MonitorDataType,
-        step: 60,
-        type: "instant",
-      });
-    },
-    {
-      refetchInterval: 60000,
-      onSuccess: (data) => {
-        setInstantData(data.data);
+  const appid = currentApp.bundle.appid;
+  const results = useQueries({
+    queries: [
+      {
+        queryKey: ["useGetInstantMonitorDataQuery"],
+        queryFn: () =>
+          MonitorControllerGetData({
+            q: MonitorDataType,
+            step: 60,
+            type: "instant",
+          }),
+        refetchInterval: 60000,
       },
-    },
-  );
+      {
+        queryKey: ["dedicatedDatabaseMonitorControllerGetResource"],
+        queryFn: () => DedicatedDatabaseMonitorControllerGetResource({}),
+        refetchInterval: 60000,
+      },
+    ],
+  });
+
+  const allDataLoaded = results.every((result) => result.isSuccess);
+  const instantMonitorData = results[0].data?.data;
+  const resourceData = results[1].data?.data;
+  useEffect(() => {
+    if (allDataLoaded) {
+      const { cpuUsage, memoryUsage, storageUsage } = instantMonitorData || {};
+      if (resourceData && "cpu" in resourceData) {
+        const databaseUsage = resourceData.dataSize.find(
+          (item: any) => item.metric.database === appid,
+        );
+        const data = {
+          cpuUsage,
+          memoryUsage,
+          databaseUsage: databaseUsage ? [databaseUsage] : [],
+          storageUsage,
+        };
+        setInstantData(data);
+      } else {
+        const databaseUsage = instantMonitorData?.databaseUsage;
+        const data = {
+          cpuUsage,
+          memoryUsage,
+          databaseUsage,
+          storageUsage,
+        };
+        setInstantData(data);
+      }
+    }
+  }, [appid, instantMonitorData, resourceData, allDataLoaded]);
 
   const getAverage = (data: any = []) => {
     let total = 0;
@@ -87,7 +124,7 @@ export default function MonitorBar() {
   };
 
   return (
-    <SysSetting currentTab="monitor">
+    <SysSetting currentTab="monitorRuntime">
       <div className="flex items-center">
         <span
           className={clsx(
@@ -96,7 +133,7 @@ export default function MonitorBar() {
           )}
         >
           <MonitorIcon className="mr-1" />
-          {t("SettingPanel.AppMonitor") + " :"}
+          {t("SettingPanel.MonitorSetting") + " :"}
         </span>
         <Center className="w-52 space-x-2">
           {resources.length !== 0 ? (

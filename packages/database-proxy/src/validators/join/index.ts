@@ -1,5 +1,5 @@
 import { Handler } from '../../processor'
-import { ActionType, JoinType } from "../../types"
+import { ActionType, JoinType } from '../../types'
 // import { execScript } from '../utils'
 /**
  * 本验证器应该加载为了缺省验证器，即用户未配置 join 时，也会进行缺省验证
@@ -7,8 +7,8 @@ import { ActionType, JoinType } from "../../types"
  * 1. 配置可以与哪些表关联查询 join ["t1", "t2"]
  * 2. 更详细的配置，指定关联字段，客户端关联字段需要于此一致
  *    如果缺省，则使用配置作为默认字段 join { t1 ["leftid", "rightid"], t2 ["lid", "rid"] }
- * @param config 
- * @param context 
+ * @param config
+ * @param context
  */
 
 export const JoinHandler: Handler = async function (config, context) {
@@ -41,7 +41,7 @@ export const JoinHandler: Handler = async function (config, context) {
 
   // 配置为数组形式时, like ['x_table', 'y_table']
   // 代表为允许联查的表名
-  if (!config.every(it => typeof it === 'string')) {
+  if (!config.every((it) => typeof it === 'string')) {
     return `config must be string or string[]`
   }
 

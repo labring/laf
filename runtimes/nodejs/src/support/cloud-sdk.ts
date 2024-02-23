@@ -7,7 +7,9 @@ import Config from '../config'
 import { FunctionContext } from './engine'
 import { FunctionModule } from './engine/module'
 
-Cloud.create = createCloudSdk
+if (!Cloud.create) {
+  Cloud.create = createCloudSdk
+}
 
 /**
  * object shared cross all functions & requests
@@ -19,7 +21,7 @@ const _shared_preference = new Map<string, any>()
  *
  * @returns
  */
-function createCloudSdk() {
+export function createCloudSdk() {
   const cloud: CloudSdkInterface = {
     database: () => getDb(DatabaseAgent.accessor),
     invoke: invokeInFunction,
@@ -27,24 +29,23 @@ function createCloudSdk() {
     getToken: getToken,
     parseToken: parseToken,
     mongo: {
-      client: DatabaseAgent.accessor.conn,
-      db: DatabaseAgent.accessor.db,
+      client: DatabaseAgent.client as any,
+      db: DatabaseAgent.db as any,
     },
     sockets: WebSocketAgent.clients,
     appid: Config.APPID,
     get env() {
-      return {
-        ...process.env,
-      }
+      return process.env
     },
+    storage: null,
   }
 
   /**
    * Ensure the database is connected, update its Mongo object, otherwise it is null
    */
-  DatabaseAgent.accessor.ready.then(() => {
-    cloud.mongo.client = DatabaseAgent.accessor.conn
-    cloud.mongo.db = DatabaseAgent.accessor.db
+  DatabaseAgent.ready.then(() => {
+    cloud.mongo.client = DatabaseAgent.client as any
+    cloud.mongo.db = DatabaseAgent.accessor.db as any
   })
   return cloud
 }

@@ -1,9 +1,9 @@
-import { databaseControllerExport, databaseControllerImport } from "../../api/custom";
-import { AppSchema } from "../../schema/app";
+import { databaseControllerExport, databaseControllerImport } from '../../api/custom'
+import { AppSchema } from '../../schema/app'
 import * as fs from 'fs'
-import { getEmoji } from "../../util/print";
+import { getEmoji } from '../../util/print'
 import * as path from 'path'
-import { exist } from "../../util/file";
+import { exist } from '../../util/file'
 import * as FormData from 'form-data'
 
 export async function exportDB(exportPath: string): Promise<void> {
@@ -21,12 +21,12 @@ export async function importDB(sourceAppid, importPath: string): Promise<void> {
 
   // get absolute path
   const absPath = path.resolve(importPath)
-  if (!exist(absPath)) { 
+  if (!exist(absPath)) {
     console.log(`${getEmoji('❌')} import database file not exist`)
     return
   }
 
-  const formData = new FormData();
+  const formData = new FormData()
   formData.append('file', fs.createReadStream(absPath), 'database.gz')
   formData.append('sourceAppid', sourceAppid)
   await databaseControllerImport(appSchema.appid, formData)

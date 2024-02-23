@@ -20,7 +20,6 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { t } from "i18next";
-import { debounce } from "lodash";
 
 import { MoreTemplateIcon, TextIcon } from "@/components/CommonIcon";
 import InputTag from "@/components/InputTag";
@@ -41,16 +40,18 @@ const CreateModal = (props: {
   children?: React.ReactElement;
   tagList?: any;
   aiCode?: string;
+  hideContextMenu?: () => void;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { showSuccess, currentApp } = useGlobalStore();
 
-  const { functionItem, children = null, tagList, aiCode } = props;
+  const { functionItem, children = null, tagList, aiCode, hideContextMenu } = props;
   const isEdit = !!functionItem;
   const navigate = useNavigate();
   const [searchKey, setSearchKey] = useState("");
   const [templateOpen, setTemplateOpen] = useState(false);
-  const { recentFunctionList, setRecentFunctionList } = useFunctionStore();
+  const { recentFunctionList, setRecentFunctionList, setCurrentFunction, currentFunction } =
+    useFunctionStore();
   const { setShowTemplateItem } = useTemplateStore();
 
   const defaultValues = {
@@ -116,8 +117,10 @@ const CreateModal = (props: {
           return item;
         }),
       );
+      setCurrentFunction({ ...currentFunction, name: data.name });
     } else if (isEdit && functionItem.name === data.name) {
       res = await updateFunctionMutation.mutateAsync(data);
+      setCurrentFunction({ ...currentFunction, ...data });
     } else {
       res = await createFunctionMutation.mutateAsync(data);
     }
@@ -126,7 +129,8 @@ const CreateModal = (props: {
       showSuccess(isEdit ? t("update success") : t("create success"));
       onClose();
       reset(defaultValues);
-      navigate(`/app/${currentApp.appid}/function/${res.data.name}`);
+      navigate(`/app/${currentApp.appid}/function/${res.data.name}`, { replace: true });
+      hideContextMenu && hideContextMenu();
     }
   };
 
@@ -159,7 +163,7 @@ const CreateModal = (props: {
                   <input
                     {...register("name", {
                       pattern: {
-                        value: /^[a-zA-Z0-9_.\-/]{1,256}$/,
+                        value: /^[a-zA-Z0-9_.\-](?:[a-zA-Z0-9_.\-/]{0,254}[a-zA-Z0-9_.\-])?$/,
                         message: t("FunctionPanel.FunctionNameRule"),
                       },
                     })}
@@ -167,9 +171,9 @@ const CreateModal = (props: {
                     placeholder={String(t("FunctionPanel.FunctionNameTip"))}
                     className="h-8 w-full border-l-2 border-primary-600 bg-transparent pl-4 text-2xl font-medium"
                     style={{ outline: "none", boxShadow: "none" }}
-                    onChange={debounce((e) => {
+                    onChange={(e) => {
                       setSearchKey(e.target.value);
-                    }, 200)}
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         onSubmit({ ...getValues(), name: searchKey });
@@ -277,7 +281,7 @@ const CreateModal = (props: {
         isOpen={templateOpen}
         onClose={() => {
           setTemplateOpen(!templateOpen);
-          navigate(`/app/${currentApp.appid}/function`);
+          navigate(`/app/${currentApp.appid}/function`, { replace: true });
         }}
       >
         <ModalOverlay />

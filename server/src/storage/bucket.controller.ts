@@ -72,7 +72,7 @@ export class BucketController {
     }
 
     // create bucket
-    const bucket = await this.bucketService.create(app, dto)
+    const bucket = await this.bucketService.create(app.appid, dto)
     if (!bucket) {
       return ResponseUtil.error('create bucket failed')
     }

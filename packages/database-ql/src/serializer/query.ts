@@ -2,12 +2,12 @@ import {
   isQueryCommand,
   isComparisonCommand,
   QUERY_COMMANDS_LITERAL,
-  QueryCommand
+  QueryCommand,
 } from '../commands/query'
 import {
   isLogicCommand,
   LOGIC_COMMANDS_LITERAL,
-  LogicCommand
+  LogicCommand,
 } from '../commands/logic'
 import { SYMBOL_UNSET_FIELD_NAME } from '../helper/symbol'
 import { getType, isObject, isArray, isRegExp } from '../utils/type'
@@ -15,18 +15,18 @@ import { operatorToString } from '../operator-map'
 import {
   flattenQueryObject,
   isConversionRequired,
-  encodeInternalDataType
+  encodeInternalDataType,
 } from './common'
 import {
   IGeoNearOptions,
   IGeoWithinOptions,
-  IGeoIntersectsOptions
+  IGeoIntersectsOptions,
 } from '../commands/query'
 
 export type IQueryCondition = Record<string, any> | LogicCommand
 
 export class QuerySerializer {
-  constructor() { }
+  constructor() {}
 
   static encode(
     query: IQueryCondition | QueryCommand | LogicCommand
@@ -62,7 +62,7 @@ class QueryEncoder {
   encodeRegExp(query: RegExp) {
     return {
       $regex: query.source,
-      $options: query.flags
+      $options: query.flags,
     }
   }
 
@@ -72,11 +72,11 @@ class QueryEncoder {
       case LOGIC_COMMANDS_LITERAL.AND:
       case LOGIC_COMMANDS_LITERAL.OR: {
         const $op = operatorToString(query.operator)
-        const subqueries = query.operands.map(oprand =>
+        const subqueries = query.operands.map((oprand) =>
           this.encodeQuery(oprand, query.fieldName)
         )
         return {
-          [$op]: subqueries
+          [$op]: subqueries,
         }
       }
       case LOGIC_COMMANDS_LITERAL.NOT: {
@@ -86,17 +86,16 @@ class QueryEncoder {
         if (isRegExp(operatorExpression)) {
           return {
             [query.fieldName as string]: {
-              [$op]: this.encodeRegExp(operatorExpression)
-            }
+              [$op]: this.encodeRegExp(operatorExpression),
+            },
           }
         } else {
-          const subqueries = this.encodeQuery(operatorExpression)[
-            query.fieldName as string
-          ]
+          const subqueries =
+            this.encodeQuery(operatorExpression)[query.fieldName as string]
           return {
             [query.fieldName as string]: {
-              [$op]: subqueries
-            }
+              [$op]: subqueries,
+            },
           }
         }
       }
@@ -105,12 +104,12 @@ class QueryEncoder {
         if (query.operands.length === 1) {
           const subquery = this.encodeQuery(query.operands[0])
           return {
-            [$op]: subquery
+            [$op]: subquery,
           }
         } else {
           const subqueries = query.operands.map(this.encodeQuery.bind(this))
           return {
-            [$op]: subqueries
+            [$op]: subqueries,
           }
         }
       }
@@ -148,8 +147,8 @@ class QueryEncoder {
       case QUERY_COMMANDS_LITERAL.MOD: {
         return {
           [query.fieldName as string]: {
-            [$op]: encodeInternalDataType(query.operands[0])
-          }
+            [$op]: encodeInternalDataType(query.operands[0]),
+          },
         }
       }
       case QUERY_COMMANDS_LITERAL.IN:
@@ -157,8 +156,8 @@ class QueryEncoder {
       case QUERY_COMMANDS_LITERAL.ALL: {
         return {
           [query.fieldName as string]: {
-            [$op]: encodeInternalDataType(query.operands)
-          }
+            [$op]: encodeInternalDataType(query.operands),
+          },
         }
       }
       case QUERY_COMMANDS_LITERAL.GEO_NEAR: {
@@ -168,9 +167,9 @@ class QueryEncoder {
             $nearSphere: {
               $geometry: options.geometry.toJSON(),
               $maxDistance: options.maxDistance,
-              $minDistance: options.minDistance
-            }
-          }
+              $minDistance: options.minDistance,
+            },
+          },
         }
       }
       case QUERY_COMMANDS_LITERAL.GEO_WITHIN: {
@@ -178,9 +177,9 @@ class QueryEncoder {
         return {
           [query.fieldName as string]: {
             $geoWithin: {
-              $geometry: options.geometry.toJSON()
-            }
-          }
+              $geometry: options.geometry.toJSON(),
+            },
+          },
         }
       }
       case QUERY_COMMANDS_LITERAL.GEO_INTERSECTS: {
@@ -188,16 +187,16 @@ class QueryEncoder {
         return {
           [query.fieldName as string]: {
             $geoIntersects: {
-              $geometry: options.geometry.toJSON()
-            }
-          }
+              $geometry: options.geometry.toJSON(),
+            },
+          },
         }
       }
       default: {
         return {
           [query.fieldName as string]: {
-            [$op]: encodeInternalDataType(query.operands[0])
-          }
+            [$op]: encodeInternalDataType(query.operands[0]),
+          },
         }
       }
     }

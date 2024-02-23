@@ -1,6 +1,6 @@
 {
   "name": "database-ql",
-  "version": "1.0.0-beta.12",
+  "version": "1.0.0-beta.14-patch0",
   "description": "Database interface for laf",
   "main": "dist/commonjs/index.js",
   "module": "dist/esm/index.js",
@@ -8,8 +8,7 @@
     "watch": "tsc -w",
     "test": "mocha tests/units/**/*.test.js",
     "build": "tsc -p tsconfig.json && tsc -p tsconfig.esm.json",
-    "eslint": "eslint \"./**/*.ts\"",
-    "fix": "eslint --fix \"./**/*.ts\"",
+    "lint": "eslint . --fix --ext .ts --ext .js",
     "prepublishOnly": "npm run build"
   },
   "repository": {
@@ -24,19 +23,14 @@
   "author": "maslow (wangfugen@126.com)",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^8.8.0",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-typescript": "^0.14.0",
     "express": "^4.17.1",
     "mocha": "^9.2.0",
-    "typescript": "^3.6.2",
-    "typescript-eslint-parser": "^22.0.0"
+    "typescript": "^3.6.2"
   },
   "dependencies": {
-    "bson": "^4.5.3",
-    "lodash.clonedeep": "4.5.0",
-    "lodash.set": "4.3.2",
-    "lodash.unset": "4.5.2"
+    "bson": "^5.5.1"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

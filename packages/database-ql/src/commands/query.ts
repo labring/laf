@@ -1,6 +1,13 @@
 import { LogicCommand } from './logic'
 import { InternalSymbol, SYMBOL_QUERY_COMMAND } from '../helper/symbol'
-import { Point, LineString, Polygon, MultiPoint, MultiLineString, MultiPolygon } from '../geo/index'
+import {
+  Point,
+  LineString,
+  Polygon,
+  MultiPoint,
+  MultiLineString,
+  MultiPolygon,
+} from '../geo/index'
 import { isNumber } from '../utils/type'
 
 export const EQ = 'eq'
@@ -35,11 +42,11 @@ export enum QUERY_COMMANDS_LITERAL {
   GEO_NEAR = 'geoNear',
   GEO_WITHIN = 'geoWithin',
   GEO_INTERSECTS = 'geoIntersects',
-  LIKE = 'like'
+  LIKE = 'like',
 }
 
 export class QueryCommand extends LogicCommand {
-  public operator: QUERY_COMMANDS_LITERAL;
+  public operator: QUERY_COMMANDS_LITERAL
 
   constructor(
     operator: QUERY_COMMANDS_LITERAL,
@@ -56,11 +63,11 @@ export class QueryCommand extends LogicCommand {
       case QUERY_COMMANDS_LITERAL.IN:
       case QUERY_COMMANDS_LITERAL.NIN:
         return {
-          ['$' + this.operator]: this.operands
+          ['$' + this.operator]: this.operands,
         }
       default:
         return {
-          ['$' + this.operator]: this.operands[0]
+          ['$' + this.operator]: this.operands[0],
         }
     }
   }
@@ -71,48 +78,82 @@ export class QueryCommand extends LogicCommand {
   }
 
   eq(val: any) {
-    const command = new QueryCommand(QUERY_COMMANDS_LITERAL.EQ, [val], this.fieldName)
+    const command = new QueryCommand(
+      QUERY_COMMANDS_LITERAL.EQ,
+      [val],
+      this.fieldName
+    )
     return this.and(command)
   }
 
   neq(val: any) {
-    const command = new QueryCommand(QUERY_COMMANDS_LITERAL.NEQ, [val], this.fieldName)
+    const command = new QueryCommand(
+      QUERY_COMMANDS_LITERAL.NEQ,
+      [val],
+      this.fieldName
+    )
     return this.and(command)
   }
 
   gt(val: any) {
-    const command = new QueryCommand(QUERY_COMMANDS_LITERAL.GT, [val], this.fieldName)
+    const command = new QueryCommand(
+      QUERY_COMMANDS_LITERAL.GT,
+      [val],
+      this.fieldName
+    )
     return this.and(command)
   }
 
   gte(val: any) {
-    const command = new QueryCommand(QUERY_COMMANDS_LITERAL.GTE, [val], this.fieldName)
+    const command = new QueryCommand(
+      QUERY_COMMANDS_LITERAL.GTE,
+      [val],
+      this.fieldName
+    )
     return this.and(command)
   }
 
   lt(val: any) {
-    const command = new QueryCommand(QUERY_COMMANDS_LITERAL.LT, [val], this.fieldName)
+    const command = new QueryCommand(
+      QUERY_COMMANDS_LITERAL.LT,
+      [val],
+      this.fieldName
+    )
     return this.and(command)
   }
 
   lte(val: any) {
-    const command = new QueryCommand(QUERY_COMMANDS_LITERAL.LTE, [val], this.fieldName)
+    const command = new QueryCommand(
+      QUERY_COMMANDS_LITERAL.LTE,
+      [val],
+      this.fieldName
+    )
     return this.and(command)
   }
 
   in(list: any[]) {
-    const command = new QueryCommand(QUERY_COMMANDS_LITERAL.IN, list, this.fieldName)
+    const command = new QueryCommand(
+      QUERY_COMMANDS_LITERAL.IN,
+      list,
+      this.fieldName
+    )
     return this.and(command)
   }
 
   nin(list: any[]) {
-    const command = new QueryCommand(QUERY_COMMANDS_LITERAL.NIN, list, this.fieldName)
+    const command = new QueryCommand(
+      QUERY_COMMANDS_LITERAL.NIN,
+      list,
+      this.fieldName
+    )
     return this.and(command)
   }
 
   geoNear(val: IGeoNearOptions) {
     if (!(val.geometry instanceof Point)) {
-      throw new TypeError(`"geometry" must be of type Point. Received type ${typeof val.geometry}`)
+      throw new TypeError(
+        `"geometry" must be of type Point. Received type ${typeof val.geometry}`
+      )
     }
     if (val.maxDistance !== undefined && !isNumber(val.maxDistance)) {
       throw new TypeError(
@@ -124,17 +165,28 @@ export class QueryCommand extends LogicCommand {
         `"minDistance" must be of type Number. Received type ${typeof val.minDistance}`
       )
     }
-    const command = new QueryCommand(QUERY_COMMANDS_LITERAL.GEO_NEAR, [val], this.fieldName)
+    const command = new QueryCommand(
+      QUERY_COMMANDS_LITERAL.GEO_NEAR,
+      [val],
+      this.fieldName
+    )
     return this.and(command)
   }
 
   geoWithin(val: IGeoWithinOptions) {
-    if (!(val.geometry instanceof MultiPolygon) && !(val.geometry instanceof Polygon)) {
+    if (
+      !(val.geometry instanceof MultiPolygon) &&
+      !(val.geometry instanceof Polygon)
+    ) {
       throw new TypeError(
         `"geometry" must be of type Polygon or MultiPolygon. Received type ${typeof val.geometry}`
       )
     }
-    const command = new QueryCommand(QUERY_COMMANDS_LITERAL.GEO_WITHIN, [val], this.fieldName)
+    const command = new QueryCommand(
+      QUERY_COMMANDS_LITERAL.GEO_WITHIN,
+      [val],
+      this.fieldName
+    )
     return this.and(command)
   }
 
@@ -151,17 +203,28 @@ export class QueryCommand extends LogicCommand {
         `"geometry" must be of type Point, LineString, Polygon, MultiPoint, MultiLineString or MultiPolygon. Received type ${typeof val.geometry}`
       )
     }
-    const command = new QueryCommand(QUERY_COMMANDS_LITERAL.GEO_INTERSECTS, [val], this.fieldName)
+    const command = new QueryCommand(
+      QUERY_COMMANDS_LITERAL.GEO_INTERSECTS,
+      [val],
+      this.fieldName
+    )
     return this.and(command)
   }
 }
 
 export function isQueryCommand(object: any): object is QueryCommand {
-  return object && object instanceof QueryCommand && object._internalType === SYMBOL_QUERY_COMMAND
+  return (
+    object &&
+    object instanceof QueryCommand &&
+    object._internalType === SYMBOL_QUERY_COMMAND
+  )
 }
 
 export function isKnownQueryCommand(object: any): object is QueryCommand {
-  return isQueryCommand(object) && object.operator.toUpperCase() in QUERY_COMMANDS_LITERAL
+  return (
+    isQueryCommand(object) &&
+    object.operator.toUpperCase() in QUERY_COMMANDS_LITERAL
+  )
 }
 
 export function isComparisonCommand(object: any): object is QueryCommand {
@@ -171,15 +234,21 @@ export function isComparisonCommand(object: any): object is QueryCommand {
 export default QueryCommand
 
 export interface IGeoNearOptions {
-  geometry: Point;
-  maxDistance?: number;
-  minDistance?: number;
+  geometry: Point
+  maxDistance?: number
+  minDistance?: number
 }
 
 export interface IGeoWithinOptions {
-  geometry: Polygon | MultiPolygon;
+  geometry: Polygon | MultiPolygon
 }
 
 export interface IGeoIntersectsOptions {
-  geometry: Point | LineString | Polygon | MultiPoint | MultiLineString | MultiPolygon;
+  geometry:
+    | Point
+    | LineString
+    | Polygon
+    | MultiPoint
+    | MultiLineString
+    | MultiPolygon
 }

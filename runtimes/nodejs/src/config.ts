@@ -37,6 +37,12 @@ export default class Config {
     return (process.env['LOG_LEVEL'] as any) || 'debug'
   }
 
+  /**
+   * the logger display line level : 'info', 'warn', 'error', 'debug'
+   */
+  static get DISPLAY_LINE_LOG_LEVEL(): 'debug' | 'info' | 'warn' | 'error' {
+    return (process.env['DISPLAY_LINE_LOG_LEVEL'] as any) || 'error'
+  }
 
   /**
    * the object depth limit when logging
@@ -109,5 +115,9 @@ export default class Config {
 
   static get DISABLE_MODULE_CACHE(): boolean {
     return process.env.DISABLE_MODULE_CACHE === 'true'
+  }
+
+  static get CUSTOM_DEPENDENCY_BASE_PATH(): string {
+    return process.env.CUSTOM_DEPENDENCY_BASE_PATH || '/tmp/custom_dependency'
   }
 }

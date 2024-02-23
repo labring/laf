@@ -6,7 +6,7 @@ import { SYMBOL_REGEXP } from '../helper/symbol'
 export class RegExp {
   $regex: string
   $options: string
-  constructor({ regexp, options }: { regexp: string, options: string }) {
+  constructor({ regexp, options }: { regexp: string; options: string }) {
     if (!regexp) {
       throw new TypeError('regexp must be a string')
     }
@@ -17,7 +17,7 @@ export class RegExp {
   parse() {
     return {
       $regex: this.$regex,
-      $options: this.$options
+      $options: this.$options,
     }
   }
 
@@ -28,9 +28,9 @@ export class RegExp {
 
 /**
  * @deprecated This method was deprecated, use js native `RegExp` instead
- * @param param 
- * @returns 
+ * @param param
+ * @returns
  */
-export function RegExpConstructor(param: { regexp: string, options: string }) {
+export function RegExpConstructor(param: { regexp: string; options: string }) {
   return new RegExp(param)
 }

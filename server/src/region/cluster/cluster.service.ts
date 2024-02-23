@@ -88,6 +88,75 @@ export class ClusterService {
     }
   }
 
+  async applyYamlString(region: Region, specString: string) {
+    const api = this.makeObjectApi(region)
+    const specs: KubernetesObject[] = k8s.loadAllYaml(specString)
+    const validSpecs = specs.filter((s) => s && s.kind && s.metadata)
+    const created: k8s.KubernetesObject[] = []
+
+    for (const spec of validSpecs) {
+      spec.metadata = spec.metadata || {}
+      spec.metadata.annotations = spec.metadata.annotations || {}
+      delete spec.metadata.annotations[
+        'kubectl.kubernetes.io/last-applied-configuration'
+      ]
+      spec.metadata.annotations[
+        'kubectl.kubernetes.io/last-applied-configuration'
+      ] = JSON.stringify(spec)
+
+      try {
+        // try to get the resource, if it does not exist an error will be thrown and we will end up in the catch
+        // block.
+        await api.read(spec as any)
+        // we got the resource, so it exists, so patch it
+        //
+        // Note that this could fail if the spec refers to a custom resource. For custom resources you may need
+        // to specify a different patch merge strategy in the content-type header.
+        //
+        // See: https://github.com/kubernetes/kubernetes/issues/97423
+        const response = await api.patch(
+          spec,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          {
+            headers: {
+              'Content-Type': k8s.PatchUtils.PATCH_FORMAT_JSON_MERGE_PATCH,
+            },
+          },
+        )
+        created.push(response.body)
+      } catch (e) {
+        // not exist, create
+        const response = await api.create(spec)
+        created.push(response.body)
+      }
+    }
+    return created
+  }
+
+  async deleteYamlString(region: Region, specString: string) {
+    const api = this.makeObjectApi(region)
+    const specs: k8s.KubernetesObject[] = k8s.loadAllYaml(specString)
+    const validSpecs = specs.filter((s) => s && s.kind && s.metadata)
+    const deleted: k8s.KubernetesObject[] = []
+
+    for (const spec of validSpecs) {
+      try {
+        // try to get the resource, if it does not exist an error will be thrown and we will end up in the catch
+        // block.
+        await api.read(spec as any)
+        // we got the resource, so it exists, so delete it
+        const response = await api.delete(spec)
+        deleted.push(response.body)
+      } catch (e) {
+        // not exist
+      }
+    }
+    return deleted
+  }
+
   async patchCustomObject(region: Region, spec: KubernetesObject) {
     const client = this.makeCustomObjectApi(region)
     const gvk = GroupVersionKind.fromKubernetesObject(spec)

@@ -1,4 +1,3 @@
-
 interface BaseResult {
   requestId?: string
   code?: string | number
@@ -14,7 +13,7 @@ export interface GetRes<T> extends BaseResult {
 }
 
 export interface GetOneRes<T> extends BaseResult {
-  data: T
+  data: T | null
 }
 
 export interface UpdateRes extends BaseResult {
@@ -36,14 +35,14 @@ export interface CountRes extends BaseResult {
   total: number
 }
 
-export interface CreateIndexRes extends BaseResult{
-    indexName: string
+export interface CreateIndexRes extends BaseResult {
+  indexName: string
 }
 
-export interface DropIndexRes extends BaseResult{ 
-    result: any
+export interface DropIndexRes extends BaseResult {
+  result: any
 }
 
-export interface ListIndexesRes extends BaseResult{ 
-    list: object[]
+export interface ListIndexesRes extends BaseResult {
+  list: object[]
 }

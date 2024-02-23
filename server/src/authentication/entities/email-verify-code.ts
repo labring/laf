@@ -1,6 +1,9 @@
 import { ObjectId } from 'mongodb'
 
 export enum EmailVerifyCodeType {
+  Signin = 'Signin',
+  Signup = 'Signup',
+  ResetPassword = 'ResetPassword',
   Bind = 'bind',
   Unbind = 'Unbind',
 }

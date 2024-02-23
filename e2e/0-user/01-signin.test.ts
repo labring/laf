@@ -9,18 +9,17 @@ describe('signin user with password', () => {
   beforeAll(async () => {
     const res = await api.post('/v1/auth/passwd/signup', {
       username: randomUsername,
-      password: Config.TEST_PASSWORD
+      password: Config.TEST_PASSWORD,
     })
 
     expect(res.status).toBe(201)
     expect(res.data?.data).toHaveProperty('token')
   })
 
-
   test('signin user with valid username & password should be ok', async () => {
     const res = await api.post('/v1/auth/passwd/signin', {
       username: randomUsername,
-      password: Config.TEST_PASSWORD
+      password: Config.TEST_PASSWORD,
     })
 
     // console.log(res.data)
@@ -35,7 +34,7 @@ describe('signin user with password', () => {
 
     // get user profile
     const res2 = await api.get('/v1/user/profile', {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     })
 
     // console.log(res2.data)
@@ -68,7 +67,7 @@ describe('signin user with password', () => {
   test('signin user with wrong password', async () => {
     const res = await api.post('/v1/auth/passwd/signin', {
       username: randomUsername,
-      password: 'wrong-password'
+      password: 'wrong-password',
     })
 
     // console.log(res.data)
@@ -77,11 +76,10 @@ describe('signin user with password', () => {
     expect(res.data?.error).toBe('password incorrect')
   })
 
-
   test('signin user with wrong username', async () => {
     const res = await api.post('/v1/auth/passwd/signin', {
       username: 'wrong-username',
-      password: Config.TEST_PASSWORD
+      password: Config.TEST_PASSWORD,
     })
 
     // console.log(res.data)

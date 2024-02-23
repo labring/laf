@@ -1,9 +1,9 @@
-import { request, RequestParams } from "../../util/request";
+import { request, RequestParams } from '../../util/request'
 import {
   RegionControllerGetRegionsData,
   SettingControllerGetSettingByKeyData,
   SettingControllerGetSettingsData,
-} from "./data-contracts";
+} from './data-contracts'
 
 /**
  * No description
@@ -16,9 +16,9 @@ import {
 export async function appControllerGetRuntimes(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/runtimes`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -33,9 +33,9 @@ export async function regionControllerGetRegions(
 ): Promise<RegionControllerGetRegionsData> {
   return request({
     url: `/v1/regions`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -50,9 +50,9 @@ export async function settingControllerGetSettings(
 ): Promise<SettingControllerGetSettingsData> {
   return request({
     url: `/v1/settings`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -68,7 +68,7 @@ export async function settingControllerGetSettingByKey(
 ): Promise<SettingControllerGetSettingByKeyData> {
   return request({
     url: `/v1/settings/${key}`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }

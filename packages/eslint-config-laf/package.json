@@ -1,0 +1,32 @@
+{
+  "name": "eslint-config-laf",
+  "version": "1.0.0-beta.14",
+  "private": true,
+  "exports": {
+    "./web": "./web.js",
+    "./server": "./server.js",
+    "./package": "./package.js",
+    "./service": "./service.js",
+    "./test": "./test.js",
+    "./docs": "./docs.js",
+    "./cli": "./cli.js",
+    "./runtime": "./runtime.js"
+  },
+  "scripts": {
+    "lint": "eslint . --fix --ext .ts --ext .js"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.41.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-config-react-app": "^7.0.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "prettier": "^2.8.8",
+    "prettier-plugin-tailwindcss": "^0.3.0"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
+  }
+}

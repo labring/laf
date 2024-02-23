@@ -5,6 +5,7 @@ import { CreateDependencyDto } from './dto/create-dependency.dto'
 import { UpdateDependencyDto } from './dto/update-dependency.dto'
 import { SystemDatabase } from 'src/system-database'
 import { ApplicationConfiguration } from 'src/application/entities/application-configuration'
+import { ApplicationConfigurationService } from 'src/application/configuration.service'
 
 export class Dependency {
   name: string
@@ -17,6 +18,8 @@ export class Dependency {
 export class DependencyService {
   private readonly logger = new Logger(DependencyService.name)
   private readonly db = SystemDatabase.db
+
+  constructor(private readonly confService: ApplicationConfigurationService) {}
 
   /**
    * Get app merged dependencies in `Dependency` array
@@ -47,26 +50,19 @@ export class DependencyService {
     if (!valid) return false
 
     const extras = await this.getExtras(appid)
-    const builtins = this.getBuiltins()
-    const all = extras.concat(builtins)
-
-    // check if the dependency name is already existed
-    const names = all.map((dep) => npa(dep).name)
-    const new_names = dto.map((dep) => npa(dep.name).name)
-    const has_dup = new_names.some((name) => names.includes(name))
-    if (has_dup) return false
 
     // add
     const new_deps = dto.map((dep) => `${dep.name}@${dep.spec}`)
     const deps = extras.concat(new_deps)
 
-    await this.db
+    const res = await this.db
       .collection<ApplicationConfiguration>('ApplicationConfiguration')
-      .updateOne(
+      .findOneAndUpdate(
         { appid },
         { $set: { dependencies: deps, updatedAt: new Date() } },
+        { returnDocument: 'after' },
       )
-
+    await this.confService.publish(res.value)
     return true
   }
 
@@ -91,13 +87,14 @@ export class DependencyService {
 
     const deps = filtered.concat(new_deps)
 
-    await this.db
+    const res = await this.db
       .collection<ApplicationConfiguration>('ApplicationConfiguration')
-      .updateOne(
+      .findOneAndUpdate(
         { appid },
         { $set: { dependencies: deps, updatedAt: new Date() } },
+        { returnDocument: 'after' },
       )
-
+    await this.confService.publish(res.value)
     return true
   }
 
@@ -110,13 +107,14 @@ export class DependencyService {
 
     if (filtered.length === deps.length) return false
 
-    await this.db
+    const res = await this.db
       .collection<ApplicationConfiguration>('ApplicationConfiguration')
-      .updateOne(
+      .findOneAndUpdate(
         { appid },
         { $set: { dependencies: filtered, updatedAt: new Date() } },
+        { returnDocument: 'after' },
       )
-
+    await this.confService.publish(res.value)
     return true
   }
 

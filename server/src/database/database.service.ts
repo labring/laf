@@ -17,7 +17,7 @@ import {
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
 import { DatabaseSyncRecord } from './entities/database-sync-record'
-import { ObjectId } from 'mongodb'
+import { MongoClient, ObjectId } from 'mongodb'
 
 const p_exec = promisify(exec)
 
@@ -119,16 +119,8 @@ export class DatabaseService {
    * Get database accessor that used for `database-proxy`
    */
   async getDatabaseAccessor(appid: string) {
-    const region = await this.regionService.findByAppId(appid)
-    const database = await this.findOne(appid)
-    assert(database, 'Database not found')
-
-    const dbName = database.name
-    const connectionUri = this.getControlConnectionUri(region, database)
-    assert(connectionUri, 'Database connection uri not found')
-
-    const accessor = new MongoAccessor(dbName, connectionUri)
-    await accessor.init()
+    const { client } = await this.findAndConnect(appid)
+    const accessor = new MongoAccessor(client)
     return accessor
   }
 
@@ -138,7 +130,7 @@ export class DatabaseService {
   async findAndConnect(appid: string) {
     const region = await this.regionService.findByAppId(appid)
     const database = await this.findOne(appid)
-    assert(database, 'Database not found')
+    if (!database) return null
 
     const connectionUri = this.getControlConnectionUri(region, database)
 
@@ -150,9 +142,13 @@ export class DatabaseService {
     return { db, client }
   }
 
-  async revokeWritePermission(name: string, username: string) {
-    const db = SystemDatabase.client.db(name)
+  async revokeWritePermission(name: string, username: string, region: Region) {
+    const conf = region.databaseConf
+    const client = new MongoClient(conf.controlConnectionUri)
+
     try {
+      await client.connect()
+      const db = client.db(name)
       const result = await db.command({
         updateUser: username,
         roles: [
@@ -168,12 +164,18 @@ export class DatabaseService {
         error,
       )
       throw error
+    } finally {
+      await client.close()
     }
   }
 
-  async grantWritePermission(name: string, username: string) {
-    const db = SystemDatabase.client.db(name)
+  async grantWritePermission(name: string, username: string, region: Region) {
+    const conf = region.databaseConf
+    const client = new MongoClient(conf.controlConnectionUri)
+
     try {
+      await client.connect()
+      const db = client.db(name)
       const result = await db.command({
         updateUser: username,
         roles: [
@@ -189,12 +191,19 @@ export class DatabaseService {
         error,
       )
       throw error
+    } finally {
+      await client.close()
     }
   }
 
-  async getUserPermission(name: string, username: string) {
+  async getUserPermission(name: string, username: string, region: Region) {
+    const conf = region.databaseConf
+    const client = new MongoClient(conf.controlConnectionUri)
+
     try {
-      const result = await this.db.command({
+      await client.connect()
+      const db = client.db(name)
+      const result = await db.command({
         usersInfo: { user: username, db: name },
       })
       const permission =
@@ -210,6 +219,8 @@ export class DatabaseService {
         error,
       )
       throw error
+    } finally {
+      await client.close()
     }
   }
 
@@ -255,6 +266,7 @@ export class DatabaseService {
         .collection<DatabaseSyncRecord>('DatabaseSyncRecord')
         .insertOne({ uid, createdAt: new Date() })
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(`failed to import db to ${appid}:`, error)
       throw error
     }

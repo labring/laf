@@ -1,6 +1,6 @@
 {
   "name": "node-modules-utils",
-  "version": "0.8.2",
+  "version": "1.0.0-beta.14",
   "description": "load package info from node_modules, parse dts (Typescript declaration files, .d.ts) from node_modules",
   "author": "maslow <wangfugen@126.com>",
   "homepage": "https://github.com/Maslow/less-framework#readme",
@@ -26,7 +26,8 @@
     "prepublishOnly": "npm run build",
     "copy2app": "sh copy2app.sh",
     "copy2sys": "sh copy2sys.sh",
-    "copy4dev": "sh copy2app.sh && sh copy2sys.sh"
+    "copy4dev": "sh copy2app.sh && sh copy2sys.sh",
+    "lint": "eslint . --fix --ext .ts --ext .js"
   },
   "bugs": {
     "url": "https://github.com/Maslow/less-framework/issues"
@@ -38,5 +39,8 @@
     "@types/fs-extra": "^9.0.12",
     "@types/node": "^16.4.2",
     "typescript": "^4.2.3"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

@@ -6,9 +6,9 @@ export async function invokeFunction(
   token: string,
   funcName: string,
   funcData: any,
-  method: string = 'GET',
-  query: string = '',
-  data: string = '',
+  method = 'GET',
+  query = '',
+  data = '',
   customerHeader: any = {},
 ): Promise<{ res: any; requestId: string }> {
   const header: AxiosRequestHeaders | any = {
@@ -38,7 +38,7 @@ const request = axios.create({
 // request interceptor
 request.interceptors.request.use(
   (config: any) => {
-    let _headers: AxiosRequestHeaders | any = {
+    const _headers: AxiosRequestHeaders | any = {
       'Content-Type': 'application/json',
     }
     config.headers = {

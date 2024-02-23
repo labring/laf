@@ -3,7 +3,7 @@ import { AppSchema } from '../schema/app'
 
 const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
 
-const interval: number = 2000 // interval 1000ms
+const interval = 2000 // interval 1000ms
 export async function waitApplicationState(targetState: string) {
   const appSchema = AppSchema.read()
   while (true) {

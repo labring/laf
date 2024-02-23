@@ -1,9 +1,9 @@
-import { CreateTriggerDto } from "../../api/v1/data-contracts";
-import { triggerControllerCreate, triggerControllerFindAll, triggerControllerRemove } from "../../api/v1/trigger";
-import { AppSchema } from "../../schema/app";
+import { CreateTriggerDto } from '../../api/v1/data-contracts'
+import { triggerControllerCreate, triggerControllerFindAll, triggerControllerRemove } from '../../api/v1/trigger'
+import { AppSchema } from '../../schema/app'
 import * as Table from 'cli-table3'
-import { getEmoji } from "../../util/print";
-import { formatDate } from "../../util/format";
+import { getEmoji } from '../../util/print'
+import { formatDate } from '../../util/format'
 
 export async function list(): Promise<void> {
   const appSchema = AppSchema.read()
@@ -12,14 +12,8 @@ export async function list(): Promise<void> {
     head: ['id', 'name', 'target', 'cron', 'createdAt'],
   })
 
-  for (let trigger of triggers) {
-    table.push([
-      trigger._id,
-      trigger.desc,
-      trigger.target,
-      trigger.cron,
-      formatDate(trigger.createdAt),
-    ])
+  for (const trigger of triggers) {
+    table.push([trigger._id, trigger.desc, trigger.target, trigger.cron, formatDate(trigger.createdAt)])
   }
   console.log(table.toString())
 }
@@ -36,11 +30,7 @@ export async function create(name: string, target: string, cron: string): Promis
   console.log(`${getEmoji('✅')} trigger "${name}" created`)
 }
 
-
-export async function del(options: {
-  id?: string
-  name?: string
-}): Promise<void> {
+export async function del(options: { id?: string; name?: string }): Promise<void> {
   const appSchema = AppSchema.read()
   if (options.id) {
     await triggerControllerRemove(options.id, appSchema.appid)

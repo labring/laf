@@ -67,10 +67,7 @@ async function invokeFunction(
     }
   }
   // reject while no HTTP enabled
-  if (
-    !func.methods.includes(ctx.request.method.toUpperCase()) &&
-    !isTrigger
-  ) {
+  if (!func.methods.includes(ctx.request.method.toUpperCase()) && !isTrigger) {
     return ctx.response.status(405).send('Method Not Allowed')
   }
 
@@ -90,9 +87,8 @@ async function invokeFunction(
 
     // reject request if interceptor return false
     if (
-      typeof result.data === 'object' &&
-      result.data.__type__ === '__interceptor__' &&
-      result.data.__res__ == false
+      result.data?.__type__ === '__interceptor__' &&
+      result.data?.__res__ == false
     ) {
       return ctx.response.status(403).send({ error: 'Forbidden', requestId })
     }
@@ -165,6 +161,17 @@ async function invokeDebug(
       requestId,
     })
   }
+
+  // for debug usage
+  require('source-map-support').install({
+    emptyCacheBetweenOperations: true,
+    overrideRetrieveFile: true,
+    retrieveFile: (path) =>
+      funcName === path
+        ? funcData.source.compiled
+        : FunctionCache.get(path)?.source.compiled,
+  })
+
   const debugConsole = new DebugConsole(funcName)
   const executor = new FunctionDebugExecutor(funcData, debugConsole)
 
@@ -178,18 +185,24 @@ async function invokeDebug(
       debugConsole.error(result.error)
     }
 
-    const logs = debugConsole.getLogs()
-    if (ctx.request.get('x-laf-debug-data')) {
-      const compressed = pako.gzip(logs)
-      const base64Encoded = uint8ArrayToBase64(compressed)
-      ctx.response.set('x-laf-debug-logs', base64Encoded)
-    } else if (ctx.request.get('x-laf-func-data')) {
-      // keep compatible for old version clients(laf web & laf cli)
-      const encoded = encodeURIComponent(logs)
-      ctx.response.set('x-laf-func-logs', encoded)
-    }
+    // In the http module of Node.js, the chunkedEncoding property is used to
+    // indicate whether to use chunked transfer encoding.
+    // If set to true, Node.js automatically handles the splitting and sending of data chunks.
+    // If set to false, the headers have been sent, so do not send logs headers after that, otherwise an error will be reported.
+    if (ctx.response.chunkedEncoding === false) {
+      const logs = debugConsole.getLogs()
+      if (ctx.request.get('x-laf-debug-data')) {
+        const compressed = pako.gzip(logs)
+        const base64Encoded = uint8ArrayToBase64(compressed)
+        ctx.response.set('x-laf-debug-logs', base64Encoded)
+      } else if (ctx.request.get('x-laf-func-data')) {
+        // keep compatible for old version clients(laf web & laf cli)
+        const encoded = encodeURIComponent(logs)
+        ctx.response.set('x-laf-func-logs', encoded)
+      }
 
-    ctx.response.set('x-laf-debug-time-usage', result.time_usage.toString())
+      ctx.response.set('x-laf-debug-time-usage', result.time_usage.toString())
+    }
 
     if (result.error) {
       return ctx.response.status(500).send({
@@ -200,14 +213,13 @@ async function invokeDebug(
 
     // reject request if interceptor return false
     if (
-      typeof result.data === 'object' &&
-      result.data.__type__ === '__interceptor__' &&
-      result.data.__res__ == false
+      result.data?.__type__ === '__interceptor__' &&
+      result.data?.__res__ === false
     ) {
       return ctx.response.status(403).send({ error: 'Forbidden', requestId })
     }
 
-    if (ctx.response.writableEnded === false) {
+    if (ctx.response.chunkedEncoding === false) {
       let data = result.data
       if (typeof result.data === 'number') {
         data = Number(result.data).toString()
@@ -217,5 +229,12 @@ async function invokeDebug(
   } catch (error) {
     debugConsole.error(requestId, 'failed to invoke error', error)
     return ctx.response.status(500).send('Internal Server Error')
+  } finally {
+    // restore
+    require('source-map-support').install({
+      emptyCacheBetweenOperations: true,
+      overrideRetrieveFile: true,
+      retrieveFile: (path) => FunctionCache.get(path)?.source.compiled,
+    })
   }
 }

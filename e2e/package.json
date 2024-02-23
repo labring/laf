@@ -1,10 +1,11 @@
 {
   "name": "laf-testing",
-  "version": "1.0.0-beta.12",
+  "version": "1.0.0-beta.14",
   "private": true,
   "description": "",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint . --fix --ext .ts --ext .js"
   },
   "keywords": [],
   "author": "",
@@ -18,5 +19,8 @@
     "axios": "^1.4.0",
     "dotenv": "^16.3.1",
     "mongodb": "^5.7.0"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

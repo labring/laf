@@ -1,10 +1,5 @@
-import { request, RequestParams } from "../../util/request";
-import {
-  BindEmailDto,
-  BindPhoneDto,
-  BindUsernameDto,
-  UserControllerGetAvatarData,
-} from "./data-contracts";
+import { request, RequestParams } from '../../util/request'
+import { BindEmailDto, BindPhoneDto, BindUsernameDto, UserControllerGetAvatarData } from './data-contracts'
 
 /**
  * No description
@@ -21,9 +16,9 @@ export async function userControllerGetAvatar(
 ): Promise<UserControllerGetAvatarData> {
   return request({
     url: `/v1/user/avatar/${uid}`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -37,10 +32,10 @@ export async function userControllerGetAvatar(
 export async function userControllerBindPhone(data: BindPhoneDto, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/user/bind/phone`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -54,10 +49,10 @@ export async function userControllerBindPhone(data: BindPhoneDto, configParams: 
 export async function userControllerBindEmail(data: BindEmailDto, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/user/bind/email`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -74,10 +69,10 @@ export async function userControllerBindUsername(
 ): Promise<any> {
   return request({
     url: `/v1/user/bind/username`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -91,7 +86,7 @@ export async function userControllerBindUsername(
 export async function userControllerGetProfile(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/user/profile`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }

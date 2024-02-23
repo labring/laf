@@ -11,6 +11,7 @@ import { command as websiteCommand } from './command/website'
 import { command as deployCommand } from './command/deploy'
 import { command as triggerCommand } from './command/trigger'
 import { command as databaseCommand } from './command/database'
+import { command as environmentCommand } from './command/environment'
 
 const program = new Command()
 program.option('-v, --version', 'output version').action((options) => {
@@ -34,5 +35,6 @@ program.addCommand(websiteCommand())
 program.addCommand(deployCommand())
 program.addCommand(triggerCommand())
 program.addCommand(databaseCommand())
+program.addCommand(environmentCommand())
 
 program.parse(process.argv)

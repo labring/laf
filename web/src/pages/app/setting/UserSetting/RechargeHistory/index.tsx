@@ -2,6 +2,7 @@ import { useState } from "react";
 import { DateRange, DayPicker, SelectRangeEventHandler } from "react-day-picker";
 import { useTranslation } from "react-i18next";
 import {
+  Button,
   Center,
   Popover,
   PopoverBody,
@@ -84,19 +85,28 @@ export default function RechargeHistory() {
             <Thead>
               <Tr className={clsx("h-8", !darkMode && "bg-[#F4F6F8]")}>
                 <Th className="!pr-0">
-                  <span className="mr-1 font-normal !text-grayModern-700">{t("OrderNumber")}</span>
+                  <span className={clsx("mr-1 font-normal", darkMode ? "" : "text-grayModern-700")}>
+                    {t("OrderNumber")}
+                  </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
                   <span className="flex items-center">
-                    <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
+                    <span
+                      className={clsx(
+                        "mr-1 border-l pl-2 font-normal",
+                        darkMode ? "" : "!text-grayModern-700",
+                      )}
+                    >
                       {t("Duration")}
                     </span>
                     <Popover>
                       <PopoverTrigger>
-                        <CalendarIcon
-                          className="cursor-pointer !text-grayModern-400"
-                          boxSize="14px"
-                        />
+                        <Button variant="none" p={0} minW={0} h={0}>
+                          <CalendarIcon
+                            className="cursor-pointer !text-grayModern-400"
+                            boxSize="14px"
+                          />
+                        </Button>
                       </PopoverTrigger>
                       <PopoverContent zIndex={99}>
                         <PopoverBody>
@@ -119,16 +129,26 @@ export default function RechargeHistory() {
                 </Th>
                 <Th className="!px-0 !pl-2">
                   <span className="flex items-center">
-                    <span className="mr-1 border-l pl-2 font-normal !text-grayModern-700">
+                    <span
+                      className={clsx(
+                        "mr-1 border-l pl-2 font-normal",
+                        darkMode ? "" : "!text-grayModern-700",
+                      )}
+                    >
                       {t("State")}
                     </span>
                     <Popover>
                       <PopoverTrigger>
-                        <FilterIcon className="cursor-pointer !text-grayModern-400" />
+                        <Button p={0} minW={0} h={0}>
+                          <FilterIcon
+                            className="cursor-pointer !text-grayModern-400"
+                            fontSize={12}
+                          />
+                        </Button>
                       </PopoverTrigger>
                       <PopoverContent w={28}>
                         <PopoverBody>
-                          <RadioGroup className="flex flex-col lowercase">
+                          <RadioGroup className="flex flex-col space-y-2 lowercase">
                             {STATE_LIST.map((item) => (
                               <Radio
                                 key={item}
@@ -152,17 +172,32 @@ export default function RechargeHistory() {
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="border-l pl-2 font-normal !text-grayModern-700">
+                  <span
+                    className={clsx(
+                      "border-l pl-2 font-normal",
+                      darkMode ? "" : "!text-grayModern-700",
+                    )}
+                  >
                     {t("Recharge amount")}
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="border-l pl-2 font-normal !text-grayModern-700">
+                  <span
+                    className={clsx(
+                      "border-l pl-2 font-normal",
+                      darkMode ? "" : "!text-grayModern-700",
+                    )}
+                  >
                     {t("Bonus amount")}
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
-                  <span className="border-l pl-2 font-normal !text-grayModern-700">
+                  <span
+                    className={clsx(
+                      "border-l pl-2 font-normal",
+                      darkMode ? "" : "!text-grayModern-700",
+                    )}
+                  >
                     {t("Total payment amount")}
                   </span>
                 </Th>
@@ -180,10 +215,18 @@ export default function RechargeHistory() {
                     >
                       {item._id}
                     </Td>
-                    <Td className="text-grayModern-600">{formatDate(item.createdAt)}</Td>
+                    <Td
+                      className={
+                        darkMode
+                          ? "!border-b-grayModern-600 !text-grayModern-200"
+                          : "text-grayModern-600"
+                      }
+                    >
+                      {formatDate(item.createdAt)}
+                    </Td>
                     <Td
                       className={clsx(
-                        darkMode ? "border-b-grayModern-600" : "",
+                        darkMode ? "!border-b-grayModern-600" : "",
                         item.phase === "Paid" ? "text-primary-600" : "text-error-600",
                       )}
                     >

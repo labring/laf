@@ -7,13 +7,15 @@ import {
 } from '@kubernetes/client-node'
 import { Injectable, Logger } from '@nestjs/common'
 import { GetApplicationNamespace } from 'src/utils/getter'
-import { LABEL_KEY_APP_ID, MB } from '../constants'
+import { LABEL_KEY_APP_ID, MB, ServerConfig } from '../constants'
 import { StorageService } from '../storage/storage.service'
 import { DatabaseService } from 'src/database/database.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 import { ApplicationWithRelations } from 'src/application/entities/application'
 import { ApplicationService } from 'src/application/application.service'
 import * as assert from 'assert'
+import { CloudBinBucketService } from 'src/storage/cloud-bin-bucket.service'
+import { DedicatedDatabaseService } from 'src/database/dedicated-database/dedicated-database.service'
 
 @Injectable()
 export class InstanceService {
@@ -23,7 +25,9 @@ export class InstanceService {
     private readonly cluster: ClusterService,
     private readonly storageService: StorageService,
     private readonly databaseService: DatabaseService,
+    private readonly dedicatedDatabaseService: DedicatedDatabaseService,
     private readonly applicationService: ApplicationService,
+    private readonly cloudbin: CloudBinBucketService,
   ) {}
 
   public async create(appid: string) {
@@ -242,13 +246,27 @@ export class InstanceService {
     const npm_install_flags = region.clusterConf.npmInstallFlags || ''
 
     // db connection uri
-    const database = await this.databaseService.findOne(appid)
-    const dbConnectionUri = this.databaseService.getInternalConnectionUri(
-      region,
-      database,
-    )
+    let dbConnectionUri: string
+    const dedicatedDatabase = await this.dedicatedDatabaseService.findOne(appid)
+    if (dedicatedDatabase) {
+      dbConnectionUri = await this.dedicatedDatabaseService.getConnectionUri(
+        region,
+        dedicatedDatabase,
+      )
+    } else {
+      const database = await this.databaseService.findOne(appid)
+      dbConnectionUri = this.databaseService.getInternalConnectionUri(
+        region,
+        database,
+      )
+    }
 
     const storage = await this.storageService.findOne(appid)
+    const NODE_MODULES_PUSH_URL =
+      await this.cloudbin.getNodeModulesCachePushUrl(appid)
+
+    const NODE_MODULES_PULL_URL =
+      await this.cloudbin.getNodeModulesCachePullUrl(appid)
 
     const env = [
       { name: 'DB_URI', value: dbConnectionUri },
@@ -270,7 +288,13 @@ export class InstanceService {
         value: `--max_old_space_size=${max_old_space_size} --max-http-header-size=${max_http_header_size}`,
       },
       { name: 'DEPENDENCIES', value: dependencies_string },
+      { name: 'NODE_MODULES_PUSH_URL', value: NODE_MODULES_PUSH_URL },
+      { name: 'NODE_MODULES_PULL_URL', value: NODE_MODULES_PULL_URL },
       { name: 'NPM_INSTALL_FLAGS', value: npm_install_flags },
+      {
+        name: 'CUSTOM_DEPENDENCY_BASE_PATH',
+        value: ServerConfig.RUNTIME_CUSTOM_DEPENDENCY_BASE_PATH,
+      },
       {
         name: 'RESTART_AT',
         value: new Date().getTime().toString(),
@@ -323,7 +347,7 @@ export class InstanceService {
               volumeMounts: [
                 {
                   name: 'app',
-                  mountPath: '/app',
+                  mountPath: `${ServerConfig.RUNTIME_CUSTOM_DEPENDENCY_BASE_PATH}/node_modules/`,
                 },
               ],
               startupProbe: {
@@ -352,6 +376,9 @@ export class InstanceService {
                 allowPrivilegeEscalation: false,
                 readOnlyRootFilesystem: false,
                 privileged: false,
+                capabilities: {
+                  drop: ['ALL'],
+                },
               },
             },
           ],
@@ -365,7 +392,7 @@ export class InstanceService {
               volumeMounts: [
                 {
                   name: 'app',
-                  mountPath: '/tmp/app',
+                  mountPath: '/app/node_modules/',
                 },
               ],
               resources: {
@@ -395,6 +422,15 @@ export class InstanceService {
               },
             },
           ],
+          securityContext: {
+            runAsUser: 1000, // node
+            runAsGroup: 2000,
+            runAsNonRoot: true,
+            fsGroup: 2000,
+            seccompProfile: {
+              type: 'RuntimeDefault',
+            },
+          },
         }, // end of spec {}
       }, // end of template {}
     }

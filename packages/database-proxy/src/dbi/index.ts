@@ -1,9 +1,9 @@
-import { AccessorInterface } from "../accessor"
+import { AccessorInterface } from '../accessor'
 import { Db } from 'database-ql'
-import { Request } from "./request"
+import { Request } from './request'
 
 export function getDb(accessor: AccessorInterface): Db {
-    return new Db({
-        request: new Request(accessor)
-    })
+  return new Db({
+    request: new Request(accessor),
+  })
 }

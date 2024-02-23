@@ -135,7 +135,10 @@ export const useDeleteFunctionMutation = () => {
       onSuccess(data: any) {
         if (!data.error) {
           queryClient.invalidateQueries(queryKeys.useFunctionListQuery);
-          store.setCurrentFunction({});
+          if (store.currentFunction?._id === data.data._id) {
+            const newFunction = store.recentFunctionList[0] || store.allFunctionList[0] || {};
+            store.setCurrentFunction(newFunction);
+          }
           store.setRecentFunctionList(
             store.recentFunctionList.filter((item) => item._id !== data.data._id),
           );

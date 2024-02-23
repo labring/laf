@@ -1,9 +1,9 @@
 import { describe, expect, test } from '@jest/globals'
-import { api, EnsureTestToken, GetRegion, GetRuntime } from '../api'
+import { api, EnsureTestToken } from '../api'
 import { Config } from '../config'
 
 describe('query monitor metrics normally', () => {
-  let appid = Config.TEST_APPID
+  const appid = Config.TEST_APPID
   let token = null
   beforeAll(async () => {
     token = await EnsureTestToken()
@@ -46,7 +46,7 @@ describe('query monitor metrics normally', () => {
         })
       })
     },
-    10 * 1000,
+    10 * 1000
   )
 
   test(
@@ -84,12 +84,12 @@ describe('query monitor metrics normally', () => {
         ]).toContainEqual(expect.arrayContaining(Object.keys(v)))
       })
     },
-    10 * 1000,
+    10 * 1000
   )
 })
 
 describe('query monitor metrics with invalid inputs', () => {
-  let appid = Config.TEST_APPID
+  const appid = Config.TEST_APPID
   let token = null
   beforeAll(async () => {
     token = await EnsureTestToken()
@@ -118,7 +118,7 @@ describe('query monitor metrics with invalid inputs', () => {
 
       expect(res.status).toBe(400)
     },
-    10 * 1000,
+    10 * 1000
   )
 
   test(
@@ -138,6 +138,6 @@ describe('query monitor metrics with invalid inputs', () => {
 
       expect(res.status).toBe(400)
     },
-    10 * 1000,
+    10 * 1000
   )
 })

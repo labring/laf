@@ -16,7 +16,7 @@ export async function list() {
   const table = new Table({
     head: ['bucketName', 'domain', 'state', 'updatedAt'],
   })
-  for (let item of websites) {
+  for (const item of websites) {
     table.push([item.bucketName, item.domain, item.state, formatDate(item.updatedAt)])
   }
   console.log(table.toString())

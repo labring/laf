@@ -1,5 +1,5 @@
-import { Config } from "./config"
-import { MongoClient } from "mongodb"
+import { Config } from './config'
+import { MongoClient } from 'mongodb'
 
 export async function getDbClient() {
   const client = new MongoClient(Config.MONGO_URI)

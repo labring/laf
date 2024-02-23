@@ -4,7 +4,6 @@ import { RegionService } from '../region/region.service'
 import { CreateBucketDto } from './dto/create-bucket.dto'
 import { UpdateBucketDto } from './dto/update-bucket.dto'
 import { MinioService } from './minio/minio.service'
-import { Application } from 'src/application/entities/application'
 import { SystemDatabase } from 'src/system-database'
 import { StorageBucket, StorageWithRelations } from './entities/storage-bucket'
 import { StoragePhase, StorageState } from './entities/storage-user'
@@ -19,12 +18,12 @@ export class BucketService {
     private readonly regionService: RegionService,
   ) {}
 
-  async create(app: Application, dto: CreateBucketDto) {
-    const bucketName = dto.fullname(app.appid)
+  async create(appid: string, dto: CreateBucketDto) {
+    const bucketName = dto.fullname(appid)
 
     // create bucket in db
     await this.db.collection<StorageBucket>('StorageBucket').insertOne({
-      appid: app.appid,
+      appid: appid,
       name: bucketName,
       policy: dto.policy,
       shortName: dto.shortName,
@@ -35,7 +34,7 @@ export class BucketService {
       createdAt: new Date(),
     })
 
-    return this.findOne(app.appid, bucketName)
+    return this.findOne(appid, bucketName)
   }
 
   async count(appid: string) {

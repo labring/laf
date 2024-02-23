@@ -11,17 +11,15 @@ declare const wx: GlobalObjectType
  * 微信小程序环境请求类
  */
 export class WxmpRequest extends Request {
-
   constructor(config: CloudOptions) {
     super(config)
   }
 
-
   /**
    * 微信小程序环境请求方法
    * @override
-   * @param data 
-   * @returns 
+   * @param data
+   * @returns
    */
   async request(url: string, data: any, _options?: any) {
     if (this.options.environment !== EnvironmentType.WX_MP) {
@@ -36,7 +34,7 @@ export class WxmpRequest extends Request {
       header,
       method: _options?.method ?? 'POST',
       data,
-      dataType: 'json'
+      dataType: 'json',
     }
 
     return new Promise((resolve, reject) => {
@@ -47,7 +45,7 @@ export class WxmpRequest extends Request {
         },
         fail(err: any) {
           reject(err)
-        }
+        },
       })
     })
   }

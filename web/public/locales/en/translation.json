@@ -28,8 +28,8 @@
     "EmptyCollectionTip": "You have not created a collection",
     "EmptyDataText": "No data information,",
     "EmptyPolicyTip": "You have not created a policy",
-    "EmptyRuleTip": "This policy has no rules yet,",
-    "Query": "Please enter the ID or Mongo where statement, press Enter to query. For example: {_id: {$eq: 'document id'}}.",
+    "EmptyRuleTip": "This policy has no rules",
+    "Query": "Please input the MongoDb query statement, press Enter to query. For example: { _id: ObjectId('') }.",
     "Search": "Please enter ID to search",
     "CreateTagTip": "Press \"Enter\" to separate tags, each tag can be up to 16 characters",
     "CollectionNameRule": "The collection name can only start with a letter and consist of 3 to 32 characters including letters, _ or -",
@@ -119,7 +119,7 @@
     "SystemDependence": "Built-In",
     "Value": "Value",
     "isSupport": "Whether to support",
-    "FunctionNameRule": "Function names must consist of letters, numbers, periods (.), and hyphens (-), matching the regex: /^[a-zA-Z0-9.-]{1,128}$/.",
+    "FunctionNameRule": "Function names must consist of letters, numbers, periods (.), and hyphens (-), matching the regex: /^[a-zA-Z0-9_.\\-](?:[a-zA-Z0-9_.\\-/]{0,254}[a-zA-Z0-9_.\\-])?$/.",
     "EmptyDebugTip": "No results yet",
     "EmptyFunctionTip": "You have not created the function",
     "UploadButton": "upload",
@@ -133,7 +133,14 @@
     "Restore": "Restore",
     "Invite": "Invite",
     "HistoryTips": "No historical versions available",
-    "NoDesc": "No Description"
+    "NoDesc": "No Description",
+    "CurrentVersion": "Current Version",
+    "HistoryVersion": "History version",
+    "DeployChangelog": "Input the description of this function modification (optional)",
+    "MoveFunctionTip": "Are you sure to move {{srcFunc}} to {{targetDir}} directory?",
+    "MoveFunctionToRootTip": "Are you sure to move {{srcFunc}} to the root directory?",
+    "MovingFunction": "Moving functions...",
+    "DependenceInstallTip": "Please wait for the completion of dependencies installation after saving. Check the progress in \"Logs\""
   },
   "HomePanel": {
     "APP": "Android or iOS app",
@@ -163,7 +170,9 @@
     "cpu": "CPU",
     "memory": "Memory",
     "databaseCapacity": "Database",
-    "storageCapacity": "Storage"
+    "storageCapacity": "Storage",
+    "capacity": "Capacity",
+    "replicas": "Replicas"
   },
   "LogPanel": {
     "Detail": "Log Details",
@@ -222,16 +231,23 @@
     "CostTrend": "Cost Trend",
     "Balance": "Balance",
     "Pause": "Pause",
-    "AppMonitor": "Application Monitor",
     "PauseTips": "Are you sure you want to pause this application?",
     "RestartTips": "Are you sure you want to restart this application?",
     "CommonSetting": "Common Settings",
-    "ClientSetting": "Client Settings",
     "EditorFont": "Editor Font",
     "FontSize": "Font Size",
     "FuncListDisplay": "Function List Display",
     "ListDisplay": "List Display",
-    "OldLogs": "Old Logs"
+    "EditorLanguageServer": "Editor Language Server",
+    "isOpenLanguageServer": "Enable or Close Language server (only effective when the app config is above 0.5C 1G)",
+    "Editor": "Editor",
+    "FuncList": "Function List",
+    "EditorMode": "Editor Mode",
+    "OldLogs": "Old Logs",
+    "MonitorSetting": "Resource Monitor",
+    "DatabaseMonitor": "Database monitor",
+    "RuntimeMonitor": "Runtime monitor",
+    "ClientSetting": "Client settings"
   },
   "StoragePanel": {
     "All": "Total Capacity",
@@ -277,7 +293,7 @@
     "Inaccessible": "Inaccessible",
     "isResolved": "Effective",
     "cnameTip": "Add the \"CNAME\" record of the domain to resolve to <strong>{{cnameDomain}}</strong>, After the resolution takes effect, the custom domain name can be bound.",
-    "editHostTip": "oss-bucket needs to be in read mode to enable website hosting",
+    "editHostTip": "oss-bucket needs to be in readOnly mode to enable website hosting",
     "CreateWebHosting": "Bind custom domain name",
     "CustomDomain": "Custom Domain",
     "CurrentDomain": "Current domain: ",
@@ -290,7 +306,15 @@
     "CustomApplicationDomain": "Custom Application Domain",
     "BucketNameisRequired": "Bucket name is required",
     "Fail": "upload failed",
-    "UploadFailTip": "{{number}} files upload failed"
+    "UploadFailTip": "{{number}} files upload failed",
+    "StartAppTips": " Please start the application first",
+    "SuccessfullyHosted": "Successfully hosted",
+    "SuccessfullyHostedTips": "HTTP is active, HTTPS activation may take some time. To check the hosting status, use HTTP for now.",
+    "BucketTips": "Newly created buckets or buckets after app restart need to wait for 15 ~ 30 s to take effect",
+    "DomainNotResolved": "Try using ping or nslookup to check if domain name resolution is effective",
+    "DeleteFiles": "Are you sure you want to delete {{num}} directories or files?",
+    "DeletingFiles": "Deleting {{num}} directories or files...",
+    "DeleteFilesResult": "Delete directories or files: {{successNum}} success, {{failedNum}} failed."
   },
   "TriggerPanel": {
     "AddTrigger": "Add Trigger",
@@ -311,7 +335,8 @@
     "EmptyTriggerTip": "You have not created a trigger,",
     "Every8AM": "8 am every day",
     "EveryHour": "per hour",
-    "EveryFiveMinutes": "every five minutes"
+    "EveryFiveMinutes": "every five minutes",
+    "createFail": "Trigger limit reached. Upgrade app configuration."
   },
   "StatusBar": {
     "CurrentApplication": "Current App"
@@ -352,7 +377,8 @@
     "RAM": "RAM",
     "Database": "Database",
     "Storage": "Storage",
-    "NetworkTraffic": "NetworkTraffic"
+    "NetworkTraffic": "NetworkTraffic",
+    "QueryOperand": "Query operands"
   },
   "Price": {
     "Free": "Free"
@@ -387,11 +413,15 @@
     "ResetPasswordSuccess": "Reset password successfully",
     "NewPassword": "New Password",
     "SignUpSuccess": "Sign up successfully",
-    "EmailTip": "Please input a valid Email",
+    "EmailTip": "Please input a valid email",
     "LoginOrRegister": "Login / Register",
     "BindGitHub": "Bind GitHub",
     "BindSuccess": "Bind Successfully",
-    "GitHubLogin": "GitHub Login"
+    "GitHubLogin": "GitHub Login",
+    "PleaseBindUser": "Please bind your user",
+    "Email": "Email",
+    "EmailPlaceholder": "Please input your email",
+    "EmailLogin": "Email Login"
   },
   "Time": "Time",
   "CreateTime": "Created",
@@ -512,7 +542,12 @@
     "ChooseSpecifications": "Choose Specifications",
     "autoscaling": "AutoScaling",
     "Number of Instances": "Number of Instances",
-    "CPU Threshold": "CPU Threshold"
+    "CPU Threshold": "CPU Threshold",
+    "DatabaseSpecification": "Database specification",
+    "DedicatedType": "Dedicated",
+    "SharedType": "Shared",
+    "ApplicationSecification": "Application specification",
+    "DatabaseCreateTip": "Once a database is created, its type and number of instances cannot be temporarily modified. The capacity can only increase, not decrease. If there are special needs, please contact our customer service."
   },
   "Storage Threshold": "Storage Threshold",
   "Template": {
@@ -555,7 +590,7 @@
     "AddMore": "Add More",
     "Save": "Save",
     "Recommended": "Recommended Template",
-    "Confirm": "If there are missing dependencies, the application will be automatically restarted. Are you sure you want to use this template?",
+    "Confirm": "Are you sure you want to use this template?",
     "ConfirmDeleteTemplate": "Are you sure you want to delete this function template?",
     "DeveloperInfo": "Developer Info",
     "NoRecommended": "No Recommended Template",
@@ -687,8 +722,39 @@
   "Logs": {
     "PodLogs": "App Instance Logs",
     "Export": "Export",
-    "logs": "Logs"
+    "logs": "Logs",
+    "ScrollToBottom": "Scroll to bottom"
+  },
+  "KeyCannotBeEmpty": "Key can't be empty",
+  "ValueCannotBeEmpty": "Value can't be empty",
+  "AddENV": "Add ENV",
+  "LSP": {
+    "InitLanguageServer": "Click to reconnect to language server",
+    "LanguageServerClosed": "Language Server Disconnected",
+    "LanguageServerError": "Language Server Error",
+    "InitializingLanguageServer": "Initializing Language Server",
+    "StartLanguageServer": "Click on 'Settings' on the left to enable the language server.",
+    "EnableLanguageServer": "Click on 'Settings' on the left to enable the language server.",
+    "LanguageServerNotEnable": "Language server not enabled"
+  },
+  "KeyAlreadyExists": "Key already exists",
+  "SettingPanal": {
+    "EditorSettings": "Editor Settings",
+    "FunctionListSettings": "Function list settings"
   },
   "Deprecated": "Deprecated",
-  "All": "All"
+  "All": "All",
+  "DatabaseMonitor": {
+    "Connections": "Connections",
+    "DocumentOperand": "Document operands",
+    "PageError": "Page error(ops/s)",
+    "Resource": "Resource",
+    "Performance": "Performance",
+    "Capacity": "Capacity"
+  },
+  "MoveFunction": "Move function",
+  "UpgradeVersionTip": {
+    "Title": "Laf is ready to update!",
+    "Description": "Click to update"
+  }
 }

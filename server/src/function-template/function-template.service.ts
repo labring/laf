@@ -360,7 +360,10 @@ export class FunctionTemplateService {
           name: functionTemplateItem.name,
           source: {
             code: functionTemplateItem.source.code,
-            compiled: compileTs2js(functionTemplateItem.source.code),
+            compiled: compileTs2js(
+              functionTemplateItem.source.code,
+              functionTemplateItem.name,
+            ),
             version: 0,
           },
           desc: functionTemplateItem.desc || '',

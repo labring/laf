@@ -1,5 +1,17 @@
-import { getType, isObject, isArray, isDate, isRegExp, isInternalObject, isObjectId, isBinary } from '../utils/type'
-import { serialize as serializeInternalDataType, deserialize as deserializeInternalDataType } from './datatype'
+import {
+  getType,
+  isObject,
+  isArray,
+  isDate,
+  isRegExp,
+  isInternalObject,
+  isObjectId,
+  isBinary,
+} from '../utils/type'
+import {
+  serialize as serializeInternalDataType,
+  deserialize as deserializeInternalDataType,
+} from './datatype'
 import { LogicCommand } from '../commands/logic'
 
 export type IQueryCondition = Record<string, any> | LogicCommand
@@ -12,9 +24,8 @@ function flatten(
   query: Record<string, any>,
   shouldPreserverObject: (object: object) => boolean,
   parents: string[],
-  visited: object[],
+  visited: object[]
 ): Record<string, any> {
-
   const cloned = { ...query }
 
   for (const key in query) {
@@ -25,22 +36,20 @@ function flatten(
     if (!value) continue
 
     if (isObject(value) && !shouldPreserverObject(value)) {
-
       if (visited.indexOf(value) > -1) {
         throw new Error('Cannot convert circular structure to JSON')
       }
 
-      const newParents = [
-        ...parents,
-        key,
-      ]
+      const newParents = [...parents, key]
 
-      const newVisited = [
-        ...visited,
+      const newVisited = [...visited, value]
+
+      const flattenedChild = flatten(
         value,
-      ]
-
-      const flattenedChild = flatten(value, shouldPreserverObject, newParents, newVisited)
+        shouldPreserverObject,
+        newParents,
+        newVisited
+      )
       cloned[key] = flattenedChild
 
       let hasKeyNotCombined = false
@@ -56,15 +65,15 @@ function flatten(
       if (!hasKeyNotCombined) {
         delete cloned[key]
       }
-
     }
-
   }
 
   return cloned
 }
 
-export function flattenQueryObject(query: Record<string, any>): Record<string, any> {
+export function flattenQueryObject(
+  query: Record<string, any>
+): Record<string, any> {
   return flatten(query, isConversionRequired, [], [query])
 }
 
@@ -72,7 +81,11 @@ export function flattenObject(object: AnyObject): AnyObject {
   return flatten(object, (_: object) => false, [], [object])
 }
 
-export function mergeConditionAfterEncode(query: Record<string, any>, condition: Record<string, any>, key: string): void {
+export function mergeConditionAfterEncode(
+  query: Record<string, any>,
+  condition: Record<string, any>,
+  key: string
+): void {
   if (!condition[key]) {
     delete query[key]
   }
@@ -85,11 +98,22 @@ export function mergeConditionAfterEncode(query: Record<string, any>, condition:
         if (isObject(condition[conditionKey])) {
           Object.assign(query[conditionKey], condition[conditionKey])
         } else {
-          console.warn(`unmergable condition, query is object but condition is ${getType(condition)}, can only overwrite`, condition, key)
+          console.warn(
+            `unmergable condition, query is object but condition is ${getType(
+              condition
+            )}, can only overwrite`,
+            condition,
+            key
+          )
           query[conditionKey] = condition[conditionKey]
         }
       } else {
-        console.warn(`to-merge query is of type ${getType(query)}, can only overwrite`, query, condition, key)
+        console.warn(
+          `to-merge query is of type ${getType(query)}, can only overwrite`,
+          query,
+          condition,
+          key
+        )
         query[conditionKey] = condition[conditionKey]
       }
     } else {
@@ -101,13 +125,19 @@ export function mergeConditionAfterEncode(query: Record<string, any>, condition:
 /**
  * Check `val` if `InternalObject` | `Date` | `RegExp` | `ObjectId` | `isBinary`
  * InternalObject can be:  `LogicCommand` | `QueryCommand` | `UpdateCommand`
- * 
+ *
  * @tip this method also used is `flatten()` function, `flatten` will reserved the required object
- * @param val 
- * @returns 
+ * @param val
+ * @returns
  */
 export function isConversionRequired(val: any): boolean {
-  return isInternalObject(val) || isDate(val) || isRegExp(val) || isObjectId(val) || isBinary(val)
+  return (
+    isInternalObject(val) ||
+    isDate(val) ||
+    isRegExp(val) ||
+    isObjectId(val) ||
+    isBinary(val)
+  )
 }
 
 export function encodeInternalDataType(val: any): IQueryCondition {

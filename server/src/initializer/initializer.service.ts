@@ -13,6 +13,8 @@ import {
   AuthProviderState,
 } from 'src/authentication/entities/auth-provider'
 import { Setting, SettingKey } from 'src/setting/entities/setting'
+import * as path from 'path'
+import { readFileSync, readdirSync } from 'node:fs'
 
 @Injectable()
 export class InitializerService {
@@ -42,6 +44,18 @@ export class InitializerService {
     if (ServerConfig.DEFAULT_REGION_NAMESPACE) {
       mode = ApplicationNamespaceMode.Fixed
     }
+
+    const files = readdirSync(path.resolve(__dirname, './deploy-manifest'))
+    const manifest = files.reduce((prev, file) => {
+      const key = file.slice(0, -path.extname(file).length)
+      const value = readFileSync(
+        path.resolve(__dirname, './deploy-manifest', file),
+        'utf8',
+      )
+      prev[key] = value
+      return prev
+    }, {})
+
     const res = await this.db.collection<Region>('Region').insertOne({
       name: 'default',
       displayName: 'Default',
@@ -56,10 +70,17 @@ export class InitializerService {
         npmInstallFlags: '',
         runtimeAffinity: {},
       },
+      bundleConf: {
+        cpuRequestLimitRatio: 0.1,
+        memoryRequestLimitRatio: 0.5,
+      },
       databaseConf: {
         driver: 'mongodb',
         connectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
         controlConnectionUri: ServerConfig.DEFAULT_REGION_DATABASE_URL,
+        dedicatedDatabase: {
+          enabled: false,
+        },
       },
       storageConf: {
         driver: 'minio',
@@ -90,6 +111,7 @@ export class InitializerService {
       prometheusConf: {
         apiUrl: ServerConfig.DEFAULT_REGION_PROMETHEUS_URL,
       },
+      deployManifest: manifest,
       updatedAt: new Date(),
       createdAt: new Date(),
       state: 'Active',
@@ -252,6 +274,61 @@ export class InitializerService {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        regionId: region._id,
+        type: ResourceType.DedicatedDatabaseCPU,
+        price: 0.0,
+        specs: [
+          { label: '0.2 Core', value: 200 },
+          { label: '0.5 Core', value: 500 },
+          { label: '1 Core', value: 1000 },
+          { label: '2 Core', value: 2000 },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        regionId: region._id,
+        type: ResourceType.DedicatedDatabaseMemory,
+        price: 0.0,
+        specs: [
+          { label: '256 MB', value: 256 },
+          { label: '512 MB', value: 512 },
+          { label: '1 GB', value: 1024 },
+          { label: '2 GB', value: 2048 },
+          { label: '4 GB', value: 4096 },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        regionId: region._id,
+        type: ResourceType.DedicatedDatabaseCapacity,
+        price: 0.0,
+        specs: [
+          { label: '1 GB', value: 1024 },
+          { label: '4 GB', value: 4096 },
+          { label: '16 GB', value: 16384 },
+          { label: '64 GB', value: 65536 },
+          { label: '256 GB', value: 262144 },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        regionId: region._id,
+        type: ResourceType.DedicatedDatabaseReplicas,
+        price: 0.0,
+        specs: [
+          { label: '1', value: 1 },
+          { label: '3', value: 3 },
+          { label: '5', value: 5 },
+          { label: '7', value: 7 },
+          { label: '9', value: 9 },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ])
 
     this.logger.verbose('Created default resource options')
@@ -283,8 +360,12 @@ export class InitializerService {
           [ResourceType.DatabaseCapacity]: { value: 1024 },
           [ResourceType.StorageCapacity]: { value: 1024 },
           [ResourceType.NetworkTraffic]: { value: 0 },
+          [ResourceType.DedicatedDatabaseCPU]: { value: 200 },
+          [ResourceType.DedicatedDatabaseMemory]: { value: 256 },
+          [ResourceType.DedicatedDatabaseCapacity]: { value: 1024 },
+          [ResourceType.DedicatedDatabaseReplicas]: { value: 1 },
         },
-        enableFreeTier: true,
+        enableFreeTier: false,
         limitCountOfFreeTierPerUser: 20,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -299,6 +380,10 @@ export class InitializerService {
           [ResourceType.DatabaseCapacity]: { value: 4096 },
           [ResourceType.StorageCapacity]: { value: 4096 },
           [ResourceType.NetworkTraffic]: { value: 0 },
+          [ResourceType.DedicatedDatabaseCPU]: { value: 500 },
+          [ResourceType.DedicatedDatabaseMemory]: { value: 512 },
+          [ResourceType.DedicatedDatabaseCapacity]: { value: 4096 },
+          [ResourceType.DedicatedDatabaseReplicas]: { value: 3 },
         },
         enableFreeTier: false,
         createdAt: new Date(),
@@ -314,6 +399,10 @@ export class InitializerService {
           [ResourceType.DatabaseCapacity]: { value: 16384 },
           [ResourceType.StorageCapacity]: { value: 65536 },
           [ResourceType.NetworkTraffic]: { value: 0 },
+          [ResourceType.DedicatedDatabaseCPU]: { value: 1000 },
+          [ResourceType.DedicatedDatabaseMemory]: { value: 2048 },
+          [ResourceType.DedicatedDatabaseCapacity]: { value: 16384 },
+          [ResourceType.DedicatedDatabaseReplicas]: { value: 5 },
         },
         enableFreeTier: false,
         createdAt: new Date(),
@@ -329,6 +418,10 @@ export class InitializerService {
           [ResourceType.DatabaseCapacity]: { value: 65536 },
           [ResourceType.StorageCapacity]: { value: 262144 },
           [ResourceType.NetworkTraffic]: { value: 0 },
+          [ResourceType.DedicatedDatabaseCPU]: { value: 2000 },
+          [ResourceType.DedicatedDatabaseMemory]: { value: 4096 },
+          [ResourceType.DedicatedDatabaseCapacity]: { value: 65536 },
+          [ResourceType.DedicatedDatabaseReplicas]: { value: 7 },
         },
         enableFreeTier: false,
         createdAt: new Date(),
@@ -413,6 +506,24 @@ export class InitializerService {
         key: SettingKey.LafStatusUrl,
         value: 'https://hnpsxzqqtavv.cloud.sealos.cn/status/laf',
         desc: 'laf status url',
+      },
+      {
+        public: true,
+        key: SettingKey.LafAboutUsUrl,
+        value: 'https://sealos.run/company/',
+        desc: 'laf about us url',
+      },
+      {
+        public: true,
+        key: SettingKey.LafDocUrl,
+        value: 'https://doc.laf.run/zh/',
+        desc: 'laf doc site url',
+      },
+      {
+        public: true,
+        key: SettingKey.EnableWebPromoPage,
+        value: 'true',
+        desc: 'Whether to enable WebPromoPage',
       },
     ])
 

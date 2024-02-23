@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsJSON, IsNotEmpty, MaxLength } from 'class-validator'
+import { IsJSON, IsNotEmpty, IsString, MaxLength } from 'class-validator'
 
 export class CreatePolicyRuleDto {
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   collectionName: string
 
   @ApiProperty()

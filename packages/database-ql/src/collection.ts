@@ -4,7 +4,6 @@ import { Query } from './query'
 import Aggregation from './aggregate'
 import { CreateIndexRes, DropIndexRes, ListIndexesRes } from './result-types'
 
-
 /**
  * 集合模块，继承 Query 模块
  *
@@ -46,8 +45,8 @@ export class CollectionReference extends Query {
    *
    * @param data - 数据
    */
-  add(data: Object, options?: { multi: boolean }) {
-    let docRef = new DocumentReference(this._db, this._coll, undefined)
+  add(data: object, options?: { multi: boolean }) {
+    const docRef = new DocumentReference(this._db, this._coll, undefined)
     return docRef.create(data, options)
   }
 
@@ -58,21 +57,26 @@ export class CollectionReference extends Query {
   /**
    * 创建索引
    */
-  public async createIndex(keys: Record<string, number | string>, options?: any): Promise<CreateIndexRes> {
-    let docRef = new DocumentReference(this._db, this._coll, undefined)
+  public async createIndex(
+    keys: Record<string, number | string>,
+    options?: any
+  ): Promise<CreateIndexRes> {
+    const docRef = new DocumentReference(this._db, this._coll, undefined)
     return docRef.createIndex(keys, options)
   }
 
   /**
    * 删除索引
    */
-  public async dropIndex(index: string | Record<string, number | string>): Promise<DropIndexRes> {
-    let docRef = new DocumentReference(this._db, this._coll, undefined)
+  public async dropIndex(
+    index: string | Record<string, number | string>
+  ): Promise<DropIndexRes> {
+    const docRef = new DocumentReference(this._db, this._coll, undefined)
     return docRef.dropIndex(index)
   }
 
   public async listIndexes(): Promise<ListIndexesRes> {
-    let docRef = new DocumentReference(this._db, this._coll, undefined)
+    const docRef = new DocumentReference(this._db, this._coll, undefined)
     return docRef.listIndexes()
   }
 }

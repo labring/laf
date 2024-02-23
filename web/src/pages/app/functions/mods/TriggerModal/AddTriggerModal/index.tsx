@@ -25,6 +25,7 @@ import { useCreateTriggerMutation } from "../service";
 import {} from "../service";
 
 import { useFunctionListQuery } from "@/pages/app/functions/service";
+import useGlobalStore from "@/pages/globalStore";
 
 const CRON_TEMPLATE = [
   {
@@ -58,13 +59,19 @@ const AddTriggerModal = (props: { children: React.ReactElement; targetFunc?: str
 
   const { targetFunc, children } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { showSuccess, showError } = useGlobalStore();
   const functionListQuery = useFunctionListQuery({ onSuccess: (data: any) => {} });
   const addTriggerMutation = useCreateTriggerMutation(() => {
     onClose();
   });
-  const onSubmit = (data: any) => {
-    addTriggerMutation.mutate(data);
-    onClose();
+  const onSubmit = async (data: any) => {
+    const res = await addTriggerMutation.mutateAsync(data);
+    if (!res.error) {
+      showSuccess(t("CreateSuccess"));
+      onClose();
+    } else if (res.error === "Trigger count limit exceeded") {
+      showError(t("TriggerPanel.createFail"));
+    }
   };
   const initFormData = () => {
     reset({

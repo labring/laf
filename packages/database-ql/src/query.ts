@@ -5,12 +5,21 @@ import { Validate } from './validate'
 import { QuerySerializer } from './serializer/query'
 import { UpdateSerializer } from './serializer/update'
 import { ErrorCode } from './constant'
-import { GetOneRes, GetRes, CountRes, UpdateRes, RemoveRes} from './result-types'
-import { ProjectionType, QueryOrder, RequestInterface, QueryParam } from './interface'
+import {
+  GetOneRes,
+  GetRes,
+  CountRes,
+  UpdateRes,
+  RemoveRes,
+} from './result-types'
+import {
+  ProjectionType,
+  QueryOrder,
+  RequestInterface,
+  QueryParam,
+} from './interface'
 import { Util } from './util'
 import { serialize } from './serializer/datatype'
-
-
 
 interface QueryOption {
   /**
@@ -34,7 +43,6 @@ interface QueryOption {
   count?: boolean
 }
 
-
 interface WithParam {
   /**
    * 子查询
@@ -49,19 +57,18 @@ interface WithParam {
   /**
    * 子表联接键（外键）
    */
-  foreignField: string,
+  foreignField: string
 
   /**
    * 结果集字段重命名，缺省则用子表名
    */
-  as?: string,
+  as?: string
 
   /**
    * 是否是一对一查询，只在 Query.withOne() 中使用
    */
-  one?: boolean,
+  one?: boolean
 }
-
 
 /**
  * Db query
@@ -80,7 +87,7 @@ export class Query {
   /**
    * Query conditions
    */
-  private _fieldFilters: Object
+  private _fieldFilters: object
 
   /**
    * Order by conditions
@@ -103,7 +110,7 @@ export class Query {
   private _request: RequestInterface
 
   /**
-   * @param db            - db reference 
+   * @param db            - db reference
    * @param coll          - collection name
    * @param fieldFilters  - query condition
    * @param fieldOrders   - order by condition
@@ -112,7 +119,7 @@ export class Query {
   public constructor(
     db: Db,
     coll: string,
-    fieldFilters?: Object,
+    fieldFilters?: object,
     fieldOrders?: QueryOrder[],
     queryOptions?: QueryOption,
     withs?: WithParam[]
@@ -139,7 +146,7 @@ export class Query {
 
     const keys = Object.keys(query)
 
-    const checkFlag = keys.some(item => {
+    const checkFlag = keys.some((item) => {
       return query[item] !== undefined
     })
 
@@ -170,7 +177,7 @@ export class Query {
 
     const newOrder: QueryOrder = {
       field: fieldPath,
-      direction: directionStr
+      direction: directionStr,
     }
     const combinedOrders = this._fieldOrders.concat(newOrder)
 
@@ -195,11 +202,18 @@ export class Query {
       foreignField: param.foreignField,
       localField: param.localField,
       as: param.as ?? param.query._coll,
-      one: param.one ?? false
+      one: param.one ?? false,
     }
 
     const combinedWiths = this._withs.concat(newWith)
-    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, this._queryOptions, combinedWiths)
+    return new Query(
+      this._db,
+      this._coll,
+      this._fieldFilters,
+      this._fieldOrders,
+      this._queryOptions,
+      combinedWiths
+    )
   }
 
   /**
@@ -213,11 +227,18 @@ export class Query {
       foreignField: param.foreignField,
       localField: param.localField,
       as: param.as ?? param.query._coll,
-      one: true
+      one: true,
     }
 
     const combinedWiths = this._withs.concat(newWith)
-    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, this._queryOptions, combinedWiths)
+    return new Query(
+      this._db,
+      this._coll,
+      this._fieldFilters,
+      this._fieldOrders,
+      this._queryOptions,
+      combinedWiths
+    )
   }
 
   /**
@@ -228,13 +249,13 @@ export class Query {
   public field(projection: string[] | ProjectionType): Query {
     let formatted = {} as ProjectionType
     if (projection instanceof Array) {
-      let result = {} as ProjectionType
-      for (let k of projection) {
+      const result = {} as ProjectionType
+      for (const k of projection) {
         result[k] = 1
       }
       formatted = result
     } else {
-      for (let k in projection) {
+      for (const k in projection) {
         if (projection[k]) {
           if (typeof projection[k] !== 'object') {
             formatted[k] = 1
@@ -248,7 +269,14 @@ export class Query {
     const option = { ...this._queryOptions }
     option.projection = formatted
 
-    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, option, this._withs)
+    return new Query(
+      this._db,
+      this._coll,
+      this._fieldFilters,
+      this._fieldOrders,
+      option,
+      this._withs
+    )
   }
 
   /**
@@ -259,10 +287,17 @@ export class Query {
   public limit(limit: number): Query {
     Validate.isInteger('limit', limit)
 
-    let option = { ...this._queryOptions }
+    const option = { ...this._queryOptions }
     option.limit = limit
 
-    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, option, this._withs)
+    return new Query(
+      this._db,
+      this._coll,
+      this._fieldFilters,
+      this._fieldOrders,
+      option,
+      this._withs
+    )
   }
 
   /**
@@ -273,23 +308,28 @@ export class Query {
   public skip(offset: number): Query {
     Validate.isInteger('offset', offset)
 
-    let option = { ...this._queryOptions }
+    const option = { ...this._queryOptions }
     option.offset = offset
 
-    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, option, this._withs)
+    return new Query(
+      this._db,
+      this._coll,
+      this._fieldFilters,
+      this._fieldOrders,
+      option,
+      this._withs
+    )
   }
 
   /**
    * 设置分页查询
    * @param options { current: number, size: number} `current` 是页码，默认为 `1`, `size` 是每页大小, 默认为 10
    */
-  public page(options: { current: number, size: number }) {
+  public page(options: { current: number; size: number }) {
     const current = options?.current || 1
     const size = options?.size || 10
 
-    const query = this
-      .skip((current - 1) * size)
-      .limit(size)
+    const query = this.skip((current - 1) * size).limit(size)
 
     query._queryOptions.count = true
 
@@ -301,7 +341,14 @@ export class Query {
    * @returns Query
    */
   public clone(): Query {
-    return new Query(this._db, this._coll, this._fieldFilters, this._fieldOrders, this._queryOptions, this._withs)
+    return new Query(
+      this._db,
+      this._coll,
+      this._fieldFilters,
+      this._fieldOrders,
+      this._queryOptions,
+      this._withs
+    )
   }
 
   /**
@@ -320,8 +367,8 @@ export class Query {
 
   /**
    * 发起请求获取一个文档
-   * @param options 
-   * @returns 
+   * @param options
+   * @returns
    */
   public async getOne<T = any>(): Promise<GetOneRes<T>> {
     const res = await this.limit(1).get<T>()
@@ -333,29 +380,31 @@ export class Query {
       return {
         ok: true,
         data: null,
-        requestId: res.requestId
+        requestId: res.requestId,
       }
     }
 
     return {
       ok: true,
       data: res.data[0],
-      requestId: res.requestId
+      requestId: res.requestId,
     }
   }
 
   /**
    * [该接口已废弃，直接使用 `get()` 代替]
    * 发起请求获取文档列表，当使用 with 条件时使用
-   * 
-   * @deprecated 
-   * 
+   *
+   * @deprecated
+   *
    * 1. 调用 get() 执行主查询
    * 2. 结合主查询的结果，使用 in 执行子表查询
    * 3. 合并主表 & 子表的结果，即聚合
    * 4. intersection 可指定是否取两个结果集的交集，缺省则以主表结果为主
    */
-  public async merge<T = any>(options?: { intersection?: boolean }): Promise<GetRes<T>> {
+  public async merge<T = any>(options?: {
+    intersection?: boolean
+  }): Promise<GetRes<T>> {
     const res = await this.internalMerge(options)
     return res
   }
@@ -373,14 +422,14 @@ export class Query {
         ok: false,
         error: res.error,
         total: undefined,
-        code: res.code
+        code: res.code,
       }
     }
 
     return {
       requestId: res.requestId,
       total: res.data.total,
-      ok: true
+      ok: true,
     }
   }
 
@@ -389,8 +438,10 @@ export class Query {
    *
    * @param data 数据
    */
-  public async update(data: Object, options?: { multi?: boolean, merge?: boolean, upsert?: boolean }): Promise<UpdateRes> {
-
+  public async update(
+    data: object,
+    options?: { multi?: boolean; merge?: boolean; upsert?: boolean }
+  ): Promise<UpdateRes> {
     if (!data || typeof data !== 'object' || 0 === Object.keys(data)?.length) {
       throw new Error('data cannot be empty object')
     }
@@ -418,7 +469,7 @@ export class Query {
         code: res.code,
         updated: undefined,
         matched: undefined,
-        upsertId: undefined
+        upsertId: undefined,
       }
     }
 
@@ -427,7 +478,7 @@ export class Query {
       updated: res.data.updated,
       matched: res.data.matched,
       upsertId: res.data.upsert_id,
-      ok: true
+      ok: true,
     }
   }
 
@@ -436,7 +487,9 @@ export class Query {
    */
   public async remove(options?: { multi: boolean }): Promise<RemoveRes> {
     if (Object.keys(this._queryOptions).length > 0) {
-      console.warn('`offset`, `limit` and `projection` are not supported in remove() operation')
+      console.warn(
+        '`offset`, `limit` and `projection` are not supported in remove() operation'
+      )
     }
 
     if (this._fieldOrders?.length > 0) {
@@ -453,20 +506,20 @@ export class Query {
         error: res.error,
         ok: false,
         deleted: undefined,
-        code: res.code
+        code: res.code,
       }
     }
 
     return {
       requestId: res.requestId,
       deleted: res.data.deleted,
-      ok: true
+      ok: true,
     }
   }
 
   /**
    * Build query param
-   * @returns 
+   * @returns
    */
   protected buildQueryParam() {
     const param: QueryParam = {
@@ -482,7 +535,8 @@ export class Query {
       param.offset = this._queryOptions.offset
     }
     if (this._queryOptions.limit) {
-      param.limit = this._queryOptions.limit < 1000 ? this._queryOptions.limit : 1000
+      param.limit =
+        this._queryOptions.limit < 1000 ? this._queryOptions.limit : 1000
     } else {
       param.limit = 100
     }
@@ -497,8 +551,8 @@ export class Query {
   }
 
   /**
-  * 发起请求获取文档列表
-  */
+   * 发起请求获取文档列表
+   */
   protected async internalGet<T = any>(): Promise<GetRes<T>> {
     const param = this.buildQueryParam()
     const res = await this.send(ActionType.query, param)
@@ -508,7 +562,7 @@ export class Query {
         data: res.data,
         requestId: res.requestId,
         ok: false,
-        code: res.code
+        code: res.code,
       }
     }
 
@@ -516,7 +570,7 @@ export class Query {
     const result: GetRes<T> = {
       data: documents,
       requestId: res.requestId,
-      ok: true
+      ok: true,
     }
     if (res.total) result.total = res.data?.total
     if (res.limit) result.limit = res.data?.limit
@@ -526,15 +580,16 @@ export class Query {
 
   /**
    * 发起请求获取文档列表，当使用 with 条件时使用
-   * 
+   *
    * 1. 调用 internalGet() 执行主查询
    * 2. 结合主查询的结果，使用 in 执行子表查询
    * 3. 合并主表 & 子表的结果，即聚合
    * 4. intersection 可指定是否取两个结果集的交集，缺省则以主表结果为主
    */
-  protected async internalMerge<T = any>(options?: { intersection?: boolean }): Promise<GetRes<T>> {
-
-    options = options ?? {} as any
+  protected async internalMerge<T = any>(options?: {
+    intersection?: boolean
+  }): Promise<GetRes<T>> {
+    options = options ?? ({} as any)
     const intersection = options?.intersection ?? false
 
     // 调用 get() 执行主查询
@@ -544,22 +599,22 @@ export class Query {
     }
 
     // 针对每一个 WithParam 做合并处理
-    for (let _with of this._withs) {
+    for (const _with of this._withs) {
       const { query, localField, foreignField, as, one } = _with
-      const localValues = res.data.map(localData => localData[localField])
+      const localValues = res.data.map((localData) => localData[localField])
 
       // 处理子查询
-      let q = query.clone()
+      const q = query.clone()
 
       if (!q._fieldFilters) {
         q._fieldFilters = {}
       }
-      q._fieldFilters[foreignField] = { '$in': localValues }
+      q._fieldFilters[foreignField] = { $in: localValues }
 
       // 执行子查询
-      let r_sub: (GetRes<T>)
+      let r_sub: GetRes<T>
       if (q._withs.length) {
-        r_sub = await q.merge()  // 如果子查询也使用了 with/withOne，则使用 merge() 查询
+        r_sub = await q.merge() // 如果子查询也使用了 with/withOne，则使用 merge() 查询
       } else {
         r_sub = await q.get()
       }
@@ -568,24 +623,23 @@ export class Query {
         return r_sub
       }
 
-
       // 按照 localField -> foreignField 的连接关系将子查询结果聚合：
 
       // 1. 构建 { [value of `foreignField`]: [subQueryData] } 映射表
       const _map = {}
-      for (let sub of r_sub.data) {
-        const key = sub[foreignField]           // 将子表结果的连接键的值做为映射表的 key
+      for (const sub of r_sub.data) {
+        const key = sub[foreignField] // 将子表结果的连接键的值做为映射表的 key
         if (one) {
           _map[key] = sub
         } else {
           _map[key] = _map[key] || []
-          _map[key].push(sub)           // 将子表结果放入映射表
+          _map[key].push(sub) // 将子表结果放入映射表
         }
       }
 
       // 2. 将聚合结果合并入主表结果集中
       const results = []
-      for (let m of res.data) {
+      for (const m of res.data) {
         // 此处主表结果中的 [value of `localField`] 与 上面子表结果中的 [value of `foreignField`] 应该是一致的
         const key = m[localField]
         m[as] = _map[key]
@@ -605,9 +659,9 @@ export class Query {
 
   /**
    * Send query request
-   * @param action 
-   * @param param 
-   * @returns 
+   * @param action
+   * @param param
+   * @returns
    */
   public async send(action: ActionType, param: QueryParam) {
     return await this._request.send(action, param)

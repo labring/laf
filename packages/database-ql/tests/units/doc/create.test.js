@@ -1,5 +1,4 @@
-
-const { Actions, getDb  } = require('../_utils')
+const { Actions, getDb } = require('../_utils')
 const assert = require('assert')
 const { ObjectId, Binary } = require('bson')
 
@@ -8,15 +7,16 @@ describe('db-ql(unit): db::doc().create()', () => {
     const { db, req } = getDb()
 
     const buf = Buffer.from([0x62, 0x75, 0x66, 0x66, 0x65, 0x72])
-    const res = await db.collection('tasks')
+    const res = await db
+      .collection('tasks')
       .doc('nonsense_id')
       .create({
         uid: new ObjectId(),
         name: 'laf',
         created_at: new Date(),
-        pic: new Binary(buf)
+        pic: new Binary(buf),
       })
-    
+
     assert.strictEqual(req.action, Actions.add)
     assert.strictEqual(req.params.collectionName, 'tasks')
     assert.equal(req.params.multi, false)
@@ -30,7 +30,6 @@ describe('db-ql(unit): db::doc().create()', () => {
     assert.ok(req.params.data.pic.$binary.subType)
     assert.equal(req.params.data.pic.$binary.base64, buf.toString('base64'))
 
-
     assert.ok(!res.code)
     assert.ok(res.insertedCount === 1)
     assert.equal(res.id, '0')
@@ -40,10 +39,11 @@ describe('db-ql(unit): db::doc().create()', () => {
     const { db, req } = getDb()
 
     const buf = Buffer.from([0x62, 0x75, 0x66, 0x66, 0x65, 0x72])
-    await db.collection('tasks')
+    await db
+      .collection('tasks')
       .doc('nonsense_id')
       .create({})
-      .catch(err => {
+      .catch((err) => {
         assert.equal(err.toString(), 'Error: data cannot be empty object')
       })
   })

@@ -23,14 +23,14 @@ const RUNTIME_CPU_LIMIT = new prom.Gauge({
   name: 'laf_runtime_cpu_limit',
   help: 'the cpu of the runtime limit',
   registers: [register],
-  labelNames: ['container', 'pod', 'appid'],
+  labelNames: ['container', 'appid'],
 })
 
 const RUNTIME_MEMORY_LIMIT = new prom.Gauge({
   name: 'laf_runtime_memory_limit',
   help: 'the memory of the runtime limit',
   registers: [register],
-  labelNames: ['container', 'pod', 'appid'],
+  labelNames: ['container', 'appid'],
 })
 
 function updateMetrics(metric: Metric) {
@@ -43,16 +43,10 @@ function updateMetrics(metric: Metric) {
 }
 
 function updateLimitMetrics(metric: Metric) {
-  RUNTIME_CPU_LIMIT.labels(
-    metric.containerName,
-    metric.podName,
-    metric.appid,
-  ).set(metric.cpu)
-  RUNTIME_MEMORY_LIMIT.labels(
-    metric.containerName,
-    metric.podName,
-    metric.appid,
-  ).set(metric.memory)
+  RUNTIME_CPU_LIMIT.labels(metric.containerName, metric.appid).set(metric.cpu)
+  RUNTIME_MEMORY_LIMIT.labels(metric.containerName, metric.appid).set(
+    metric.memory,
+  )
 }
 
 const getRuntimeMetrics: RequestHandler = async (req, res) => {
@@ -68,8 +62,11 @@ const getRuntimeMetrics: RequestHandler = async (req, res) => {
   RUNTIME_MEMORY.reset()
   RUNTIME_MEMORY_LIMIT.reset()
 
-  const runtimeMetrics =
-    await ClusterService.getRuntimePodMetricsForAllNamespaces()
+  const runtimeMetrics = await ClusterService.getPodMetrics(
+    ClusterService.NAMESPACE,
+    ClusterService.LABEL_KEY_APP_ID,
+    'RUNTIME',
+  )
 
   for (const metric of runtimeMetrics) {
     updateMetrics(metric)

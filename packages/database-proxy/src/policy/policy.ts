@@ -1,14 +1,18 @@
-
 import * as assert from 'assert'
 import { Params, getAction, ActionType } from '../types'
 import { Handler, Processor, HandlerContext } from '../processor'
 import * as BUILT_IN_VALIDATORS from '../validators'
 import { AccessorInterface } from '../accessor'
 import { DefaultLogger, LoggerInterface } from '../logger'
-import { PermissionRule, PolicyInterface, ValidateError, ValidateResult } from './interface'
+import {
+  PermissionRule,
+  PolicyInterface,
+  ValidateError,
+  ValidateResult,
+} from './interface'
 
 /**
- * 访问规则结构： 
+ * 访问规则结构：
  * DatabaseRule:
  *   -> CollectionRule:
  *       ->  read: PermissionRule[]
@@ -19,13 +23,12 @@ import { PermissionRule, PolicyInterface, ValidateError, ValidateResult } from '
  *       ->  watch:  PermissionRule[]
  */
 
-
 export enum PermissionTypeV1 {
   READ = '.read',
   UPDATE = '.update',
   ADD = '.add',
   REMOVE = '.remove',
-  COUNT = '.count'
+  COUNT = '.count',
 }
 
 export enum PermissionType {
@@ -35,7 +38,7 @@ export enum PermissionType {
   REMOVE = 'remove',
   COUNT = 'count',
   WATCH = 'watch',
-  AGGREGATE = 'aggregate'
+  AGGREGATE = 'aggregate',
 }
 
 // 数据库规则
@@ -46,12 +49,12 @@ export interface DatabaseRule {
 // 集合规则
 export type CollectionRule = {
   // 集合数据的结构约束
-  $schema: PermissionRule[],
-  read: PermissionRule[],
-  add: PermissionRule[],
-  update: PermissionRule[],
-  remove: PermissionRule[],
-  count: PermissionRule[],
+  $schema: PermissionRule[]
+  read: PermissionRule[]
+  add: PermissionRule[]
+  update: PermissionRule[]
+  remove: PermissionRule[]
+  count: PermissionRule[]
   watch: PermissionRule[]
 }
 
@@ -61,7 +64,6 @@ export interface ValidatorMap {
 }
 
 export class Policy implements PolicyInterface {
-
   readonly version = 2
   protected _accessor: AccessorInterface
   protected _logger: LoggerInterface
@@ -110,14 +112,14 @@ export class Policy implements PolicyInterface {
   /**
    * 加载 rules in json
    * @param rules any
-   * @returns 
+   * @returns
    */
   load(rules: any) {
     this.logger.debug(`load rules: `, JSON.stringify(rules))
     assert.equal(typeof rules, 'object', "invalid 'rules'")
 
     // 处理每张数据库表的访问规则
-    for (let collection in rules) {
+    for (const collection in rules) {
       this.add(collection, rules[collection])
     }
 
@@ -132,7 +134,9 @@ export class Policy implements PolicyInterface {
    */
   add(collection: string, rules: any) {
     if (this.collections.includes(collection)) {
-      throw new Error(`add collection rules failed: ${collection} already exists`)
+      throw new Error(
+        `add collection rules failed: ${collection} already exists`
+      )
     }
 
     this.set(collection, rules)
@@ -155,17 +159,18 @@ export class Policy implements PolicyInterface {
     const perm_types = Object.keys(rules) as PermissionType[]
     for (const ptype of perm_types) {
       // skip non-permisstion-type item, like '$schema'
-      if (ptype as string === '$schema') {
+      if ((ptype as string) === '$schema') {
         continue
       }
 
       // 权限对应的验证器配置, like { 'condition': true, 'data': {...} }
       const permissionConfig = rules[ptype]
-      const permissionConfigArr = this.wrapRawPermissionRuleToArray(permissionConfig)
+      const permissionConfigArr =
+        this.wrapRawPermissionRuleToArray(permissionConfig)
 
       // add schema config if ADD or UPDATE
       if ([PermissionType.ADD, PermissionType.UPDATE].includes(ptype)) {
-        permissionConfigArr.forEach(pmc => {
+        permissionConfigArr.forEach((pmc) => {
           pmc['schema'] = rules['$schema']
         })
       }
@@ -183,11 +188,11 @@ export class Policy implements PolicyInterface {
    * ".read" -> "read"
    * ".update" -> ".update"
    * ...
-   * @param rules 
-   * @returns 
+   * @param rules
+   * @returns
    */
   private convertPermissionConfig(rules: any): any {
-    let newRules = {}
+    const newRules = {}
     for (const key in rules) {
       let type = key
       switch (key) {
@@ -214,12 +219,12 @@ export class Policy implements PolicyInterface {
 
   /**
    * normalize：将输入规则格式转为内部统一形式，即对象数组
-   * 1. boolean -> [{ condition: "bool string"}] 
+   * 1. boolean -> [{ condition: "bool string"}]
    * 2. string -> [{ condition: "expression string" }]
    * 3. object -> [ object ]
    * 4. array -> array
-   * @param permissionRules 
-   * @returns 
+   * @param permissionRules
+   * @returns
    */
   private wrapRawPermissionRuleToArray(permissionRules: any): any[] {
     assert.notEqual(permissionRules, undefined, 'permissionRules is undefined')
@@ -244,11 +249,11 @@ export class Policy implements PolicyInterface {
    * @param permissionRules 权限规则
    */
   private instantiateValidators(rules: any[]): PermissionRule[] {
-    const result: PermissionRule[] = rules.map(raw_rule => {
+    const result: PermissionRule[] = rules.map((raw_rule) => {
       const prule: PermissionRule = {}
 
       // 检查用户配置的验证器是否已注册
-      for (let vname in raw_rule) {
+      for (const vname in raw_rule) {
         const handler = this.validators[vname]
         if (!handler) {
           throw new Error(`unknown validator '${vname}' in your rules`)
@@ -256,7 +261,7 @@ export class Policy implements PolicyInterface {
       }
 
       // 逐一实例化验证器
-      for (let vname in this.validators) {
+      for (const vname in this.validators) {
         const handler = this.validators[vname]
 
         // 如果用户并未配置此验证器，则其配置缺省为 undefined，验证器实现时需处理缺省情况
@@ -271,19 +276,22 @@ export class Policy implements PolicyInterface {
 
   /**
    * 验证访问规则
-   * @param params 
-   * @param injections 
+   * @param params
+   * @param injections
    */
   async validate(params: Params, injections: object): Promise<ValidateResult> {
     const { collection, action: actionType } = params
     this.logger.debug(`ruler validate with injections: `, injections)
 
-    let errors: ValidateError[] = []
+    const errors: ValidateError[] = []
 
     // 判断所访问的集合是否配置规则
     if (!this.collections.includes(collection)) {
       this.logger.debug(`validate() ${collection} not in rules`)
-      const err: ValidateError = { type: 0, error: `collection "${collection}" not found` }
+      const err: ValidateError = {
+        type: 0,
+        error: `collection "${collection}" not found`,
+      }
       errors.push(err)
       return { errors }
     }
@@ -291,7 +299,10 @@ export class Policy implements PolicyInterface {
     // action 是否合法
     const action = getAction(actionType)
     if (!action) {
-      const err: ValidateError = { type: 0, error: `action "${actionType}" invalid` }
+      const err: ValidateError = {
+        type: 0,
+        error: `action "${actionType}" invalid`,
+      }
       errors.push(err)
       return { errors }
     }
@@ -301,22 +312,28 @@ export class Policy implements PolicyInterface {
 
     // if no permission rules
     if (!permRules) {
-      const err: ValidateError = { type: 0, error: `${collection} ${actionType} don't has any rules` }
+      const err: ValidateError = {
+        type: 0,
+        error: `${collection} ${actionType} don't has any rules`,
+      }
       errors.push(err)
       return { errors }
     }
 
-    this.logger.trace(`${actionType} -> ${collection} permission rules: `, permRules)
+    this.logger.trace(
+      `${actionType} -> ${collection} permission rules: `,
+      permRules
+    )
 
     // loop for validating every permission rule
     let matched = null
     const context: HandlerContext = { ruler: this, params, injections }
 
-    for (let validtrs of permRules) {
+    for (const validtrs of permRules) {
       let error: ValidateError = null
       // 执行一条规则的所有验证器
-      for (let vname in validtrs) {
-        let result = await validtrs[vname].run(context)
+      for (const vname in validtrs) {
+        const result = await validtrs[vname].run(context)
         // 任一验证器执行不通过，则跳过本条规则
         if (result) {
           error = { type: vname, error: result }
@@ -346,17 +363,19 @@ export class Policy implements PolicyInterface {
     return { matched }
   }
 
-
   /**
    * 注册验证器
-   * @param name 
-   * @param handler 
+   * @param name
+   * @param handler
    */
   register(name: string, handler: Handler) {
     assert.ok(name, `register error: name must not be empty`)
-    assert.ok(handler instanceof Function, `${name} register error: 'handler' must be a callable function`)
+    assert.ok(
+      handler instanceof Function,
+      `${name} register error: 'handler' must be a callable function`
+    )
 
-    const exists = Object.keys(this.validators).filter(vn => vn === name)
+    const exists = Object.keys(this.validators).filter((vn) => vn === name)
     assert.ok(!exists.length, `validator's name: '${name}' duplicated`)
 
     this.validators[name] = handler
@@ -366,7 +385,7 @@ export class Policy implements PolicyInterface {
    * 加载内置验证器
    */
   private loadBuiltins() {
-    for (let name in BUILT_IN_VALIDATORS) {
+    for (const name in BUILT_IN_VALIDATORS) {
       const handler = BUILT_IN_VALIDATORS[name] as Handler
       this.register(name, handler)
     }
@@ -375,7 +394,7 @@ export class Policy implements PolicyInterface {
   /**
    * 获取指定 ActionType 对应的权限名
    * @param action ActionType
-   * @returns 
+   * @returns
    */
   private getPermissionName(action: ActionType): PermissionType {
     switch (action) {

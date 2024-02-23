@@ -15,14 +15,18 @@ import { t } from "i18next";
 
 import { OutlineViewOffIcon, OutlineViewOnIcon } from "@/components/CommonIcon";
 import { Logo, LogoText } from "@/components/LogoIcon";
+import { SendEmailCodeButton } from "@/components/SendEmailCodeButton";
 import { SendSmsCodeButton } from "@/components/SendSmsCodeButton";
-import { COLOR_MODE } from "@/constants";
+import { COLOR_MODE, PROVIDER_NAME } from "@/constants";
+
+import useAuthStore from "../store";
 
 import { useResetPasswordMutation } from "@/pages/auth/service";
 import useGlobalStore from "@/pages/globalStore";
 
 type FormData = {
   phone?: string;
+  email?: string;
   validationCode?: string;
   account: string;
   password: string;
@@ -33,6 +37,7 @@ export default function ResetPassword() {
   const resetPasswordMutation = useResetPasswordMutation();
   const { showSuccess, showError } = useGlobalStore();
   const navigate = useNavigate();
+  const { defaultProvider } = useAuthStore();
 
   const [isShowPassword, setIsShowPassword] = useState(false);
 
@@ -59,12 +64,20 @@ export default function ResetPassword() {
       return;
     }
 
-    const params = {
-      phone: data.phone,
-      code: data.validationCode,
-      password: data.password,
-      type: "ResetPassword",
-    };
+    const params =
+      defaultProvider.name === PROVIDER_NAME.PHONE
+        ? {
+            phone: data.phone,
+            code: data.validationCode,
+            password: data.password,
+            type: "ResetPassword",
+          }
+        : {
+            email: data.email,
+            code: data.validationCode,
+            password: data.password,
+            type: "ResetPassword",
+          };
 
     const res = await resetPasswordMutation.mutateAsync(params);
 
@@ -86,32 +99,70 @@ export default function ResetPassword() {
         <LogoText size="51px" color={darkMode ? "#33BABB" : "#363C42"} />
       </div>
       <div>
-        <FormControl isInvalid={!!errors?.phone} className="mb-6 flex items-center">
-          <FormLabel className="w-20" htmlFor="phone">
-            {t("AuthPanel.Phone")}
-          </FormLabel>
-          <InputGroup>
-            <Input
-              {...register("phone", {
-                required: true,
-                pattern: {
-                  value: /^1[2-9]\d{9}$/,
-                  message: t("AuthPanel.PhoneTip"),
-                },
-              })}
-              type="tel"
-              id="phone"
-              placeholder={t("AuthPanel.PhonePlaceholder") || ""}
-              bg={darkMode ? "#363C42" : "#F8FAFB"}
-              border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
-              height="48px"
-              rounded="4px"
-            />
-            <InputRightElement width="6rem" height="100%">
-              <SendSmsCodeButton getPhone={getValues} phoneNumber={"phone"} type="ResetPassword" />
-            </InputRightElement>
-          </InputGroup>
-        </FormControl>
+        {defaultProvider.name === PROVIDER_NAME.PHONE && (
+          <FormControl isInvalid={!!errors?.phone} className="mb-6 flex items-center">
+            <FormLabel className="w-20" htmlFor="phone">
+              {t("AuthPanel.Phone")}
+            </FormLabel>
+            <InputGroup>
+              <Input
+                {...register("phone", {
+                  required: true,
+                  pattern: {
+                    value: /^1[2-9]\d{9}$/,
+                    message: t("AuthPanel.PhoneTip"),
+                  },
+                })}
+                type="tel"
+                id="phone"
+                placeholder={t("AuthPanel.PhonePlaceholder") || ""}
+                bg={darkMode ? "#363C42" : "#F8FAFB"}
+                border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
+                height="48px"
+                rounded="4px"
+              />
+              <InputRightElement width="6rem" height="100%">
+                <SendSmsCodeButton
+                  getPhone={getValues}
+                  phoneNumber={"phone"}
+                  type="ResetPassword"
+                />
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
+        )}
+        {defaultProvider.name === PROVIDER_NAME.EMAIL && (
+          <FormControl isInvalid={!!errors?.email} className="mb-6 flex items-center">
+            <FormLabel className="w-20" htmlFor="email">
+              {t("AuthPanel.Email")}
+            </FormLabel>
+            <InputGroup>
+              <Input
+                {...register("email", {
+                  required: true,
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
+                    message: t("AuthPanel.EmailTip"),
+                  },
+                })}
+                type="email"
+                id="email"
+                placeholder={t("AuthPanel.EmailPlaceholder") || ""}
+                bg={darkMode ? "#363C42" : "#F8FAFB"}
+                border={darkMode ? "1px solid #24282C" : "1px solid #D5D6E1"}
+                height="48px"
+                rounded="4px"
+              />
+              <InputRightElement width="6rem" height="100%">
+                <SendEmailCodeButton
+                  getEmail={getValues}
+                  emailAccount={"email"}
+                  type="ResetPassword"
+                />
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
+        )}
         <FormControl isInvalid={!!errors.validationCode} className="mb-6 flex items-center">
           <FormLabel className="w-20" htmlFor="validationCode">
             {t("AuthPanel.ValidationCode")}

@@ -1,0 +1,43 @@
+.monaco-editor .margin {
+  background-color: #fff !important;
+}
+
+.monaco-editor {
+  --vscode-editor-background: #fff !important;
+}
+
+[data-theme="dark"] .monaco-editor .margin {
+  background-color: #202631 !important;
+}
+
+[data-theme="dark"] .monaco-editor {
+  --vscode-editor-background: #202631 !important;
+}
+
+.monaco-editor .mtk5 {
+  color: #00f !important;
+}
+
+.monaco-editor .mtk4 {
+  color: #008000 !important;
+}
+
+.monaco-editor .mtk11 {
+  color: #a31515 !important;
+}
+
+[data-theme="dark"] .monaco-editor .mtk5 {
+  color: #569cd6 !important;
+}
+
+[data-theme="dark"] .monaco-editor .mtk4 {
+  color: #6a9955 !important;
+}
+
+[data-theme="dark"] .monaco-editor .mtk11 {
+  color: #ce9178 !important;
+}
+
+[data-theme="dark"] .monaco-editor .mtk1 {
+  color: #d4d4d4 !important;
+}

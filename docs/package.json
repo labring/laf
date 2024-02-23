@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-beta.11",
+  "version": "1.0.0-beta.14",
   "name": "laf-docs",
   "private": true,
   "scripts": {
@@ -10,14 +10,28 @@
     "serve": "vitepress serve",
     "after-build": "sed -i -e \"s@</body>@<div style='font-size: 14px; padding-bottom: 30px; color: darkblue;text-align: center;'><a href='https://beian.miit.gov.cn/' target='_blank'>粤ICP备2023048773号</a></div></body>@g\" ./.vitepress/dist/index.html",
     "docs:deploy": "npm run build && sh ./deploy.sh",
-    "docker-build": "docker build --platform linux/amd64 -t lafyun/docs:latest ."
+    "docker-build": "docker build --platform linux/amd64 -t lafyun/docs:latest .",
+    "lint": "eslint . --fix --ext .ts --ext .js",
+    "docs:dev": "vitepress dev",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview"
   },
-  "dependencies": {
-    "markdown-it-custom-attrs": "^1.0.2",
-    "vitepress": "^1.0.0-alpha.29"
-  },
+  "main": "index.js",
+  "keywords": [
+    "laf",
+    "lafyun",
+    "laf.run",
+    "laf.dev",
+    "sealos",
+    "laf.js"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
   "devDependencies": {
-    "flexsearch": "^0.7.31",
-    "vitepress-plugin-search": "^1.0.4-alpha.20"
+    "vitepress": "^1.0.0-rc.31"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

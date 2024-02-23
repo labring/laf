@@ -11,8 +11,7 @@ export const request = axios.create({
 // request interceptor
 request.interceptors.request.use(
   async (config: any) => {
-    
-    let _headers: AxiosRequestHeaders | any = {}
+    const _headers: AxiosRequestHeaders | any = {}
     if (config.headers['Content-Type']) {
       _headers['Content-Type'] = config.headers['Content-Type']
     } else {
@@ -21,7 +20,9 @@ request.interceptors.request.use(
 
     // load remote server and token
     if (UserSchema.exist() && config.url?.startsWith('/v1/')) {
-      let { server, token, expire } = UserSchema.getCurrentUser()
+      const user = UserSchema.getCurrentUser()
+      const { server, expire } = user
+      let { token } = user
       if (token === undefined || token === '') {
         console.log('please login first')
         process.exit(1)
@@ -52,7 +53,6 @@ request.interceptors.request.use(
 // response interceptor
 request.interceptors.response.use(
   (response: AxiosResponse) => {
-
     const { data, headers } = response
     if (headers['content-type'] === 'application/octet-stream') {
       return data
@@ -86,8 +86,8 @@ request.interceptors.response.use(
       } else if (status === 503) {
         console.log('The server is abnormal, please contact the administrator!')
         process.exit(1)
-      } else if (status === 404) { 
-        console.log(`Request ${ error.response.config.url} not found, please check remote server url`)
+      } else if (status === 404) {
+        console.log(`Request ${error.response.config.url} not found, please check remote server url`)
         process.exit(1)
       }
       return Promise.reject(error.message)

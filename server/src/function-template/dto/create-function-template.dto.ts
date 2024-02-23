@@ -3,6 +3,7 @@ import { CreateDependencyDto } from 'src/dependency/dto/create-dependency.dto'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
   ArrayMaxSize,
+  IsArray,
   IsBoolean,
   IsIn,
   IsNotEmpty,
@@ -20,8 +21,7 @@ export class FunctionTemplateItemDto {
     description: 'FunctionTemplate item name',
   })
   @IsNotEmpty()
-  @MaxLength(48)
-  @Matches(/^[a-zA-Z0-9_.\-\/]{1,256}$/)
+  @Matches(/^[a-zA-Z0-9_.\-](?:[a-zA-Z0-9_.\-/]{0,254}[a-zA-Z0-9_.\-])?$/)
   name: string
 
   @ApiPropertyOptional()
@@ -52,11 +52,13 @@ export class CreateFunctionTemplateDto {
 
   @ApiProperty({ description: 'Dependencies', type: [CreateDependencyDto] })
   @IsNotEmpty()
+  @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateDependencyDto)
   dependencies: CreateDependencyDto[]
 
   @ApiProperty({ description: 'environments', type: [CreateEnvironmentDto] })
+  @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateEnvironmentDto)
   environments: CreateEnvironmentDto[]
@@ -77,6 +79,7 @@ export class CreateFunctionTemplateDto {
   })
   @IsNotEmpty()
   @ValidateNested({ each: true })
+  @IsArray()
   @ArrayMaxSize(20)
   @Type(() => FunctionTemplateItemDto)
   items: FunctionTemplateItemDto[]

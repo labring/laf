@@ -38,7 +38,7 @@ export class AppSchema {
   static async refresh() {
     const appSchema = this.read()
     const app = await applicationControllerFindOne(appSchema.appid)
-    let timestamp = Date.parse(new Date().toString()) / 1000
+    const timestamp = Date.parse(new Date().toString()) / 1000
 
     appSchema.function = {
       developToken: app.develop_token,
@@ -46,10 +46,9 @@ export class AppSchema {
     }
 
     appSchema.storage = {
-      endpoint: app.storage.credentials.endpoint,
-      accessKeyId: app.storage.credentials.accessKeyId,
-      accessKeySecret: app.storage.credentials.secretAccessKey,
-      sessionToken: app.storage.credentials.sessionToken,
+      endpoint: app.storage.endpoint,
+      accessKeyId: app.storage.accessKey,
+      accessKeySecret: app.storage.secretKey,
       expire: timestamp + STORAGE_TOKEN_EXPIRE,
     }
 

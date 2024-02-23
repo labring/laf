@@ -1,6 +1,7 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CloseIcon } from "@chakra-ui/icons";
-import { HStack, Input, useColorMode } from "@chakra-ui/react";
+import { HStack, Input, Tooltip, useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 import SimpleBar from "simplebar-react";
 
@@ -35,14 +36,32 @@ function HeadPanel() {
   const navigate = useNavigate();
   const { currentApp } = useGlobalStore();
 
+  useEffect(() => {
+    const element = document.getElementById("reverse_scroll");
+    if (element) {
+      const handleWheel = (event: WheelEvent) => {
+        event.preventDefault();
+        const elementToScroll = element.querySelector(".simplebar-content-wrapper");
+        elementToScroll?.scrollTo({
+          left: elementToScroll.scrollLeft + event.deltaY / 2,
+        });
+      };
+      element.addEventListener("wheel", handleWheel);
+      return () => {
+        element.removeEventListener("wheel", handleWheel);
+      };
+    }
+  }, []);
+
   return (
     <Panel className="recentList !flex-row justify-between !px-0">
-      <SimpleBar style={{ height: 36, flex: 1, overflowY: "hidden" }}>
-        <HStack className="h-9 flex-1" data-simplebar>
+      <SimpleBar style={{ flex: 1, overflowY: "hidden" }} id="reverse_scroll">
+        <HStack className="flex-1 flex-nowrap" height="36px" data-simplebar>
           <div className="flex h-full">
             {recentFunctionList.length > 0 &&
               recentFunctionList.map((item, index) => {
                 const selected = currentFunction?._id === item._id;
+                const isLast = recentFunctionList.length <= 1;
                 return (
                   <div
                     key={index}
@@ -63,7 +82,9 @@ function HeadPanel() {
                         : "px-[14px]",
                     )}
                     onClick={() => {
-                      navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`);
+                      navigate(`/app/${currentApp?.appid}/${Pages.function}/${item?.name}`, {
+                        replace: true,
+                      });
                       setCurrentFunction(item);
                     }}
                   >
@@ -72,31 +93,41 @@ function HeadPanel() {
                         functionItem={item}
                         color={selected ? "#00A9A6" : ""}
                       />
-                      <p className="truncate">{item.name}</p>
+                      <Tooltip label={item.name} placement="auto">
+                        <p className="truncate">{item.name.split("/").pop()}</p>
+                      </Tooltip>
                     </div>
                     {functionCache.getCache(item?._id, (item as any)?.source?.code) !==
                     (item as any)?.source?.code ? (
-                      <span className="ml-2 inline-block h-1 w-1 flex-none rounded-full bg-rose-500 group-hover:hidden"></span>
+                      <span
+                        className={clsx(
+                          "ml-2 inline-block h-1 w-1 flex-none rounded-full bg-rose-500",
+                          !isLast ? "group-hover:hidden" : "",
+                        )}
+                      ></span>
                     ) : (
                       <span className="ml-2 inline-block h-1 w-1 flex-none rounded-full bg-none group-hover:hidden"></span>
                     )}
-                    <span className="-mr-1 hidden group-hover:flex">
-                      <IconWrap size={16}>
-                        <CloseIcon
-                          boxSize="2"
-                          className="!text-grayModern-600"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setRecentFunctionList(
-                              recentFunctionList.filter((i) => i._id !== item._id),
+                    <span className={clsx(!isLast ? "-mr-1 hidden group-hover:flex" : "hidden")}>
+                      <IconWrap
+                        size={16}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRecentFunctionList(
+                            recentFunctionList.filter((i) => i._id !== item._id),
+                          );
+                          if (currentFunction?._id === item._id) {
+                            const nextFunction =
+                              recentFunctionList[index + 1] || recentFunctionList[0] || {};
+                            setCurrentFunction(nextFunction);
+                            navigate(
+                              `/app/${currentApp?.appid}/${Pages.function}/${nextFunction.name}`,
+                              { replace: true },
                             );
-                            if (currentFunction?._id === item._id) {
-                              setCurrentFunction(
-                                recentFunctionList[index + 1] || recentFunctionList[0] || {},
-                              );
-                            }
-                          }}
-                        />
+                          }
+                        }}
+                      >
+                        <CloseIcon boxSize="2" className="!text-grayModern-600" />
                       </IconWrap>
                     </span>
                   </div>
@@ -113,6 +144,7 @@ function HeadPanel() {
       </SimpleBar>
       <HStack
         minW="500px"
+        height="36px"
         className={clsx(
           "flex justify-end border-b-[2px] pr-2",
           !darkMode ? "border-[#EEF0F2] " : "border-[#1A202C]",

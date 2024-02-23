@@ -1,6 +1,6 @@
 {
   "name": "laf-cli",
-  "version": "1.0.0-beta.12",
+  "version": "1.0.0-beta.14-fix2",
   "description": "",
   "main": "dist/main.js",
   "bin": {
@@ -10,8 +10,8 @@
     "dev": "tsc -w",
     "watch": "tsc -w",
     "build": "tsc",
-    "prettier": "npx prettier --write ./src",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "lint": "eslint . --fix --ext .ts --ext .js"
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,8 @@
     "cli-table3": "^0.6.3",
     "commander": "^9.3.0",
     "dayjs": "^1.11.7",
+    "dotenv": "^16.3.1",
+    "form-data": "^4.0.0",
     "mime": "^3.0.0",
     "node-emoji": "^1.11.0",
     "prompts": "^2.4.1",
@@ -44,5 +46,8 @@
     "typescript": "^4.7.4",
     "urlencode": "^1.1.0",
     "yaml": "^2.1.3"
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix"
   }
 }

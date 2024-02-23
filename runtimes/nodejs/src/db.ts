@@ -1,57 +1,66 @@
 /*
  * @Author: Maslow<wangfugen@126.com>
  * @Date: 2021-08-16 15:29:15
- * @LastEditTime: 2022-02-03 00:42:33
- * @Description:
  */
 
-import { LoggerInterface, MongoAccessor } from 'database-proxy'
+import { MongoAccessor } from 'database-proxy'
 import Config from './config'
-import * as mongodb_uri from 'mongodb-uri'
-import * as log4js from 'log4js'
+import { MongoClient } from 'mongodb'
 import { logger } from './support/logger'
 
 /**
  * Database Management
  */
 export class DatabaseAgent {
-  private static _accessor: MongoAccessor = DatabaseAgent._createAccessor()
+  private static _accessor: MongoAccessor
+  private static _client: MongoClient
+  static ready = this.initialize()
 
   /**
-   * MongoAccessor instance
+   * Mongo client
    */
-  static get accessor() {
-    return this._accessor
+  static get client() {
+    return this._client
   }
 
   /**
    * Database instance
    */
   static get db() {
-    return this._accessor?.db
+    return this.client.db()
+  }
+
+  static async initialize() {
+    const client = new MongoClient(Config.DB_URI)
+
+    let retryDelay = 1000 // 1s
+    const maxDelay = 30 * 1000 // 30s
+
+    while (true) {
+      try {
+        this._client = await client.connect()
+        logger.info('db connected')
+        return this._client
+      } catch (error) {
+        if (retryDelay > maxDelay) {
+          retryDelay = 1000
+          logger.warn('connect db failed, try again...')
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, retryDelay))
+        retryDelay *= 2
+      }
+    }
   }
 
   /**
-   * Create MongoAccessor instance
-   * @returns
+   * MongoAccessor instance of database-proxy
    */
-  private static _createAccessor() {
-    const { database } = mongodb_uri.parse(Config.DB_URI)
-    const accessor = new MongoAccessor(database, Config.DB_URI)
-
-    const accessorLogger: any = log4js.getLogger('accessor')
-    accessorLogger.level = 'warning'
-    accessor.setLogger(accessorLogger as LoggerInterface)
-    accessor
-      .init()
-      .then(async () => {
-        logger.info('db connected')
-      })
-      .catch((error) => {
-        accessorLogger.error(error)
-        setTimeout(() => process.exit(101), 0)
-      })
-
-    return accessor
+  static get accessor() {
+    if (!this._accessor) {
+      this._accessor = new MongoAccessor(this.client)
+      this._accessor.logger.level = 0
+    }
+    return this._accessor
   }
 }

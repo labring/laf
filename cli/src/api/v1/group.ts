@@ -1,5 +1,5 @@
-import { request, RequestParams } from "../../util/request";
-import { CreateGroupDto, GenerateGroupInviteCodeDto, UpdateGroupDto, UpdateGroupMemberRoleDto } from "./data-contracts";
+import { request, RequestParams } from '../../util/request'
+import { CreateGroupDto, GenerateGroupInviteCodeDto, UpdateGroupDto, UpdateGroupMemberRoleDto } from './data-contracts'
 
 /**
  * No description
@@ -13,9 +13,9 @@ import { CreateGroupDto, GenerateGroupInviteCodeDto, UpdateGroupDto, UpdateGroup
 export async function groupControllerFindGroupByAppId(appid: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/group/application/${appid}/group`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -32,9 +32,9 @@ export async function groupControllerFindGroupByInviteCode(
 ): Promise<any> {
   return request({
     url: `/v1/group/invite/code/${code}/group`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -48,9 +48,9 @@ export async function groupControllerFindGroupByInviteCode(
 export async function groupControllerFindAll(configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/group`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -64,10 +64,10 @@ export async function groupControllerFindAll(configParams: RequestParams = {}): 
 export async function groupControllerCreate(data: CreateGroupDto, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/group`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -81,9 +81,9 @@ export async function groupControllerCreate(data: CreateGroupDto, configParams: 
 export async function groupControllerDelete(groupId: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/group/${groupId}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -97,9 +97,9 @@ export async function groupControllerDelete(groupId: string, configParams: Reque
 export async function groupControllerFindOne(groupId: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/group/${groupId}`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -117,10 +117,10 @@ export async function groupControllerUpdateGroup(
 ): Promise<any> {
   return request({
     url: `/v1/group/${groupId}`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -137,9 +137,9 @@ export async function groupInviteControllerGetInviteCode(
 ): Promise<any> {
   return request({
     url: `/v1/group/${groupId}/invite/code`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -157,10 +157,10 @@ export async function groupInviteControllerGenerateInviteCode(
 ): Promise<any> {
   return request({
     url: `/v1/group/${groupId}/invite/code`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -178,9 +178,9 @@ export async function groupInviteControllerDeleteInviteCode(
 ): Promise<any> {
   return request({
     url: `/v1/group/${groupId}/invite/code/${code}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -197,9 +197,9 @@ export async function groupMemberControllerFindMembers(
 ): Promise<any> {
   return request({
     url: `/v1/group/${groupId}/member`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -213,9 +213,9 @@ export async function groupMemberControllerFindMembers(
 export async function groupMemberControllerAddMember(code: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/group/${code}/member/join`,
-    method: "POST",
+    method: 'POST',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -233,9 +233,9 @@ export async function groupMemberControllerRemoveMember(
 ): Promise<any> {
   return request({
     url: `/v1/group/${groupId}/member/${userId}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -254,10 +254,10 @@ export async function groupMemberControllerUpdateMemberRole(
 ): Promise<any> {
   return request({
     url: `/v1/group/${groupId}/member/${userId}/role`,
-    method: "PATCH",
+    method: 'PATCH',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -271,7 +271,7 @@ export async function groupMemberControllerUpdateMemberRole(
 export async function groupMemberControllerLeaveGroup(groupId: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/group/${groupId}/member/leave`,
-    method: "POST",
+    method: 'POST',
     ...configParams,
-  });
+  })
 }

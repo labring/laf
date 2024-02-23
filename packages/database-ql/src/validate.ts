@@ -4,7 +4,7 @@ import {
   WhereFilterOpList,
   OrderByDirection,
   OrderDirectionList,
-  FieldType
+  FieldType,
 } from './constant'
 import { Util } from './util'
 import { getType } from './utils/type'
@@ -17,13 +17,13 @@ import { getType } from './utils/type'
  */
 export class Validate {
   /**
-  * 
-  * @static
-  * @param {StageName:{}|string} stage
-  * @returns {Boolean}
-  * @memberof Validate
-  */
-  static isValidAggregation(stage: object): Boolean {
+   *
+   * @static
+   * @param {StageName:{}|string} stage
+   * @returns {Boolean}
+   * @memberof Validate
+   */
+  static isValidAggregation(stage: object): boolean {
     if (Object.keys(stage).length !== 1) {
       throw new Error('aggregation stage must have one key')
     }
@@ -58,15 +58,14 @@ export class Validate {
    * @param param - 要验证的参数名
    * @param num   - 要验证的参数值
    */
-  static isInteger(param: string, num: number): Boolean {
+  static isInteger(param: string, num: number): boolean {
     if (!Number.isInteger(num)) {
       throw new Error(param + ErrorCode.IntegerError)
     }
     return true
   }
 
-
-  static isProjection(param: string, value: object): Boolean {
+  static isProjection(param: string, value: object): boolean {
     // 遍历value 的 属性值， 只有1，0，ProjectionOperator 三种类型
     if (getType(value) !== 'object') {
       throw new Error(`${param} projection must be an object`)
@@ -76,7 +75,9 @@ export class Validate {
       const subValue = value[key]
       if (getType(subValue) === 'number') {
         if (subValue !== 0 && subValue !== 1) {
-          throw new Error('if the value in projection is of number, it must be 0 or 1')
+          throw new Error(
+            'if the value in projection is of number, it must be 0 or 1'
+          )
         }
       } else if (getType(subValue) === 'object') {
       } else {
@@ -87,12 +88,12 @@ export class Validate {
     return true
   }
 
-  static isOrder(param: string, value: Record<string, any>): Boolean {
+  static isOrder(param: string, value: Record<string, any>): boolean {
     if (getType(value) !== 'object') {
       throw new Error(`${param} order must be an object`)
     }
 
-    for (let key in value) {
+    for (const key in value) {
       const subValue = value[key]
       if (subValue !== 1 && subValue !== -1) {
         throw new Error(`order value must be 1 or -1`)
@@ -106,7 +107,7 @@ export class Validate {
    *
    * @param direction
    */
-  static isFieldOrder(direction: OrderByDirection): Boolean {
+  static isFieldOrder(direction: OrderByDirection): boolean {
     if (OrderDirectionList.indexOf(direction) === -1) {
       throw new Error(ErrorCode.DirectionError)
     }
@@ -120,7 +121,7 @@ export class Validate {
    *
    * @param path
    */
-  static isFieldPath(path: string): Boolean {
+  static isFieldPath(path: string): boolean {
     if (!/^[a-zA-Z0-9-_\.]/.test(path)) {
       throw new Error()
     }
@@ -132,7 +133,7 @@ export class Validate {
    *
    * @param op
    */
-  static isOperator(op: WhereFilterOp): Boolean {
+  static isOperator(op: WhereFilterOp): boolean {
     if (WhereFilterOpList.indexOf(op) === -1) {
       throw new Error(ErrorCode.OpStrError)
     }
@@ -148,7 +149,7 @@ export class Validate {
    *
    * @param name
    */
-  static isCollName(name: string): Boolean {
+  static isCollName(name: string): boolean {
     if (!/^[a-zA-Z0-9]([a-zA-Z0-9-_]){1,32}$/.test(name)) {
       throw new Error(ErrorCode.CollNameError)
     }

@@ -14,6 +14,7 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import axios from "axios";
+import clsx from "clsx";
 import { keyBy, mapValues } from "lodash";
 
 import JSONViewer from "@/components/Editor/JSONViewer";
@@ -47,9 +48,6 @@ export default function DebugPanel(props: { containerRef: any }) {
     getFunctionUrl,
     currentFunction,
     setCurrentRequestId,
-    allFunctionList,
-    setAllFunctionList,
-    setCurrentFunction,
     setCurrentFuncLogs,
     setCurrentFuncTimeUsage,
   } = useFunctionStore((state: any) => state);
@@ -62,6 +60,7 @@ export default function DebugPanel(props: { containerRef: any }) {
   const [runningResData, setRunningResData] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [runningMethod, setRunningMethod] = useState<TMethod>();
+  const [isHovered, setIsHovered] = useState(false);
 
   const compileMutation = useCompileMutation();
   const { colorMode } = useColorMode();
@@ -70,6 +69,8 @@ export default function DebugPanel(props: { containerRef: any }) {
   const [queryParams, setQueryParams] = useState([]);
   const [bodyParams, setBodyParams] = useState<{ contentType: string; data: any }>();
   const [headerParams, setHeaderParams] = useState([]);
+
+  const [abortController, setAbortController] = useState(new AbortController());
 
   const functionPageConfig = useCustomSettingStore((store) => store.layoutInfo.functionPage);
   const { displayName } = useHotKey(
@@ -101,10 +102,17 @@ export default function DebugPanel(props: { containerRef: any }) {
   ];
 
   useEffect(() => {
-    if (currentFunction?.methods) {
-      setRunningMethod(currentFunction.params?.runningMethod || currentFunction.methods[0]);
+    const lastRunningMethod = currentFunction.params?.runningMethod;
+    if (
+      currentFunction?.methods &&
+      lastRunningMethod &&
+      currentFunction.methods.includes(lastRunningMethod)
+    ) {
+      setRunningMethod(lastRunningMethod);
+    } else if (currentFunction?.methods) {
+      setRunningMethod(currentFunction.methods[0]);
     }
-  }, [setRunningMethod, currentFunction]);
+  }, [currentFunction]);
 
   useEffect(() => {
     setBodyParams(currentFunction?.params?.bodyParams);
@@ -126,19 +134,10 @@ export default function DebugPanel(props: { containerRef: any }) {
         runningMethod: runningMethod,
       };
 
-      const res = await updateDebugFunctionMutation.mutateAsync({
+      await updateDebugFunctionMutation.mutateAsync({
         name: currentFunction?.name,
         params: params,
       });
-
-      if (!res.error) {
-        setCurrentFunction({ ...currentFunction, params: params });
-        setAllFunctionList(
-          allFunctionList.map((item: any) =>
-            item._id === currentFunction._id ? { ...currentFunction, params: params } : item,
-          ),
-        );
-      }
 
       if (!compileRes.error) {
         const _funcData = JSON.stringify(compileRes.data);
@@ -147,7 +146,7 @@ export default function DebugPanel(props: { containerRef: any }) {
             return status === 500 ? true : status >= 200 && status < 300;
           },
         });
-
+        const signal = abortController.signal;
         const res = await axiosInstance({
           url: getFunctionUrl(),
           method: runningMethod,
@@ -158,6 +157,7 @@ export default function DebugPanel(props: { containerRef: any }) {
             "x-laf-debug-data": encodeData(_funcData),
             "Content-Type": bodyParams?.contentType || "application/json",
           }),
+          signal,
         });
 
         setCurrentRequestId(res.headers["request-id"]);
@@ -166,11 +166,18 @@ export default function DebugPanel(props: { containerRef: any }) {
 
         setRunningResData(res.data);
       }
+
+      return () => abortController.abort();
     } catch (error: any) {
       setRunningResData(error.toString());
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const cancelRequest = () => {
+    abortController.abort();
+    setAbortController(new AbortController());
   };
 
   return (
@@ -253,14 +260,32 @@ export default function DebugPanel(props: { containerRef: any }) {
                       );
                     })}
                   </Select>
-                  <Tooltip label={`${t("shortcutKey")} ${displayName.toUpperCase()}`}>
+                  <Tooltip
+                    label={isLoading ? "" : `${t("shortcutKey")} ${displayName.toUpperCase()}`}
+                  >
                     <Button
                       disabled={getFunctionUrl() === ""}
-                      className="ml-2 !h-6 !w-14 !bg-primary-600 !text-base"
-                      onClick={() => runningCode()}
-                      isLoading={isLoading}
+                      className={clsx(
+                        "relative ml-2 !h-6 !w-14 !text-base",
+                        isLoading ? "!bg-primary-400" : "!bg-primary-600 ",
+                      )}
+                      onClick={() => (isLoading ? cancelRequest() : runningCode())}
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
                     >
-                      {t("FunctionPanel.Debug")}
+                      {isLoading ? (
+                        <>
+                          {isHovered ? (
+                            t("Cancel")
+                          ) : (
+                            <Center>
+                              <Spinner size={"xs"} />
+                            </Center>
+                          )}
+                        </>
+                      ) : (
+                        t("FunctionPanel.Debug")
+                      )}
                     </Button>
                   </Tooltip>
                 </div>
@@ -336,21 +361,18 @@ export default function DebugPanel(props: { containerRef: any }) {
                     pageId="functionPage"
                     panelId="RunningPanel"
                   />
-                  <div className="relative flex-1 overflow-auto">
+                  <div className="h-full flex-1 overflow-auto">
                     {isLoading ? (
-                      <div className="absolute left-0 right-0">
-                        <Center>
-                          <Spinner />
-                        </Center>
-                      </div>
-                    ) : null}
-                    {runningResData ? (
+                      <Center className="h-full">
+                        <Spinner />
+                      </Center>
+                    ) : runningResData !== undefined ? (
                       <JSONViewer
                         colorMode={colorMode}
                         code={JSON.stringify(runningResData, null, 2)}
                       />
                     ) : (
-                      <Center minH={140} className="text-grayIron-600">
+                      <Center className="h-full text-grayIron-600">
                         {t("FunctionPanel.EmptyDebugTip")}
                       </Center>
                     )}

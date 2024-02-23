@@ -1,5 +1,5 @@
-import { request, RequestParams } from "../../util/request";
-import { CreateTriggerDto } from "./data-contracts";
+import { request, RequestParams } from '../../util/request'
+import { CreateTriggerDto } from './data-contracts'
 
 /**
  * No description
@@ -17,10 +17,10 @@ export async function triggerControllerCreate(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/triggers`,
-    method: "POST",
+    method: 'POST',
     data: data,
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -34,9 +34,9 @@ export async function triggerControllerCreate(
 export async function triggerControllerFindAll(appid: string, configParams: RequestParams = {}): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/triggers`,
-    method: "GET",
+    method: 'GET',
     ...configParams,
-  });
+  })
 }
 /**
  * No description
@@ -54,7 +54,7 @@ export async function triggerControllerRemove(
 ): Promise<any> {
   return request({
     url: `/v1/apps/${appid}/triggers/${id}`,
-    method: "DELETE",
+    method: 'DELETE',
     ...configParams,
-  });
+  })
 }

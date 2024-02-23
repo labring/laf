@@ -23,7 +23,7 @@ export async function list() {
   const table = new Table({
     head: ['name', 'shortName', 'policy', 'updatedAt'],
   })
-  for (let item of buckets) {
+  for (const item of buckets) {
     table.push([item.name, item.shortName, item.policy, item.updatedAt])
   }
   console.log(table.toString())
@@ -124,7 +124,7 @@ export async function pull(bucketName: string, outPath: string, options: { force
       const getCommand = new GetObjectCommand({ Bucket: bucketName, Key: item.Key })
       const obj = await client.send(getCommand)
       const filepath = path.resolve(absPath, item.Key)
-      let readableStream: Readable = obj.Body as Readable
+      const readableStream: Readable = obj.Body as Readable
       if (options.detail) {
         console.log(`${getEmoji('📥')} download file: ${filepath}`)
       }
