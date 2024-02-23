@@ -1,0 +1,6 @@
+{
+  "InsufficientBalance": {
+    "title": "Laf account is in arrears",
+    "content": "Your account is in arrears, the app {appid} will stop running, please recharge your account promptly!"
+  }
+}

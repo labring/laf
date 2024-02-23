@@ -30,6 +30,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core'
 import { AppInterceptor } from './app.interceptor'
 import { InterceptorModule } from './interceptor/interceptor.module'
 import { MonitorModule } from './monitor/monitor.module'
+import { NotificationModule } from './notification/notification.module'
+import { ServerConfig } from './constants'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 
 @Module({
@@ -56,7 +58,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter'
     AccountModule,
     SettingModule,
     I18nModule.forRoot({
-      fallbackLanguage: 'en',
+      fallbackLanguage: ServerConfig.DEFAULT_LANGUAGE,
       loaderOptions: {
         path: path.join(__dirname, '/i18n/'),
         watch: false,
@@ -77,6 +79,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter'
     GroupModule,
     InterceptorModule,
     MonitorModule,
+    NotificationModule,
     EventEmitterModule.forRoot(),
   ],
   controllers: [AppController],

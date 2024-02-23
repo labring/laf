@@ -14,12 +14,16 @@ import * as assert from 'assert'
 import { Account } from 'src/account/entities/account'
 import { AccountTransaction } from 'src/account/entities/account-transaction'
 import Decimal from 'decimal.js'
+import { NotificationService } from 'src/notification/notification.service'
+import { NotificationType } from 'src/notification/notification-type'
 
 @Injectable()
 export class BillingPaymentTaskService {
   private readonly logger = new Logger(BillingPaymentTaskService.name)
   private readonly lockTimeout = 60 * 60 // in second
   private lastTick = TASK_LOCK_INIT_TIME
+
+  constructor(private readonly notificationService: NotificationService) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
   async tick() {
@@ -142,6 +146,14 @@ export class BillingPaymentTaskService {
             this.logger.warn(
               `Application ${billing.appid} stopped due to insufficient balance`,
             )
+
+            this.notificationService.notify({
+              type: NotificationType.InsufficientBalance,
+              uid: account.createdBy,
+              payload: {
+                appid: billing.appid,
+              },
+            })
           }
         }
       })

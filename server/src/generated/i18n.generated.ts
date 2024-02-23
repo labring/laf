@@ -22,5 +22,11 @@ export type I18nTranslations = {
             "notFound": string;
         };
     };
+    "notification": {
+        "InsufficientBalance": {
+            "title": string;
+            "content": string;
+        };
+    };
 };
 export type I18nPath = Path<I18nTranslations>;
