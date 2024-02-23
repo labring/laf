@@ -80,6 +80,9 @@ export class ServerConfig {
   }
 
   static get DISABLE_NOTIFICATION_TASK() {
+    if (!process.env.DISABLE_NOTIFICATION_TASK) {
+      return true
+    }
     return process.env.DISABLE_NOTIFICATION_TASK === 'true'
   }
 
