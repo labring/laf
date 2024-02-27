@@ -239,7 +239,7 @@
     "FuncListDisplay": "函数列表显示",
     "ListDisplay": "列表显示",
     "EditorLanguageServer": "编辑器语言服务",
-    "isOpenLanguageServer": "是否开启语言服务（仅在应用配置高于 0.5C 1G 时生效）",
+    "isOpenLanguageServer": "是否开启 TypeScript 语言服务（体验更好的类型提示，仅在应用配置高于 0.5C 1G 时生效）",
     "Editor": "编辑器",
     "FuncList": "函数列表",
     "EditorMode": "使用编辑器模式",
@@ -247,7 +247,8 @@
     "MonitorSetting": "资源监控",
     "DatabaseMonitor": "数据库监控",
     "RuntimeMonitor": "运行时监控",
-    "ClientSetting": "客户端设置"
+    "ClientSetting": "客户端设置",
+    "AICompletion": "是否开启代码智能补全（需刷新生效）"
   },
   "StoragePanel": {
     "All": "总容量",

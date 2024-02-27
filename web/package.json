@@ -58,6 +58,7 @@
     "react-icons": "^4.8.0",
     "react-image-crop": "^10.1.5",
     "react-markdown": "^8.0.7",
+    "react-monaco-copilot": "^1.0.3",
     "react-router-dom": "^6.11.2",
     "react-syntax-highlighter": "^15.5.0",
     "react-window": "^1.8.10",

@@ -27,6 +27,7 @@ type TCommonSettings = {
   fontSize: number;
   funcListDisplay: string;
   useLSP: boolean;
+  useCopilot: boolean;
 };
 
 type State = {
@@ -177,6 +178,7 @@ const useCustomSettingStore = create<State>()(
           fontSize: 14,
           funcListDisplay: "name",
           useLSP: true,
+          useCopilot: true,
         },
 
         setCommonSettings: (settings) => {

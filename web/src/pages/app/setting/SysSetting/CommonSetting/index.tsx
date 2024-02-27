@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Divider, Select, Switch, useColorMode } from "@chakra-ui/react";
+import { Button, Divider, HStack, Select, Switch, useColorMode, VStack } from "@chakra-ui/react";
 import clsx from "clsx";
 
 import useCustomSettingStore from "@/pages/customSetting";
@@ -21,75 +21,124 @@ export default function CommonSetting() {
 
   return (
     <div className="ml-12 mr-16">
-      <div className="mt-8 flex flex-col">
-        <span className="mb-2 text-xl font-medium">{t("SettingPanel.Editor")}</span>
-        <span className={darkMode ? "mb-2 text-grayModern-200" : "mb-2 text-grayModern-700"}>
-          {t("SettingPanel.isOpenLanguageServer")}
-        </span>
-        <div className="w-48">
-          <Switch
-            defaultChecked={currentCommonSettings.useLSP}
-            onChange={() => {
-              setCurrentCommonSettings({
-                ...currentCommonSettings,
-                useLSP: !currentCommonSettings.useLSP,
-              });
-            }}
-            variant={"primary"}
-            colorScheme="primary"
-          />
-        </div>
-      </div>
-      <div className="mt-4 flex flex-col">
-        <span className={darkMode ? "mb-2 text-grayModern-200" : "mb-2 text-grayModern-700"}>
-          {t("SettingPanel.FontSize")}
-        </span>
-        <div className="w-48">
-          <Select
-            className={clsx("!h-8 !border-frostyNightfall-200", darkMode ? "" : "!bg-lafWhite-500")}
-            value={currentCommonSettings.fontSize}
-            onChange={(e) =>
-              setCurrentCommonSettings({
-                ...currentCommonSettings,
-                fontSize: Number(e.target.value),
-              })
-            }
-          >
-            {fontSizes.map((size) => {
-              return (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              );
-            })}
-          </Select>
-        </div>
+      <div className="mt-8">
+        <header className="text-xl font-medium">{t("SettingPanel.Editor")}</header>
+        <VStack spacing={3} pt={3}>
+          <HStack justifyContent="space-between" w="full">
+            <span
+              className={clsx(
+                "text-[13px]",
+                darkMode ? "text-grayModern-200" : "text-grayModern-700",
+              )}
+            >
+              {t("SettingPanel.isOpenLanguageServer")}
+            </span>
+            <Switch
+              defaultChecked={currentCommonSettings.useLSP}
+              onChange={() => {
+                setCurrentCommonSettings({
+                  ...currentCommonSettings,
+                  useLSP: !currentCommonSettings.useLSP,
+                });
+              }}
+              variant={"primary"}
+              colorScheme="primary"
+            />
+          </HStack>
+          <HStack justifyContent="space-between" w="full">
+            <span
+              className={clsx(
+                "text-[13px]",
+                darkMode ? "text-grayModern-200" : "text-grayModern-700",
+              )}
+            >
+              {t("SettingPanel.AICompletion")}
+            </span>
+            <Switch
+              defaultChecked={currentCommonSettings.useCopilot}
+              onChange={() => {
+                setCurrentCommonSettings({
+                  ...currentCommonSettings,
+                  useCopilot: !currentCommonSettings.useCopilot,
+                });
+              }}
+              variant={"primary"}
+              colorScheme="primary"
+            />
+          </HStack>
+          <HStack justifyContent="space-between" w="full">
+            <span
+              className={clsx(
+                "text-[13px]",
+                darkMode ? "text-grayModern-200" : "text-grayModern-700",
+              )}
+            >
+              {t("SettingPanel.FontSize")}
+            </span>
+            <Select
+              w="24"
+              className={clsx(
+                "!h-7 !border-frostyNightfall-200",
+                darkMode ? "" : "!bg-lafWhite-500",
+              )}
+              value={currentCommonSettings.fontSize}
+              onChange={(e) =>
+                setCurrentCommonSettings({
+                  ...currentCommonSettings,
+                  fontSize: Number(e.target.value),
+                })
+              }
+            >
+              {fontSizes.map((size) => {
+                return (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                );
+              })}
+            </Select>
+          </HStack>
+        </VStack>
       </div>
       <Divider className="my-8" />
-      <div className="flex flex-col">
-        <span className="mb-2 text-xl font-medium">{t("SettingPanel.FuncList")}</span>
-        <span className={darkMode ? "mb-2 text-grayModern-200" : "mb-2 text-grayModern-700"}>
-          {t("SettingPanel.ListDisplay")}
-        </span>
-        <div className="w-48">
-          <Select
-            className={clsx("!h-8 !border-frostyNightfall-200", darkMode ? "" : "!bg-lafWhite-500")}
-            value={currentCommonSettings.funcListDisplay}
-            onChange={(e) =>
-              setCurrentCommonSettings({
-                ...currentCommonSettings,
-                funcListDisplay: e.target.value,
-              })
-            }
-          >
-            <option value="name">{t("SettingModal.FunctionName")}</option>
-            <option value="desc">{t("SettingModal.FunctionDesc")}</option>
-            <option value="desc-name">{t("SettingModal.FunctionDesc_Name")}</option>
-            <option value="name-desc">{t("SettingModal.FunctionName_Desc")}</option>
-          </Select>
-        </div>
+      <div>
+        <header className="text-xl font-medium">{t("SettingPanel.FuncList")}</header>
+        <VStack spacing={3} pt={3}>
+          <HStack justifyContent="space-between" w="full">
+            <span
+              className={clsx(
+                "text-[13px]",
+                darkMode ? "text-grayModern-200" : "text-grayModern-700",
+              )}
+            >
+              {t("SettingPanel.ListDisplay")}
+            </span>
+            <Select
+              w="24"
+              className={clsx(
+                "!h-7 !border-frostyNightfall-200",
+                darkMode ? "" : "!bg-lafWhite-500",
+              )}
+              value={currentCommonSettings.funcListDisplay}
+              onChange={(e) =>
+                setCurrentCommonSettings({
+                  ...currentCommonSettings,
+                  funcListDisplay: e.target.value,
+                })
+              }
+            >
+              <option value="name">{t("SettingModal.FunctionName")}</option>
+              <option value="desc">{t("SettingModal.FunctionDesc")}</option>
+              <option value="desc-name">{t("SettingModal.FunctionDesc_Name")}</option>
+              <option value="name-desc">{t("SettingModal.FunctionName_Desc")}</option>
+            </Select>
+          </HStack>
+        </VStack>
       </div>
-      <Button className="mt-8 !h-9 w-48 !bg-primary-600 hover:!bg-primary-700" onClick={handleSave}>
+      <Button
+        className="mt-12 !h-9 w-48 !bg-primary-600 hover:!bg-primary-700"
+        onClick={handleSave}
+      >
         {t("Save")}
       </Button>
     </div>
