@@ -31,7 +31,6 @@ import {
   WeChatPayTradeState,
 } from './payment/types'
 import { WeChatPayService } from './payment/wechat-pay.service'
-import * as assert from 'assert'
 import { ServerConfig } from 'src/constants'
 import {
   AccountChargeOrder,
@@ -40,7 +39,6 @@ import {
 import { ObjectId } from 'mongodb'
 import { SystemDatabase } from 'src/system-database'
 import { Account } from './entities/account'
-import { AccountTransaction } from './entities/account-transaction'
 import { JwtAuthGuard } from 'src/authentication/jwt.auth.guard'
 import { AccountChargeReward } from './entities/account-charge-reward'
 import { InviteCode } from 'src/authentication/entities/invite-code'
@@ -217,6 +215,11 @@ export class AccountController {
    */
   @Post('payment/wechat-notify')
   async wechatNotify(@Req() req: IRequest, @Res() res: IResponse) {
+    // start transaction
+    const client = SystemDatabase.client
+    const session = client.startSession()
+    session.startTransaction()
+
     try {
       // get headers
       const headers = req.headers
@@ -259,66 +262,51 @@ export class AccountController {
         return res.status(200).send()
       }
 
-      // start transaction
-      const client = SystemDatabase.client
-      const session = client.startSession()
-      await session.withTransaction(async () => {
-        // update order to success
-        const res = await db
-          .collection<WeChatPayChargeOrder>('AccountChargeOrder')
-          .findOneAndUpdate(
-            { _id: tradeOrderId, phase: AccountChargePhase.Pending },
-            { $set: { phase: AccountChargePhase.Paid, result: result } },
-            { session, returnDocument: 'after' },
-          )
-
-        const order = res.value
-        if (!order) {
-          this.logger.error(`wechatpay order not found: ${tradeOrderId}`)
-          return
-        }
-
-        // get max reward
-        const reward = await db
-          .collection<AccountChargeReward>('AccountChargeReward')
-          .findOne(
-            {
-              amount: { $lte: order.amount },
-            },
-            { sort: { amount: -1 } },
-          )
-
-        const realAmount = reward ? reward.reward + order.amount : order.amount
-
-        const ret = await db
-          .collection<Account>('Account')
-          .findOneAndUpdate(
-            { _id: order.accountId },
-            { $inc: { balance: realAmount }, $set: { updatedAt: new Date() } },
-            { session, returnDocument: 'after' },
-          )
-
-        assert(ret.value, `account not found: ${order.accountId}`)
-
-        // create transaction
-        await db.collection<AccountTransaction>('AccountTransaction').insertOne(
-          {
-            accountId: order.accountId,
-            amount: order.amount,
-            reward: reward?.reward,
-            balance: ret.value.balance,
-            message: 'Recharge by WeChat Pay',
-            orderId: order._id,
-            createdAt: new Date(),
-          },
-          { session },
+      // update order to success
+      const resultOfOrder = await db
+        .collection<WeChatPayChargeOrder>('AccountChargeOrder')
+        .findOneAndUpdate(
+          { _id: tradeOrderId, phase: AccountChargePhase.Pending },
+          { $set: { phase: AccountChargePhase.Paid, result: result } },
+          { session, returnDocument: 'after' },
         )
 
-        this.logger.log(`wechatpay order success: ${tradeOrderId}`)
-      })
+      const order = resultOfOrder.value
+
+      if (!order) {
+        this.logger.error(`wechatpay order not found: ${tradeOrderId}`)
+        return
+      }
+
+      // get max reward
+      const reward = await db
+        .collection<AccountChargeReward>('AccountChargeReward')
+        .findOne(
+          {
+            amount: { $lte: order.amount },
+          },
+          { sort: { amount: -1 } },
+        )
+
+      const realAmount = reward ? reward.reward + order.amount : order.amount
+
+      await this.accountService.chargeWithTransaction(
+        order.accountId,
+        realAmount,
+        'Recharge by WeChat Pay',
+        session,
+        { reward: reward?.reward, orderId: order._id },
+      )
+
+      this.logger.log(`wechatpay order success: ${tradeOrderId}`)
+
+      await session.commitTransaction()
     } catch (err) {
+      await session.abortTransaction()
       this.logger.error(err)
       return res.status(400).send({ code: 'FAIL', message: 'ERROR' })
+    } finally {
+      session.endSession()
     }
 
     return res.status(200).send()

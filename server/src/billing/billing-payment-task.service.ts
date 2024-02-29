@@ -131,6 +131,19 @@ export class BillingPaymentTaskService {
 
         // stop application if balance is not enough
         if (newBalance < 0) {
+          await db.collection<Account>('Account').updateOne(
+            {
+              _id: account._id,
+              owedAt: { $exists: false },
+            },
+            {
+              $set: {
+                owedAt: new Date(),
+              },
+            },
+            { session },
+          )
+
           const res = await db.collection<Application>('Application').updateOne(
             { appid: billing.appid, state: ApplicationState.Running },
             {

@@ -10,6 +10,13 @@ export class Account {
   @ApiProperty({ type: String })
   _id?: ObjectId
 
+  @ApiProperty({
+    type: Date,
+    required: false,
+    description: 'The timestamp when the account became owed',
+  })
+  owedAt?: Date
+
   @ApiProperty()
   balance: number
 
