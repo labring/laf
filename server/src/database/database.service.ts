@@ -239,12 +239,14 @@ export class DatabaseService {
     const dedicatedDatabase = await this.dedicatedDatabaseService.findOne(appid)
 
     if (sharedDatabase && dedicatedDatabase) {
-      throw new Error('Database found in both shared and dedicated databases.')
+      throw new Error(
+        `Database ${appid} found in both shared and dedicated databases.`,
+      )
     }
 
     if (!sharedDatabase && !dedicatedDatabase) {
       throw new Error(
-        'Database not found in both shared and dedicated databases.',
+        `Database  ${appid} not found in both shared and dedicated databases.`,
       )
     }
     let connectionUri
@@ -257,7 +259,7 @@ export class DatabaseService {
       )
     }
 
-    assert(connectionUri, 'Database connection uri not found')
+    assert(connectionUri, `Database  ${appid} connection uri not found`)
 
     try {
       await p_exec(
@@ -284,12 +286,14 @@ export class DatabaseService {
     const dedicatedDatabase = await this.dedicatedDatabaseService.findOne(appid)
 
     if (sharedDatabase && dedicatedDatabase) {
-      throw new Error('Database found in both shared and dedicated databases.')
+      throw new Error(
+        `Database ${appid} found in both shared and dedicated databases.`,
+      )
     }
 
     if (!sharedDatabase && !dedicatedDatabase) {
       throw new Error(
-        'Database not found in both shared and dedicated databases.',
+        `Database ${appid} not found in both shared and dedicated databases.`,
       )
     }
     let connectionUri
@@ -301,16 +305,16 @@ export class DatabaseService {
         dedicatedDatabase,
       )
     }
-    assert(connectionUri, 'Database connection uri not found')
+    assert(connectionUri, `Database ${appid} connection uri not found`)
 
     try {
       await p_exec(
         `mongorestore --uri='${connectionUri}' --gzip --archive='${filePath}' --nsFrom="${dbName}.*" --nsTo="${appid}.*" -v --nsInclude="${dbName}.*"`,
       )
 
-      await this.migrateAppFuncsToSys(appid, uid)
+      await this.recoverFunctionsToSystemDatabase(appid, uid)
 
-      await await this.db
+      await this.db
         .collection<DatabaseSyncRecord>('DatabaseSyncRecord')
         .insertOne({ uid, createdAt: new Date() })
     } catch (error) {
@@ -320,7 +324,7 @@ export class DatabaseService {
     }
   }
 
-  async migrateAppFuncsToSys(appid: string, uid: ObjectId) {
+  async recoverFunctionsToSystemDatabase(appid: string, uid: ObjectId) {
     const { db, client } =
       (await this.dedicatedDatabaseService.findAndConnect(appid)) ||
       (await this.findAndConnect(appid))
@@ -335,7 +339,7 @@ export class DatabaseService {
         .countDocuments({ appid })
 
       if (functionsExist) {
-        this.logger.debug('Functions already exist in system database')
+        this.logger.debug(`${appid} Functions already exist in system database`)
         return
       }
 
@@ -344,7 +348,7 @@ export class DatabaseService {
         .toArray()
 
       if (funcs.length === 0) {
-        this.logger.debug('No functions to migrate.')
+        this.logger.debug(` ${appid} No functions for recover.`)
         return
       }
 
