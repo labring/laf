@@ -7,6 +7,7 @@ import { ServerConfig } from './constants'
 import { InitializerService } from './initializer/initializer.service'
 import { SystemDatabase } from './system-database'
 import * as helmet from 'helmet'
+import * as bodyParser from 'body-parser'
 
 async function bootstrap() {
   await SystemDatabase.ready
@@ -31,6 +32,7 @@ async function bootstrap() {
 
   app.use(compression())
   app.use(helmet.hidePoweredBy())
+  app.use(bodyParser.json({ limit: '1mb' }))
 
   // for swagger api
   const config = new DocumentBuilder()
