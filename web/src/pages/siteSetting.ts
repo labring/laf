@@ -10,6 +10,7 @@ type SITE_KEY =
   | "id_verify"
   | "site_url"
   | "ai_pilot_url"
+  | "ai_complete_url"
   | "laf_forum_url"
   | "laf_business_url"
   | "laf_discord_url"
