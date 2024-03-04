@@ -84,7 +84,7 @@ export class AccountService {
 
     assert(res.value, `account not found: ${accountId}`)
 
-    if (res.value.balance > 0 && res.value.owedAt) {
+    if (res.value.balance > 0 && res.value?.owedAt) {
       await this.db
         .collection<Account>('Account')
         .updateOne({ _id: accountId }, { $unset: { owedAt: '' } }, { session })
