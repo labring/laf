@@ -36,6 +36,7 @@ export class BillingCreationTaskService {
     }
 
     // If last tick is less than 1 minute ago, return
+    // Limit concurrency? But then there's only ever one task, even with 3 server copies. !!!
     if (Date.now() - this.lastTick.getTime() < 1000 * 60) {
       this.logger.debug(
         `Skip billing creation task due to last tick time ${this.lastTick.toISOString()}`,
