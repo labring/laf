@@ -400,7 +400,7 @@
     "ToRegister": "去注册",
     "ToLogin": "去登录",
     "PasswordLogin": "密码登录",
-    "PhoneLogin": "验证码登录",
+    "PhoneLogin": "手机号登录",
     "Account": "用户名",
     "AccountPlaceholder": "请输入用户名",
     "Password": "密码",
@@ -422,7 +422,7 @@
     "PleaseBindUser": "请绑定对应用户",
     "Email": "邮箱",
     "EmailPlaceholder": "请输入你的邮箱",
-    "EmailLogin": "验证码登录"
+    "EmailLogin": "邮箱登录"
   },
   "Time": "时间",
   "CreateTime": "创建时间",
