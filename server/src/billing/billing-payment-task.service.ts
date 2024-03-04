@@ -132,7 +132,7 @@ export class BillingPaymentTaskService {
         // stop application if balance is not enough
         if (newBalance < 0) {
           // if owed, add an owe flag
-          if (!account?.owedAt) {
+          if (!account.owedAt) {
             await db.collection<Account>('Account').updateOne(
               {
                 _id: account._id,
