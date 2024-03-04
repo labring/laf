@@ -265,6 +265,11 @@ export class BillingCreationTaskService {
       replicas: bundle.resource.dedicatedDatabase?.replicas || 0,
     }
 
+    if (dto.cpu === 0 && dto.memory === 0) {
+      dto.dedicatedDatabase.cpu = 0
+      dto.dedicatedDatabase.memory = 0
+    }
+
     return dto
   }
 }
