@@ -81,11 +81,6 @@ export default function SignIn() {
               showPhoneSigninBtn={!!phoneProvider}
               showEmailSigninBtn={!!emailProvider}
               setCurrentProvider={setCurrentProvider}
-              // switchLoginType={() =>
-              //   defaultProvider.name === PROVIDER_NAME.PHONE
-              //     ? setCurrentProvider(PROVIDER_NAME.PHONE)
-              //     : setCurrentProvider(PROVIDER_NAME.EMAIL)
-              // }
               isDarkMode={darkMode}
             />
           ) : null}
