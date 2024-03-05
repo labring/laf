@@ -9,6 +9,13 @@ export class ServerConfig {
 
   static get DATABASE_URL() {
     if (!process.env.DATABASE_URL) {
+      return
+    }
+    return process.env.DATABASE_URL
+  }
+
+  static get TRAFFIC_DATABASE_URL() {
+    if (!process.env.TRAFFIC_DATABASE_URL) {
       throw new Error('DATABASE_URL is not defined')
     }
     return process.env.DATABASE_URL

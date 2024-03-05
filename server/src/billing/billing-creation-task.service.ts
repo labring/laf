@@ -36,7 +36,7 @@ export class BillingCreationTaskService {
     }
 
     // If last tick is less than 1 minute ago, return
-    // Limit concurrency? But then there's only ever one task, even with 3 server copies. !!!
+    // Limit concurrency? But then there's only ever one task, even with 3 server replicas. !!!
     if (Date.now() - this.lastTick.getTime() < 1000 * 60) {
       this.logger.debug(
         `Skip billing creation task due to last tick time ${this.lastTick.toISOString()}`,
@@ -110,6 +110,7 @@ export class BillingCreationTaskService {
 
     const meteringData = await this.billing.getMeteringData(
       app,
+      latestBillingTime,
       nextMeteringTime,
     )
     if (meteringData.cpu === 0 && meteringData.memory === 0) {
@@ -189,6 +190,10 @@ export class BillingCreationTaskService {
                 usage: priceInput.dedicatedDatabase.capacity,
                 amount: priceResult.dedicatedDatabase.capacity,
               },
+              networkTraffic: {
+                usage: priceInput.networkTraffic,
+                amount: priceResult.networkTraffic,
+              },
             },
             startAt: startAt,
             endAt: nextMeteringTime,
@@ -258,6 +263,7 @@ export class BillingCreationTaskService {
     dto.memory = meteringData.memory
     dto.storageCapacity = bundle.resource.storageCapacity
     dto.databaseCapacity = bundle.resource.databaseCapacity
+    dto.networkTraffic = meteringData.networkTraffic || 0
 
     dto.dedicatedDatabase = {
       cpu: bundle.resource.dedicatedDatabase?.limitCPU || 0,

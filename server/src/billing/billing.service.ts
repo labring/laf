@@ -11,14 +11,19 @@ import { BillingQuery } from './interface/billing-query.interface'
 import { PrometheusDriver } from 'prometheus-query'
 import { Application } from 'src/application/entities/application'
 import { RegionService } from 'src/region/region.service'
+import { PodService } from 'src/application/pod.service'
+import { Traffic } from './entities/network-traffic'
+import { TrafficDatabase } from 'src/system-database'
 
 @Injectable()
 export class BillingService {
   private readonly db = SystemDatabase.db
+  private readonly trafficDB = TrafficDatabase.db
 
   constructor(
     private readonly resource: ResourceService,
     private readonly region: RegionService,
+    private readonly podService: PodService,
   ) {}
 
   async query(userId: ObjectId, condition?: BillingQuery) {
@@ -213,6 +218,11 @@ export class BillingService {
       'dedicated database replicas option not found',
     )
 
+    assert(
+      groupedOptions[ResourceType.NetworkTraffic],
+      'network traffic not found',
+    )
+
     // calculate cpu price
     const cpuOption = groupedOptions[ResourceType.CPU]
     const cpuPrice = new Decimal(cpuOption.price).mul(dto.cpu)
@@ -257,12 +267,18 @@ export class BillingService {
 
     const ddbTotalPrice = ddbCPUPrice.add(ddbMemoryPrice).add(ddbCapacityPrice)
 
+    const networkTrafficOption = groupedOptions[ResourceType.NetworkTraffic]
+    const networkTrafficPrice = new Decimal(networkTrafficOption.price).mul(
+      dto.networkTraffic || 0,
+    )
+
     // calculate total price
     const totalPrice = cpuPrice
       .add(memoryPrice)
       .add(storagePrice)
       .add(databasePrice)
       .add(ddbTotalPrice)
+      .add(networkTrafficPrice)
 
     return {
       cpu: cpuPrice.toNumber(),
@@ -274,11 +290,12 @@ export class BillingService {
         memory: ddbMemoryPrice.toNumber(),
         capacity: ddbCapacityPrice.toNumber(),
       },
+      networkTraffic: networkTrafficPrice.toNumber(),
       total: totalPrice.toNumber(),
     }
   }
 
-  async getMeteringData(app: Application, time: Date) {
+  async getMeteringData(app: Application, startAt: Date, endAt: Date) {
     const region = await this.region.findOne(app.regionId)
 
     const prom = new PrometheusDriver({
@@ -286,12 +303,12 @@ export class BillingService {
     })
 
     const cpuTask = prom
-      .instantQuery(`laf:billing:cpu{appid="${app.appid}"}`, time)
+      .instantQuery(`laf:billing:cpu{appid="${app.appid}"}`, endAt)
       .then((res) => res.result[0])
       .then((res) => Number(res.value.value))
 
     const memoryTask = prom
-      .instantQuery(`laf:billing:memory{appid="${app.appid}"}`, time)
+      .instantQuery(`laf:billing:memory{appid="${app.appid}"}`, endAt)
       .then((res) => res.result[0])
       .then((res) => Number(res.value.value))
 
@@ -299,9 +316,49 @@ export class BillingService {
       return [0, 0]
     })
 
+    const networkTraffic = await this.getAppTrafficUsage(app, startAt, endAt)
+
     return {
       cpu,
       memory,
+      networkTraffic,
     }
+  }
+
+  async getAppTrafficUsage(
+    app: Application,
+    startAt: Date,
+    endAt: Date,
+  ): Promise<number> {
+    if (!this.trafficDB) {
+      return 0
+    }
+
+    // get app pod name list
+    const podNameList = await this.podService.getPodNameListByAppid(app.appid)
+
+    const aggregationPipeline = [
+      {
+        $match: {
+          'traffic_meta.pod_name': { $in: podNameList },
+          timestamp: { $gte: startAt, $lt: endAt },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalSentBytes: { $sum: '$sent_bytes' },
+        },
+      },
+    ]
+
+    // get app network usage
+    const result = await this.trafficDB
+      .collection<Traffic>('traffic')
+      .aggregate(aggregationPipeline)
+      .toArray()
+
+    // date form mb
+    return
   }
 }

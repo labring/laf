@@ -9,6 +9,9 @@ export class CalculatePriceDto extends OmitType(UpdateApplicationBundleDto, [
   @IsNotEmpty()
   @IsString()
   regionId: string
+
+  @ApiProperty({ example: 0.036, required: false })
+  networkTraffic?: number
 }
 
 export class CalculatePriceResultDto {
@@ -17,6 +20,9 @@ export class CalculatePriceResultDto {
 
   @ApiProperty({ example: 0.036 })
   memory: number
+
+  @ApiProperty({ example: 0.036, required: false })
+  networkTraffic?: number
 
   @ApiProperty({ example: 0.036 })
   storageCapacity: number
