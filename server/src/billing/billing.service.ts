@@ -340,7 +340,7 @@ export class BillingService {
     const aggregationPipeline = [
       {
         $match: {
-          'traffic_meta.pod_name': { $in: podNameList },
+          'traffic_meta.pod_name': { $in: podNameList.podNameList },
           timestamp: { $gte: startAt, $lt: endAt },
         },
       },
