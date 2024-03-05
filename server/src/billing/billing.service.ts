@@ -358,7 +358,9 @@ export class BillingService {
       .aggregate(aggregationPipeline)
       .toArray()
 
-    // date form mb
+    console.log(result)
+
+    // date form mb  litter 1 mb is 1 mb 往大取整
     return
   }
 }
