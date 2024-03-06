@@ -86,7 +86,7 @@ const SettingModal = (props: {
         })}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent maxW={"80%"} width={"auto"} minW={1024}>
+        <ModalContent maxW={"80%"} width={"auto"} minW={1060}>
           <ModalCloseButton />
           <ModalBody py={2} minH={550} className="relative">
             <ModalCloseButton />

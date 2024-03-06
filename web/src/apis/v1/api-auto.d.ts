@@ -380,6 +380,7 @@ declare namespace Definitions {
     memory?: number;
     databaseCapacity?: number;
     storageCapacity?: number;
+    networkTraffic?: number;
     autoscaling?: Definitions.CreateAutoscalingDto;
     dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto;
     regionId?: string;
@@ -390,6 +391,7 @@ declare namespace Definitions {
     memory?: number;
     storageCapacity?: number;
     databaseCapacity?: number;
+    networkTraffic?: number;
     total?: number;
   };
 
