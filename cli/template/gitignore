@@ -1,7 +1,4 @@
-package.json
-tsconfig.json
-types
 node_modules
 .app.yaml
-package.json
 package-lock.json
+laf.yaml
