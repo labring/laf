@@ -1,4 +1,3 @@
 node_modules
 .app.yaml
 package-lock.json
-laf.yaml
