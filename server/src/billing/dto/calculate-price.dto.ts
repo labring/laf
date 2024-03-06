@@ -1,17 +1,18 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger'
-import { IsNotEmpty, IsString } from 'class-validator'
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator'
 import { UpdateApplicationBundleDto } from 'src/application/dto/update-application.dto'
 
 export class CalculatePriceDto extends OmitType(UpdateApplicationBundleDto, [
   'validate',
 ]) {
+  @ApiProperty({ example: 0.036 })
+  @IsOptional()
+  networkTraffic?: number
+
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   regionId: string
-
-  @ApiProperty({ example: 0.036, required: false })
-  networkTraffic?: number
 }
 
 export class CalculatePriceResultDto {
