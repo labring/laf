@@ -362,6 +362,8 @@ export class BillingService {
     const totalSentBytes = result[0]?.totalSentBytes || 0
     const bytesPerMegabyte = 1024 * 1024
     const totalSentMegabytes = Math.ceil(totalSentBytes / bytesPerMegabyte)
+    console.log(totalSentMegabytes, 'totalSentMegabytes')
+    console.log(result)
 
     return totalSentMegabytes
   }
