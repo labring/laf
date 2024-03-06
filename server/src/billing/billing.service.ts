@@ -358,9 +358,11 @@ export class BillingService {
       .aggregate(aggregationPipeline)
       .toArray()
 
-    console.log(result)
+    // [ { _id: null, totalSentBytes: Long('70204946') } ]
+    const totalSentBytes = result[0]?.totalSentBytes || 0
+    const bytesPerMegabyte = 1024 * 1024
+    const totalSentMegabytes = Math.ceil(totalSentBytes / bytesPerMegabyte)
 
-    // date form mb  litter 1 mb is 1 mb 往大取整
-    return
+    return totalSentMegabytes
   }
 }
