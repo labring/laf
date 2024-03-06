@@ -40,7 +40,7 @@ export default function PricingStandards() {
         memory: 1024,
         databaseCapacity: 1024,
         storageCapacity: 1024,
-        networkTraffic: 1073741824,
+        networkTraffic: 1024, // 1G
         regionId: regions && regions[0].bundles[0].regionId,
       });
     },
