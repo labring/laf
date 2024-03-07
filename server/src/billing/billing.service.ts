@@ -357,21 +357,24 @@ export class BillingService {
       .aggregate(aggregationPipeline)
       .toArray()
 
-    const test = await this.trafficDB.collection<Traffic>('traffic').aggregate([
-      {
-        $match: {
-          'traffic_meta.pod_type_name': app.appid,
+    const test = await this.trafficDB
+      .collection<Traffic>('traffic')
+      .aggregate([
+        {
+          $match: {
+            'traffic_meta.pod_type_name': app.appid,
+          },
         },
-      },
-      {
-        $sort: {
-          timestamp: -1, // 假设我们根据timestamp降序排列以获取最近的文档
+        {
+          $sort: {
+            timestamp: -1, // 假设我们根据timestamp降序排列以获取最近的文档
+          },
         },
-      },
-      {
-        $limit: 10, // 限制结果到最近的10个文档
-      },
-    ])
+        {
+          $limit: 10, // 限制结果到最近的10个文档
+        },
+      ])
+      .toArray()
 
     // [ { _id: null, totalSentBytes: Long('70204946') } ]
     const totalSentBytes = result[0]?.totalSentBytes || 0

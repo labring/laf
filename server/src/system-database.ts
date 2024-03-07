@@ -32,7 +32,7 @@ export class SystemDatabase {
 }
 
 export class TrafficDatabase {
-  private static readonly logger = new Logger(SystemDatabase.name)
+  private static readonly logger = new Logger(TrafficDatabase.name)
   private static _client: MongoClient
   static ready = this.initialize()
 

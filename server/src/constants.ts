@@ -18,8 +18,7 @@ export class ServerConfig {
     if (!process.env.TRAFFIC_DATABASE_URL) {
       return
     }
-
-    return process.env.DATABASE_URL
+    return process.env.TRAFFIC_DATABASE_URL
   }
 
   static get NOTIFICATION_CENTER_URL() {
