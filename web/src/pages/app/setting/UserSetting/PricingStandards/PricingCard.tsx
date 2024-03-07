@@ -23,7 +23,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ color, title, value }) => {
   return (
     <div
       className={clsx(
-        "mr-2 h-[256px] w-[180px] rounded-lg border border-grayModern-200",
+        "mr-2 h-[256px] w-[130px] rounded-lg border border-grayModern-200",
         !darkMode && "bg-[#F8FAFB]",
       )}
     >
@@ -32,26 +32,28 @@ const PricingCard: React.FC<PricingCardProps> = ({ color, title, value }) => {
           <div className={`h-3 w-3 ${color} mr-1`} />
           {title}
         </div>
-        <div className={clsx("pt-3 text-center text-[24px]", !darkMode && "text-grayModern-900")}>
+        <div className={clsx("pt-5 text-center text-[12px]", !darkMode && "text-grayModern-900")}>
           ￥ {value}
         </div>
         <div className={clsx("pb-5 text-center", !darkMode && "text-grayModern-900")}>
-          {title === "CPU" ? t("Core") : "G"}/{t("Hour")}
+          {title === "CPU" ? t("Core") : title === "出网流量" ? "1 GB" : "G"}
+          {title !== "出网流量" && `/${t("Hour")}`}
         </div>
-        {timeFrames.map(({ multiplier, label }) => (
-          <div
-            className={clsx(
-              "flex w-full justify-between border-t border-dotted py-[6px]",
-              !darkMode && "text-grayModern-600",
-            )}
-            key={label}
-          >
-            <span>￥ {(value * multiplier).toFixed(2)}</span>
-            <span>
-              {title === "CPU" ? t("Core") : "G"}/{label}
-            </span>
-          </div>
-        ))}
+        {title !== "出网流量" &&
+          timeFrames.map(({ multiplier, label }) => (
+            <div
+              className={clsx(
+                "flex w-full justify-between border-t border-dotted py-[6px]",
+                !darkMode && "text-grayModern-600",
+              )}
+              key={label}
+            >
+              <span>￥ {(value * multiplier).toFixed(2)}</span>
+              <span>
+                {title === "CPU" ? t("Core") : "G"}/{label}
+              </span>
+            </div>
+          ))}
       </div>
     </div>
   );

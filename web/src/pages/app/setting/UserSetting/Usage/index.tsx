@@ -111,7 +111,7 @@ export default function Usage() {
           setEndTime={setEndTime}
         />
       </div>
-      <div className="flex pb-6 pl-8">
+      <div className="flex pb-6 pl-14">
         <div className="flex flex-col pr-4">
           <span>{t("SettingPanel.MyAccount")}</span>
           <div className="mt-3 flex h-36 w-[306px] flex-col justify-between rounded-lg bg-primary-500 px-6 text-white">
@@ -185,8 +185,8 @@ export default function Usage() {
           </div>
         </div>
       </div>
-      <span className="pl-8">{t("SettingPanel.CostTrend")}</span>
-      <div className="mt-3 h-[160px] w-[660px] pl-8">
+      <span className="pl-14">{t("SettingPanel.CostTrend")}</span>
+      <div className="mt-3 h-[160px] w-[660px] pl-12">
         {billingLoading ? (
           <Center className="h-full w-full">
             <Spinner />

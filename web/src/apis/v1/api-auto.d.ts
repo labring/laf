@@ -215,6 +215,7 @@ declare namespace Definitions {
 
   export type Account = {
     _id?: string;
+    owedAt?: string /* The timestamp when the account became owed */;
     balance?: number;
     state?: string;
     createdAt?: string;
@@ -382,12 +383,14 @@ declare namespace Definitions {
     storageCapacity?: number;
     autoscaling?: Definitions.CreateAutoscalingDto;
     dedicatedDatabase?: Definitions.CreateDedicatedDatabaseDto;
+    networkTraffic?: number;
     regionId?: string;
   };
 
   export type CalculatePriceResultDto = {
     cpu?: number;
     memory?: number;
+    networkTraffic?: number;
     storageCapacity?: number;
     databaseCapacity?: number;
     total?: number;
@@ -1704,6 +1707,14 @@ declare namespace Paths {
   }
 
   namespace MonitorControllerGetData {
+    export type QueryParameters = any;
+
+    export type BodyParameters = any;
+
+    export type Responses = any;
+  }
+
+  namespace NotificationControllerFindAll {
     export type QueryParameters = any;
 
     export type BodyParameters = any;

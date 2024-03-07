@@ -90,7 +90,7 @@ export default function BillingDetails() {
         <p>{t("SettingPanel.BillingDetails")}</p>
       </div>
       <div className="mt-4 rounded border">
-        <TableContainer>
+        <TableContainer overflowX="auto">
           <Table variant="striped" colorScheme={darkMode ? "none" : "whiteAlpha"} size={"sm"}>
             <Thead>
               <Tr className={clsx("h-8", !darkMode && "bg-[#F4F6F8]")}>
@@ -220,6 +220,16 @@ export default function BillingDetails() {
                     )}
                   >
                     {t("Spec.Storage")}
+                  </span>
+                </Th>
+                <Th className="!px-0 !pl-2">
+                  <span
+                    className={clsx(
+                      "border-l pl-2 font-normal",
+                      darkMode ? "" : "text-grayModern-700",
+                    )}
+                  >
+                    {t("Spec.NetworkTraffic")}
                   </span>
                 </Th>
                 <Th className="!px-0 !pl-2">
@@ -369,6 +379,15 @@ export default function BillingDetails() {
                       }
                     >
                       {item.detail?.storageCapacity?.amount}
+                    </Td>
+                    <Td
+                      className={
+                        darkMode
+                          ? "!border-b-grayModern-600 !text-grayModern-200"
+                          : "text-grayModern-600"
+                      }
+                    >
+                      {item.detail?.networkTraffic?.amount}
                     </Td>
                     <Td
                       className={clsx(
