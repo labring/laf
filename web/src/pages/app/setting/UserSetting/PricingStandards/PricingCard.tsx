@@ -36,7 +36,7 @@ const PricingCard: React.FC<PricingCardProps> = ({ color, title, value }) => {
           ￥ {value}
         </div>
         <div className={clsx("pb-5 text-center", !darkMode && "text-grayModern-900")}>
-          {title === "CPU" ? t("Core") : title === "出网流量" ? "GB" : "G"}
+          {title === "CPU" ? t("Core") : title === "出网流量" ? "1 GB" : "G"}
           {title !== "出网流量" && `/${t("Hour")}`}
         </div>
         {title !== "出网流量" &&
