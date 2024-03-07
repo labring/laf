@@ -14,6 +14,13 @@ export class ServerConfig {
     return process.env.DATABASE_URL
   }
 
+  static get TRAFFIC_DATABASE_URL() {
+    if (!process.env.TRAFFIC_DATABASE_URL) {
+      return
+    }
+    return process.env.TRAFFIC_DATABASE_URL
+  }
+
   static get NOTIFICATION_CENTER_URL() {
     return process.env.NOTIFICATION_CENTER_URL
   }
@@ -45,10 +52,6 @@ export class ServerConfig {
 
   static get DISABLED_GATEWAY_TASK() {
     return process.env.DISABLED_GATEWAY_TASK === 'true'
-  }
-
-  static get DISABLED_BUCKET_DOMAIN_TASK() {
-    return process.env.DISABLED_BUCKET_DOMAIN_TASK === 'true'
   }
 
   static get DISABLED_TRIGGER_TASK() {

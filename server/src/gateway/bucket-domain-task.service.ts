@@ -20,7 +20,7 @@ export class BucketDomainTaskService {
 
   @Cron(CronExpression.EVERY_SECOND)
   async tick() {
-    if (ServerConfig.DISABLED_BUCKET_DOMAIN_TASK) return
+    if (ServerConfig.DISABLED_GATEWAY_TASK) return
 
     // Phase `Creating` -> `Created`
     this.handleCreatingPhase().catch((err) => {

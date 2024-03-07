@@ -5,12 +5,16 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { ServerConfig } from './constants'
 import { InitializerService } from './initializer/initializer.service'
-import { SystemDatabase } from './system-database'
+import { SystemDatabase, TrafficDatabase } from './system-database'
 import * as helmet from 'helmet'
 import * as bodyParser from 'body-parser'
 
 async function bootstrap() {
   await SystemDatabase.ready
+
+  if (ServerConfig.TRAFFIC_DATABASE_URL) {
+    await TrafficDatabase.ready
+  }
 
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'log', 'debug', 'verbose'],
