@@ -56,9 +56,9 @@ export default function PricingStandards() {
   const pricingData = [
     { color: "bg-primary-500", title: "CPU", value: cpu },
     { color: "bg-blue-600", title: "内存", value: memory },
-    { color: "bg-adora-600", title: "数据库", value: databaseCapacity },
+    { color: "bg-error-400", title: "数据库", value: databaseCapacity },
     { color: "bg-error-400", title: "云存储", value: storageCapacity },
-    { color: "bg-error-400", title: "出网流量", value: networkTraffic },
+    { color: "bg-adora-600", title: "出网流量", value: networkTraffic },
   ];
 
   return (
