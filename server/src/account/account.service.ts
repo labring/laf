@@ -70,52 +70,54 @@ export class AccountService {
     accountId: ObjectId,
     amount: number,
     message: string,
-  ) {
-    const client = SystemDatabase.client
-    const session = client.startSession()
-    session.startTransaction()
-
-    try {
-      const result = await this.chargeWithSession(
-        accountId,
-        amount,
-        message,
-        session,
-      )
-      await session.commitTransaction()
-      return result
-    } catch (error) {
-      await session.abortTransaction()
-      throw error
-    } finally {
-      session.endSession()
-    }
-  }
-
-  async chargeWithSession(
-    accountId: ObjectId,
-    amount: number,
-    message: string,
     session: ClientSession,
+    additionalParams?: Partial<AccountTransaction>,
   ) {
-    const _amount = Math.round(amount * 100)
-
     // update account balance
     const res = await this.db
       .collection<Account>('Account')
       .findOneAndUpdate(
         { _id: accountId },
-        { $inc: { balance: _amount }, $set: { updatedAt: new Date() } },
+        { $inc: { balance: amount }, $set: { updatedAt: new Date() } },
         { session, returnDocument: 'after' },
       )
 
+    assert(res.value, `account not found: ${accountId}`)
+
+    if (res.value.balance > 0 && res.value.owedAt) {
+      await this.db
+        .collection<Account>('Account')
+        .updateOne({ _id: accountId }, { $unset: { owedAt: '' } }, { session })
+    }
+
+    if (additionalParams) {
+      const transaction = await this.db
+        .collection<AccountTransaction>('AccountTransaction')
+        .insertOne(
+          {
+            accountId: accountId,
+            amount: additionalParams.reward
+              ? amount - additionalParams.reward
+              : amount,
+            reward: additionalParams.reward,
+            balance: res.value.balance,
+            message: message,
+            orderId: additionalParams.orderId,
+            createdAt: new Date(),
+          },
+          { session },
+        )
+
+      return { account: res.value, transaction: transaction }
+    }
+
     // add transaction record
-    await this.db
+    const transaction = await this.db
       .collection<AccountTransaction>('AccountTransaction')
       .insertOne(
         {
           accountId: accountId,
-          amount: _amount,
+          amount: amount,
           balance: res.value.balance,
           message: message,
           createdAt: new Date(),
@@ -123,7 +125,7 @@ export class AccountService {
         { session },
       )
 
-    return res.value
+    return { account: res.value, transaction: transaction }
   }
 
   async createChargeOrder(
@@ -341,29 +343,15 @@ export class AccountService {
           },
           { session },
         )
-      // update account balance
-      const res = await this.db.collection<Account>('Account').findOneAndUpdate(
-        { _id: account._id },
-        {
-          $inc: { balance: giftCode.creditAmount },
-          $set: { updatedAt: new Date() },
-        },
-        { session, returnDocument: 'after' },
-      )
 
-      // add transaction record
-      const transaction = await this.db
-        .collection<AccountTransaction>('AccountTransaction')
-        .insertOne(
-          {
-            accountId: account._id,
-            amount: giftCode.creditAmount,
-            balance: res.value.balance,
-            message: 'Gift code redemption',
-            createdAt: new Date(),
-          },
-          { session },
-        )
+      // update account balance and add transaction record
+
+      const res = await this.chargeWithTransaction(
+        account._id,
+        giftCode.creditAmount,
+        'Gift code redemption',
+        session,
+      )
 
       // void gift code
       await this.db.collection<GiftCode>('GiftCode').findOneAndUpdate(
@@ -375,7 +363,7 @@ export class AccountService {
             used: true,
             usedAt: new Date(),
             usedBy: account._id,
-            transactionId: transaction.insertedId,
+            transactionId: res.transaction.insertedId,
           },
         },
         { session },
@@ -383,7 +371,7 @@ export class AccountService {
 
       await session.commitTransaction()
 
-      return res.value
+      return res.account
     } catch (error) {
       await session.abortTransaction()
       this.logger.error(error)

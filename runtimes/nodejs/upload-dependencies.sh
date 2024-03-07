@@ -10,7 +10,7 @@ if [ -n "$NODE_MODULES_PUSH_URL" ]; then
   echo "Uploading node_modules to $NODE_MODULES_PUSH_URL"
 
   # tar `node_modules` to node_modules.tar
-  tar -cf $NODE_MODULES_PATH/node_modules.tar $NODE_MODULES_PATH/node_modules
+  tar -cf $NODE_MODULES_PATH/node_modules.tar -C $NODE_MODULES_PATH node_modules
 
   end_time_1=$(date +%s)
   elapsed_time=$(expr $end_time_1 - $start_time)

@@ -14,7 +14,7 @@ import LoginByPhonePanel from "./mods/LoginByPhonePanel";
 import useAuthStore from "@/pages/auth/store";
 import useGlobalStore from "@/pages/globalStore";
 
-type providersTypes =
+export type providersTypes =
   | PROVIDER_NAME.EMAIL
   | PROVIDER_NAME.GITHUB
   | PROVIDER_NAME.PHONE
@@ -78,13 +78,9 @@ export default function SignIn() {
           ) : currentProvider === PROVIDER_NAME.PASSWORD ? (
             <LoginByPasswordPanel
               showSignupBtn={!!passwordProvider?.register}
-              showPhoneSigninBtn={defaultProvider.name === PROVIDER_NAME.PHONE}
-              showEmailSigninBtn={defaultProvider.name === PROVIDER_NAME.EMAIL}
-              switchLoginType={() =>
-                defaultProvider.name === PROVIDER_NAME.PHONE
-                  ? setCurrentProvider(PROVIDER_NAME.PHONE)
-                  : setCurrentProvider(PROVIDER_NAME.EMAIL)
-              }
+              showPhoneSigninBtn={!!phoneProvider}
+              showEmailSigninBtn={!!emailProvider}
+              setCurrentProvider={setCurrentProvider}
               isDarkMode={darkMode}
             />
           ) : null}

@@ -16,8 +16,6 @@ import { UserProfile } from 'src/user/entities/user-profile'
 import { UserService } from 'src/user/user.service'
 import { ObjectId } from 'mongodb'
 import { AccountService } from 'src/account/account.service'
-import { Account } from 'src/account/entities/account'
-import { AccountTransaction } from 'src/account/entities/account-transaction'
 import {
   AccountChargeOrder,
   AccountChargePhase,
@@ -114,31 +112,13 @@ export class UserPasswordService {
               },
               { session },
             )
-          // update account balance
-          const accountAfterUpdate = await this.db
-            .collection<Account>('Account')
-            .findOneAndUpdate(
-              { _id: account._id },
-              {
-                $inc: { balance: amount },
-                $set: { updatedAt: new Date() },
-              },
-              { session, returnDocument: 'after' },
-            )
 
-          // add transaction record
-          const transaction = await this.db
-            .collection<AccountTransaction>('AccountTransaction')
-            .insertOne(
-              {
-                accountId: account._id,
-                amount: amount,
-                balance: accountAfterUpdate.value.balance,
-                message: 'Invitation profit',
-                createdAt: new Date(),
-              },
-              { session },
-            )
+          const res = await this.accountService.chargeWithTransaction(
+            account._id,
+            amount,
+            'Invitation profit',
+            session,
+          )
 
           await this.db.collection<InviteRelation>('InviteRelation').insertOne(
             {
@@ -146,7 +126,7 @@ export class UserPasswordService {
               invitedBy: inviteCodeInfo.uid,
               codeId: inviteCodeInfo._id,
               createdAt: new Date(),
-              transactionId: transaction.insertedId,
+              transactionId: res.transaction.insertedId,
             },
             { session },
           )

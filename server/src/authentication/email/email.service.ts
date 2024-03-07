@@ -28,8 +28,6 @@ import {
   Currency,
   PaymentChannelType,
 } from 'src/account/entities/account-charge-order'
-import { AccountTransaction } from 'src/account/entities/account-transaction'
-import { Account } from 'src/account/entities/account'
 import { UserProfile } from 'src/user/entities/user-profile'
 import {
   UserPassword,
@@ -218,31 +216,13 @@ export class EmailService {
               },
               { session },
             )
-          // update account balance
-          const accountAfterUpdate = await this.db
-            .collection<Account>('Account')
-            .findOneAndUpdate(
-              { _id: account._id },
-              {
-                $inc: { balance: amount },
-                $set: { updatedAt: new Date() },
-              },
-              { session, returnDocument: 'after' },
-            )
 
-          // add transaction record
-          const transaction = await this.db
-            .collection<AccountTransaction>('AccountTransaction')
-            .insertOne(
-              {
-                accountId: account._id,
-                amount: amount,
-                balance: accountAfterUpdate.value.balance,
-                message: 'Invitation profit',
-                createdAt: new Date(),
-              },
-              { session },
-            )
+          const res = await this.accountService.chargeWithTransaction(
+            account._id,
+            amount,
+            'Invitation profit',
+            session,
+          )
 
           await this.db.collection<InviteRelation>('InviteRelation').insertOne(
             {
@@ -250,7 +230,7 @@ export class EmailService {
               invitedBy: inviteCodeInfo.uid,
               codeId: inviteCodeInfo._id,
               createdAt: new Date(),
-              transactionId: transaction.insertedId,
+              transactionId: res.transaction.insertedId,
             },
             { session },
           )

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useCompletionFeature } from "react-monaco-copilot";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import {
   RegisteredFileSystemProvider,
@@ -15,7 +16,9 @@ import { createUrl, createWebSocketAndStartClient, performInit } from "./Languag
 import { TFunction } from "@/apis/typing";
 import useFunctionCache from "@/hooks/useFunctionCache";
 import useFunctionStore from "@/pages/app/functions/store";
+import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
+import useSiteSettingStore from "@/pages/siteSetting";
 
 export const fileSystemProvider = new RegisteredFileSystemProvider(false);
 registerFileSystemOverlay(1, fileSystemProvider);
@@ -37,11 +40,14 @@ function FunctionEditor(props: {
 }) {
   const { onChange, path, className, colorMode = COLOR_MODE.light, fontSize = 14, value } = props;
 
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>();
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
   const subscriptionRef = useRef<monaco.IDisposable | undefined>(undefined);
   const monacoEl = useRef(null);
   const globalStore = useGlobalStore((state) => state);
   const { allFunctionList, setLSPStatus, LSPStatus } = useFunctionStore((state) => state);
+  const { commonSettings } = useCustomSettingStore();
+  const { siteSettings } = useSiteSettingStore();
+
   const functionCache = useFunctionCache();
   const [functionList, setFunctionList] = useState(allFunctionList);
   const baseUrl = globalStore.currentApp.host;
@@ -52,6 +58,13 @@ function FunctionEditor(props: {
       return "";
     }
   }, [baseUrl]);
+
+  const aiCompleteUrl = siteSettings.ai_complete_url?.value;
+  const completionFeature = useCompletionFeature({
+    monaco: monaco,
+    editor: editorRef.current,
+    apiUrl: aiCompleteUrl || "",
+  });
 
   useEffect(() => {
     const startLSP = () => {
@@ -152,6 +165,10 @@ function FunctionEditor(props: {
             keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyP,
             command: null,
           });
+
+          if (commonSettings.useCopilot && aiCompleteUrl) {
+            completionFeature.onMounted();
+          }
         });
     }
 
