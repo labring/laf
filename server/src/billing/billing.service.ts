@@ -9,9 +9,11 @@ import { ApplicationBilling } from './entities/application-billing'
 import { CalculatePriceDto } from './dto/calculate-price.dto'
 import { BillingQuery } from './interface/billing-query.interface'
 import { PrometheusDriver } from 'prometheus-query'
-import { Application } from 'src/application/entities/application'
+import {
+  Application,
+  ApplicationState,
+} from 'src/application/entities/application'
 import { RegionService } from 'src/region/region.service'
-import { PodService } from 'src/application/pod.service'
 import { Traffic } from './entities/network-traffic'
 import { TrafficDatabase } from 'src/system-database'
 
@@ -23,7 +25,6 @@ export class BillingService {
   constructor(
     private readonly resource: ResourceService,
     private readonly region: RegionService,
-    private readonly podService: PodService,
   ) {}
 
   async query(userId: ObjectId, condition?: BillingQuery) {
@@ -334,7 +335,11 @@ export class BillingService {
       return 0
     }
 
-    // get app pod name list
+    // If the application stops during the current hour, traffic for the current hour is still billed
+    const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000)
+    if (app.state === ApplicationState.Stopped && app.updatedAt < twoHoursAgo) {
+      return 0
+    }
 
     const aggregationPipeline = [
       {
