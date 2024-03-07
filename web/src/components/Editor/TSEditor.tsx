@@ -80,6 +80,8 @@ export default function TSEditor(props: {
       editorRef.current?.setPosition(pos);
       editorRef.current?.revealPositionInCenter(pos);
     }
+
+    autoImportTypings.parse(value, monacoRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path]);
 
