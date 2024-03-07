@@ -12,13 +12,17 @@ export class InitHook {
       return
     }
     const executor = new FunctionExecutor(func)
-    await executor.invoke(
+    const result = await executor.invoke(
       {
         method: 'INIT',
         __function_name: func.name,
       },
       false,
     )
+
+    if (result.error) {
+      return logger.error(result.error)
+    }
 
     logger.info('__init__ hook invoked')
   }
