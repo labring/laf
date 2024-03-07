@@ -55,8 +55,7 @@ export default async function (ctx: FunctionContext) {
     list: docs,
     total,
     pageSize,
-    pageIndex,
-    total
+    pageIndex
   }
 }
 ```
