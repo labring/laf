@@ -335,12 +335,11 @@ export class BillingService {
     }
 
     // get app pod name list
-    const podNameList = await this.podService.getPodNameListByAppid(app.appid)
 
     const aggregationPipeline = [
       {
         $match: {
-          'traffic_meta.pod_name': { $in: podNameList.podNameList },
+          'traffic_meta.pod_type_name': app.appid,
           timestamp: { $gte: startAt, $lt: endAt },
         },
       },
@@ -358,6 +357,22 @@ export class BillingService {
       .aggregate(aggregationPipeline)
       .toArray()
 
+    const test = await this.trafficDB.collection<Traffic>('traffic').aggregate([
+      {
+        $match: {
+          'traffic_meta.pod_type_name': app.appid,
+        },
+      },
+      {
+        $sort: {
+          timestamp: -1, // 假设我们根据timestamp降序排列以获取最近的文档
+        },
+      },
+      {
+        $limit: 10, // 限制结果到最近的10个文档
+      },
+    ])
+
     // [ { _id: null, totalSentBytes: Long('70204946') } ]
     const totalSentBytes = result[0]?.totalSentBytes || 0
     const bytesPerMegabyte = 1024 * 1024
@@ -365,6 +380,9 @@ export class BillingService {
     console.log(startAt, endAt)
     console.log(totalSentMegabytes, 'totalSentMegabytes')
     console.log(result)
+    console.log(this.trafficDB)
+    console.log('testttttt')
+    console.log(test)
 
     return totalSentMegabytes
   }
