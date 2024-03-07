@@ -1,5 +1,5 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger'
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator'
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
 import { UpdateApplicationBundleDto } from 'src/application/dto/update-application.dto'
 
 export class CalculatePriceDto extends OmitType(UpdateApplicationBundleDto, [
@@ -7,6 +7,7 @@ export class CalculatePriceDto extends OmitType(UpdateApplicationBundleDto, [
 ]) {
   @ApiProperty({ example: 0.036 })
   @IsOptional()
+  @IsNumber({}, { message: 'networkTraffic must be a number' })
   networkTraffic?: number
 
   @ApiProperty()
