@@ -1,4 +1,0 @@
-include mime.types;
-types {
-  application/manifest+json  webmanifest;
-}
