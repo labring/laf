@@ -28,9 +28,6 @@ const websiteHostingPathHandler = async (
 
   const minioUrl = new URL(url, Config.OSS_INTERNAL_ENDPOINT)
 
-  console.log(minioUrl.pathname)
-  console.log(url)
-
   const paths = tryPath(websiteHosting.bucketName, minioUrl.pathname)
 
   for (const path of paths) {
@@ -45,7 +42,7 @@ const websiteHostingPathHandler = async (
       }
     }
   }
-  return url // If all paths are unavailable, the original URL is returned.
+  return url // If all paths are unavailable, the original url string is returned.
 }
 
 const storageServer = http.createServer(
