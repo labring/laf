@@ -27,12 +27,14 @@ const websiteHostingPathHandler = async (
   }
 
   const minioUrl = new URL(url, Config.OSS_INTERNAL_ENDPOINT)
-  const paths = tryPath(websiteHosting.bucketName, url)
+
+  const paths = tryPath(websiteHosting.bucketName, minioUrl.pathname)
 
   for (const path of paths) {
     minioUrl.pathname = path
     try {
       await axios.head(minioUrl.toString())
+      // Url.pathname only contain path eg: /path , Url.search only contain query string eg: ?query=string
       return minioUrl.pathname + minioUrl.search
     } catch (err) {
       if ((err as AxiosError).response?.status !== 404) {
@@ -40,7 +42,7 @@ const websiteHostingPathHandler = async (
       }
     }
   }
-  return url // If all paths are unavailable, the original URL is returned.
+  return url // If all paths are unavailable, the original url string is returned.
 }
 
 const storageServer = http.createServer(
@@ -57,16 +59,21 @@ const storageServer = http.createServer(
       res.end()
       return
     }
+
     try {
       const proxyReqUrl = new URL(Config.OSS_INTERNAL_ENDPOINT)
-      const path = await websiteHostingPathHandler(req.headers.host, req.url)
+
+      const path = await websiteHostingPathHandler(
+        req.headers.host || '',
+        req.url || '',
+      )
 
       const proxyReq = http.request({
         host: proxyReqUrl.hostname,
         port: proxyReqUrl.port,
         headers: req.headers,
         method: req.method,
-        path: path,
+        path: path, // contain query string eg: /path?query=string
       })
 
       proxyReq.on('response', (proxyRes: http.IncomingMessage) => {
