@@ -27,6 +27,11 @@ const websiteHostingPathHandler = async (
   }
 
   const minioUrl = new URL(url, Config.OSS_INTERNAL_ENDPOINT)
+
+  // const _url = url.parse(req.url, true)
+  console.log(minioUrl)
+  console.log(url)
+
   const paths = tryPath(websiteHosting.bucketName, url)
 
   for (const path of paths) {
