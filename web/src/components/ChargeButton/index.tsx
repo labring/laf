@@ -131,9 +131,14 @@ export default function ChargeButton(props: { amount?: number; children: React.R
               </div>
               <InputGroup className="flex items-center pb-5">
                 <div className="w-20 text-lg text-second">{t("application.Recharge")}</div>
-                <InputLeftAddon className="!px-0 !pl-3" children="¥" />
+                <InputLeftAddon
+                  style={{ backgroundColor: darkMode ? "#252934" : "#FAFBFB" }}
+                  className="!px-0 !pl-3"
+                  children="¥"
+                />
                 <Input
                   ref={inputRef}
+                  disabled
                   className={clsx("!w-5/12 !border-none !px-2", darkMode ? "" : "!bg-gray-100")}
                   value={amount}
                   onInput={(event) => {
