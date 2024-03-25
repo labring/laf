@@ -60,4 +60,8 @@ export class FunctionCache {
   static get(name: string): ICloudFunctionData {
     return FunctionCache.cache.get(name)
   }
+
+  static getAll(): ICloudFunctionData[] {
+    return Array.from(FunctionCache.cache.values())
+  }
 }

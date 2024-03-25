@@ -8,11 +8,14 @@
 import { Router } from 'express'
 import multer from 'multer'
 import * as path from 'path'
+import swaggerUI from 'swagger-ui-express'
+
 import { handleDatabaseProxy } from './db-proxy'
 import { handlePackageTypings } from './typings'
 import { generateUUID } from '../support/utils'
 import { handleInvokeFunction } from './invoke'
 import { DatabaseAgent } from '../db'
+import { handleOpenAPIDefinition } from './openapi'
 
 /**
  * multer uploader config
@@ -44,6 +47,12 @@ router.get('/_/healthz', (_req, res) => {
     res.status(503).send('db is not ready')
   }
 })
+router.use(
+  '/_/api-docs',
+  handleOpenAPIDefinition,
+  swaggerUI.serveFiles({}, {}),
+  swaggerUI.setup(),
+)
 
 /**
  * Invoke cloud function through HTTP request.
