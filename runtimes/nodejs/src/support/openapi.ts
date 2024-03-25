@@ -1,4 +1,9 @@
-import { OpenApiBuilder, PathsObject, PathItemObject } from 'openapi3-ts/oas31'
+import {
+  OpenApiBuilder,
+  PathsObject,
+  PathItemObject,
+  SchemaObjectType,
+} from 'openapi3-ts/oas30'
 import { FunctionCache, ICloudFunctionData } from './engine'
 import * as ts from 'typescript'
 
@@ -12,10 +17,13 @@ function extractOpenAPIParams(func: ICloudFunctionData) {
 
   const getInterface = (
     properties: ts.NodeArray<ts.TypeElement>,
-  ): { name: string; type: string | object }[] => {
+  ): { name: string; type: string | object; required: boolean }[] => {
     const res = []
     properties.forEach((v) => {
-      if (ts.isPropertyDeclaration(v)) {
+      if (
+        v.kind === ts.SyntaxKind.PropertySignature &&
+        ts.isPropertySignature(v)
+      ) {
         if (ts.isIdentifier(v.name)) {
           //  'integer' | 'number' | 'string' | 'boolean' | 'object' | 'null' | 'array';
           let type
@@ -39,9 +47,7 @@ function extractOpenAPIParams(func: ICloudFunctionData) {
               type = 'array'
               break
             case ts.SyntaxKind.TypeLiteral:
-              type = ts.isTypeLiteralNode(v.type)
-                ? getInterface(v.type.members)
-                : 'object'
+              type = 'object'
               break
             default:
               type = 'object'
@@ -50,6 +56,7 @@ function extractOpenAPIParams(func: ICloudFunctionData) {
           res.push({
             name: v.name.escapedText.toString(),
             type,
+            required: !v.questionToken,
           })
         }
       }
@@ -58,23 +65,32 @@ function extractOpenAPIParams(func: ICloudFunctionData) {
   }
 
   const res = {
-    query: [] as { name: string; type: string | object }[],
-    requestBody: [] as { name: string; type: string | object }[],
+    query: [] as { name: string; type: string | object; required: boolean }[],
+    requestBody: [] as {
+      name: string
+      type: string | object
+      required: boolean
+    }[],
   }
 
   const queryStatement = sourceFile.statements.find(
-    (v) => ts.isInterfaceDeclaration(v) && v.name.escapedText === 'IQuery',
+    (v) =>
+      v.kind === ts.SyntaxKind.InterfaceDeclaration &&
+      ts.isInterfaceDeclaration(v) &&
+      v.name.escapedText === 'IQuery',
   )
-  if (ts.isInterfaceDeclaration(queryStatement)) {
+  if (queryStatement && ts.isInterfaceDeclaration(queryStatement)) {
     const type = getInterface(queryStatement.members)
     res.query = type
   }
 
   const requestBodyStatement = sourceFile.statements.find(
     (v) =>
-      ts.isInterfaceDeclaration(v) && v.name.escapedText === 'IRequestBody',
+      v.kind === ts.SyntaxKind.InterfaceDeclaration &&
+      ts.isInterfaceDeclaration(v) &&
+      v.name.escapedText === 'IRequestBody',
   )
-  if (ts.isInterfaceDeclaration(requestBodyStatement)) {
+  if (requestBodyStatement && ts.isInterfaceDeclaration(requestBodyStatement)) {
     const type = getInterface(requestBodyStatement.members)
     res.requestBody = type
   }
@@ -91,6 +107,7 @@ export function buildOpenAPIDefinition(apiConfig: {
     email: string
   }
   host: string
+  apiVersion: string
 }) {
   const paths: PathsObject = {}
 
@@ -100,28 +117,39 @@ export function buildOpenAPIDefinition(apiConfig: {
     const path: PathItemObject = {}
     if (func.methods.includes('GET')) {
       path.get = {
-        operationId: func.name,
+        operationId: `${func.name}_GET`,
+        summary: func.desc,
         responses: {
           '200': {
-            description: func.desc,
+            description: 'success',
           },
         },
         parameters: openApi.query.map((v) => ({
           name: v.name,
           in: 'query',
+          required: v.required,
+          schema: {
+            type:
+              typeof v.type === 'string'
+                ? (v.type as SchemaObjectType)
+                : 'object',
+          },
         })),
+        tags: func.tags,
       }
     }
     ;['POST', 'PUT', 'DELETE', 'PATCH'].forEach((method) => {
       if (func.methods.includes(method)) {
         path[method.toLowerCase()] = {
-          operationId: func.name,
+          operationId: `${func.name}_${method}`,
+          summary: func.desc,
           responses: {
             '200': {
-              description: func.desc,
+              description: 'success',
             },
           },
           requestBody: {
+            required: true,
             content: {
               'application/json': {
                 schema: {
@@ -130,10 +158,14 @@ export function buildOpenAPIDefinition(apiConfig: {
                     prev[v.name] = { type: v.type }
                     return prev
                   }, {}),
+                  required: openApi.requestBody
+                    .filter((v) => v.required)
+                    .map((v) => v.name),
                 },
               },
             },
           },
+          tags: func.tags,
         }
       }
     })
@@ -142,7 +174,7 @@ export function buildOpenAPIDefinition(apiConfig: {
   })
 
   const builder = OpenApiBuilder.create({
-    openapi: '3.1.0',
+    openapi: apiConfig.apiVersion,
     info: {
       title: apiConfig.title,
       version: apiConfig.version,
