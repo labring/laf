@@ -322,7 +322,7 @@ export class FunctionService {
 
   async generateRuntimeToken(
     appid: string,
-    type: 'trigger' | 'develop',
+    type: 'trigger' | 'develop' | 'openapi',
     expireSeconds = 60,
   ) {
     assert(appid, 'appid is required')

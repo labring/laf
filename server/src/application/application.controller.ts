@@ -200,12 +200,18 @@ export class ApplicationController {
       'develop',
       expires,
     )
+    const openapi_token = await this.fn.generateRuntimeToken(
+      appid,
+      'openapi',
+      expires,
+    )
 
     const res = {
       ...data,
       storage: storage,
       port: region.gatewayConf.port,
       develop_token: develop_token,
+      openapi_token: openapi_token,
 
       /** This is the redundant field of Region */
       tls: region.gatewayConf.tls.enabled,
