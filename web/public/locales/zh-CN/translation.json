@@ -140,7 +140,8 @@
     "MoveFunctionTip": "是否要将 {{srcFunc}} 移动到 {{targetDir}} 目录？",
     "MoveFunctionToRootTip": "是否要将 {{srcFunc}} 移动到根目录？",
     "MovingFunction": "移动函数中...",
-    "DependenceInstallTip": "保存后请等待依赖安装完成，在「日志」查看安装进度"
+    "DependenceInstallTip": "保存后请等待依赖安装完成，在「日志」查看安装进度",
+    "CopyOpenapiUrl": "复制 openapi 链接"
   },
   "HomePanel": {
     "APP": "Android or iOS 应用",

@@ -20,6 +20,7 @@ import { t } from "i18next";
 import { cloneDeep } from "lodash";
 
 import {
+  ApiIcon,
   EditIconLine,
   LinkIcon,
   RecycleBinIcon,
@@ -681,6 +682,15 @@ export default function FunctionList() {
               <RecycleBinIcon color={darkMode ? "white" : "#24282C"} />
             </IconWrap>
           </RecycleBinModal>,
+          <CopyText
+            key="copy_text"
+            text={`${currentApp.origin}/_/api-docs?token=${currentApp.openapi_token}`}
+            hideToolTip
+          >
+            <IconWrap size={20} tooltip={t("FunctionPanel.CopyOpenapiUrl").toString()}>
+              <ApiIcon fontSize={16} />
+            </IconWrap>
+          </CopyText>,
           <TriggerModal key="trigger_modal">
             <IconWrap size={20} tooltip={t("TriggerPanel.Trigger").toString()}>
               <TriggerIcon fontSize={13} />

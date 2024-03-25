@@ -790,3 +790,9 @@ export const SortingIcon = createIcon({
   viewBox: "0 0 1024 1024",
   d: "M610.624 128l258.24 265.664-45.856 44.608-148.384-152.64v625.184h-64V128zM160 659.84l45.888-44.576 148.384 152.64V142.72h64v782.816L160 659.872z",
 });
+
+export const ApiIcon = createIcon({
+  displayName: "ApiIcon",
+  viewBox: "0 0 24 24",
+  d: "M7 7H5a2 2 0 0 0-2 2v8h2v-4h2v4h2V9a2 2 0 0 0-2-2m0 4H5V9h2m7-2h-4v10h2v-4h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2m0 4h-2V9h2m6 0v6h1v2h-4v-2h1V9h-1V7h4v2Z",
+});
