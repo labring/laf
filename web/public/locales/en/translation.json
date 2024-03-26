@@ -141,7 +141,7 @@
     "MoveFunctionToRootTip": "Are you sure to move {{srcFunc}} to the root directory?",
     "MovingFunction": "Moving functions...",
     "DependenceInstallTip": "Please wait for the completion of dependencies installation after saving. Check the progress in \"Logs\"",
-    "CopyOpenapiUrl": "Copy openapi url"
+    "CopyOpenAPIUrl": "Copy OpenAPI url"
   },
   "HomePanel": {
     "APP": "Android or iOS app",

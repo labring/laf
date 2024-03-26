@@ -687,8 +687,8 @@ export default function FunctionList() {
             text={`${currentApp.origin}/_/api-docs?token=${currentApp.openapi_token}`}
             hideToolTip
           >
-            <IconWrap size={20} tooltip={t("FunctionPanel.CopyOpenapiUrl").toString()}>
-              <ApiIcon fontSize={16} />
+            <IconWrap size={20} tooltip={t("FunctionPanel.CopyOpenAPIUrl").toString()}>
+              <ApiIcon fontSize={18} />
             </IconWrap>
           </CopyText>,
           <TriggerModal key="trigger_modal">
