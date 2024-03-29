@@ -5,94 +5,73 @@ import {
   SchemaObjectType,
 } from 'openapi3-ts/oas30'
 import { FunctionCache, ICloudFunctionData } from './engine'
-import * as ts from 'typescript'
+import { Project, TypeElementTypes, Node } from 'ts-morph'
 
 function extractOpenAPIParams(func: ICloudFunctionData) {
-  const sourceFile = ts.createSourceFile(
-    func.name,
-    func.source.code,
-    ts.ScriptTarget.ES2022,
-    /*setParentNodes */ true,
-  )
+  const project = new Project()
+  const sourceFile = project.createSourceFile(func.name, func.source.code)
+  const interfaceDeclarations = sourceFile.getInterfaces()
 
-  const getInterface = (
-    properties: ts.NodeArray<ts.TypeElement>,
+  const getPropertiesInfo = (
+    properties: TypeElementTypes[],
   ): { name: string; type: string | object; required: boolean }[] => {
-    const res = []
-    properties.forEach((v) => {
-      if (
-        v.kind === ts.SyntaxKind.PropertySignature &&
-        ts.isPropertySignature(v)
-      ) {
-        if (ts.isIdentifier(v.name)) {
-          //  'integer' | 'number' | 'string' | 'boolean' | 'object' | 'null' | 'array';
-          let type
-          switch (v.type.kind) {
-            case ts.SyntaxKind.NumberKeyword:
-              type = 'number'
-              break
-            case ts.SyntaxKind.StringKeyword:
-              type = 'string'
-              break
-            case ts.SyntaxKind.BooleanKeyword:
-              type = 'boolean'
-              break
-            case ts.SyntaxKind.ObjectKeyword:
-              type = 'object'
-              break
-            case ts.SyntaxKind.NullKeyword:
-              type = 'null'
-              break
-            case ts.SyntaxKind.ArrayType:
-              type = 'array'
-              break
-            case ts.SyntaxKind.TypeLiteral:
-              type = 'object'
-              break
-            default:
-              type = 'object'
-              break
-          }
-          res.push({
-            name: v.name.escapedText.toString(),
-            type,
-            required: !v.questionToken,
-          })
-        }
+    return properties.filter(Node.isPropertySignature).map((prop) => {
+      const type = prop.getType()
+      let propType = 'object'
+
+      if (type.isNumberLiteral()) {
+        propType = 'number'
+      } else if (type.isStringLiteral()) {
+        propType = 'string'
+      } else if (type.isBooleanLiteral()) {
+        propType = 'boolean'
+      } else if (type.isObject()) {
+        propType = 'object'
+      } else if (type.isArray()) {
+        propType = 'array'
+      }
+
+      const comments = prop.getTrailingCommentRanges()
+      let desc = ''
+      if (comments.length > 0) {
+        const comment = comments[0].getText()
+        desc = comment.slice(2).trim() || ''
+      }
+
+      return {
+        name: prop.getName(),
+        type: propType,
+        required: !prop.hasQuestionToken(),
+        desc,
       }
     })
-    return res
   }
 
-  const res = {
-    query: [] as { name: string; type: string | object; required: boolean }[],
-    requestBody: [] as {
-      name: string
-      type: string | object
-      required: boolean
-    }[],
+  const res: { query: any[]; requestBody: any[]; response: any[] } = {
+    query: [],
+    requestBody: [],
+    response: [],
   }
 
-  const queryStatement = sourceFile.statements.find(
-    (v) =>
-      v.kind === ts.SyntaxKind.InterfaceDeclaration &&
-      ts.isInterfaceDeclaration(v) &&
-      v.name.escapedText === 'IQuery',
+  const iQueryDeclaration = interfaceDeclarations.find(
+    (d) => d.getName() === 'IQuery',
   )
-  if (queryStatement && ts.isInterfaceDeclaration(queryStatement)) {
-    const type = getInterface(queryStatement.members)
-    res.query = type
+  if (iQueryDeclaration) {
+    res.query = getPropertiesInfo(iQueryDeclaration.getMembers())
   }
 
-  const requestBodyStatement = sourceFile.statements.find(
-    (v) =>
-      v.kind === ts.SyntaxKind.InterfaceDeclaration &&
-      ts.isInterfaceDeclaration(v) &&
-      v.name.escapedText === 'IRequestBody',
+  const iRequestBodyDeclaration = interfaceDeclarations.find(
+    (d) => d.getName() === 'IRequestBody',
   )
-  if (requestBodyStatement && ts.isInterfaceDeclaration(requestBodyStatement)) {
-    const type = getInterface(requestBodyStatement.members)
-    res.requestBody = type
+  if (iRequestBodyDeclaration) {
+    res.requestBody = getPropertiesInfo(iRequestBodyDeclaration.getMembers())
+  }
+
+  const iResponseDeclaration = interfaceDeclarations.find(
+    (d) => d.getName() === 'IResponse',
+  )
+  if (iResponseDeclaration) {
+    res.response = getPropertiesInfo(iResponseDeclaration.getMembers())
   }
 
   return res
@@ -128,6 +107,7 @@ export function buildOpenAPIDefinition(apiConfig: {
           name: v.name,
           in: 'query',
           required: v.required,
+          description: v.desc,
           schema: {
             type:
               typeof v.type === 'string'
@@ -143,11 +123,6 @@ export function buildOpenAPIDefinition(apiConfig: {
         path[method.toLowerCase()] = {
           operationId: `${func.name}_${method}`,
           summary: func.desc,
-          responses: {
-            '200': {
-              description: 'success',
-            },
-          },
           requestBody: {
             required: true,
             content: {
@@ -155,12 +130,31 @@ export function buildOpenAPIDefinition(apiConfig: {
                 schema: {
                   type: 'object',
                   properties: openApi.requestBody.reduce((prev, v) => {
-                    prev[v.name] = { type: v.type }
+                    prev[v.name] = { type: v.type, description: v.desc }
                     return prev
                   }, {}),
                   required: openApi.requestBody
                     .filter((v) => v.required)
                     .map((v) => v.name),
+                },
+              },
+            },
+          },
+          responses: {
+            default: {
+              description: 'success',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: openApi.response.reduce((prev, v) => {
+                      prev[v.name] = { type: v.type, description: v.desc }
+                      return prev
+                    }, {}),
+                    required: openApi.response
+                      .filter((v) => v.required)
+                      .map((v) => v.name),
+                  },
                 },
               },
             },
