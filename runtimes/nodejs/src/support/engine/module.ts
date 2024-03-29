@@ -35,6 +35,7 @@ export class FunctionModule {
         const dirname = '/'
         const filePath = path.join(path.dirname(dirname + filename), moduleName)
         fn = filePath.slice(dirname.length)
+        console.log(moduleName, fromModule, filename, fn)
       }
 
       // check cache

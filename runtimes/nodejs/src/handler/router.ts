@@ -13,6 +13,11 @@ import { handlePackageTypings } from './typings'
 import { generateUUID } from '../support/utils'
 import { handleInvokeFunction } from './invoke'
 import { DatabaseAgent } from '../db'
+import Config from '../config'
+import {
+  handleCloudFunctionTarPackage,
+  handleDockerFile,
+} from './docker-file-handler'
 
 /**
  * multer uploader config
@@ -37,7 +42,15 @@ export const router = Router()
 
 router.post('/proxy/:policy', handleDatabaseProxy)
 router.get('/_/typing/package', handlePackageTypings)
+router.get('/_/cloud-function/tar', handleCloudFunctionTarPackage)
+router.get('/_/cloud-function/dockerfile', handleDockerFile)
+
 router.get('/_/healthz', (_req, res) => {
+  if (Config.IS_DOCKER_PRODUCT) {
+    res.status(200).send('ok')
+    return
+  }
+
   if (DatabaseAgent.client) {
     res.status(200).send('ok')
   } else {
