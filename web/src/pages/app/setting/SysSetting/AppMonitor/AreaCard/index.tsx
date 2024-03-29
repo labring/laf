@@ -205,7 +205,7 @@ export default function AreaCard(props: {
           <YAxis
             fontSize="10"
             stroke="#9CA2A8"
-            width={longestTick.length * 8}
+            width={longestTick.length * 8 + 8}
             tickFormatter={tickFormatter}
           />
           <ReferenceLine

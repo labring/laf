@@ -38,7 +38,9 @@ export default function PieCard(props: {
               ></span>
               <p>{entry.value}</p>
             </span>
-            <p className="ml-3 mt-1">{formatSize(pieData[index]?.value * 1024 * 1024)}</p>
+            <p className="text-nowrap ml-3 mt-1">
+              {formatSize(pieData[index]?.value * 1024 * 1024)}
+            </p>
           </div>
         ))}
       </ul>
