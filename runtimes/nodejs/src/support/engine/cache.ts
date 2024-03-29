@@ -10,7 +10,7 @@ import path from 'path'
 import { promises as fs } from 'fs'
 import Config from '../../config'
 
-const WORKSPACE_PATH = path.join(__dirname, '../../cloud_functions')
+const WORKSPACE_PATH = path.join(__dirname, '../../../cloud_functions')
 
 export class FunctionCache {
   private static cache: Map<string, ICloudFunctionData> = new Map()
