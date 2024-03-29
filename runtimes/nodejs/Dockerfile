@@ -20,7 +20,7 @@ RUN mkdir /app/cloud_functions || true
 RUN mkdir /tmp/custom_dependency || true
 RUN chown node:node /app/data
 RUN chown node:node /app/functions
-RUN chown node:node /app/cloud_functions
+RUN chown -R node:node /app/cloud_functions
 RUN chown node:node /tmp/custom_dependency
 # RUN npm install
 # RUN npm run build
