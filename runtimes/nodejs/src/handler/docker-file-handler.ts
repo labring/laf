@@ -168,41 +168,33 @@ export async function handleDockerFile(_: IRequest, res: Response) {
     envVariablesString = envVariablesString.replace(/\\\n\s*$/, '')
 
     const DOCKER_FILE = `
-FROM docker.io/lafyun/runtime-node:pr-1930@sha256:64fb3e67398829b453336401cc981e69fab2cb91a3fd267e47a3f8c1a3a34c96 as builder
-# 设置自定义 依赖 目录
+FROM docker.io/lafyun/runtime-node:pr-1930@sha256:ee1b2dfa596354634c8ab29b3c1e12b7a62ddf14d200c7a15400441b1f5a97a3
 USER root
 
 WORKDIR ${ENV.CUSTOM_DEPENDENCY_BASE_PATH}
+
 RUN npm install ${ENV.DEPENDENCIES} || true
 
 FROM node:20.10.0
+USER root
 
-# 暴露端口8000和9000
 EXPOSE 8000
 EXPOSE 9000
-
-USER root
 
 RUN mkdir -p ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} /app/cloud_functions && chown -R node:node ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} /app/cloud_functions
 
 USER node
 
-# 从构建阶段复制node模块和应用代码
 COPY --from=builder ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} ${ENV.CUSTOM_DEPENDENCY_BASE_PATH}
 COPY --from=builder /app /app
 
 RUN ln -s ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} /app/functions/node_modules
 
-# 设置环境变量
 ENV ${envVariablesString}
 
-# 下载tar包并解压到cloud_functions目录
 RUN curl -o /tmp/cloud_functions.tar http://${ENV.RUNTIME_DOMAIN}/_/cloud-function/tar && tar -xzf /tmp/cloud_functions.tar -C /app/cloud_functions && rm /tmp/cloud_functions.tar
-
-# 设置工作目录
 WORKDIR /app
 
-# 运行启动脚本
 CMD node $FLAGS --experimental-vm-modules --experimental-fetch ./dist/index.js
 `
     // 设置响应头，返回纯文本内容
