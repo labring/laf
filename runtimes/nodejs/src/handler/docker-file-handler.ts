@@ -144,6 +144,9 @@ export async function handleDockerFile(_: IRequest, res: Response) {
 
     let envVariablesString = 'LOG_LEVEL=debug \\\n  FORCE_COLOR=1 \\\n  '
 
+    envVariablesString += 'DOCKER_PRODUCT=true \\\n  '
+    envVariablesString += 'DOCKER_PRODUCT_MONGO=false \\\n  '
+
     const conf = await DatabaseAgent.db
       .collection(CONFIG_COLLECTION)
       .findOne({})
@@ -162,52 +165,39 @@ export async function handleDockerFile(_: IRequest, res: Response) {
       }
     }
 
+    envVariablesString = envVariablesString.replace(/\\\n\s*$/, '')
+
     const DOCKER_FILE = `
-FROM node:20.10.0 as builder
-RUN apt update && apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev git -y
-
+FROM docker.io/lafyun/runtime-node:pr-1930@sha256:64fb3e67398829b453336401cc981e69fab2cb91a3fd267e47a3f8c1a3a34c96 as builder
 # 设置自定义 依赖 目录
-WORKDIR /tmp/custom_dependency
-RUN npm install ${ENV.DEPENDENCIES}
+USER root
 
-# 设置工作目录为/app
-WORKDIR /app
+WORKDIR ${ENV.CUSTOM_DEPENDENCY_BASE_PATH}
+RUN npm install ${ENV.DEPENDENCIES} || true
 
-# 使用构建参数指定分支或标签，默认为 'main'
-ARG LAF_BRANCH=main
-
-# 克隆特定分支的仓库并且只克隆所需的子目录
-RUN git clone --branch $LAF_BRANCH --depth 1 https://github.com/labring/laf.git && mv laf/runtimes/nodejs/* /app/ && rm -rf laf
-
-# 安装依赖和构建应用
-RUN npm install && npm run build
-
-# 从builder阶段复制已构建的node模块和应用代码
 FROM node:20.10.0
 
 # 暴露端口8000和9000
 EXPOSE 8000
 EXPOSE 9000
 
-# 创建所需目录并设置权限
-RUN mkdir -p /app/functions /app/data /tmp/custom_dependency /app/cloud_functions && chown node:node /app/functions /app/data /tmp/custom_dependency /app/cloud_functions
+USER root
+
+RUN mkdir -p ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} /app/cloud_functions && chown -R node:node ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} /app/cloud_functions
+
+USER node
 
 # 从构建阶段复制node模块和应用代码
-COPY --from=builder /tmp/custom_dependency /tmp/custom_dependency
+COPY --from=builder ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} ${ENV.CUSTOM_DEPENDENCY_BASE_PATH}
 COPY --from=builder /app /app
 
-# 创建软链接
-RUN ln -s /tmp/custom_dependency /app/functions/node_modules
+RUN ln -s ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} /app/functions/node_modules
 
-# 设置环境变量
 # 设置环境变量
 ENV ${envVariablesString}
 
 # 下载tar包并解压到cloud_functions目录
-RUN curl -o /tmp/cloud_functions.tar.gz http://${ENV.RUNTIME_DOMAIN}/_/cloud-function/tar && tar -xzf /tmp/cloud_functions.tar.gz -C /app/cloud_functions && rm /tmp/cloud_functions.tar.gz
-
-# 切换到非root用户
-USER node
+RUN curl -o /tmp/cloud_functions.tar http://${ENV.RUNTIME_DOMAIN}/_/cloud-function/tar && tar -xzf /tmp/cloud_functions.tar -C /app/cloud_functions && rm /tmp/cloud_functions.tar
 
 # 设置工作目录
 WORKDIR /app
