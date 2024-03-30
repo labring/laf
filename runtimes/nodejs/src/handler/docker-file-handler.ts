@@ -194,7 +194,7 @@ RUN ln -s ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} /app/functions/node_modules
 
 ENV ${envVariablesString}
 
-RUN curl -o /tmp/cloud_functions.tar https://${ENV.RUNTIME_DOMAIN}/_/cloud-function/tar && tar -xf /tmp/cloud_functions.tar -C /app/cloud_functions && rm /tmp/cloud_functions.tar
+RUN curl -o /tmp/cloud_functions.tar https://${ENV.RUNTIME_DOMAIN}/_/cloud_functions/tar && tar -xf /tmp/cloud_functions.tar -C /app/cloud_functions && rm /tmp/cloud_functions.tar
 WORKDIR /app
 
 CMD node $FLAGS --experimental-vm-modules --experimental-fetch ./dist/index.js
