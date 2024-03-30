@@ -169,7 +169,7 @@ export async function handleDockerFile(_: IRequest, res: Response) {
 
     const DOCKER_FILE = `
 
-FROM docker.io/lafyun/runtime-node:pr-1930@sha256:bd5b731e683835d8c30393a8142698e3df8be060de25bd3fbc1aeab6717dc770 as builder
+FROM docker.io/lafyun/runtime-node:pr-1930@sha256:8bb7247e38fde557ae0c8ffa0a5c95e52362a4b4acd6666ae46e9e03ba2ab3a3 as builder
 USER root
 
 WORKDIR ${ENV.CUSTOM_DEPENDENCY_BASE_PATH}
