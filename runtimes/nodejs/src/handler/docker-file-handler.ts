@@ -168,6 +168,7 @@ export async function handleDockerFile(_: IRequest, res: Response) {
     envVariablesString = envVariablesString.replace(/\\\n\s*$/, '')
 
     const DOCKER_FILE = `
+
 FROM docker.io/lafyun/runtime-node:pr-1930@sha256:bd5b731e683835d8c30393a8142698e3df8be060de25bd3fbc1aeab6717dc770 as builder
 USER root
 
@@ -192,7 +193,7 @@ RUN ln -s ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} /app/functions/node_modules
 
 ENV ${envVariablesString}
 
-RUN curl -o /tmp/cloud_functions.tar http://${ENV.RUNTIME_DOMAIN}/_/cloud-function/tar && tar -xzf /tmp/cloud_functions.tar -C /app/cloud_functions && rm /tmp/cloud_functions.tar
+RUN curl -o /tmp/cloud_functions.tar https://${ENV.RUNTIME_DOMAIN}/_/cloud-function/tar && tar -xzf /tmp/cloud_functions.tar -C /app/cloud_functions && rm /tmp/cloud_functions.tar
 WORKDIR /app
 
 CMD node $FLAGS --experimental-vm-modules --experimental-fetch ./dist/index.js
