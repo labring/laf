@@ -167,9 +167,10 @@ export async function handleDockerFile(_: IRequest, res: Response) {
 
     envVariablesString = envVariablesString.replace(/\\\n\s*$/, '')
 
+    // version from env  todo
     const DOCKER_FILE = `
 
-FROM docker.io/lafyun/runtime-node:pr-1930@sha256:8bb7247e38fde557ae0c8ffa0a5c95e52362a4b4acd6666ae46e9e03ba2ab3a3 as builder
+FROM docker.io/lafyun/runtime-node:pr-1930@sha256:724f3d04c7f7a42164d9199edd1c2b3a803b511d8dfa0424811fadc75f90c7aa as builder
 USER root
 
 WORKDIR ${ENV.CUSTOM_DEPENDENCY_BASE_PATH}
