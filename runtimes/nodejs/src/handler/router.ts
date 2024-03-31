@@ -42,8 +42,14 @@ export const router = Router()
 
 router.post('/proxy/:policy', handleDatabaseProxy)
 router.get('/_/typing/package', handlePackageTypings)
-router.get('/_/cloud_functions/tar', handleCloudFunctionTarPackage)
-router.get('/_/cloud_functions/dockerfile', handleDockerFile)
+router.get(
+  `/_/${process.env.SERVER_SECRET}/cloud_functions/tar`,
+  handleCloudFunctionTarPackage,
+)
+router.get(
+  `/_/${process.env.SERVER_SECRET}/cloud_functions/dockerfile`,
+  handleDockerFile,
+)
 
 router.get('/_/healthz', (_req, res) => {
   if (Config.IS_DOCKER_PRODUCT) {

@@ -129,17 +129,23 @@ export async function handleDockerFile(_: IRequest, res: Response) {
       'APP_ID',
       'APPID',
       'RUNTIME_DOMAIN',
+      'RUNTIME_MAIN_IMAGE',
+
       'OSS_ACCESS_KEY',
       'OSS_ACCESS_SECRET',
       'OSS_INTERNAL_ENDPOINT',
       'OSS_EXTERNAL_ENDPOINT',
       'OSS_REGION',
+
       'DEPENDENCIES',
+
       'NODE_MODULES_PUSH_URL',
       'NODE_MODULES_PULL_URL',
+
       'NPM_INSTALL_FLAGS',
       'CUSTOM_DEPENDENCY_BASE_PATH',
       'RESTART_AT',
+      'SERVER_SECRET',
     ]
 
     let envVariablesString = 'LOG_LEVEL=debug \\\n  FORCE_COLOR=1 \\\n  '
@@ -170,20 +176,22 @@ export async function handleDockerFile(_: IRequest, res: Response) {
     // version from env  todo
     const DOCKER_FILE = `
 
-FROM docker.io/lafyun/runtime-node:pr-1930@sha256:7db630fb7e1ba1c8ccf246dc92261cf8fad86a32df406d327a9313fd828f297f as builder
+FROM ${ENV.RUNTIME_MAIN_IMAGE} as builder
 USER root
 
 WORKDIR ${ENV.CUSTOM_DEPENDENCY_BASE_PATH}
+RUN mkdir -p /app/cloud_functions && chown -R node:node /app/cloud_functions ${ENV.CUSTOM_DEPENDENCY_BASE_PATH}
 
+USER node
 RUN npm install ${ENV.DEPENDENCIES} || true
+
+RUN curl -o /tmp/cloud_functions.tar https://${ENV.RUNTIME_DOMAIN}/_/${process.env.SERVER_SECRET}/cloud_functions/tar && tar -xf /tmp/cloud_functions.tar -C /app/cloud_functions && rm /tmp/cloud_functions.tar
 
 FROM node:20.10.0
 USER root
 
 EXPOSE 8000
 EXPOSE 9000
-
-RUN mkdir -p ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} /app/cloud_functions && chown -R node:node ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} /app/cloud_functions
 
 USER node
 
@@ -194,7 +202,6 @@ RUN ln -s ${ENV.CUSTOM_DEPENDENCY_BASE_PATH} /app/functions/node_modules
 
 ENV ${envVariablesString}
 
-RUN curl -o /tmp/cloud_functions.tar https://${ENV.RUNTIME_DOMAIN}/_/cloud_functions/tar && tar -xf /tmp/cloud_functions.tar -C /app/cloud_functions && rm /tmp/cloud_functions.tar
 WORKDIR /app
 
 CMD node $FLAGS --experimental-vm-modules --experimental-fetch ./dist/index.js

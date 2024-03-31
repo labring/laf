@@ -279,6 +279,8 @@ export class InstanceService {
       { name: 'APP_ID', value: appid }, // deprecated, use `APPID` instead
       { name: 'APPID', value: appid },
       { name: 'RUNTIME_DOMAIN', value: runtimeDomain.domain },
+      { name: 'RUNTIME_INIT_IMAGE', value: app.runtime.image.init },
+      { name: 'RUNTIME_MAIN_IMAGE', value: app.runtime.image.main },
       { name: 'OSS_ACCESS_KEY', value: storage.accessKey },
       { name: 'OSS_ACCESS_SECRET', value: storage.secretKey },
       {
