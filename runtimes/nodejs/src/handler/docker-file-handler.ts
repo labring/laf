@@ -89,34 +89,10 @@ export async function handleCloudFunctionTarPackage(
         console.error('Error removing file:', unlinkError)
       })
     })
-
-    await test()
-    // after pipe the file stream, remove the tar file
   } catch (error) {
     console.error('Error:', error)
     if (!res.headersSent) {
       return res.status(500).send('Internal Server Error')
-    }
-  }
-}
-
-async function test(): Promise<void> {
-  const stack = [WORKSPACE_PATH]
-
-  while (stack.length > 0) {
-    const currentDir = stack.pop()
-    const entries = await fs.readdir(currentDir, { withFileTypes: true })
-
-    for (const entry of entries) {
-      const fullPath = path.join(currentDir, entry.name)
-      if (entry.isDirectory()) {
-        stack.push(fullPath)
-      } else if (entry.isFile()) {
-        const fileContent = await fs.readFile(fullPath, 'utf8')
-        const iCloudFunctionData: ICloudFunctionData = JSON.parse(fileContent)
-        console.log(iCloudFunctionData.name)
-        console.log(JSON.stringify(iCloudFunctionData, null, 2))
-      }
     }
   }
 }
