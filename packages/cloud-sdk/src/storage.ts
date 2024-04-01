@@ -15,6 +15,7 @@ import {
   ListObjectsCommandOutput,
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import { IS_SEALAF } from './util'
 
 export type NodeJsRuntimeStreamingBlobPayloadOutputTypes = SdkStream<
   Readable | IncomingMessage
@@ -167,7 +168,12 @@ export class CloudStorage {
    * @returns
    */
   bucket(bucketName: string): CloudStorageBucket {
-    return new CloudStorageBucket(this, bucketName)
+    assert(bucketName, 'bucketName is required')
+    if (IS_SEALAF || bucketName.startsWith(`${this.appid}-`)) {
+      return new CloudStorageBucket(this, bucketName)
+    }
+    const name = `${this.appid}-${bucketName}`
+    return new CloudStorageBucket(this, name)
   }
 }
 
