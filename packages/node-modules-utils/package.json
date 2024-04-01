@@ -1,6 +1,6 @@
 {
   "name": "node-modules-utils",
-  "version": "1.0.0-beta.14",
+  "version": "1.0.0",
   "description": "load package info from node_modules, parse dts (Typescript declaration files, .d.ts) from node_modules",
   "author": "maslow <wangfugen@126.com>",
   "homepage": "https://github.com/Maslow/less-framework#readme",

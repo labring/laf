@@ -2,7 +2,7 @@
   "name": "web",
   "private": true,
   "type": "module",
-  "version": "1.0.0-beta.14",
+  "version": "1.0.0",
   "scripts": {
     "dev": "node --experimental-import-meta-resolve ./node_modules/vite/bin/vite.js",
     "build": "tsc && node --max_old_space_size=32768 ./node_modules/vite/bin/vite.js build",
@@ -41,7 +41,7 @@
     "i18next-browser-languagedetector": "7.0.1",
     "i18next-http-backend": "2.2.1",
     "immer": "^10.0.2",
-    "laf-client-sdk": "1.0.0-beta.14",
+    "laf-client-sdk": "^1.0.0",
     "lodash": "^4.17.21",
     "monaco-editor": "~0.43.0",
     "monaco-languageclient": "~6.5.1",

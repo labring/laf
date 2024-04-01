@@ -1,6 +1,6 @@
 {
   "name": "@lafjs/cloud",
-  "version": "1.0.0-beta.14-patch0",
+  "version": "1.0.0",
   "description": "The cloud sdk for laf cloud function",
   "main": "dist/index.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "@types/express": "^4.17.15",
     "@types/ws": "^8.5.3",
     "axios": "^1.2.1",
-    "database-proxy": "^1.0.0-beta.14-patch0",
+    "database-proxy": "^1.0.0",
     "mongodb": "^5.9.2",
     "ws": "^8.11.0"
   },
