@@ -133,7 +133,6 @@ export async function handleDockerFile(_: IRequest, res: Response) {
       .collection(CONFIG_COLLECTION)
       .findOne({})
 
-    // 检查 conf 是否存在且包含 environments
     if (conf && conf.environments) {
       for (const env of conf.environments) {
         envVariablesString += `${env.name}=${env.value} \\\n  `
@@ -142,7 +141,6 @@ export async function handleDockerFile(_: IRequest, res: Response) {
 
     for (const [key, value] of Object.entries(ENV)) {
       if (keysToInclude.includes(key)) {
-        // 只包含指定的keys
         envVariablesString += `${key}=${value} \\\n  `
       }
     }
