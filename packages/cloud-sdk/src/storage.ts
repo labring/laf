@@ -163,14 +163,11 @@ export class CloudStorage {
   }
 
   /**
-   * Get bucket by short name
-   * @param bucketShortName it is the short name of the bucket, e.g. `images`, NOT `{appid}-images`.
+   * Get bucket by bucket name
    * @returns
    */
-  bucket(bucketShortName: string): CloudStorageBucket {
-    assert(bucketShortName, 'bucketShortName is required')
-    const name = `${this.appid}-${bucketShortName}`
-    return new CloudStorageBucket(this, name)
+  bucket(bucketName: string): CloudStorageBucket {
+    return new CloudStorageBucket(this, bucketName)
   }
 }
 
