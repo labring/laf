@@ -5,46 +5,66 @@ import {
   SchemaObjectType,
 } from 'openapi3-ts/oas30'
 import { FunctionCache, ICloudFunctionData } from './engine'
-import { Project, TypeElementTypes, Node } from 'ts-morph'
+import * as ts from 'typescript'
 
 function extractOpenAPIParams(func: ICloudFunctionData) {
-  const project = new Project()
-  const sourceFile = project.createSourceFile(func.name, func.source.code)
-  const interfaceDeclarations = sourceFile.getInterfaces()
+  const sourceFile = ts.createSourceFile(
+    func.name,
+    func.source.code,
+    ts.ScriptTarget.ES2022,
+    /*setParentNodes */ true,
+  )
+  const interfaceDeclarations = sourceFile.statements.filter(
+    ts.isInterfaceDeclaration,
+  )
 
   const getPropertiesInfo = (
-    properties: TypeElementTypes[],
+    properties: ts.NodeArray<ts.TypeElement>,
   ): { name: string; type: string | object; required: boolean }[] => {
-    return properties.filter(Node.isPropertySignature).map((prop) => {
-      const type = prop.getType()
-      let propType = 'object'
+    return properties
+      .filter(ts.isPropertySignature)
+      .filter((prop) => !!prop.type)
+      .map((prop) => {
+        const type = prop.type!
+        let propType = 'object'
+        switch (type.kind) {
+          case ts.SyntaxKind.StringKeyword:
+            propType = 'string'
+            break
+          case ts.SyntaxKind.BooleanKeyword:
+            propType = 'boolean'
+            break
+          case ts.SyntaxKind.NumberKeyword:
+            propType = 'number'
+            break
+          case ts.SyntaxKind.ObjectKeyword:
+            propType = 'object'
+            break
+          case ts.SyntaxKind.ArrayType:
+            propType = 'array'
+            break
+          default:
+            propType = 'object'
+            break
+        }
 
-      if (type.isNumberLiteral()) {
-        propType = 'number'
-      } else if (type.isStringLiteral()) {
-        propType = 'string'
-      } else if (type.isBooleanLiteral()) {
-        propType = 'boolean'
-      } else if (type.isObject()) {
-        propType = 'object'
-      } else if (type.isArray()) {
-        propType = 'array'
-      }
+        const comments = ts.getTrailingCommentRanges(func.source.code, type.pos)
+        let desc = ''
+        if (comments && comments.length > 0) {
+          const comment = func.source.code.slice(
+            comments[0].pos,
+            comments[0].end,
+          )
+          desc = comment.slice(2).trim() || ''
+        }
 
-      const comments = prop.getTrailingCommentRanges()
-      let desc = ''
-      if (comments.length > 0) {
-        const comment = comments[0].getText()
-        desc = comment.slice(2).trim() || ''
-      }
-
-      return {
-        name: prop.getName(),
-        type: propType,
-        required: !prop.hasQuestionToken(),
-        desc,
-      }
-    })
+        return {
+          name: prop.name.getText(),
+          type: propType,
+          required: !prop.questionToken,
+          desc,
+        }
+      })
   }
 
   const res: { query: any[]; requestBody: any[]; response: any[] } = {
@@ -54,24 +74,24 @@ function extractOpenAPIParams(func: ICloudFunctionData) {
   }
 
   const iQueryDeclaration = interfaceDeclarations.find(
-    (d) => d.getName() === 'IQuery',
+    (d) => d.name.getText() === 'IQuery',
   )
   if (iQueryDeclaration) {
-    res.query = getPropertiesInfo(iQueryDeclaration.getMembers())
+    res.query = getPropertiesInfo(iQueryDeclaration.members)
   }
 
   const iRequestBodyDeclaration = interfaceDeclarations.find(
-    (d) => d.getName() === 'IRequestBody',
+    (d) => d.name.getText() === 'IRequestBody',
   )
   if (iRequestBodyDeclaration) {
-    res.requestBody = getPropertiesInfo(iRequestBodyDeclaration.getMembers())
+    res.requestBody = getPropertiesInfo(iRequestBodyDeclaration.members)
   }
 
   const iResponseDeclaration = interfaceDeclarations.find(
-    (d) => d.getName() === 'IResponse',
+    (d) => d.name.getText() === 'IResponse',
   )
   if (iResponseDeclaration) {
-    res.response = getPropertiesInfo(iResponseDeclaration.getMembers())
+    res.response = getPropertiesInfo(iResponseDeclaration.members)
   }
 
   return res
