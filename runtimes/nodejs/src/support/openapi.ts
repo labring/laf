@@ -48,7 +48,7 @@ function extractOpenAPIParams(func: ICloudFunctionData) {
             break
         }
 
-        const comments = ts.getTrailingCommentRanges(func.source.code, type.pos)
+        const comments = ts.getTrailingCommentRanges(func.source.code, type.end)
         let desc = ''
         if (comments && comments.length > 0) {
           const comment = func.source.code.slice(
@@ -143,7 +143,11 @@ export function buildOpenAPIDefinition(apiConfig: {
         path[method.toLowerCase()] = {
           operationId: `${func.name}_${method}`,
           summary: func.desc,
-          requestBody: {
+          tags: func.tags,
+        }
+
+        if (openApi.requestBody.length > 0) {
+          path[method.toLowerCase()].requestBody = {
             required: true,
             content: {
               'application/json': {
@@ -159,8 +163,10 @@ export function buildOpenAPIDefinition(apiConfig: {
                 },
               },
             },
-          },
-          responses: {
+          }
+        }
+        if (openApi.response.length > 0) {
+          path[method.toLowerCase()].responses = {
             default: {
               description: 'success',
               content: {
@@ -178,8 +184,7 @@ export function buildOpenAPIDefinition(apiConfig: {
                 },
               },
             },
-          },
-          tags: func.tags,
+          }
         }
       }
     })
