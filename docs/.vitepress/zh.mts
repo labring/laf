@@ -137,4 +137,10 @@ export const SidebarItemsInZh: DefaultTheme.SidebarItem[] = [
     text: '工具',
     items: [{ text: 'laf-cli', link: '/zh/cli/' }],
   },
+  {
+    text: '其他',
+    items: [
+      { text: 'Laf 迁移到 Sealaf', link: '/zh/other/sealaf-migration' },
+    ],
+  }
 ]
