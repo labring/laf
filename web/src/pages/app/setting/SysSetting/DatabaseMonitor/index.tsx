@@ -76,6 +76,9 @@ export default function DatabaseMonitor() {
     return [t("All"), ...uniquePods];
   }, [cpuData, memoryData, t]);
 
+  const [longestTick, setLongestTick] = useState("");
+  const [longestTick1, setLongestTick1] = useState("");
+
   return (
     <Tabs variant="enclosed" isLazy={true}>
       <TabList>
@@ -107,7 +110,8 @@ export default function DatabaseMonitor() {
                     maxValue={limitCPU / 1000}
                     className="h-1/3 p-4"
                     syncId="tab1"
-                    tableMarginLeft={-28}
+                    longestTick={longestTick}
+                    onLongestTickChange={(val) => setLongestTick(val)}
                   />
                   <AreaCard
                     data={resourceData?.data?.memory}
@@ -120,7 +124,8 @@ export default function DatabaseMonitor() {
                     podName={podName}
                     className="h-1/3 p-4"
                     syncId="tab1"
-                    tableMarginLeft={-28}
+                    longestTick={longestTick}
+                    onLongestTickChange={(val) => setLongestTick(val)}
                   />
                   <AreaCard
                     data={connectionData?.data?.connections}
@@ -133,7 +138,8 @@ export default function DatabaseMonitor() {
                     podName={podName}
                     className="h-1/3 p-4"
                     syncId="tab1"
-                    tableMarginLeft={-28}
+                    longestTick={longestTick}
+                    onLongestTickChange={(val) => setLongestTick(val)}
                   />
                 </div>
 
@@ -194,7 +200,8 @@ export default function DatabaseMonitor() {
                   maxValue={0}
                   className="h-1/3 p-4"
                   syncId=""
-                  tableMarginLeft={-25}
+                  longestTick={longestTick1}
+                  onLongestTickChange={(val) => setLongestTick1(val)}
                 />
                 <AreaCard
                   data={performanceData?.data?.queryOperations}
@@ -207,7 +214,8 @@ export default function DatabaseMonitor() {
                   podName={podName}
                   className="h-1/3 p-4"
                   syncId=""
-                  tableMarginLeft={-26}
+                  longestTick={longestTick1}
+                  onLongestTickChange={(val) => setLongestTick1(val)}
                 />
                 <AreaCard
                   data={performanceData?.data?.pageFaults}
@@ -220,7 +228,8 @@ export default function DatabaseMonitor() {
                   podName={podName}
                   className="h-1/3 p-4"
                   syncId=""
-                  tableMarginLeft={-25}
+                  longestTick={longestTick1}
+                  onLongestTickChange={(val) => setLongestTick1(val)}
                 />
               </div>
             ) : (

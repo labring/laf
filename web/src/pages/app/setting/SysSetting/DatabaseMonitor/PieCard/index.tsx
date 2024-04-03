@@ -39,7 +39,7 @@ export default function PieCard(props: {
               ></span>
               <p>{entry.value}</p>
             </span>
-            <p className="ml-3 mt-1">{(pieData[index]?.value).toFixed(3)} MB</p>
+            <p className="text-nowrap ml-3 mt-1">{(pieData[index]?.value).toFixed(3)} MB</p>
           </div>
         ))}
       </ul>

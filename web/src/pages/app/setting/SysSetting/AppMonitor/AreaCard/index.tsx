@@ -92,6 +92,8 @@ export default function AreaCard(props: {
   maxValue: number;
   unit: string;
   className?: string;
+  longestTick: string;
+  onLongestTickChange: (val: string) => void;
 }) {
   const {
     data,
@@ -104,6 +106,8 @@ export default function AreaCard(props: {
     maxValue,
     unit,
     className,
+    longestTick,
+    onLongestTickChange,
   } = props;
   const [chartData, setChartData] = useState<any[]>([]);
   useEffect(() => {
@@ -147,6 +151,14 @@ export default function AreaCard(props: {
     );
   }, [data, dataNumber, title]);
 
+  const tickFormatter = (val: string) => {
+    const formattedTick = val.toString();
+    if (longestTick.length < formattedTick.length) {
+      onLongestTickChange(formattedTick);
+    }
+    return val;
+  };
+
   return (
     <div className={className}>
       <div className="mb-3 flex justify-between font-medium text-grayModern-900">
@@ -178,7 +190,7 @@ export default function AreaCard(props: {
         )}
       </div>
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ left: -28, top: 6 }} syncId="sync">
+        <AreaChart data={chartData} margin={{ top: 6 }} syncId="sync">
           <CartesianGrid stroke="#f5f5f5" vertical={false} />
           <XAxis
             dataKey="xData"
@@ -190,7 +202,12 @@ export default function AreaCard(props: {
             domain={[Date.now() - 60 * 60 * 1000, Date.now()]}
             stroke="#C0C2D2"
           />
-          <YAxis fontSize="10" stroke="#9CA2A8" />
+          <YAxis
+            fontSize="10"
+            stroke="#9CA2A8"
+            width={longestTick.length * 8 + 8}
+            tickFormatter={tickFormatter}
+          />
           <ReferenceLine
             y={maxValue}
             strokeDasharray="3 3"

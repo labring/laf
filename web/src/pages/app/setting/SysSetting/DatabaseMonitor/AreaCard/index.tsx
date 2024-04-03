@@ -111,7 +111,8 @@ export default function AreaCard(props: {
   unit: string;
   className?: string;
   syncId: string;
-  tableMarginLeft: number;
+  longestTick: string;
+  onLongestTickChange: (val: string) => void;
 }) {
   const {
     data,
@@ -124,7 +125,8 @@ export default function AreaCard(props: {
     unit,
     className,
     syncId,
-    tableMarginLeft,
+    longestTick,
+    onLongestTickChange,
   } = props;
   const [chartData, setChartData] = useState<any[]>([]);
   useEffect(() => {
@@ -173,6 +175,14 @@ export default function AreaCard(props: {
     }
   }, [data, podName, title]);
 
+  const tickFormatter = (val: string) => {
+    const formattedTick = val.toString();
+    if (longestTick.length < formattedTick.length) {
+      onLongestTickChange(formattedTick);
+    }
+    return val;
+  };
+
   return (
     <div className={className}>
       <div className="mb-3 flex justify-between font-medium text-grayModern-900">
@@ -205,7 +215,7 @@ export default function AreaCard(props: {
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={chartData}
-          margin={{ left: tableMarginLeft, top: 6 }}
+          margin={{ top: 6 }}
           {...(syncId !== "" ? { syncId: syncId } : {})}
         >
           <CartesianGrid stroke="#f5f5f5" vertical={false} />
@@ -219,7 +229,12 @@ export default function AreaCard(props: {
             domain={[Date.now() - 60 * 60 * 1000, Date.now()]}
             stroke="#C0C2D2"
           />
-          <YAxis fontSize="10" stroke="#9CA2A8" />
+          <YAxis
+            fontSize="10"
+            stroke="#9CA2A8"
+            width={longestTick.length * 8 + 8}
+            tickFormatter={tickFormatter}
+          />
 
           {maxValue !== 0 && (
             <ReferenceLine

@@ -46,6 +46,8 @@ export default function AppMonitor() {
     return cpuData.length > memoryData.length ? [t("All"), ...cpuData] : [t("All"), ...memoryData];
   }, [monitorData, t]);
 
+  const [longestTick, setLongestTick] = useState("");
+
   return (
     <div className="flex w-full">
       {isLoading ? (
@@ -66,6 +68,8 @@ export default function AppMonitor() {
               unit="Core"
               maxValue={limitCPU / 1000}
               className="h-1/2 p-4"
+              longestTick={longestTick}
+              onLongestTickChange={(val) => setLongestTick(val)}
             />
             <AreaCard
               data={monitorData?.data?.memoryUsage}
@@ -77,6 +81,8 @@ export default function AppMonitor() {
               maxValue={limitMemory}
               dataNumber={dataNumber}
               className="h-1/2 p-4"
+              longestTick={longestTick}
+              onLongestTickChange={(val) => setLongestTick(val)}
             />
           </div>
           <div
