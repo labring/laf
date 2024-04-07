@@ -2,6 +2,7 @@
  * cloud functions list sidebar
  ***************************/
 import { useTranslation } from "react-i18next";
+import { AddIcon } from "@chakra-ui/icons";
 import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
 
@@ -10,10 +11,12 @@ import ConfirmButton from "@/components/ConfirmButton";
 import EmptyBox from "@/components/EmptyBox";
 import FileTypeIcon from "@/components/FileTypeIcon";
 import IconText from "@/components/IconText";
+import IconWrap from "@/components/IconWrap";
 import MoreButton from "@/components/MoreButton";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
 
+import AddPolicyModal from "../mods/AddPolicyModal";
 import { useDeletePolicyMutation } from "../service";
 import useDBMStore from "../store";
 export default function PolicyListPanel(props: { policyList: any }) {
@@ -30,7 +33,16 @@ export default function PolicyListPanel(props: { policyList: any }) {
         store.setCurrentShow("Policy");
       }}
     >
-      <Panel.Header title={t("CollectionPanel.Policy").toString()} actions={[<></>]} />
+      <Panel.Header
+        title={t("CollectionPanel.Policy").toString()}
+        actions={[
+          <AddPolicyModal key="AddPolicyModal">
+            <IconWrap tooltip={t("CollectionPanel.AddPolicy").toString()} size={20}>
+              <AddIcon fontSize={10} />
+            </IconWrap>
+          </AddPolicyModal>,
+        ]}
+      />
       <div style={{ flexGrow: 1, overflowY: "auto", overflowX: "hidden" }}>
         {policyList?.data?.length ? (
           <SectionList>
