@@ -138,7 +138,7 @@ export class LogController {
       const streamsEnded = new Set<string>()
 
       const timerId = setInterval(() => {
-        subscriber.next(' ' as unknown as MessageEvent)
+        subscriber.next('\u200B' as unknown as MessageEvent)
       }, 30000)
 
       const destroyStream = () => {
