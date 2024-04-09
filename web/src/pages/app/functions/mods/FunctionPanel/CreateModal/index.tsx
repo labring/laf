@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
@@ -31,7 +31,10 @@ import useFunctionStore from "../../../store";
 import { TFunctionTemplate, TMethod } from "@/apis/typing";
 import FunctionTemplate from "@/pages/functionTemplate";
 import TemplateCard from "@/pages/functionTemplate/Mods/TemplateCard";
-import { useGetRecommendFunctionTemplatesQuery } from "@/pages/functionTemplate/service";
+import {
+  useGetFunctionTemplatesQuery,
+  useGetRecommendFunctionTemplatesQuery,
+} from "@/pages/functionTemplate/service";
 import useTemplateStore from "@/pages/functionTemplate/store";
 import useGlobalStore from "@/pages/globalStore";
 
@@ -53,6 +56,13 @@ const CreateModal = (props: {
   const { recentFunctionList, setRecentFunctionList, setCurrentFunction, currentFunction } =
     useFunctionStore();
   const { setShowTemplateItem } = useTemplateStore();
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const templateid = searchParams.get("templateid");
+    if (!templateid) return;
+    localStorage.setItem("templateid", templateid);
+  }, []);
 
   const defaultValues = {
     name: functionItem?.name || "",
@@ -100,6 +110,23 @@ const CreateModal = (props: {
       enabled: !isOpen && !isEdit,
     },
   );
+  const searchedTemplateList = useGetFunctionTemplatesQuery(
+    {
+      page: 1,
+      pageSize: 3,
+      keyword: localStorage.getItem("templateid") || "",
+      type: "default",
+      asc: 1,
+      sort: null,
+    },
+    {
+      enabled: !!localStorage.getItem("templateid") && !isEdit,
+    },
+  );
+
+  const recommedList = InitialTemplateList.data?.data.list || [];
+  const searchedList = searchedTemplateList.data?.data.list || [];
+  const showedList = [...searchedList, ...recommedList].slice(0, 3);
 
   const onSubmit = async (data: any) => {
     let res: any = {};
@@ -226,7 +253,6 @@ const CreateModal = (props: {
                   />
                 </div>
               </FormControl>
-
               <Button
                 type="submit"
                 onClick={handleSubmit(onSubmit)}
@@ -246,7 +272,7 @@ const CreateModal = (props: {
                     {t("Template.Recommended")}
                   </div>
                   <div className="mb-11 flex w-full">
-                    {InitialTemplateList.data?.data.list.map((item: TFunctionTemplate) => (
+                    {showedList.map((item: TFunctionTemplate) => (
                       <section
                         className="h-28 w-1/3 px-1.5 py-1"
                         key={item._id}
