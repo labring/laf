@@ -25,10 +25,6 @@ export async function list() {
 export async function create(bucketName: string, options: any) {
   const appSchema = AppSchema.read()
 
-  if (!bucketName.startsWith(appSchema.appid + '-')) {
-    bucketName = appSchema.appid + '-' + bucketName
-  }
-
   const createDto: CreateWebsiteDto = {
     bucketName,
     state: 'Active',
@@ -49,10 +45,6 @@ export async function del(bucketName: string, options: any) {
   if (options) {
   }
 
-  if (!bucketName.startsWith(appSchema.appid + '-')) {
-    bucketName = appSchema.appid + '-' + bucketName
-  }
-
   const targetId = websites.find((item) => item.bucketName === bucketName)?._id
   if (!targetId) {
     console.log(`${getEmoji('❌')} website ${bucketName} not found`)
@@ -68,10 +60,6 @@ export async function custom(bucketName: string, domain: string, options: any) {
   const websites = await websiteControllerFindAll(appSchema.appid)
 
   if (options) {
-  }
-
-  if (!bucketName.startsWith(appSchema.appid + '-')) {
-    bucketName = appSchema.appid + '-' + bucketName
   }
 
   const targetId = websites.find((item) => item.bucketName === bucketName)?._id

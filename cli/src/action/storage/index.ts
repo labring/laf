@@ -65,9 +65,6 @@ export async function update(bucketName, options: { policy: string }) {
     const policyResult = await prompts(policySelect)
     policy = policyResult.policy
   }
-  if (!bucketName.startsWith(appSchema.appid + '-')) {
-    bucketName = appSchema.appid + '-' + bucketName
-  }
 
   const bucketDto: UpdateBucketDto = {
     policy: policy as any,
@@ -80,20 +77,17 @@ export async function del(bucketName, options) {
   if (options) {
   }
   const appSchema = AppSchema.read()
-  if (!bucketName.startsWith(appSchema.appid + '-')) {
-    bucketName = appSchema.appid + '-' + bucketName
-  }
   await bucketControllerRemove(appSchema.appid, bucketName)
   console.log(`${getEmoji('✅')} bucket ${bucketName} deleted`)
 }
 
 export async function pull(bucketName: string, outPath: string, options: { force: boolean; detail: boolean }) {
   const appSchema = AppSchema.read()
-  if (!bucketName.startsWith(appSchema.appid + '-')) {
-    bucketName = appSchema.appid + '-' + bucketName
-  }
   const client = getS3ClientV3(appSchema.storage)
-  const listCommand = new ListObjectsCommand({ Bucket: bucketName, Delimiter: '' })
+  const listCommand = new ListObjectsCommand({
+    Bucket: bucketName,
+    Delimiter: '',
+  })
   const res = await client.send(listCommand)
   const bucketObjects = res.Contents || []
 
@@ -121,7 +115,10 @@ export async function pull(bucketName: string, outPath: string, options: { force
         ensureDirectory(newPath)
       }
 
-      const getCommand = new GetObjectCommand({ Bucket: bucketName, Key: item.Key })
+      const getCommand = new GetObjectCommand({
+        Bucket: bucketName,
+        Key: item.Key,
+      })
       const obj = await client.send(getCommand)
       const filepath = path.resolve(absPath, item.Key)
       const readableStream: Readable = obj.Body as Readable
@@ -136,12 +133,12 @@ export async function pull(bucketName: string, outPath: string, options: { force
 
 export async function push(bucketName: string, inPath: string, options: { force: boolean; detail: boolean }) {
   const appSchema = AppSchema.read()
-  if (!bucketName.startsWith(appSchema.appid + '-')) {
-    bucketName = appSchema.appid + '-' + bucketName
-  }
 
   const client = getS3ClientV3(appSchema.storage)
-  const listCommand = new ListObjectsCommand({ Bucket: bucketName, Delimiter: '' })
+  const listCommand = new ListObjectsCommand({
+    Bucket: bucketName,
+    Delimiter: '',
+  })
   const res = await client.send(listCommand)
   const bucketObjects = res.Contents || []
 
