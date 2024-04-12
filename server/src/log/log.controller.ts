@@ -137,9 +137,14 @@ export class LogController {
 
       const streamsEnded = new Set<string>()
 
+      const timerId = setInterval(() => {
+        subscriber.next('\u200B' as unknown as MessageEvent)
+      }, 30000)
+
       const destroyStream = () => {
         combinedLogStream?.removeAllListeners()
         combinedLogStream?.destroy()
+        clearInterval(timerId)
       }
 
       combinedLogStream.on('data', (chunk) => {
