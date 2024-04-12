@@ -95,7 +95,7 @@ export class StorageUserTaskService {
     }
     // add storage user to common user group in minio
     const result = await this.minioService.addUserToGroup(region, accessKey)
-    if (result.error) {
+    if (result?.error) {
       this.logger.error('add storage user to group failed: ', result.error)
       return
     }
