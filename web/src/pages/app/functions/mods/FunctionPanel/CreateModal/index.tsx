@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import {
@@ -59,9 +59,9 @@ const CreateModal = (props: {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
-    const templateid = searchParams.get("templateid");
-    if (!templateid) return;
-    localStorage.setItem("templateid", templateid);
+    const templateId = searchParams.get("templateId");
+    if (!templateId) return;
+    localStorage.setItem("templateId", templateId);
   }, []);
 
   const defaultValues = {
@@ -124,9 +124,17 @@ const CreateModal = (props: {
     },
   );
 
-  const recommedList = InitialTemplateList.data?.data.list || [];
-  const searchedList = searchedTemplateList.data?.data.list || [];
-  const showedList = [...searchedList, ...recommedList].slice(0, 3);
+  const recommendedList = useMemo(
+    () => InitialTemplateList.data?.data.list || [],
+    [InitialTemplateList],
+  );
+  const searchedList = useMemo(
+    () => searchedTemplateList.data?.data.list || [],
+    [searchedTemplateList],
+  );
+  const showedList = useMemo(() => {
+    return [...searchedList, ...recommendedList].slice(0, 3);
+  }, [searchedList, recommendedList]);
 
   const onSubmit = async (data: any) => {
     let res: any = {};
