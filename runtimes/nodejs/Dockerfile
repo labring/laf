@@ -26,5 +26,9 @@ RUN chown -R node:node /app/node_modules
 RUN chown node:node /app/package.json
 RUN chown node:node /app/package-lock.json
 
+# Set ownership and permissions for /tmp and any subdirectories
+RUN chown -R node:node /tmp
+RUN chmod -R 775 /tmp
+
 USER node
 CMD [ "sh", "/app/start.sh" ]
