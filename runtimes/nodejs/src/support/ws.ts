@@ -73,6 +73,7 @@ async function handleWebSocketEvent(
     requestId: generateUUID(),
     socket,
     __function_name: WEBSOCKET_FUNCTION_NAME,
+    url: request?.url,
     headers: request?.headers,
   }
 
