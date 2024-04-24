@@ -114,13 +114,13 @@ const CreateModal = (props: {
     {
       page: 1,
       pageSize: 3,
-      keyword: localStorage.getItem("templateid") || "",
+      keyword: localStorage.getItem("templateId") || "",
       type: "default",
       asc: 1,
       sort: null,
     },
     {
-      enabled: !!localStorage.getItem("templateid") && !isEdit,
+      enabled: !!localStorage.getItem("templateId") && !isEdit,
     },
   );
 
