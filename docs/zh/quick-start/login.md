@@ -27,6 +27,8 @@
 import cloud from "@lafjs/cloud";
 import { createHash } from "crypto";
 
+const db = cloud.mongo.db
+
 export default async function (ctx: FunctionContext) {
   const username = ctx.body?.username || "";
   const password = ctx.body?.password || "";
@@ -38,7 +40,6 @@ export default async function (ctx: FunctionContext) {
     return { error: "invalid password" };
 
   // check username existed
-  const db = cloud.database();
   const exists = await db
     .collection("users")
     .where({ username: username })
@@ -68,12 +69,13 @@ export default async function (ctx: FunctionContext) {
 import cloud from "@lafjs/cloud";
 import { createHash } from "crypto";
 
+const db = cloud.mongo.db
+
 export default async function (ctx: FunctionContext) {
   const username = ctx.body?.username || "";
   const password = ctx.body?.password || "";
 
   // check user login
-  const db = cloud.database();
   const res = await db
     .collection("users")
     .where({
