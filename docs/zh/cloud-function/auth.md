@@ -17,7 +17,7 @@ import cloud from '@lafjs/cloud'
 export default async function (ctx: FunctionContext) {
   const payload = { 
     user_id: 123,
-    exp: Date.now() + 60 * 60 * 24 * 7, // 有效期为 7 天
+    exp: Math.floor(Date.now()/1000) + 60 * 60 * 24 * 7, // 有效期为 7 天
   }
   const token = cloud.getToken(payload)
 
