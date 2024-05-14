@@ -18,7 +18,8 @@ type SITE_KEY =
   | "laf_status_url"
   | "laf_doc_url"
   | "laf_about_us_url"
-  | "enable_web_promo_page";
+  | "enable_web_promo_page"
+  | "sealaf_notification";
 
 type State = {
   siteSettings: {

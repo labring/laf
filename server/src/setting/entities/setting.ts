@@ -25,6 +25,7 @@ export enum SettingKey {
   LafDocUrl = 'laf_doc_url',
 
   EnableWebPromoPage = 'enable_web_promo_page',
+  SealafNotification = 'sealaf_notification',
 }
 
 export class Setting {

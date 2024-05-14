@@ -525,6 +525,19 @@ export class InitializerService {
         value: 'true',
         desc: 'Whether to enable WebPromoPage',
       },
+      {
+        public: true,
+        key: SettingKey.SealafNotification,
+        value: 'off',
+        desc: 'home page enable sealaf notification',
+        metadata: {
+          message: {
+            zh: '',
+            en: '',
+          },
+          gotoSite: '',
+        },
+      },
     ])
 
     this.logger.verbose('Created default settings')
