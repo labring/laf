@@ -149,5 +149,12 @@
   "i18n-ally.keysInUse": [
     "description.part2_whatever"
   ],
-  "jest.rootPath": "e2e"
+  "jest.rootPath": "e2e",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
 }
