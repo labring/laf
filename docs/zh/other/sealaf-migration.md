@@ -71,6 +71,7 @@ laf storage list
 laf storage pull <bucketName> <path>
 
 # 拉取数据库
+mkdir db
 laf database export ./db
 
 # 删除 .app.yaml 以便重新 init 新应用
