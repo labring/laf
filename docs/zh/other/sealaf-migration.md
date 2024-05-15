@@ -54,7 +54,7 @@ Sealos 不同可用区 Sealaf 对应的 api 地址如下：
 APPID="" # laf 上的 appid
 mkdir $APPID && cd $APPID
 
-laf user swicth laf
+laf user switch laf
 laf app init $APPID
 
 # 拉取云存储、环境变量、依赖
@@ -81,7 +81,7 @@ rm .app.yaml
 ### 4. 推送数据到新应用
 ```bash
 NEW_APPID=""
-laf user swicth sealaf-hzh
+laf user switch sealaf-hzh
 
 laf app init $NEW_APPID
 
