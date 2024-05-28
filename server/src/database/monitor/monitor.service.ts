@@ -33,7 +33,7 @@ export class DedicatedDatabaseMonitorService {
     )
     const dataSize = await this.query(
       region,
-      `sum(mongodb_dbstats_dataSize{pod=~"${dbName}-mongo.+"}) by (database)`,
+      `sum(mongodb_dbstats_dataSize{pod=~"${dbName}-mongo.+",rs_state="1"}) by (database)`,
       {
         labels: ['database'],
       },

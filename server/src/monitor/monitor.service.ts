@@ -37,7 +37,7 @@ export const getQuery =
       case MonitorMetric.databaseUsage:
         return {
           instant: true,
-          query: `sum(mongodb_dbstats_dataSize{database="${opts.appid}"})`,
+          query: `sum(mongodb_dbstats_dataSize{database="${opts.appid}",rs_state="1"})`,
         }
       case MonitorMetric.storageUsage:
         return {
