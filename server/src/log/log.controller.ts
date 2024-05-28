@@ -21,6 +21,7 @@ import { RegionService } from 'src/region/region.service'
 import { ClusterService } from 'src/region/cluster/cluster.service'
 import { Observable } from 'rxjs'
 import { PodService } from 'src/application/pod.service'
+import { WriteStream } from 'fs'
 
 @ApiBearerAuth('Authorization')
 @Controller('apps/:appid/logs')
@@ -134,11 +135,13 @@ export class LogController {
     return new Observable<MessageEvent>((subscriber) => {
       const combinedLogStream = new PassThrough()
       const logs = new Log(kc)
-
       const streamsEnded = new Set<string>()
+      const tickStream = new WriteStream()
 
       const timerId = setInterval(() => {
-        subscriber.next('\u200B' as unknown as MessageEvent)
+        if (combinedLogStream.readableLength === 0) {
+          tickStream.write('\u200B')
+        }
       }, 30000)
 
       const destroyStream = () => {
@@ -161,6 +164,8 @@ export class LogController {
         subscriber.complete()
         destroyStream()
       })
+
+      tickStream.pipe(combinedLogStream, { end: false })
 
       const fetchLog = async (podName: string) => {
         let k8sResponse: http.IncomingMessage | undefined
