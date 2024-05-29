@@ -7,6 +7,8 @@
 
 ## Create development environment on Linux
 
+> TIP: Please confirm to operate under the root user!
+
 ```bash
 cd deploy
 
