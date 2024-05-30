@@ -21,11 +21,12 @@ type SITE_KEY =
   | "enable_web_promo_page"
   | "sealaf_notification";
 
+export type SiteSettings = {
+  // eslint-disable-next-line no-unused-vars
+  [key in SITE_KEY]?: TSetting;
+};
 type State = {
-  siteSettings: {
-    // eslint-disable-next-line no-unused-vars
-    [key in SITE_KEY]?: TSetting;
-  };
+  siteSettings: SiteSettings;
   getSiteSettings: () => void;
 };
 

@@ -23,6 +23,7 @@
     "@codingame/monaco-vscode-typescript-basics-default-extension": "~1.82.3",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "@microsoft/fetch-event-source": "^2.0.1",
     "@monaco-editor/react": "^4.6.0",
     "@patternfly/react-log-viewer": "^5.0.0",
     "@sentry/integrations": "^7.73.0",
