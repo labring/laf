@@ -115,12 +115,7 @@ export class LogController {
 
     if (!podNameList.includes(podName) && podName !== 'all') {
       return new Observable<MessageEvent>((subscriber) => {
-        subscriber.next(
-          JSON.stringify({
-            error: 'podName not exist',
-          }) as unknown as MessageEvent,
-        )
-        subscriber.complete()
+        subscriber.error(new Error('podName not exist'))
       })
     }
 
@@ -144,7 +139,10 @@ export class LogController {
         combinedLogStream.removeAllListeners()
         combinedLogStream.destroy()
 
-        k8sLogResponses.forEach((response) => response.destroy())
+        k8sLogResponses.forEach((response) => {
+          response.removeAllListeners()
+          response.destroy()
+        })
 
         podLogStreams.forEach((stream) => {
           stream.removeAllListeners()
@@ -161,7 +159,6 @@ export class LogController {
           type: 'log',
         }
         idCounter++
-        console.log(dataString)
         subscriber.next(messageEvent)
       })
 
@@ -201,8 +198,16 @@ export class LogController {
           podLogStream.pipe(combinedLogStream, { end: false })
 
           podLogStream.on('error', (error) => {
+            subscriber.error(error)
             this.logger.error(`podLogStream error for pod ${podName}`, error)
             destroyStream()
+          })
+
+          k8sResponse.on('close', () => {
+            streamsEnded.delete(podName)
+            if (streamsEnded.size === 0) {
+              combinedLogStream.emit('close')
+            }
           })
 
           podLogStream.on('close', () => {
@@ -212,8 +217,8 @@ export class LogController {
             }
           })
         } catch (error) {
-          this.logger.error(`Failed to get logs for pod ${podName}`, error)
           subscriber.error(error)
+          this.logger.error(`Failed to get logs for pod ${podName}`, error)
           destroyStream()
         }
       }
@@ -225,8 +230,11 @@ export class LogController {
       } else {
         fetchLog(podName)
       }
+
       // Clean up when the client disconnects
-      return () => destroyStream()
+      return () => {
+        destroyStream()
+      }
     })
   }
 }
