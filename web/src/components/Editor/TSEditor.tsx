@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useState } from "react";
 import { useCompletionFeature } from "react-monaco-copilot";
 import { Spinner } from "@chakra-ui/react";
 import { Editor, Monaco } from "@monaco-editor/react";
@@ -24,6 +25,8 @@ export default function TSEditor(props: {
   onChange: (value: string | undefined) => void;
 }) {
   const { value, path, fontSize, onChange, colorMode } = props;
+
+  const [isEditorMounted, setIsEditorMounted] = useState(false);
 
   const functionCache = useFunctionCache();
   const { currentFunction, allFunctionList } = useFunctionStore((state) => state);
@@ -66,24 +69,30 @@ export default function TSEditor(props: {
       loadModelsRef.current(monacoRef.current!);
       autoImportTypings.loadDefaults(monacoRef.current);
     }, 10);
+
+    setIsEditorMounted(true);
   }
 
   useEffect(() => {
-    if (monacoRef.current) {
+    if (isEditorMounted && monacoRef.current) {
       loadModelsRef.current(monacoRef.current!);
     }
-  }, [allFunctionList]);
+  }, [allFunctionList, isEditorMounted]);
 
   useEffect(() => {
-    const pos = JSON.parse(functionCache.getPositionCache(path) || "{}");
-    if (pos.lineNumber && pos.column) {
-      editorRef.current?.setPosition(pos);
-      editorRef.current?.revealPositionInCenter(pos);
-    }
+    if (isEditorMounted) {
+      const pos = JSON.parse(functionCache.getPositionCache(path) || "{}");
+      if (pos.lineNumber && pos.column) {
+        editorRef.current?.setPosition(pos);
+        editorRef.current?.revealPositionInCenter(pos);
+      }
 
-    autoImportTypings.parse(value, monacoRef.current);
+      if (monacoRef.current) {
+        autoImportTypings.parse(value, monacoRef.current);
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [path]);
+  }, [path, isEditorMounted]);
 
   const options = {
     minimap: {
