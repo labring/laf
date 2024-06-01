@@ -88,7 +88,7 @@ function HeadPanel() {
                       setCurrentFunction(item);
                     }}
                   >
-                    <div className="max-w-20 flex truncate">
+                    <div className="flex max-w-20 truncate">
                       <FunctionDetailPopOver
                         functionItem={item}
                         color={selected ? "#00A9A6" : ""}

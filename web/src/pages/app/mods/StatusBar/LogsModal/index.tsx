@@ -159,6 +159,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
     setRowCount(0);
     setLogs([]);
     setIsLoading(true);
+    setPaused(false);
     const ctrl = fetchLogs();
 
     return () => {
@@ -251,21 +252,26 @@ export default function LogsModal(props: { children: React.ReactElement }) {
             ) : (
               <div
                 id="log-viewer-container"
-                className="text-sm flex h-full flex-col px-2 font-mono"
+                className={clsx("text-sm flex h-full flex-col px-2 font-mono", {
+                  "log-viewer-container-hide-scrollbar": !paused,
+                })}
                 style={{ fontSize: settingStore.commonSettings.fontSize - 1 }}
-                onWheel={(e) => {
-                  setPaused(true);
-                }}
               >
                 <LogViewer
                   data={renderLogs}
-                  hasLineNumbers={false}
-                  scrollToRow={paused ? undefined : rowCount + 1}
+                  hasLineNumbers={true}
+                  scrollToRow={paused ? undefined : rowCount + 300}
                   height={"98%"}
                   onScroll={(e) => {
                     if (e.scrollOffsetToBottom <= 0) {
                       setPaused(false);
+                      return;
                     }
+                    if (!e.scrollUpdateWasRequested) {
+                      setPaused(true);
+                      return;
+                    }
+                    setPaused(false);
                   }}
                   toolbar={
                     <div className="absolute right-24 top-4">

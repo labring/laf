@@ -123,12 +123,9 @@ export class LogController {
       (pod) => pod.initContainerId,
     )
 
-    console.log(JSON.stringify(podStatus?.podStatus[0], null, 2))
-
     if (containerName === 'init') {
       for (const containerId of initContainerId) {
         if (!containerId) {
-          console.log('no containerId')
           return new Observable<MessageEvent>((subscriber) => {
             subscriber.error(new Error('init container not exist'))
           })
@@ -190,7 +187,6 @@ export class LogController {
       })
 
       combinedLogStream.on('close', () => {
-        console.log('443')
         subscriber.complete()
         destroyStream()
       })
@@ -226,7 +222,6 @@ export class LogController {
           })
 
           k8sResponse.on('close', () => {
-            console.log('k8s close 2222222223333')
             streamsEnded.delete(podName)
             if (streamsEnded.size === 0) {
               combinedLogStream.emit('close')
@@ -234,14 +229,12 @@ export class LogController {
           })
 
           podLogStream.on('close', () => {
-            console.log('pod stream close 3333333222222222')
             streamsEnded.delete(podName)
             if (streamsEnded.size === 0) {
               combinedLogStream.emit('close')
             }
           })
         } catch (error) {
-          console.log('get log error 11111111111111\n11111111111111')
           subscriber.error(error)
           this.logger.error(`Failed to get logs for pod ${podName}`, error)
           destroyStream()

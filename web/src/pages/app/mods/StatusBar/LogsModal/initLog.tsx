@@ -4,9 +4,8 @@ import { EventStreamContentType, fetchEventSource } from "@microsoft/fetch-event
 import { LogViewer } from "@patternfly/react-log-viewer";
 import clsx from "clsx";
 
-import "./index.scss";
+import "./initLog.scss";
 
-import useCustomSettingStore from "@/pages/customSetting";
 import useGlobalStore from "@/pages/globalStore";
 
 type Log = {
@@ -17,9 +16,6 @@ type Log = {
 };
 
 export default function InitLog() {
-  const settingStore = useCustomSettingStore();
-  const { showWarning } = useGlobalStore(({ showWarning }) => ({ showWarning }));
-
   const { currentApp } = useGlobalStore((state) => state);
   const [isLoading, setIsLoading] = useState(true);
   const [rowCount, setRowCount] = useState(0);
@@ -66,7 +62,6 @@ export default function InitLog() {
 
       onmessage(msg) {
         if (msg.event === "error") {
-          console.log(msg);
           throw new Error(msg.data);
         }
 
@@ -76,23 +71,21 @@ export default function InitLog() {
       },
 
       onclose() {
-        console.log("onclose");
         throw new Error("connect closed unexpectedly, retrying...");
       },
 
       onerror(err) {
-        showWarning(err.message);
         // auto retry fetch
       },
     });
     return ctrl;
-  }, [currentApp.appid, showWarning]);
+  }, [currentApp.appid]);
 
   useEffect(() => {
     setRowCount(0);
     setLogs([]);
-    setPaused(false);
     setIsLoading(true);
+    setPaused(false);
     const ctrl = fetchLogs();
 
     return () => {
@@ -117,26 +110,29 @@ export default function InitLog() {
       ) : (
         <>
           <div
-            id="log-viewer-container"
+            id="log-viewer-cover-container"
             className={clsx(
               "absolute inset-0 z-[999] h-full w-full px-2 pt-0 font-mono text-base font-bold opacity-65",
               darkMode ? "bg-lafDark-100" : "bg-lafWhite-600",
+              { "log-viewer-cover-container-hide-scrollbar": !paused },
             )}
-            style={{ fontSize: settingStore.commonSettings.fontSize - 1 }}
-            onWheel={(e) => {
-              setPaused(true);
-            }}
+            style={{ fontSize: 16 }}
           >
             <LogViewer
               data={renderLogs}
               hasLineNumbers={false}
-              hasToolbar={false}
-              scrollToRow={paused ? undefined : rowCount + 1}
+              scrollToRow={paused ? undefined : rowCount + 300}
               height={"100%"}
               onScroll={(e) => {
                 if (e.scrollOffsetToBottom <= 0) {
                   setPaused(false);
+                  return;
                 }
+                if (!e.scrollUpdateWasRequested) {
+                  setPaused(true);
+                  return;
+                }
+                setPaused(false);
               }}
             />
           </div>

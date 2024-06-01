@@ -1,5 +1,5 @@
 /* stylelint-disable selector-class-pattern */
-#log-viewer-container {
+#log-viewer-cover-container {
   .pf-v5-c-text-input-group__icon {
     visibility: hidden;
   }
@@ -31,7 +31,7 @@
   }
 }
 
-.log-viewer-container-hide-scrollbar {
+.log-viewer-cover-container-hide-scrollbar {
   &,
   & * {
     &::-webkit-scrollbar {
