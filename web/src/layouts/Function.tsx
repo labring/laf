@@ -4,9 +4,10 @@ import { Badge, Center, Spinner, useColorMode } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 
-import { APP_PHASE_STATUS, COLOR_MODE, Pages } from "@/constants/index";
+import { APP_PHASE_STATUS, APP_STATUS, COLOR_MODE, Pages } from "@/constants/index";
 
 import { ApplicationControllerFindOne } from "@/apis/v1/applications";
+import InitLog from "@/pages/app/mods/StatusBar/LogsModal/initLog";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function FunctionLayout() {
@@ -64,12 +65,17 @@ export default function FunctionLayout() {
         </Center>
       ) : (
         <>
-          {currentApp?.phase !== APP_PHASE_STATUS.Started &&
-          currentApp?.phase !== APP_PHASE_STATUS.Stopped &&
-          currentApp?.phase !== APP_PHASE_STATUS.Deleted ? (
+          {currentApp.phase === APP_PHASE_STATUS.Starting &&
+          currentApp.state !== APP_STATUS.Restarting ? (
+            <InitLog />
+          ) : [
+              APP_PHASE_STATUS.Creating,
+              APP_PHASE_STATUS.Deleting,
+              APP_PHASE_STATUS.Stopping,
+            ].includes(currentApp.phase) || currentApp.state === APP_STATUS.Restarting ? (
             <div
               className={clsx(
-                "absolute bottom-0 left-0 right-0 top-0 z-[999] flex flex-col items-center justify-center opacity-70 ",
+                "absolute bottom-0 left-0 right-0 top-0 z-[999] flex flex-col items-center justify-center opacity-70",
                 darkMode ? "bg-lafDark-100" : "bg-lafWhite-600",
               )}
             >

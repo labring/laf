@@ -109,18 +109,39 @@ export class LogController {
       containerName = appid
     }
 
-    let podNameList: string[] = (
-      await this.podService.getPodNameListByAppid(appid)
-    ).podNameList
+    const podStatus = await this.podService.getPodStatusListByAppid(appid)
 
-    if (!podNameList.includes(podName) && podName !== 'all') {
+    if (!podStatus.podStatus[0]) {
       return new Observable<MessageEvent>((subscriber) => {
-        subscriber.error(new Error('podName not exist'))
+        subscriber.error(new Error('pod not exist'))
       })
     }
 
+    const podNameList = podStatus.podStatus.map((pod) => pod.name)
+
+    const initContainerId = podStatus.podStatus.map(
+      (pod) => pod.initContainerId,
+    )
+
+    console.log(JSON.stringify(podStatus?.podStatus[0], null, 2))
+
+    if (containerName === 'init') {
+      for (const containerId of initContainerId) {
+        if (!containerId) {
+          console.log('no containerId')
+          return new Observable<MessageEvent>((subscriber) => {
+            subscriber.error(new Error('init container not exist'))
+          })
+        }
+      }
+    }
+
     if (podName !== 'all') {
-      podNameList = undefined
+      if (!podNameList.includes(podName)) {
+        return new Observable<MessageEvent>((subscriber) => {
+          subscriber.error(new Error('podName not exist'))
+        })
+      }
     }
 
     const region = await this.regionService.findByAppId(appid)
@@ -169,6 +190,7 @@ export class LogController {
       })
 
       combinedLogStream.on('close', () => {
+        console.log('443')
         subscriber.complete()
         destroyStream()
       })
@@ -204,6 +226,7 @@ export class LogController {
           })
 
           k8sResponse.on('close', () => {
+            console.log('k8s close 2222222223333')
             streamsEnded.delete(podName)
             if (streamsEnded.size === 0) {
               combinedLogStream.emit('close')
@@ -211,19 +234,21 @@ export class LogController {
           })
 
           podLogStream.on('close', () => {
+            console.log('pod stream close 3333333222222222')
             streamsEnded.delete(podName)
             if (streamsEnded.size === 0) {
               combinedLogStream.emit('close')
             }
           })
         } catch (error) {
+          console.log('get log error 11111111111111\n11111111111111')
           subscriber.error(error)
           this.logger.error(`Failed to get logs for pod ${podName}`, error)
           destroyStream()
         }
       }
 
-      if (podNameList && podNameList.length > 0) {
+      if (podName === 'all' && podNameList.length > 0) {
         podNameList.forEach((podName) => {
           fetchLog(podName)
         })
