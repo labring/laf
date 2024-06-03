@@ -112,7 +112,7 @@ export default function InitLog() {
           <div
             id="log-viewer-cover-container"
             className={clsx(
-              "absolute inset-0 z-[999] h-full w-full px-2 pt-0 font-mono text-base font-bold opacity-65",
+              "absolute inset-0 z-[999] h-full w-full px-2 pt-0 font-mono text-base font-bold opacity-70",
               darkMode ? "bg-lafDark-100" : "bg-lafWhite-600",
               { "log-viewer-cover-container-hide-scrollbar": !paused },
             )}
