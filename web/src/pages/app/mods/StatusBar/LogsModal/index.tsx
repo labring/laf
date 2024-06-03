@@ -48,7 +48,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
   const [podName, setPodName] = useState("");
   const [containerName, setContainerName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [rowNumber, setRowNumber] = useState(0);
+  const [rowCount, setRowCount] = useState(0);
   const [paused, setPaused] = useState(false);
 
   const [logs, setLogs] = useState<Log[]>([]);
@@ -57,6 +57,23 @@ export default function LogsModal(props: { children: React.ReactElement }) {
   const retryCountRef = useRef(0);
 
   const darkMode = useColorMode().colorMode === "dark";
+
+  const addOrUpdateLog = (newLog: Log) => {
+    setLogs((pre) => {
+      const existingLogIndex = pre.findIndex((existingLog) => existingLog.id === newLog.id);
+
+      if (existingLogIndex !== -1) {
+        const updatedLogs = [...pre];
+        updatedLogs[existingLogIndex] = {
+          ...updatedLogs[existingLogIndex],
+          data: newLog.data,
+        };
+        return updatedLogs;
+      } else {
+        return [...pre, newLog];
+      }
+    });
+  };
 
   const { data: podData } = useQuery(
     ["GetPodQuery"],
@@ -115,9 +132,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
           }
 
           if (msg.event === "log") {
-            const newLineCount = (msg.data.match(/\n/g) || []).length;
-            setLogs((pre) => [...pre, msg]);
-            setRowNumber((prevRowNumber) => prevRowNumber + newLineCount);
+            addOrUpdateLog(msg);
             retryCountRef.current = 0;
           }
         },
@@ -126,8 +141,7 @@ export default function LogsModal(props: { children: React.ReactElement }) {
           // if the server closes the connection unexpectedly, retry:
           if (retryCountRef.current < MAX_RETRIES) {
             retryCountRef.current += 1;
-            setRefresh((pre) => !pre);
-            setPaused(false);
+            throw new Error("connect closed unexpectedly, retrying...");
           }
         },
 
@@ -142,18 +156,23 @@ export default function LogsModal(props: { children: React.ReactElement }) {
 
   useEffect(() => {
     if (!isOpen) return;
+    setRowCount(0);
     setLogs([]);
     setIsLoading(true);
+    setPaused(false);
     const ctrl = fetchLogs();
+
     return () => {
       ctrl?.abort();
     };
   }, [podName, containerName, isOpen, refresh, fetchLogs]);
 
   useEffect(() => {
-    const sortedLogs = [...logs].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+    const sortedLogs = logs.sort((a, b) => parseInt(a.id) - parseInt(b.id));
     const concatenatedLogs = sortedLogs.map((log) => log.data).join("");
     setRenderLogs(concatenatedLogs);
+    const totalRows = concatenatedLogs.split("\n").length;
+    setRowCount(totalRows);
   }, [logs]);
 
   useEffect(() => {
@@ -233,21 +252,26 @@ export default function LogsModal(props: { children: React.ReactElement }) {
             ) : (
               <div
                 id="log-viewer-container"
-                className="text-sm flex h-full flex-col px-2 font-mono"
+                className={clsx("text-sm flex h-full flex-col px-2 font-mono", {
+                  "log-viewer-container-hide-scrollbar": !paused,
+                })}
                 style={{ fontSize: settingStore.commonSettings.fontSize - 1 }}
-                onWheel={(e) => {
-                  setPaused(true);
-                }}
               >
                 <LogViewer
                   data={renderLogs}
-                  hasLineNumbers={false}
-                  scrollToRow={!paused ? rowNumber + 1 : undefined}
+                  hasLineNumbers={true}
+                  scrollToRow={paused ? undefined : rowCount + 300}
                   height={"98%"}
                   onScroll={(e) => {
                     if (e.scrollOffsetToBottom <= 0) {
                       setPaused(false);
+                      return;
                     }
+                    if (!e.scrollUpdateWasRequested) {
+                      setPaused(true);
+                      return;
+                    }
+                    setPaused(false);
                   }}
                   toolbar={
                     <div className="absolute right-24 top-4">

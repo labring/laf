@@ -13,7 +13,13 @@ import InfoDetail from "./InfoDetail";
 import useGlobalStore from "@/pages/globalStore";
 import DeleteAppModal from "@/pages/home/mods/DeleteAppModal";
 import StatusBadge from "@/pages/home/mods/StatusBadge";
-const AppEnvList = () => {
+
+interface AppEnvListProps {
+  onClose?: () => void;
+}
+
+const AppEnvList: React.FC<AppEnvListProps> = (props = {}) => {
+  const { onClose } = props;
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -67,6 +73,10 @@ const AppEnvList = () => {
                     ? APP_STATUS.Running
                     : APP_STATUS.Restarting,
                 );
+                //  when start close modal window
+                if (currentApp?.phase === APP_PHASE_STATUS.Stopped && onClose) {
+                  onClose();
+                }
               }}
             >
               {currentApp?.phase === APP_PHASE_STATUS.Stopped ? (
