@@ -22,6 +22,7 @@ import useGlobalStore from "@/pages/globalStore";
 export default function DatabaseBundleControl(props: {
   bundle: TypeBundle;
   originCapacity?: number;
+  originReplicas?: number;
   resourceOptions: any;
   type: "create" | "change";
   defaultDatabaseCapacity?: number;
@@ -36,6 +37,7 @@ export default function DatabaseBundleControl(props: {
     defaultDatabaseCapacity,
     defaultDedicatedDatabaseBundle,
     originCapacity,
+    originReplicas,
   } = props;
   const { t } = useTranslation();
   const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
@@ -202,7 +204,8 @@ export default function DatabaseBundleControl(props: {
             })}
             {buildSlider({
               type: "replicas",
-              disable: disabledChangeType,
+              min: originReplicas,
+              // disable: disabledChangeType,
               value: _.get(bundle, "dedicatedDatabase.replicas") as unknown as number,
               specs: find(resourceOptions, { type: "dedicatedDatabaseReplicas" })?.specs || [],
               onChange: (value) => {
