@@ -371,10 +371,12 @@ export class ApplicationController {
     if (
       dto.dedicatedDatabase?.replicas &&
       origin.resource.dedicatedDatabase?.replicas &&
-      dto.dedicatedDatabase?.replicas !==
+      dto.dedicatedDatabase?.replicas <
         origin.resource.dedicatedDatabase?.replicas
     ) {
-      return ResponseUtil.error('cannot change database replicas')
+      return ResponseUtil.error(
+        'To reduce the number of database replicas, please contact customer support.',
+      )
     }
 
     // check if a user exceeds the resource limit in a region
