@@ -1,6 +1,12 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { AddIcon, ExternalLinkIcon, InfoOutlineIcon, SearchIcon, SmallCloseIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  ExternalLinkIcon,
+  InfoOutlineIcon,
+  SearchIcon,
+  SmallCloseIcon,
+} from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -23,11 +29,13 @@ import {
   useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
+import clsx from "clsx";
 import { debounce } from "lodash";
 
 import { EditIconLine } from "@/components/CommonIcon";
 import DependenceList from "@/components/DependenceList";
 import IconWrap from "@/components/IconWrap";
+import { APP_STATUS } from "@/constants";
 
 import {
   TDependenceItem,
@@ -40,8 +48,11 @@ import {
 } from "../service";
 import { openDependenceDetail } from "..";
 
+import useGlobalStore, { State } from "@/pages/globalStore";
+
 const AddDependenceModal = () => {
   const { t } = useTranslation();
+  const globalStore = useGlobalStore((state: State) => state);
   const [checkList, setCheckList] = useState<TDependenceItem[]>([]);
   const [name, setName] = useState("");
   const [clickItem, setClickItem] = useState({ package: "", loading: false });
@@ -71,10 +82,22 @@ const AddDependenceModal = () => {
 
   const addPackageMutation = useAddPackageMutation(() => {
     onClose();
+    globalStore.updateCurrentApp(
+      globalStore.currentApp!,
+      globalStore.currentApp!.state === APP_STATUS.Stopped
+        ? APP_STATUS.Running
+        : APP_STATUS.Restarting,
+    );
   });
 
   const editPackageMutation = useEditPackageMutation(() => {
     onClose();
+    globalStore.updateCurrentApp(
+      globalStore.currentApp!,
+      globalStore.currentApp!.state === APP_STATUS.Stopped
+        ? APP_STATUS.Running
+        : APP_STATUS.Restarting,
+    );
   });
 
   const packageSearchQuery = usePackageSearchQuery(name, (data) => {
@@ -336,7 +359,7 @@ const AddDependenceModal = () => {
             )}
           </ModalBody>
 
-          <ModalFooter justifyContent={'space-between'}>
+          <ModalFooter justifyContent={"space-between"}>
             <HStack>
               <span className="flex items-center text-grayModern-600">
                 <InfoOutlineIcon className="mx-1" />
@@ -353,7 +376,16 @@ const AddDependenceModal = () => {
                     }
                   }}
                 >
-                  {t("FunctionPanel.Select")}:
+                  <span
+                    className={clsx(
+                      "underline",
+                      "hover:text-blue-700",
+                      darkMode ? "text-blue-300 hover:text-blue-500" : "text-blue-500",
+                    )}
+                  >
+                    {t("FunctionPanel.Select")}:
+                  </span>
+                  {/* {t("FunctionPanel.Select")}: */}
                   <span className="mx-2 text-blue-500 ">
                     {isEdit ? (
                       packageList.length
@@ -372,7 +404,7 @@ const AddDependenceModal = () => {
                   submitDependence();
                 }}
               >
-                {t("Save")}
+                {t("SaveAndRestart")}
               </Button>
             </HStack>
           </ModalFooter>
