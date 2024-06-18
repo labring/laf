@@ -1,10 +1,10 @@
 import { CONFIG_COLLECTION } from '../../constants'
 import { DatabaseAgent } from '../../db'
 import { DatabaseChangeStream } from '.'
-import {
-  installDependencies,
-  uninstallDependencies,
-} from '../module-hot-reload'
+// import {
+//   installDependencies,
+//   uninstallDependencies,
+// } from '../module-hot-reload'
 
 export class ConfChangeStream {
   static dependencies = []
@@ -36,28 +36,32 @@ export class ConfChangeStream {
       return
     }
 
-    const newDeps = []
-    const unneededDeps = []
+    /*
+    hot reload dependencies
+    */
 
-    for (const dep of conf.dependencies) {
-      if (!ConfChangeStream.dependencies.includes(dep)) {
-        newDeps.push(dep)
-      }
-    }
+    // const newDeps = []
+    // const unneededDeps = []
 
-    for (const dep of ConfChangeStream.dependencies) {
-      if (!conf.dependencies.includes(dep)) {
-        unneededDeps.push(dep)
-      }
-    }
+    // for (const dep of conf.dependencies) {
+    //   if (!ConfChangeStream.dependencies.includes(dep)) {
+    //     newDeps.push(dep)
+    //   }
+    // }
 
-    ConfChangeStream.dependencies = conf.dependencies
+    // for (const dep of ConfChangeStream.dependencies) {
+    //   if (!conf.dependencies.includes(dep)) {
+    //     unneededDeps.push(dep)
+    //   }
+    // }
 
-    if (newDeps.length > 0) {
-      installDependencies(newDeps)
-    }
-    if (unneededDeps.length > 0) {
-      uninstallDependencies(unneededDeps)
-    }
+    // ConfChangeStream.dependencies = conf.dependencies
+
+    // if (newDeps.length > 0) {
+    //   installDependencies(newDeps)
+    // }
+    // if (unneededDeps.length > 0) {
+    //   uninstallDependencies(unneededDeps)
+    // }
   }
 }

@@ -10,11 +10,13 @@ import ConfirmButton from "@/components/ConfirmButton";
 import FileTypeIcon, { FileType } from "@/components/FileTypeIcon";
 import Panel from "@/components/Panel";
 import SectionList from "@/components/SectionList";
+import { APP_STATUS } from "@/constants";
 
 import AddDependenceModal from "./AddDependenceModal";
 import { TPackage, useDelPackageMutation, usePackageQuery } from "./service";
 
 import useCustomSettingStore from "@/pages/customSetting";
+import useGlobalStore, { State } from "@/pages/globalStore";
 
 export const openDependenceDetail = (depName: string) => {
   window.open(`https://www.npmjs.com/package/${encodeURIComponent(depName)}`, "_blank");
@@ -22,7 +24,17 @@ export const openDependenceDetail = (depName: string) => {
 
 export default function DependenceList() {
   const packageQuery = usePackageQuery();
-  const delPackageMutation = useDelPackageMutation();
+  const globalStore = useGlobalStore((state: State) => state);
+
+  const delPackageMutation = useDelPackageMutation(() => {
+    globalStore.updateCurrentApp(
+      globalStore.currentApp!,
+      globalStore.currentApp!.state === APP_STATUS.Stopped
+        ? APP_STATUS.Running
+        : APP_STATUS.Restarting,
+    );
+  });
+
   const { t } = useTranslation();
 
   const store = useCustomSettingStore();

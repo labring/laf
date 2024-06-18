@@ -13,22 +13,25 @@ import {
   Spinner,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import ConfirmButton from "@/components/ConfirmButton";
+import { APP_STATUS } from "@/constants";
 import { formatDate } from "@/utils/format";
 import getRegionById from "@/utils/getRegionById";
 
 import { useFunctionTemplateUseMutation } from "../../../service";
 
 import { ApplicationControllerFindAll } from "@/apis/v1/applications";
+import { ApplicationControllerUpdateState } from "@/apis/v1/applications";
+import { DependencyControllerGetDependencies } from "@/apis/v1/apps";
 import useGlobalStore from "@/pages/globalStore";
 import { APP_LIST_QUERY_KEY } from "@/pages/home";
 import BundleInfo from "@/pages/home/mods/List/BundleInfo";
 import StatusBadge from "@/pages/home/mods/StatusBadge";
 
-const UseTemplateModal = (props: { children: any; templateId: string }) => {
-  const { children, templateId } = props;
+const UseTemplateModal = (props: { children: any; templateId: string; packageList: any }) => {
+  const { children, templateId, packageList } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { regions, currentApp } = useGlobalStore();
   const { t } = useTranslation();
@@ -44,11 +47,37 @@ const UseTemplateModal = (props: { children: any; templateId: string }) => {
     },
   );
 
+  const { data: dependencies } = useQuery(
+    ["dependencies"],
+    () => {
+      return DependencyControllerGetDependencies({});
+    },
+    {
+      enabled: !!currentApp,
+    },
+  );
+
+  const updateAppStateMutation = useMutation((params: any) =>
+    ApplicationControllerUpdateState(params),
+  );
+
   const handleUseTemplate = async (appItem: any) => {
     const res = await useTemplateMutation.mutateAsync({
       appid: appItem.appid,
       templateId: templateId,
     });
+
+    const isAnyPackageNotInDependencyList = packageList.some((packageItem: string) => {
+      const packageName = packageItem.split("@")[0];
+      return !dependencies?.data.some((dep: any) => dep.name === packageName);
+    });
+
+    if (isAnyPackageNotInDependencyList && packageList.length > 0) {
+      updateAppStateMutation.mutate({
+        appid: appItem.appid,
+        state: appItem.phase === APP_STATUS.Stopped ? APP_STATUS.Running : APP_STATUS.Restarting,
+      });
+    }
 
     if (!res.error) {
       window.location.href = `/app/${appItem.appid}/function`;
