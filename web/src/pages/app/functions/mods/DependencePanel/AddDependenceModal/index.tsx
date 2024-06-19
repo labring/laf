@@ -385,7 +385,6 @@ const AddDependenceModal = () => {
                   >
                     {t("FunctionPanel.Select")}:
                   </span>
-                  {/* {t("FunctionPanel.Select")}: */}
                   <span className="mx-2 text-blue-500 ">
                     {isEdit ? (
                       packageList.length
