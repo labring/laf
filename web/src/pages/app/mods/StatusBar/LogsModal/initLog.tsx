@@ -82,10 +82,11 @@ export default function InitLog() {
   }, [currentApp.appid]);
 
   useEffect(() => {
-    setRowCount(0);
-    setLogs([]);
-    setIsLoading(true);
     setPaused(false);
+    setLogs([]);
+    setRowCount(0);
+    setIsLoading(true);
+
     const ctrl = fetchLogs();
 
     return () => {
@@ -94,11 +95,15 @@ export default function InitLog() {
   }, [fetchLogs]);
 
   useEffect(() => {
-    const sortedLogs = logs.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-    const concatenatedLogs = sortedLogs.map((log) => log.data).join("");
-    setRenderLogs(concatenatedLogs);
-    const totalRows = concatenatedLogs.split("\n").length;
-    setRowCount(totalRows);
+    if (logs.length === 0) return;
+
+    const sortedLogs = [...logs].sort((a, b) => parseInt(a.id) - parseInt(b.id));
+    const logLines = sortedLogs.flatMap((log) => log.data.split("\n"));
+    const filteredLogLines = logLines.filter((line) => line.trim() !== "");
+    const uniqueLogLines = Array.from(new Set(filteredLogLines));
+
+    setRenderLogs(uniqueLogLines.join("\n"));
+    setRowCount(uniqueLogLines.length);
   }, [logs]);
 
   return (
@@ -121,10 +126,10 @@ export default function InitLog() {
             <LogViewer
               data={renderLogs}
               hasLineNumbers={false}
-              scrollToRow={paused ? undefined : rowCount + 300}
+              scrollToRow={paused ? undefined : rowCount + 1}
               height={"100%"}
               onScroll={(e) => {
-                if (e.scrollOffsetToBottom <= 0) {
+                if (e.scrollOffsetToBottom <= 5) {
                   setPaused(false);
                   return;
                 }

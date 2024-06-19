@@ -156,10 +156,11 @@ export default function LogsModal(props: { children: React.ReactElement }) {
 
   useEffect(() => {
     if (!isOpen) return;
-    setRowCount(0);
-    setLogs([]);
-    setIsLoading(true);
     setPaused(false);
+    setLogs([]);
+    setRowCount(0);
+    setIsLoading(true);
+
     const ctrl = fetchLogs();
 
     return () => {
@@ -168,7 +169,9 @@ export default function LogsModal(props: { children: React.ReactElement }) {
   }, [podName, containerName, isOpen, refresh, fetchLogs]);
 
   useEffect(() => {
-    const sortedLogs = logs.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+    if (logs.length === 0) return;
+
+    const sortedLogs = [...logs].sort((a, b) => parseInt(a.id) - parseInt(b.id));
     const concatenatedLogs = sortedLogs.map((log) => log.data).join("");
     setRenderLogs(concatenatedLogs);
     const totalRows = concatenatedLogs.split("\n").length;
@@ -260,10 +263,10 @@ export default function LogsModal(props: { children: React.ReactElement }) {
                 <LogViewer
                   data={renderLogs}
                   hasLineNumbers={true}
-                  scrollToRow={paused ? undefined : rowCount + 300}
+                  scrollToRow={paused ? undefined : rowCount + 1}
                   height={"98%"}
                   onScroll={(e) => {
-                    if (e.scrollOffsetToBottom <= 0) {
+                    if (e.scrollOffsetToBottom <= 5) {
                       setPaused(false);
                       return;
                     }
