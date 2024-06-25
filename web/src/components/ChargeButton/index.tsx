@@ -105,7 +105,7 @@ export default function ChargeButton(props: { amount?: number; children: React.R
               <div className="mb-5 grid grid-cols-3 gap-4">
                 {(bonus || []).map((item) => (
                   <div className="relative" key={item.amount}>
-                    {item.reward && (
+                    {item.reward !== 0 && (
                       <span className="absolute left-20 top-1 z-50 whitespace-nowrap rounded-full rounded-bl-none bg-purple-200 px-4 py-[1.5px] text-[12px] text-purple-600">
                         {t("application.bonus")} ¥{item.reward / 100}
                       </span>
