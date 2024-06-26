@@ -130,9 +130,6 @@ export class InstanceTaskService {
       return
     }
 
-    // create instance
-    await this.instanceService.create(app.appid)
-
     const appid = app.appid
 
     const ddb = await this.dedicatedDatabaseService.findOne(appid)
@@ -151,6 +148,9 @@ export class InstanceTaskService {
         return
       }
     }
+
+    // create instance
+    await this.instanceService.create(app.appid)
 
     const instance = await this.instanceService.get(appid)
     const unavailable =

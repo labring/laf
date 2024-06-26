@@ -66,7 +66,9 @@ export default function DatabaseMonitor() {
     metric: Record<string, string>;
     values: Array<[number, string]>;
   }[] = resourceData?.data?.memory;
+
   const podList = useMemo(() => {
+    if (!cpuData || !memoryData) return [];
     const cpuPods = cpuData.map((item) => item.metric.pod);
     const memoryPods = memoryData.map((item) => item.metric.pod);
 
