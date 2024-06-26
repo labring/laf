@@ -38,6 +38,6 @@ spec:
               - ReadWriteOnce
             resources:
               requests:
-                storage: <%- capacity %>Mi
+                storage: <%- capacity %>Gi
   terminationPolicy: Delete
   tolerations: []

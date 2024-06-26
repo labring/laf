@@ -55,14 +55,13 @@ export class DependencyService {
     const new_deps = dto.map((dep) => `${dep.name}@${dep.spec}`)
     const deps = extras.concat(new_deps)
 
-    const res = await this.db
+    await this.db
       .collection<ApplicationConfiguration>('ApplicationConfiguration')
-      .findOneAndUpdate(
+      .updateOne(
         { appid },
         { $set: { dependencies: deps, updatedAt: new Date() } },
-        { returnDocument: 'after' },
       )
-    await this.confService.publish(res.value)
+
     return true
   }
 
@@ -87,14 +86,13 @@ export class DependencyService {
 
     const deps = filtered.concat(new_deps)
 
-    const res = await this.db
+    await this.db
       .collection<ApplicationConfiguration>('ApplicationConfiguration')
-      .findOneAndUpdate(
+      .updateOne(
         { appid },
         { $set: { dependencies: deps, updatedAt: new Date() } },
-        { returnDocument: 'after' },
       )
-    await this.confService.publish(res.value)
+
     return true
   }
 
@@ -107,14 +105,13 @@ export class DependencyService {
 
     if (filtered.length === deps.length) return false
 
-    const res = await this.db
+    await this.db
       .collection<ApplicationConfiguration>('ApplicationConfiguration')
-      .findOneAndUpdate(
+      .updateOne(
         { appid },
         { $set: { dependencies: filtered, updatedAt: new Date() } },
-        { returnDocument: 'after' },
       )
-    await this.confService.publish(res.value)
+
     return true
   }
 
