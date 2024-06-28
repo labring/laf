@@ -199,3 +199,45 @@ laf website del [bucketName]
 ```shell
 laf website custom [bucketName] [domain]
 ```
+
+## Github Actions 自动发布
+
+```yaml
+name: LAF CI
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      LAF_CLOUD_DIR: laf-cloud
+      LAF_APPID: ${{ secrets.LAF_APPID }}
+      LAF_PAT: ${{ secrets.LAF_PAT }}
+      API_URL: ${{ secrets.API_URL }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Install laf-cli
+      run: npm install -g laf-cli
+
+    - name: Create User
+      run: laf user add ${{ env.LAF_APPID }} -r ${{ env.API_URL }}
+
+    - name: Switch User
+      run: laf user switch ${{ env.LAF_APPID }}
+
+    - name: Login 
+      run: laf login ${{ env.LAF_PAT }}
+
+    - name: Laf App Init
+      run: laf app init ${{ env.LAF_APPID }}
+      working-directory: ${{ env.LAF_CLOUD_DIR }}
+
+    - name: Force Push Function 
+      run: laf func push -f
+      working-directory: ${{ env.LAF_CLOUD_DIR }}
+```
