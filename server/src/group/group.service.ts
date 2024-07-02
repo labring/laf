@@ -39,11 +39,11 @@ export class GroupService {
               $expr: {
                 $and: [
                   { $eq: ['$_id', '$$groupId'] },
-                  { $eq: ['$appid', null] }
-                ]
-              }
-            }
-          }
+                  { $eq: ['$appid', null] },
+                ],
+              },
+            },
+          },
         ],
         as: 'group',
       })
@@ -56,8 +56,8 @@ export class GroupService {
             $match: {
               $expr: {
                 $eq: ['$groupId', '$$groupId']
-              }
-            }
+              },
+            },
           },
           {
             $project: {
