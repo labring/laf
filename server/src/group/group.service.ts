@@ -32,23 +32,33 @@ export class GroupService {
       .match({ uid })
       .lookup({
         from: 'Group',
-        foreignField: '_id',
-        localField: 'groupId',
+        let: { groupId: '$groupId' },
         pipeline: [
           {
             $match: {
-              appid: null,
-            },
-          },
+              $expr: {
+                $and: [
+                  { $eq: ['$_id', '$$groupId'] },
+                  { $eq: ['$appid', null] }
+                ]
+              }
+            }
+          }
         ],
         as: 'group',
       })
       .unwind('$group')
       .lookup({
         from: 'GroupMember',
-        foreignField: 'groupId',
-        localField: 'groupId',
+        let: { groupId: '$groupId' },
         pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$groupId', '$$groupId']
+              }
+            }
+          },
           {
             $project: {
               _id: 0,
