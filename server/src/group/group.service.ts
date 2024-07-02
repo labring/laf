@@ -81,36 +81,47 @@ export class GroupService {
   async findGroupsByAppidAndUid(appid: string, uid: ObjectId) {
     const res = await this.db
       .collection<GroupApplication>('GroupApplication')
-      .aggregate()
-      .match({ appid })
-      .lookup({
-        from: 'Group',
-        localField: 'groupId',
-        foreignField: '_id',
-        as: 'group',
-      })
-      .unwind('$group')
-      .lookup({
-        from: 'GroupMember',
-        localField: 'groupId',
-        foreignField: 'groupId',
-        pipeline: [
-          {
-            $match: {
-              uid,
-            },
+      .aggregate([
+        { $match: { appid } },
+        {
+          $lookup: {
+            from: "Group",
+            localField: "groupId",
+            foreignField: "_id",
+            as: "group",
           },
-        ],
-        as: 'member',
-      })
-      .unwind('$member')
-      .project({
-        _id: '$group._id',
-        name: '$group.name',
-        createdAt: '$group.createdAt',
-        updatedAt: '$group.updatedAt',
-        role: '$member.role',
-      })
+        },
+        { $unwind: "$group" },
+        {
+          $lookup: {
+            from: "GroupMember",
+            let: { groupId: "$groupId" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$groupId", "$$groupId"] },
+                      { $eq: ["$uid", uid] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: "member",
+          },
+        },
+        { $unwind: "$member" },
+        {
+          $project: {
+            _id: "$group._id",
+            name: "$group.name",
+            createdAt: "$group.createdAt",
+            updatedAt: "$group.updatedAt",
+            role: "$member.role",
+          },
+        },
+      ])
       .toArray()
 
     return res
