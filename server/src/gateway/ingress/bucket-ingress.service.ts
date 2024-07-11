@@ -38,7 +38,7 @@ export class BucketGatewayService {
 
     // build minio endpoint rule
     const minioUrl = new URL(region.storageConf.externalEndpoint)
-    const minioEndpointHost = minioUrl.host
+    const minioEndpointHost = minioUrl.hostname
     const minioRule: V1IngressRule = {
       host: minioEndpointHost,
       http: {
