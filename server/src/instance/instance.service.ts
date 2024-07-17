@@ -367,10 +367,10 @@ export class InstanceService {
                   port: 'http',
                   httpHeaders: [{ name: 'Referer', value: 'readinessProbe' }],
                 },
-                initialDelaySeconds: 0,
+                initialDelaySeconds: 10,
                 periodSeconds: 60,
                 timeoutSeconds: 3,
-                failureThreshold: 1,
+                failureThreshold: 10,
               },
               securityContext: {
                 allowPrivilegeEscalation: false,
