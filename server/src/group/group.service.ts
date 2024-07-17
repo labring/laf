@@ -109,7 +109,7 @@ export class GroupService {
               $expr: {
                 $and: [
                   { $eq: ['$groupId', '$$groupId'] },
-                  { $eq: ['$uid', 'uid'] },
+                  { $eq: ['$uid', uid] },
                 ],
               },
             },
