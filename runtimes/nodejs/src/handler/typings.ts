@@ -102,7 +102,10 @@ async function getThreePartyPackageTypings(
       data: pkd.declarations,
     })
   } catch (error) {
-    logger.error(requestId, 'failed to get package typings', error)
+    if (!Config.isProd) {
+      logger.error(requestId, 'failed to get package typings', error)
+    }
+
     return res.send({
       code: 1,
       error: error.toString(),
