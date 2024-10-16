@@ -760,6 +760,7 @@
     "Description": "Click to update"
   },
   "app": {
-    "title": "sealaf"
+    "title": "sealaf",
+    "logo": "Sealaf"
   }
 }

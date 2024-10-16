@@ -47,7 +47,6 @@ const useDocumentTitle = (titleKey: string, defaultTitle: string) => {
 
   useEffect(() => {
     document.title = t(titleKey, defaultTitle);
-    t("app.title");
   }, [t, titleKey, defaultTitle]);
 };
 

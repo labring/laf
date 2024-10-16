@@ -760,6 +760,7 @@
     "Description": "点击立即更新"
   },
   "app": {
-    "title": "云开发"
+    "title": "云开发",
+    "logo": "Sealos 云开发"
   }
 }

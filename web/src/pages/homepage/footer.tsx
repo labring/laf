@@ -31,8 +31,12 @@ const Footer = (props: Props) => {
             <div className="flex justify-between">
               <div className="w-1/2">
                 <div className="flex items-center space-x-2">
-                  <img src={darkMode ? "logo.svg" : "logo.svg"} className="h-8 w-auto" alt="logo" />
-                  <span className="text-lg">Sealos 云开发</span>
+                  <img
+                    src={darkMode ? "sealos-logo.svg" : "sealos-logo.svg"}
+                    className="h-8 w-auto"
+                    alt="logo"
+                  />
+                  <span className="text-lg"> {t("app.logo")}</span>
                 </div>
 
                 <p
