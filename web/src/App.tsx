@@ -42,8 +42,19 @@ loader.config({
   paths: { vs: "/js/monaco-editor.0.43.0" },
 });
 
+const useDocumentTitle = (titleKey: string, defaultTitle: string) => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    document.title = t(titleKey, defaultTitle);
+    t("app.title");
+  }, [t, titleKey, defaultTitle]);
+};
+
 function APP() {
   const { i18n } = useTranslation();
+
+  useDocumentTitle("app.title", "云开发");
 
   const getSiteSettings = useSiteSettingStore((state) => state.getSiteSettings);
   const { initProviders } = useAuthStore();
