@@ -320,7 +320,7 @@
   },
   "TriggerPanel": {
     "AddTrigger": "新建触发器",
-    "CornTip": "例 * * * * * \n表示每 1 分钟执行任务",
+    "CornTip": "例: * * * * * \n表示每 1 分钟执行任务",
     "DeleteConfirm": "确定删除该触发器吗",
     "Express": "表达式",
     "Function": "关联函数",
@@ -449,7 +449,7 @@
       "description": "Laf 是一个集函数、数据库、存储为一体的云开发平台，随时随地，发布上线"
     },
     "NavBar": {
-      "title": "如果你喜欢 Laf 的话，请在 Github 上给我们一个 Star 吧！",
+      "title": "如果你喜欢 Sealos 云开发的话，请在 Github 上给我们一个 Star 吧！",
       "home": "主页",
       "dashboard": "控制台",
       "price": "价格",
@@ -468,11 +468,11 @@
     "HomePage": {
       "slogan": "像写博客一样写代码",
       "start": "立即开发",
-      "content1": "Laf 是一个集函数、数据库、存储为一体的云开发平台",
+      "content1": "Sealos 云开发是一个集函数、数据库、存储为一体的云开发平台",
       "content2": "随时随地，发布上线"
     },
     "Ability": {
-      "title": "Laf 的能力",
+      "title": "Sealos 云开发的能力",
       "learn": "了解详情",
       "function": "云函数",
       "functionSub": "， 5秒发布你的第一个函数。",
@@ -482,7 +482,7 @@
       "storageSub": "，创建属于你的云存储，管理文件更简单。"
     },
     "Choice": {
-      "title": "为什么选择 Laf",
+      "title": "为什么选择 Sealos 云开发",
       "open": "更开放",
       "openSub": "Laf 遵循 Apache License 2.0 开源协议",
       "fast": "请求更快",
@@ -497,16 +497,16 @@
       "serviceSub": "了解详情"
     },
     "Join": {
-      "title": "加入 Laf 开发者社区",
+      "title": "加入 Sealos 云开发开发者社区",
       "subtitle": "和我们一起成长",
       "content": "在这里你可以在第一时间体验 Laf 的最新版本，以及在 Discord 或微信群与开发者和用户保持沟通",
       "WeChat": "微信",
       "forum": "开发者社区"
     },
     "Footer": {
-      "laf": "Laf 是一个 Serverless 框架，提供开箱即用的云函数，云数据库，对象存储等能力，是一个干净清爽的开发平台，像写博客一样写代码！三分钟上线 ChatGPT 应用！",
+      "laf": "Sealos 云开发是一个 Serverless 框架，提供开箱即用的云函数，云数据库，对象存储等能力，是一个干净清爽的开发平台，像写博客一样写代码！三分钟上线 ChatGPT 应用！",
       "product": "产品",
-      "item1_1": "Laf 公有云",
+      "item1_1": "Sealos 云开发",
       "item1_2": "Sealos",
       "item1_3": "更新日志",
       "item1_4": "Vscode 插件",
@@ -647,7 +647,6 @@
     "FunctionDesc_Name": "函数描述 - 函数名",
     "FunctionName_Desc": "函数名 - 函数描述"
   },
-  "MyIncomeAndExpenses": "我的收支",
   "Expenses": "支出",
   "OrderNumber": "订单号",
   "Bonus amount": "赠送金额",
@@ -659,6 +658,7 @@
   "Hour": "小时",
   "Core": "核",
   "No History": "暂无记录",
+  "MyIncomeAndExpenses": "我的收支",
   "RecycleBin": "回收站",
   "Restore": "还原",
   "CheckAll": "全选",
@@ -758,5 +758,9 @@
   "UpgradeVersionTip": {
     "Title": "Laf 新版本已经准备好了！",
     "Description": "点击立即更新"
+  },
+  "app": {
+    "title": "云开发",
+    "logo": "Sealos 云开发"
   }
 }

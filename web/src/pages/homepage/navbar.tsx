@@ -106,12 +106,13 @@ const Navbar = () => {
       >
         <div className="flex w-full max-w-[1200px] justify-between">
           <div className="flex items-center">
-            <div>
+            <div className="flex items-center space-x-2">
               <img
-                src={darkMode ? "logo_light.png" : "logo_text.png"}
-                className="h-auto w-20"
-                alt={"logo"}
+                src={darkMode ? "sealos-logo.svg" : "sealos-logo.svg"}
+                className="h-8 w-auto"
+                alt="logo"
               />
+              <span className="text-lg"> {t("app.logo")}</span>
             </div>
 
             {navList.map((item, index) => {

@@ -449,7 +449,7 @@
       "description": "Laf provides cloud functions, cloud databases, object storage and other capabilities, writing code like a blog! Launch the ChatGPT app in 3 minutes!"
     },
     "NavBar": {
-      "title": "Laf is an open-source project, we need your Star",
+      "title": "sealaf is an open-source project, we need your Star",
       "home": "Home",
       "dashboard": "Dashboard",
       "price": "Price",
@@ -468,7 +468,7 @@
     "HomePage": {
       "slogan": "Write Code as effortlessly as Blogging",
       "start": "Free Start →",
-      "content1": "Laf is a cloud development platform integrating functions, databases and storage",
+      "content1": "Sealaf is a cloud development platform integrating functions, databases and storage",
       "content2": "Publish online anytime, anywhere"
     },
     "Ability": {
@@ -497,16 +497,16 @@
       "serviceSub": "Learn more"
     },
     "Join": {
-      "title": "Join the laf developer community",
+      "title": "Join the sealaf developer community",
       "subtitle": "Grow up with us",
       "content": "Here you can experience the latest version of Laf at the first time and keep communicating with developers and users in Discord or WeChat groups.",
       "WeChat": "WeChat",
       "forum": "Forum"
     },
     "Footer": {
-      "laf": "Laf provides ready-to-use features such as cloud functions, cloud databases, and object storage. empowers you to write code with the ease of blogging! Get your ChatGPT application up and running in a mere 3 minutes!",
+      "laf": "sealaf provides ready-to-use features such as cloud functions, cloud databases, and object storage. empowers you to write code with the ease of blogging! Get your ChatGPT application up and running in a mere 3 minutes!",
       "product": "Product",
-      "item1_1": "Laf Cloud",
+      "item1_1": "sealaf Cloud",
       "item1_2": "Sealos Cloud",
       "item1_3": "ChangeLog",
       "item1_4": "Vscode Plugin",
@@ -758,5 +758,9 @@
   "UpgradeVersionTip": {
     "Title": "Laf is ready to update!",
     "Description": "Click to update"
+  },
+  "app": {
+    "title": "sealaf",
+    "logo": "Sealaf"
   }
 }
