@@ -42,20 +42,19 @@ export default async function (ctx: FunctionContext) {
   // check username existed
   const exists = await db
     .collection("users")
-    .where({ username: username })
-    .count();
+    .countDocuments({ username: username })
 
-  if (exists.total > 0) return { error: "username already existed" };
+  if (exists > 0) return { error: "username already existed" };
 
   // add user
-  const { id } = await db.collection("users").add({
+  const res = await db.collection("users").insertOne({
     username: username,
     password: createHash("sha256").update(password).digest("hex"),
     created_at: new Date(),
   });
 
-  console.log("user registered: ", id);
-  return { data: id };
+  console.log("user registered: ", res.insertedId);
+  return { data: res.insertedId };
 };
 ```
 
@@ -72,22 +71,21 @@ import { createHash } from "crypto";
 const db = cloud.mongo.db
 
 export default async function (ctx: FunctionContext) {
-  const username = ctx.body?.username || "";
-  const password = ctx.body?.password || "";
+  const username = ctx.body?.username || ""
+  const password = ctx.body?.password || ""
 
   // check user login
-  const res = await db
+  const user = await db
     .collection("users")
-    .where({
+    .findOne({
       username: username,
       password: createHash("sha256").update(password).digest("hex"),
     })
-    .getOne();
 
-  if (!res.data) return { error: "invalid username or password" };
+  if (!user) return { error: "invalid username or password" };
 
   // generate jwt token
-  const user_id = res.data._id;
+  const user_id = user._id;
   const payload = {
     uid: user_id,
     exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
@@ -96,7 +94,7 @@ export default async function (ctx: FunctionContext) {
   const access_token = cloud.getToken(payload);
 
   return {
-    uid: res.data._id,
+    uid: user_id,
     access_token: access_token,
   };
 };
