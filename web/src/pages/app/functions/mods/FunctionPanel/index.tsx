@@ -143,11 +143,11 @@ export default function FunctionList() {
           );
           if (!existingNode) {
             existingNode = {
-                _id: item._id,
-                name,
-                level: index,
-                isExpanded: false,
-                children: [],
+              _id: item._id,
+              name,
+              level: index,
+              isExpanded: false,
+              children: [],
             };
             currentNode.children.push(existingNode);
           }
