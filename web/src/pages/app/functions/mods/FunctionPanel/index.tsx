@@ -134,7 +134,6 @@ export default function FunctionList() {
               currentNode.children[existingItemIndex] = item;
               return;
           } else if (isFinalPart) {
-              // 如果是最后一部分，直接添加项
               currentNode.children.push(item);
               return;
           }
