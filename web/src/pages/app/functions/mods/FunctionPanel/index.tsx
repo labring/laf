@@ -128,30 +128,31 @@ export default function FunctionList() {
         const nameParts = item.name.split("/");
         let currentNode = root;
         nameParts.forEach((_, index) => {
-          if (currentNode.children.find((node) => node.name === item.name)) {
-            const index = currentNode.children.findIndex((node) => node.name === item.name);
-            currentNode.children[index] = item;
-            return;
-          } else if (index === nameParts.length - 1) {
-            currentNode.children.push(item);
-            return;
+          const isFinalPart = index === nameParts.length - 1;
+          const existingItemIndex = currentNode.children.findIndex((node) => node.name === item.name);
+          if (existingItemIndex !== -1) {
+              currentNode.children[existingItemIndex] = item;
+              return;
+          } else if (isFinalPart) {
+              // 如果是最后一部分，直接添加项
+              currentNode.children.push(item);
+              return;
           }
 
           const name = nameParts.slice(0, index + 1).join("/");
           let existingNode = currentNode.children.find(
-            (node) => node.name === name && node.level === index,
+              (node) => node.name === name && node.level === index,
           );
+
           if (!existingNode) {
-            // dir
-            const newNode = {
-              _id: item._id,
-              name,
-              level: index,
-              isExpanded: false,
-              children: [],
-            };
-            currentNode.children.push(newNode);
-            existingNode = newNode;
+              existingNode = {
+                  _id: item._id,
+                  name,
+                  level: index,
+                  isExpanded: false,
+                  children: [],
+              };
+              currentNode.children.push(existingNode);
           }
           currentNode = existingNode;
         });
@@ -160,7 +161,7 @@ export default function FunctionList() {
       return root;
     },
     [functionRoot],
-  );
+);
 
   const filterFunctions = useMemo(() => {
     const res = generateRoot(
@@ -669,9 +670,9 @@ export default function FunctionList() {
         title={
           <div className="flex">
             {t`FunctionPanel.FunctionList`}
-            {filterFunctions.length ? (
+            {allFunctionList.length ? (
               <Badge rounded={"full"} ml="1">
-                {filterFunctions.length}
+                {allFunctionList.length}
               </Badge>
             ) : null}
           </div>
