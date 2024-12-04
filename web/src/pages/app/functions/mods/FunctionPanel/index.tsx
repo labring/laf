@@ -137,21 +137,19 @@ export default function FunctionList() {
               currentNode.children.push(item);
               return;
           }
-
           const name = nameParts.slice(0, index + 1).join("/");
           let existingNode = currentNode.children.find(
               (node) => node.name === name && node.level === index,
           );
-
           if (!existingNode) {
-              existingNode = {
-                  _id: item._id,
-                  name,
-                  level: index,
-                  isExpanded: false,
-                  children: [],
-              };
-              currentNode.children.push(existingNode);
+            existingNode = {
+                _id: item._id,
+                name,
+                level: index,
+                isExpanded: false,
+                children: [],
+            };
+            currentNode.children.push(existingNode);
           }
           currentNode = existingNode;
         });
