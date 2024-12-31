@@ -22,7 +22,7 @@
 
 ## 🚀 Quick Start
 
-[Three minutes experience using fans write an own ChatGPT (development to online)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)  
+[Build your own ChatGPT in three minutes (from development to deployment)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)  
 
 ## 🖥 Online experience
 
