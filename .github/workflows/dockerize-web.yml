@@ -79,8 +79,9 @@ jobs:
       - run: |
           rm -rf web/dist/assets/*.map
 
-      - name: Docker meta
+      - name: Docker meta (for push events only)
         id: meta
+        if: github.event_name != 'pull_request'
         uses: docker/metadata-action@v4
         with:
           images: |
@@ -88,10 +89,9 @@ jobs:
             docker.io/${{ secrets.DOCKER_USERNAME }}/laf-web
           # https://github.com/docker/metadata-action#typesemver
           tags: |
-            type=ref,event=pr
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request' }}
-            type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request' }}
-            type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request' }}
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -121,8 +121,8 @@ jobs:
           context: ./web
           file: ./web/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ github.event_name != 'pull_request' && steps.meta.outputs.tags || 'laf-web:pr-build' }}
+          labels: ${{ github.event_name != 'pull_request' && steps.meta.outputs.labels || '' }}
           platforms: linux/amd64, linux/arm64
 
       - name: Comment docker image tags to PR
