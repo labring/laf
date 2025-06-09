@@ -11,6 +11,10 @@ on:
       - ".github/workflows/build-sealos-cluster-image.yml"
       - "!**/*.md"
 
+permissions:
+  contents: read
+  actions: write
+
 concurrency:
   group: build-scripts-updated-${{ github.ref }}
   cancel-in-progress: true
