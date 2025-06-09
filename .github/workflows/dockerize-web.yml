@@ -2,7 +2,7 @@ name: dockerize-web
 
 on:
   workflow_dispatch:
-  pull_request_target:
+  pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]
     paths:
@@ -36,8 +36,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: Cache node modules
         id: cache-node-modules
@@ -91,9 +89,9 @@ jobs:
           # https://github.com/docker/metadata-action#typesemver
           tags: |
             type=ref,event=pr
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request_target' }}
-            type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request_target' }}
-            type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request_target' }}
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request' }}
+            type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request' }}
+            type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -102,12 +100,14 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Login to Github Container Hub
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -120,27 +120,26 @@ jobs:
         with:
           context: ./web
           file: ./web/Dockerfile
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64, linux/arm64
 
       - name: Comment docker image tags to PR
-        if: github.event_name == 'pull_request_target'
+        if: github.event_name == 'pull_request'
         uses: mshick/add-pr-comment@v2
         with:
           message-id: "dockerize-web"
           message: |
-            **:boom: laf web image built successfully for pr ${{ github.event.pull_request.number }}**
+            **:boom: laf web built successfully for pr ${{ github.event.pull_request.number }}**
             ```
-            ${{ steps.meta.outputs.tags }}
+            Docker image built (not pushed in PR)
             ```
-            digest: `${{ steps.docker-build.outputs.digest }}`
 
   trigger-workflow-build-cluster-image:
     needs: [dockerize-web]
     runs-on: ubuntu-latest
-    if: github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request_target'
+    if: github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request'
     steps:
       - name: trigger cluster image workflow
         uses: peter-evans/repository-dispatch@v2
