@@ -10,8 +10,8 @@ on:
       - "docs/**"
       - ".github/workflows/doc-preview.yml"
 
-# permissions:
-#   pull-requests: write
+permissions:
+  pull-requests: write
 
 env:
   LAF_CI_DOCS_PREVIEW_PAT: ${{ secrets.LAF_CI_DOCS_PREVIEW_PAT }}
