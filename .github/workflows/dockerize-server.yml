@@ -18,10 +18,9 @@ on:
       - "!**/*.md"
       - "!server/package-lock.json"
 
-# permissions:
-#   pull-requests: write
-#   packages: write
-#   contents: read
+permissions:
+  contents: read
+  packages: write
 
 concurrency:
   group: dockerize-server-${{ github.ref }}
