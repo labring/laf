@@ -21,6 +21,7 @@ permissions:
   pull-requests: write
   packages: write
   contents: read
+  actions: write
 
 concurrency:
   group: dockerize-runtime-exporter-${{ github.ref }}

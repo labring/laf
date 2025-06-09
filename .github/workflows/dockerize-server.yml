@@ -22,6 +22,7 @@ permissions:
   pull-requests: write
   packages: write
   contents: read
+  actions: write
 
 concurrency:
   group: dockerize-server-${{ github.ref }}
