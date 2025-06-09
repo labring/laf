@@ -51,6 +51,9 @@
   "Add": "Add ",
   "AddData": "Add data",
   "AddSuccess": "Added successfully",
+  "Auth": {
+    "migrationNotice": "The laf platform has been migrated to sealos and no longer supports new registrations. Please use sealaf, click to jump to sealos"
+  },
   "Cancel": "Cancel",
   "Close": "Close",
   "Confirm": "Confirm",
