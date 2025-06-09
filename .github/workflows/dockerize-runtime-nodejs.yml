@@ -103,16 +103,12 @@ jobs:
           labels: ${{ github.event_name != 'pull_request' && steps.meta.outputs.labels || '' }}
           platforms: linux/amd64, linux/arm64
 
-      - name: Comment docker image tags to PR
+      - name: PR build summary
         if: github.event_name == 'pull_request'
-        uses: mshick/add-pr-comment@v2
-        with:
-          message-id: "dockerize-runtime-nodejs"
-          message: |
-            **:boom: laf runtime-nodejs built successfully for pr ${{ github.event.pull_request.number }}**
-            ```
-            Docker image built (not pushed in PR)
-            ```
+        run: |
+          echo "✅ Docker image built successfully for PR #${{ github.event.pull_request.number }}"
+          echo "ℹ️  Image not pushed to registry (security measure)"
+          echo "📋 Build completed at $(date)"
 
   dockerize-runtime-nodejs-init:
     runs-on: ubuntu-latest
@@ -168,16 +164,12 @@ jobs:
           labels: ${{ github.event_name != 'pull_request' && steps.meta.outputs.labels || '' }}
           platforms: linux/amd64, linux/arm64
 
-      - name: Comment docker image tags to PR
+      - name: PR build summary
         if: github.event_name == 'pull_request'
-        uses: mshick/add-pr-comment@v2
-        with:
-          message-id: "dockerize-runtime-nodejs-init"
-          message: |
-            **:boom: laf runtime-nodejs-init built successfully for pr ${{ github.event.pull_request.number }}**
-            ```
-            Docker image built (not pushed in PR)
-            ```
+        run: |
+          echo "✅ Docker image built successfully for PR #${{ github.event.pull_request.number }}"
+          echo "ℹ️  Image not pushed to registry (security measure)"
+          echo "📋 Build completed at $(date)"
 
 # trigger-workflow-e2e:
 #   needs: [dockerize-main-image]

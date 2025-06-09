@@ -63,7 +63,8 @@ jobs:
 
       - name: Create Sentry release
         uses: getsentry/action-release@v1
-        if: ${{ !github.event.repository.fork }}
+        if: ${{ !github.event.repository.fork && github.event_name != 'pull_request' }}
+        continue-on-error: true
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
@@ -75,6 +76,12 @@ jobs:
           working_directory: web
           ignore_missing: true
           ignore_empty: true
+
+      - name: Sentry release info (PR only)
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "ℹ️  Sentry release skipped in PR for security reasons"
+          echo "🚀 Sentry release will be created when this PR is merged"
 
       - run: |
           rm -rf web/dist/assets/*.map
@@ -125,16 +132,12 @@ jobs:
           labels: ${{ github.event_name != 'pull_request' && steps.meta.outputs.labels || '' }}
           platforms: linux/amd64, linux/arm64
 
-      - name: Comment docker image tags to PR
+      - name: PR build summary
         if: github.event_name == 'pull_request'
-        uses: mshick/add-pr-comment@v2
-        with:
-          message-id: "dockerize-web"
-          message: |
-            **:boom: laf web built successfully for pr ${{ github.event.pull_request.number }}**
-            ```
-            Docker image built (not pushed in PR)
-            ```
+        run: |
+          echo "✅ Docker image built successfully for PR #${{ github.event.pull_request.number }}"
+          echo "ℹ️  Image not pushed to registry (security measure)"
+          echo "📋 Build completed at $(date)"
 
   trigger-workflow-build-cluster-image:
     needs: [dockerize-web]

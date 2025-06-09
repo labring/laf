@@ -31,10 +31,9 @@ jobs:
       - name: Build Docs
         uses: ./.github/actions/build-docs
 
-      - uses: mshick/add-pr-comment@v2
-        with:
-          message: |
-            📖 Documentation built successfully for PR #${{ github.event.pull_request.number }}
-
-            ⚠️ **Note**: Doc preview deployment is disabled for security reasons. 
-            Docs will be deployed automatically when this PR is merged.
+      - name: PR build summary
+        run: |
+          echo "📖 Documentation built successfully for PR #${{ github.event.pull_request.number }}"
+          echo "⚠️  Doc preview deployment is disabled for security reasons"
+          echo "🚀 Docs will be deployed automatically when this PR is merged"
+          echo "📋 Build completed at $(date)"

@@ -103,17 +103,12 @@ jobs:
           labels: ${{ github.event_name != 'pull_request' && steps.meta.outputs.labels || '' }}
           platforms: linux/amd64, linux/arm64
 
-      - name: Comment docker image tags to PR
+      - name: PR build summary
         if: github.event_name == 'pull_request'
-        uses: mshick/add-pr-comment@v2
-        with:
-          message-id: "dockerize-server"
-          message: |
-            **:boom: laf server image built successfully for pr ${{ github.event.pull_request.number }}**
-            ```
-            ${{ steps.meta.outputs.tags }}
-            ```
-            digest: `${{ steps.docker-build.outputs.digest }}`
+        run: |
+          echo "✅ Docker image built successfully for PR #${{ github.event.pull_request.number }}"
+          echo "ℹ️  Image not pushed to registry (security measure)"
+          echo "📋 Build completed at $(date)"
 
   trigger-workflow-build-cluster-image:
     needs: [dockerize-server]
