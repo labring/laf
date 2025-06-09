@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Outlet } from "react-router-dom";
 import { useColorMode } from "@chakra-ui/react";
 import clsx from "clsx";
@@ -6,9 +7,20 @@ import { COLOR_MODE } from "@/constants";
 
 import styles from "./index.module.scss";
 
+import useGlobalStore from "@/pages/globalStore";
+
 export default function LoginReg() {
+  const { t } = useTranslation();
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
+  const { showInfo } = useGlobalStore(({ showInfo }) => ({ showInfo }));
+  showInfo(
+    <a href="https://bja.sealos.run" className="font-bold underline transition ease-in-out">
+      {t("Auth.migrationNotice")}
+    </a>,
+    null,
+    true,
+  );
 
   return (
     <div

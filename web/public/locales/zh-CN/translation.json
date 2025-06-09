@@ -51,6 +51,9 @@
   "Add": "添加",
   "AddData": "新增数据",
   "AddSuccess": "添加成功",
+  "Auth": {
+    "migrationNotice": "laf 平台已经迁移到 sealos 中，不再支持新的注册，请使用 sealaf，点击跳转至 sealos"
+  },
   "Cancel": "取消",
   "Close": "关闭",
   "Confirm": "确定",
