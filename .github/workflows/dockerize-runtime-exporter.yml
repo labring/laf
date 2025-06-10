@@ -20,7 +20,7 @@ on:
 permissions:
   pull-requests: write
   packages: write
-  contents: read
+  contents: write
   actions: write
 
 concurrency:
@@ -120,3 +120,4 @@ jobs:
         with:
           event-type: docker_build_success
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "latest"}'
+          token: ${{ secrets.GITHUB_TOKEN }}
