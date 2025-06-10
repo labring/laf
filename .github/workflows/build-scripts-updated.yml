@@ -12,7 +12,7 @@ on:
       - "!**/*.md"
 
 permissions:
-  contents: read
+  contents: write
   actions: write
 
 concurrency:
@@ -28,3 +28,4 @@ jobs:
         with:
           event-type: build-scripts-updated
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "latest"}'
+          token: ${{ secrets.GITHUB_TOKEN }}
