@@ -5,6 +5,11 @@ on:
     types: [docker_build_success, build-scripts-updated]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+  actions: read
+
 env:
   # Common versions
   GO_VERSION: "1.19"
