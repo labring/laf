@@ -103,6 +103,9 @@ const server = app.listen(Config.PORT, () =>
   logger.info(`server ${process.pid} listened on ${Config.PORT}`),
 )
 
+// set keepAliveTimeout to 30 seconds，make tcp conn reuse
+server.keepAliveTimeout = 30 * 1000
+
 /**
  * WebSocket upgrade & connect
  */
