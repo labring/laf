@@ -10,8 +10,8 @@
 
 ## 🖥 在线体验
 
-🎉 [laf.run](https://laf.run) （国内版）<br/>
-🎉 [laf.dev](https://laf.dev) （海外版）
+🎉 [laf.run](https://bja.sealos.run) （国内版）<br/>
+🎉 [laf.dev](https://cloud.sealos.io) （海外版）
 
 ## 🎉 `laf` 有什么
 
@@ -21,7 +21,6 @@
 - 网站托管
 - WebSocket 支持
 - WebIDE，像写博客一样写代码
-
 
 ## 👨‍💻 谁适合使用 `laf` ?
 
@@ -54,10 +53,9 @@
 
 ## 🎉 私有化部署？
 
-> 快速部署：[Sealos](https://sealos.io) 提供开箱即用的域名、证书、网关、数据库、监控、备份等，无需配置，一键部署。
+> 本地部署：需要自己配置域名、证书、网关等并且熟悉 kubernetes 的运维，可参考下面的文档。
 
-[![](https://cdn.jsdelivr.us/gh/labring-actions/templates@main/Deploy-on-Sealos.svg)](https://cloud.sealos.io/?openapp=system-fastdeploy%3FtemplateName%3Dlaf)
-
+[Deployment](https://github.com/labring/laf/blob/main/deploy/README.md)
 
 ## 🏘️ 社群
 
@@ -66,9 +64,9 @@
 - QQ 群：`603059673`
 - 官方公众号：`laf-dev`
 
-
 ## 下一步
 
 ::: tip
+
 - [快速开始](/zh/quick-start/login)
-:::
+  :::

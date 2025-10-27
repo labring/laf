@@ -22,18 +22,15 @@
 
 ## 🚀 Quick Start
 
-[Build your own ChatGPT in three minutes (from development to deployment)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)  
+[Build your own ChatGPT in three minutes (from development to deployment)](https://icloudnative.io/posts/build-chatgpt-web-using-laf/)
 
 ## 🖥 Online experience
 
-🎉 [laf.dev](https://laf.dev) Free experience ` laf ` cloud development.
+🎉 [laf.dev](https://cloud.sealos.io) Free experience `laf` cloud development.
 
 ## 👀 What is `laf`
 
 `laf` is an open-source cloud development platform that offers ready-to-use application resources such as cloud functions, cloud databases, and cloud storage. It allows developers to focus on business development without the need to tinker with servers, enabling them to quickly unleash their creativity.
-
-![dev](https://sif268-laf-image.oss.laf.dev/dev.png)
-
 
 ## 🎉 Features of `laf`
 
@@ -43,7 +40,6 @@
 - WebIDE, Write code like writing a blog
 - Web-hosting
 - WebSocket support
-
 
 ## 👨‍💻 Who uses `laf`?
 
