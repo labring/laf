@@ -66,6 +66,20 @@ export default class Config {
     return (process.env.__STORAGE_PORT ?? 9000) as number
   }
 
+  // set keepAliveTimeout from config (default 60 seconds)
+  static get KEEP_ALIVE_TIMEOUT(): number {
+    const defaultMs = 60 * 1000
+    const raw = process.env.__KEEP_ALIVE_TIMEOUT
+    if (raw === undefined || raw === null || raw === '') {
+      return defaultMs
+    }
+    const parsed = Number(raw)
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      return defaultMs
+    }
+    return parsed
+  }
+
   /**
    * in production deploy or not
    */
