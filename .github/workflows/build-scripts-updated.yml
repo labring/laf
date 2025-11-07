@@ -7,25 +7,25 @@ on:
       - main
     paths:
       - "build/**"
+      - "deploy/**"
       - ".github/workflows/build-scripts-updated.yml"
       - ".github/workflows/build-sealos-cluster-image.yml"
       - "!**/*.md"
 
 permissions:
-  contents: write
-  actions: write
+  contents: read
 
 concurrency:
   group: build-scripts-updated-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  trigger-workflow-build-cluster-image:
+  notify:
     runs-on: ubuntu-latest
     steps:
-      - name: trigger cluster image workflow
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          event-type: build-scripts-updated
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "latest"}'
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log workflow completion
+        run: |
+          echo "Build scripts updated workflow completed"
+          echo "This will trigger build-sealos-cluster-image via workflow_run"
+          echo "Ref: ${{ github.ref }}"
+          echo "SHA: ${{ github.sha }}"

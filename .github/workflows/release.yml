@@ -6,147 +6,184 @@ on:
     tags:
       - v*.*.*
 
-env:
-  # Common versions
-  GO_VERSION: "1.19"
-
 permissions:
   contents: read
   packages: write
-  actions: write
+
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
 
 jobs:
   dockerize-server:
+    name: Build and Push Server Release Image
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Use Node
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 18.x
+          cache: "npm"
+          cache-dependency-path: server/package-lock.json
 
-      - name: Install Package
+      - name: Install dependencies
         working-directory: server
-        run: npm cache clean --force && npm install
+        run: npm ci
 
-      - name: Build Packages
+      - name: Build server
         working-directory: server
         run: npm run build
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: |
             ghcr.io/${{ github.repository_owner }}/laf-server
-            docker.io/${{ secrets.DOCKER_USERNAME }}/laf-server
-          # https://github.com/docker/metadata-action#typesemver
+            ${{ env.DOCKERHUB_USERNAME && format('docker.io/{0}/laf-server', env.DOCKERHUB_USERNAME) || '' }}
           tags: |
             type=semver,pattern={{version}}
-            type=sha,enable=true,format=short
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha,format=short
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        if: ${{ env.DOCKERHUB_USERNAME != '' }}
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Login to Github Container Hub
-        uses: docker/login-action@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        id: docker-build
+        uses: docker/build-push-action@v6
         with:
           context: ./server
           file: ./server/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64,linux/arm64
+
+      - name: Log published images
+        run: |
+          echo "Published server images:"
+          echo "${{ steps.meta.outputs.tags }}"
+          echo "Digest: ${{ steps.docker-build.outputs.digest }}"
 
   dockerize-web:
+    name: Build and Push Web Release Image
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Use Node
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 18.x
+          cache: "npm"
+          cache-dependency-path: web/package-lock.json
 
-      - name: Install Package
+      - name: Install dependencies
         working-directory: web
-        run: npm cache clean --force && npm install
+        run: npm ci
 
       - name: Build web
         working-directory: web
         run: npm run build
 
+      - name: Remove source maps
+        run: rm -rf web/dist/assets/*.map
+
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: |
             ghcr.io/${{ github.repository_owner }}/laf-web
-            docker.io/${{ secrets.DOCKER_USERNAME }}/laf-web
-          # https://github.com/docker/metadata-action#typesemver
+            ${{ env.DOCKERHUB_USERNAME && format('docker.io/{0}/laf-web', env.DOCKERHUB_USERNAME) || '' }}
           tags: |
             type=semver,pattern={{version}}
-            type=sha,enable=true,format=short
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha,format=short
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        if: ${{ env.DOCKERHUB_USERNAME != '' }}
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Login to Github Container Hub
-        uses: docker/login-action@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        id: docker-build
+        uses: docker/build-push-action@v6
         with:
           context: ./web
           file: ./web/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64,linux/arm64
 
-  trigger-workflow-build-cluster-image:
+      - name: Log published images
+        run: |
+          echo "Published web images:"
+          echo "${{ steps.meta.outputs.tags }}"
+          echo "Digest: ${{ steps.docker-build.outputs.digest }}"
+
+  notify-completion:
+    name: Notify Release Completion
     needs: [dockerize-server, dockerize-web]
     runs-on: ubuntu-latest
+
     steps:
-      - name: Set env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - name: Trigger cluster image workflow
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          event-type: docker_build_success
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ env.RELEASE_VERSION }}"}'
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
+
+      - name: Log release completion
+        run: |
+          echo "Release workflow completed successfully"
+          echo "This will trigger build-sealos-cluster-image via workflow_run"
+          echo "Version: ${{ steps.version.outputs.version }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "SHA: ${{ github.sha }}"
