@@ -22,31 +22,43 @@ on:
 permissions:
   pull-requests: write
   packages: write
-  contents: write
-  actions: write
+  contents: read
+  issues: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+
 jobs:
-  dockerize-web:
-    runs-on: ubuntu-latest
+  build-web-images:
+    name: Build Web Docker Images
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - arch: amd64
+          - arch: arm64
+            runs-on: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runs-on || 'ubuntu-24.04' }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Cache node modules
         id: cache-node-modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: web/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('web/package-lock.json') }}
+          key: ${{ runner.os }}-${{ matrix.arch }}-node-${{ hashFiles('web/package-lock.json') }}
 
       - name: Use Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18.x
 
@@ -64,14 +76,14 @@ jobs:
 
       - name: Create Sentry release
         uses: getsentry/action-release@v1
-        if: ${{ !github.event.repository.fork && github.event_name != 'pull_request' }}
+        if: ${{ !github.event.repository.fork && github.event_name != 'pull_request' && matrix.arch == 'amd64' }}
         continue-on-error: true
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
-          sourcemaps: dist/assets
+          sourcemaps: web/dist/assets
           url_prefix: "~/assets/"
           version: ${{ format('laf@{0}', github.sha) }}
           working_directory: web
@@ -79,75 +91,191 @@ jobs:
           ignore_empty: true
 
       - name: Sentry release info (PR only)
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && matrix.arch == 'amd64'
         run: |
           echo "ℹ️  Sentry release skipped in PR for security reasons"
           echo "🚀 Sentry release will be created when this PR is merged"
 
-      - run: |
-          rm -rf web/dist/assets/*.map
-
-      - name: Docker meta (for push events only)
-        id: meta
-        if: github.event_name != 'pull_request'
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ghcr.io/${{ github.repository_owner }}/laf-web
-            docker.io/${{ secrets.DOCKER_USERNAME }}/laf-web
-          # https://github.com/docker/metadata-action#typesemver
-          tags: |
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
-            type=sha,format=short,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
-            type=raw,value={{branch}}-{{sha}},enable=${{ github.ref != format('refs/heads/{0}', 'main') && !startsWith(github.ref, 'refs/tags/') }}
+      - name: Remove source maps
+        run: rm -rf web/dist/assets/*.map
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        if: ${{ matrix.arch != runner.arch }}
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
+        if: ${{ github.event_name != 'pull_request' && github.actor != 'dependabot[bot]' && env.DOCKERHUB_USERNAME != '' }}
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Login to Github Container Hub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
+        if: ${{ github.event_name != 'pull_request' && github.actor != 'dependabot[bot]' }}
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository_owner }}/laf-web
+            ${{ env.DOCKERHUB_USERNAME && format('docker.io/{0}/laf-web', env.DOCKERHUB_USERNAME) || '' }}
+
+      - name: Build for ${{ matrix.arch }}
         id: docker-build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v6
         with:
           context: ./web
           file: ./web/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ github.event_name != 'pull_request' && steps.meta.outputs.tags || 'laf-web:pr-build' }}
-          labels: ${{ github.event_name != 'pull_request' && steps.meta.outputs.labels || '' }}
-          platforms: linux/amd64, linux/arm64
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/${{ matrix.arch }}
+          # PR builds: load locally, Main builds: push by digest
+          push: false
+          load: ${{ github.event_name == 'pull_request' }}
+          outputs: ${{ github.event_name != 'pull_request' && github.actor != 'dependabot[bot]' && format('type=image,"name=ghcr.io/{0}/laf-web{1}",name-canonical=true,push-by-digest=true,push=true', github.repository_owner, env.DOCKERHUB_USERNAME && format(',docker.io/{0}/laf-web', env.DOCKERHUB_USERNAME) || '') || '' }}
 
-      - name: PR build summary
-        if: github.event_name == 'pull_request'
+      - name: Export digest
+        if: ${{ github.event_name != 'pull_request' && github.actor != 'dependabot[bot]' }}
         run: |
-          echo "✅ Docker image built successfully for PR #${{ github.event.pull_request.number }}"
-          echo "ℹ️  Image not pushed to registry (security measure)"
-          echo "📋 Build completed at $(date)"
+          mkdir -p ${{ runner.temp }}/digests
+          digest="${{ steps.docker-build.outputs.digest }}"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
 
-  trigger-workflow-build-cluster-image:
-    needs: [dockerize-web]
-    runs-on: ubuntu-latest
-    if: github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request'
-    steps:
-      - name: trigger cluster image workflow
-        uses: peter-evans/repository-dispatch@v2
+      - name: Upload digest
+        if: ${{ github.event_name != 'pull_request' && github.actor != 'dependabot[bot]' }}
+        uses: actions/upload-artifact@v4
         with:
-          event-type: docker_build_success
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "latest"}'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          name: digests-web-${{ matrix.arch }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && matrix.arch == 'amd64' && always()
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          script: |
+            const buildSuccess = '${{ steps.docker-build.outcome }}' === 'success';
+            const emoji = buildSuccess ? '✅' : '❌';
+            const status = buildSuccess ? 'Success' : 'Failed';
+
+            let body = `## ${emoji} laf Web Image Build ${status}\n\n`;
+            body += `### Build Details\n\n`;
+            body += `| Item | Value |\n`;
+            body += `|------|-------|\n`;
+            body += `| Build Status | ${buildSuccess ? '✅ Passed' : '❌ Failed'} |\n`;
+            body += `| Platforms | linux/amd64 (PR validation) |\n`;
+            body += `| Push to Registry | ⚠️ No (PR build only) |\n`;
+            body += `| Node Version | 18.x |\n`;
+            body += `| Framework | Vite/React |\n\n`;
+
+            if (buildSuccess) {
+              body += `### 📦 Image will be published after merge to main\n\n`;
+              body += `**Note**: PR builds only verify the Docker build process for linux/amd64. Multi-platform images (amd64 + arm64) are built and pushed only when merged to main.\n\n`;
+            }
+
+            body += `**Commit**: \`${{ github.sha }}\`\n`;
+            body += `**Triggered by**: @${{ github.actor }}\n`;
+
+            try {
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              });
+
+              const botComment = comments.find(comment =>
+                comment.user.type === 'Bot' &&
+                comment.body.includes('laf Web Image Build')
+              );
+
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: body
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: body
+                });
+              }
+            } catch (error) {
+              console.log('Failed to post comment:', error.message);
+              console.log('This might be expected for PRs from forks');
+            }
+
+  release-web-images:
+    name: Push Web Docker Images
+    permissions:
+      packages: write
+    needs: build-web-images
+    runs-on: ubuntu-24.04
+    if: ${{ github.event_name != 'pull_request' && github.actor != 'dependabot[bot]' }}
+    steps:
+      - name: Login to DockerHub
+        if: ${{ env.DOCKERHUB_USERNAME != '' }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to Github Container Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download digests
+        uses: actions/download-artifact@v5
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-web-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository_owner }}/laf-web
+            ${{ env.DOCKERHUB_USERNAME && format('docker.io/{0}/laf-web', env.DOCKERHUB_USERNAME) || '' }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+
+      - name: Create manifest list and push
+        working-directory: ${{ runner.temp }}/digests
+        run: |
+          for TAG in $DOCKER_METADATA_OUTPUT_TAGS; do
+            docker buildx imagetools create -t $TAG \
+              $(printf 'ghcr.io/${{ github.repository_owner }}/laf-web@sha256:%s ' *)
+            sleep 3
+          done
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ghcr.io/${{ github.repository_owner }}/laf-web:${{ steps.meta.outputs.version }}

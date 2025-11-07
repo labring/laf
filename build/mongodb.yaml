@@ -4,23 +4,30 @@ metadata:
   finalizers:
     - cluster.kubeblocks.io/finalizer
   labels:
-    clusterdefinition.kubeblocks.io/name: mongodb
-    clusterversion.kubeblocks.io/name: mongodb-5.0
+    kb.io/database: mongodb-8.0.4
+    app.kubernetes.io/instance: mongodb
+    helm.sh/chart: mongodb-cluster-0.9.1
   name: mongodb
 spec:
   affinity:
-    nodeLabels: {}
     podAntiAffinity: Preferred
     tenancy: SharedNode
-    topologyKeys: []
-  clusterDefinitionRef: mongodb
-  clusterVersionRef: mongodb-5.0
+    topologyKeys:
+      - kubernetes.io/hostname
   componentSpecs:
-    - componentDefRef: mongodb
+    - componentDef: mongodb
       monitor: true
       name: mongodb
       replicas: 1
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 1024Mi
+        requests:
+          cpu: 100m
+          memory: 102Mi
       serviceAccountName: ""
+      serviceVersion: 8.0.4
       volumeClaimTemplates:
         - name: data
           spec:
@@ -30,4 +37,3 @@ spec:
               requests:
                 storage: $CAPACITY
   terminationPolicy: Delete
-  tolerations: []

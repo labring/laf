@@ -173,19 +173,16 @@ export class DedicatedDatabaseService {
     const api = this.cluster.makeCoreV1Api(region)
     const namespace = this.getDatabaseNamespace(region, database.appid)
     const name = getDedicatedDatabaseName(database.appid)
-    const secretName = `${name}-conn-credential`
+    const secretName = `${name}-mongodb-account-root`
     const srv = await api.readNamespacedSecret(secretName, namespace)
     if (!srv) return null
 
     const username = Buffer.from(srv.body.data.username, 'base64').toString()
     const password = Buffer.from(srv.body.data.password, 'base64').toString()
-    let host = Buffer.from(srv.body.data.headlessHost, 'base64').toString()
-    if (host && !host.includes(namespace)) {
-      host += `.${namespace}`
-    }
-    const port = Number(
-      Buffer.from(srv.body.data.headlessPort, 'base64').toString(),
-    )
+
+    // KubeBlocks' new secret format doesn't include host/port fields
+    const host = `${name}-mongodb.${namespace}.svc`
+    const port = 27017
 
     const uri = mongodb_uri.format({
       username,

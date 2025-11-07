@@ -77,6 +77,7 @@ sealos run labring/cert-manager:v1.8.0
 sealos run labring/metrics-server:v0.6.2
 sealos run docker.io/labring/ingress-nginx:v1.8.1 \
   -e HELM_OPTS="--set controller.hostNetwork=true --set controller.kind=DaemonSet --set controller.service.enabled=false"
+# TODO: use kubeblocks v0.9.1
 sealos run labring/kubeblocks:v0.7.1
 
 
