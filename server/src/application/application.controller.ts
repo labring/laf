@@ -56,6 +56,11 @@ import { GroupWithRole } from 'src/group/entities/group'
 import { isEqual } from 'lodash'
 import { InstanceService } from 'src/instance/instance.service'
 import { QuotaService } from 'src/user/quota.service'
+import { DedicatedDatabaseService } from 'src/database/dedicated-database/dedicated-database.service'
+import {
+  DedicatedDatabasePhase,
+  DedicatedDatabaseState,
+} from 'src/database/entities/dedicated-database'
 
 @ApiTags('Application')
 @Controller('applications')
@@ -73,6 +78,7 @@ export class ApplicationController {
     private readonly resource: ResourceService,
     private readonly runtimeDomain: RuntimeDomainService,
     private readonly quotaServiceTsService: QuotaService,
+    private readonly dedicateDatabase: DedicatedDatabaseService,
   ) {}
 
   /**
@@ -253,6 +259,7 @@ export class ApplicationController {
     if (dto.state === ApplicationState.Deleted) {
       throw new ForbiddenException('cannot update state to deleted')
     }
+    const ddb = await this.dedicateDatabase.findOne(appid)
     const userid = app.createdBy
 
     // check account balance
@@ -265,8 +272,10 @@ export class ApplicationController {
     // check: only running application can restart
     if (
       dto.state === ApplicationState.Restarting &&
-      app.state !== ApplicationState.Running &&
-      app.phase !== ApplicationPhase.Started
+      !(
+        app.state === ApplicationState.Running &&
+        app.phase === ApplicationPhase.Started
+      )
     ) {
       return ResponseUtil.error(
         'The application is not running, can not restart it',
@@ -276,8 +285,8 @@ export class ApplicationController {
     // check: only running application can stop
     if (
       dto.state === ApplicationState.Stopped &&
-      app.state !== ApplicationState.Running &&
-      app.phase !== ApplicationPhase.Started
+      (app.state !== ApplicationState.Running ||
+        app.phase !== ApplicationPhase.Started)
     ) {
       return ResponseUtil.error(
         'The application is not running, can not stop it',
@@ -287,8 +296,8 @@ export class ApplicationController {
     // check: only stopped application can start
     if (
       dto.state === ApplicationState.Running &&
-      app.state !== ApplicationState.Stopped &&
-      app.phase !== ApplicationPhase.Stopped
+      (app.state !== ApplicationState.Stopped ||
+        app.phase !== ApplicationPhase.Stopped)
     ) {
       return ResponseUtil.error(
         'The application is not stopped, can not start it',
@@ -302,6 +311,20 @@ export class ApplicationController {
       getRoleLevel(group.role) < getRoleLevel(GroupRole.Admin)
     ) {
       return ResponseUtil.error('no permission')
+    }
+
+    if (ddb) {
+      if (dto.state === ApplicationState.Restarting && dto?.onlyRuntimeFlag) {
+        const doc = await this.application.updateState(appid, dto.state)
+        return ResponseUtil.ok(doc)
+      }
+
+      const doc = await this.application.updateState(appid, dto.state)
+      await this.dedicateDatabase.updateState(
+        appid,
+        dto.state as unknown as DedicatedDatabaseState,
+      )
+      return ResponseUtil.ok(doc)
     }
 
     const doc = await this.application.updateState(appid, dto.state)
@@ -322,6 +345,13 @@ export class ApplicationController {
     @InjectApplication() app: ApplicationWithRelations,
     @InjectUser() user: User,
   ) {
+    // only running application can update bundle
+    if (app.phase !== ApplicationPhase.Started) {
+      return ResponseUtil.error(
+        'The application is not running, can not update bundle',
+      )
+    }
+
     const error = dto.autoscaling.validate()
     if (error) {
       return ResponseUtil.error(error)
@@ -354,9 +384,42 @@ export class ApplicationController {
       return ResponseUtil.error('cannot change database type')
     }
 
-    const checkSpec = await this.checkResourceSpecification(dto, regionId)
+    const checkSpec = await this.checkResourceSpecification(dto, regionId, app)
     if (!checkSpec) {
       return ResponseUtil.error('invalid resource specification')
+    }
+
+    // Check if user is trying to change dedicated database resources
+    const isTryingToChangeDedicatedDatabase =
+      (dto.dedicatedDatabase?.cpu !== undefined &&
+        dto.dedicatedDatabase?.cpu !==
+          origin.resource.dedicatedDatabase?.limitCPU) ||
+      (dto.dedicatedDatabase?.memory !== undefined &&
+        dto.dedicatedDatabase?.memory !==
+          origin.resource.dedicatedDatabase?.limitMemory) ||
+      (dto.dedicatedDatabase?.replicas !== undefined &&
+        dto.dedicatedDatabase?.replicas !==
+          origin.resource.dedicatedDatabase?.replicas) ||
+      (dto.dedicatedDatabase?.capacity !== undefined &&
+        dto.dedicatedDatabase?.capacity !==
+          origin.resource.dedicatedDatabase?.capacity)
+
+    if (isTryingToChangeDedicatedDatabase) {
+      const ddb = await this.dedicateDatabase.findOne(appid)
+      // Database must be running to change database resources
+      if (!ddb) {
+        return ResponseUtil.error(
+          'DedicatedDatabase not found, cannot change DedicatedDatabase database resources',
+        )
+      }
+      if (
+        ddb.state !== DedicatedDatabaseState.Running ||
+        ddb.phase !== DedicatedDatabasePhase.Started
+      ) {
+        return ResponseUtil.error(
+          'DedicatedDatabase is not in running state, cannot change DedicatedDatabase database resources',
+        )
+      }
     }
 
     if (
@@ -393,12 +456,15 @@ export class ApplicationController {
     const doc = await this.application.updateBundle(appid, dto, isTrialTier)
 
     // restart running application if cpu or memory changed
-    const isRunning = app.phase === ApplicationPhase.Started
     const isCpuChanged = origin.resource.limitCPU !== doc.resource.limitCPU
     const isMemoryChanged =
       origin.resource.limitMemory !== doc.resource.limitMemory
     const isAutoscalingCanceled =
       !doc.autoscaling.enable && origin.autoscaling.enable
+
+    const isRuntimeChanged =
+      isCpuChanged || isMemoryChanged || isAutoscalingCanceled
+
     const isDedicatedDatabaseChanged =
       !!origin.resource.dedicatedDatabase &&
       (!isEqual(
@@ -423,13 +489,16 @@ export class ApplicationController {
       await this.instance.reapplyHorizontalPodAutoscaler(app, hpa)
     }
 
-    if (
-      isRunning &&
-      (isCpuChanged ||
-        isMemoryChanged ||
-        isAutoscalingCanceled ||
-        isDedicatedDatabaseChanged)
-    ) {
+    if (isDedicatedDatabaseChanged) {
+      await this.application.updateState(appid, ApplicationState.Restarting)
+      await this.dedicateDatabase.updateState(
+        appid,
+        DedicatedDatabaseState.Restarting,
+      )
+      return ResponseUtil.ok(doc)
+    }
+
+    if (isRuntimeChanged) {
       await this.application.updateState(appid, ApplicationState.Restarting)
     }
 
@@ -540,21 +609,73 @@ export class ApplicationController {
   private async checkResourceSpecification(
     dto: UpdateApplicationBundleDto,
     regionId: ObjectId,
+    app?: ApplicationWithRelations,
   ) {
     const resourceOptions = await this.resource.findAllByRegionId(regionId)
+
+    if (app) {
+      const checkSpec = resourceOptions.every((option) => {
+        switch (option.type) {
+          case 'cpu':
+            return (
+              option.specs.some((spec) => spec.value === dto.cpu) ||
+              app.bundle.resource.limitCPU === dto.cpu
+            )
+          case 'memory':
+            return (
+              option.specs.some((spec) => spec.value === dto.memory) ||
+              app.bundle.resource.limitMemory === dto.memory
+            )
+          // dedicated database
+          case 'dedicatedDatabaseCPU':
+            return (
+              !dto.dedicatedDatabase?.cpu ||
+              option.specs.some(
+                (spec) => spec.value === dto.dedicatedDatabase.cpu,
+              ) ||
+              app.bundle.resource.dedicatedDatabase?.limitCPU ===
+                dto.dedicatedDatabase.cpu
+            )
+          case 'dedicatedDatabaseMemory':
+            return (
+              !dto.dedicatedDatabase?.memory ||
+              option.specs.some(
+                (spec) => spec.value === dto.dedicatedDatabase.memory,
+              ) ||
+              app.bundle.resource.dedicatedDatabase?.limitMemory ===
+                dto.dedicatedDatabase.memory
+            )
+          case 'dedicatedDatabaseCapacity':
+            return (
+              !dto.dedicatedDatabase?.capacity ||
+              option.specs.some(
+                (spec) => spec.value === dto.dedicatedDatabase.capacity,
+              ) ||
+              app.bundle.resource.dedicatedDatabase?.capacity ===
+                dto.dedicatedDatabase.capacity
+            )
+          case 'dedicatedDatabaseReplicas':
+            return (
+              !dto.dedicatedDatabase?.replicas ||
+              option.specs.some(
+                (spec) => spec.value === dto.dedicatedDatabase.replicas,
+              ) ||
+              app.bundle.resource.dedicatedDatabase?.replicas ===
+                dto.dedicatedDatabase.replicas
+            )
+          default:
+            return true
+        }
+      })
+      return checkSpec
+    }
+
     const checkSpec = resourceOptions.every((option) => {
       switch (option.type) {
         case 'cpu':
           return option.specs.some((spec) => spec.value === dto.cpu)
         case 'memory':
           return option.specs.some((spec) => spec.value === dto.memory)
-        case 'databaseCapacity':
-          if (!dto.databaseCapacity) return true
-          return option.specs.some(
-            (spec) => spec.value === dto.databaseCapacity,
-          )
-        case 'storageCapacity':
-          return option.specs.some((spec) => spec.value === dto.storageCapacity)
         // dedicated database
         case 'dedicatedDatabaseCPU':
           return (

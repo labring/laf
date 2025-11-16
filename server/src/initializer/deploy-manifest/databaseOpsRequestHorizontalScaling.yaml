@@ -1,0 +1,15 @@
+apiVersion: apps.kubeblocks.io/v1alpha1
+kind: OpsRequest
+metadata:
+  labels:
+    app.kubernetes.io/instance: <%- clusterName %>
+    ops.kubeblocks.io/ops-type: HorizontalScaling
+    sealos-db-provider-cr: <%- clusterName %>
+  name: <%- name %>
+  namespace: laf-system
+spec:
+  clusterRef: <%- clusterName %>
+  horizontalScaling:
+    - componentName: mongodb
+      replicas: <%- replicas %>
+  type: HorizontalScaling

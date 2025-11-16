@@ -243,7 +243,7 @@
     "FuncListDisplay": "Function List Display",
     "ListDisplay": "List Display",
     "EditorLanguageServer": "Editor Language Server",
-    "isOpenLanguageServer": "Enable typescript language server (only effective when the spec of the app is above 0.5C 1G)",
+    "isOpenLanguageServer": "Enable typescript language server (only effective when the spec of the app is above 1C 2G)",
     "Editor": "Editor",
     "FuncList": "Function List",
     "EditorMode": "Editor Mode",

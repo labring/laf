@@ -8,6 +8,7 @@ import {
   IsString,
   Length,
   ValidateNested,
+  IsBoolean,
 } from 'class-validator'
 import { ApplicationState } from '../entities/application'
 import { CreateAutoscalingDto } from './create-autoscaling.dto'
@@ -52,6 +53,15 @@ export class UpdateApplicationStateDto {
   @IsIn(STATES)
   @IsNotEmpty()
   state: ApplicationState
+
+  @ApiProperty({
+    required: false,
+    description: 'Flag for runtime only operations',
+    type: Boolean,
+  })
+  @IsOptional()
+  @IsBoolean()
+  onlyRuntimeFlag?: boolean
 }
 
 export class UpdateApplicationBundleDto {

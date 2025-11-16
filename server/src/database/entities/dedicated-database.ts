@@ -15,6 +15,7 @@ export enum DedicatedDatabaseState {
   Stopped = 'Stopped',
   Restarting = 'Restarting',
   Deleted = 'Deleted',
+  Updating = 'Updating',
 }
 
 export class DedicatedDatabaseSpec {

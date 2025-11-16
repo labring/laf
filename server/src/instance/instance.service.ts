@@ -103,9 +103,13 @@ export class InstanceService {
     const { deployment, hpa, service } = await this.get(appid)
     if (!deployment || !service) {
       await this.create(appid)
+      this.logger.log(
+        `restart app ${appid} but app k8s deployment or service not found,and recreate it`,
+      )
       return
     }
 
+    // reapply deployment
     deployment.spec = await this.makeDeploymentSpec(
       app,
       deployment.spec.template.metadata.labels,

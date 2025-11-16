@@ -1,0 +1,20 @@
+apiVersion: apps.kubeblocks.io/v1alpha1
+kind: OpsRequest
+metadata:
+  labels:
+    app.kubernetes.io/instance: <%- clusterName %>
+    ops.kubeblocks.io/ops-type: VerticalScaling
+    sealos-db-provider-cr: <%- clusterName %>
+  name: <%- name %>
+  namespace: laf-system
+spec:
+  clusterRef: <%- clusterName %>
+  type: VerticalScaling
+  verticalScaling:
+    - componentName: mongodb
+      limits:
+        cpu: <%- limitCPU %>m
+        memory: <%- limitMemory %>Mi
+      requests:
+        cpu: <%- requestCPU %>m
+        memory: <%- requestMemory %>Mi

@@ -149,8 +149,8 @@ const useGlobalStore = create<State>()(
         set((state) => {
           state.currentApp = app;
           state.isLSPEffective =
-            app?.bundle?.resource?.limitCPU! / 1000 >= 0.5 &&
-            app?.bundle?.resource.limitMemory / 1024 >= 1;
+            app?.bundle?.resource?.limitCPU! / 1000 >= 1 &&
+            app?.bundle?.resource.limitMemory / 1024 >= 2;
 
           if (typeof state.currentApp === "object") {
             const host = `${

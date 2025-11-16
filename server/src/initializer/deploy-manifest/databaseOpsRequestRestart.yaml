@@ -1,0 +1,10 @@
+apiVersion: apps.kubeblocks.io/v1alpha1
+kind: OpsRequest
+metadata:
+  name: <%- name %>
+  namespace: laf-system
+spec:
+  clusterRef: <%- clusterName %>
+  type: Restart
+  restart:
+    - componentName: mongodb
