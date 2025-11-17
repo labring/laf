@@ -37,6 +37,44 @@ type Log = {
 
 const MAX_RETRIES = 5;
 
+// eslint-disable-next-line no-control-regex
+const timestampRegex = /\u001b\[90m(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)/g;
+// const timestampRegex = new RegExp(
+//   "\\u001b\\[90m(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z)",
+//   "g",
+// );
+
+function formatToCustomDateString(date: Date): string {
+  const pad = (num: number) => String(num).padStart(2, "0");
+  const padMillis = (num: number) => String(num).padStart(3, "0");
+
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1); // Months are zero-indexed
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
+  const milliseconds = padMillis(date.getMilliseconds());
+
+  const timeZoneOffset = -date.getTimezoneOffset();
+  const offsetHours = pad(Math.floor(Math.abs(timeZoneOffset) / 60));
+  const offsetMinutes = pad(Math.abs(timeZoneOffset) % 60);
+  const offsetSign = timeZoneOffset >= 0 ? "+" : "-";
+  const timeZone = `T${hours}:${minutes}:${seconds}.${milliseconds}${offsetSign}${offsetHours}:${offsetMinutes}`;
+
+  return `${year}-${month}-${day}${timeZone}`;
+}
+
+function convertLogTimestamp(log: Log): Log {
+  log.data = log.data.replace(timestampRegex, (match, p1) => {
+    const date = new Date(p1);
+    const clientTimeString = formatToCustomDateString(date); // 将时间转换为带时区的客户端时间字符串
+    return `\u001b[90m${clientTimeString}`;
+  });
+
+  return log;
+}
+
 export default function LogsModal(props: { children: React.ReactElement }) {
   const { children } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -126,13 +164,14 @@ export default function LogsModal(props: { children: React.ReactElement }) {
           }
         },
 
-        onmessage(msg) {
+        onmessage(msg: Log) {
           if (msg.event === "error") {
             showWarning(msg.data);
           }
 
           if (msg.event === "log") {
-            addOrUpdateLog(msg);
+            const log: Log = convertLogTimestamp(msg);
+            addOrUpdateLog(log);
             retryCountRef.current = 0;
           }
         },

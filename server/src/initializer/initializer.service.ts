@@ -538,6 +538,12 @@ export class InitializerService {
           gotoSite: '',
         },
       },
+      {
+        public: false,
+        key: SettingKey.AppCreateTimeOut,
+        value: '15',
+        desc: 'timeout for application creation in minutes',
+      },
     ])
 
     this.logger.verbose('Created default settings')

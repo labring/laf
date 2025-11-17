@@ -1,0 +1,17 @@
+apiVersion: apps.kubeblocks.io/v1alpha1
+kind: OpsRequest
+metadata:
+  labels:
+    app.kubernetes.io/instance: <%- clusterName %>
+    ops.kubeblocks.io/ops-type: VolumeExpansion
+    sealos-db-provider-cr: <%- clusterName %>
+  name: <%- name %>
+  namespace: laf-system
+spec:
+  clusterRef: <%- clusterName %>
+  type: VolumeExpansion
+  volumeExpansion:
+    - componentName: mongodb
+      volumeClaimTemplates:
+        - name: data
+          storage: <%- capacity %>Gi

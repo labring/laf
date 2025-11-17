@@ -26,6 +26,8 @@ export enum SettingKey {
 
   EnableWebPromoPage = 'enable_web_promo_page',
   SealafNotification = 'sealaf_notification',
+
+  AppCreateTimeOut = 'app_create_timeout',
 }
 
 export class Setting {

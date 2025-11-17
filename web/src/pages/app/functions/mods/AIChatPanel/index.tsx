@@ -1,9 +1,10 @@
-import { useRef, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaRegStopCircle } from "react-icons/fa";
-import { Avatar, Button, HStack, Input } from "@chakra-ui/react";
+import { Avatar, Box, Button, Textarea, VStack } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { debounce } from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
 import { LafAILogoIcon } from "@/components/CommonIcon";
@@ -19,7 +20,7 @@ export default function AIChatPanel() {
   let source = CancelToken.source();
 
   const contentDomRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const [prompt, setPrompt] = useState("");
 
@@ -30,6 +31,9 @@ export default function AIChatPanel() {
       isAi: true,
     },
   ]);
+
+  const [contentHeight, setContentHeight] = useState("calc(100% - 120px)");
+  const [isComposing, setIsComposing] = useState(false);
 
   async function handleSubmit() {
     if (generateCode.isLoading) {
@@ -69,6 +73,7 @@ export default function AIChatPanel() {
         });
       }, 100);
       setPrompt("");
+      resetHeight();
       await generateCode.mutateAsync({
         value: prompt,
       });
@@ -76,7 +81,7 @@ export default function AIChatPanel() {
   }
 
   const { data: generateCodeRes, ...generateCode } = useMutation((params: any) => {
-    inputRef.current?.focus();
+    textareaRef.current?.focus();
     return axios({
       url: siteSettings.ai_pilot_url?.value,
       method: "POST",
@@ -104,64 +109,118 @@ export default function AIChatPanel() {
     });
   });
 
-  return (
-    <div className="flex h-full flex-col overflow-hidden px-2">
-      <div className="flex-1 overflow-scroll pr-2" ref={contentDomRef}>
-        <ul>
-          {aiChatHistory.map((item, index) => {
-            return (
-              <li className="mt-4 w-full overflow-hidden" key={item._id}>
-                <div className="flex">
-                  <div className="mr-2 w-[24px]">
-                    {item.isAi ? (
-                      <LafAILogoIcon className="mr-2" />
-                    ) : (
-                      <Avatar className="mr-2" size="xs" />
-                    )}
-                  </div>
+  const adjustTextareaHeight = useCallback(
+    debounce(() => {
+      const textarea = textareaRef.current;
+      if (textarea) {
+        textarea.style.height = "auto";
+        const scrollHeight = textarea.scrollHeight;
+        const newHeight = scrollHeight <= 120 ? 120 : Math.min(scrollHeight, 280);
+        textarea.style.height = `${newHeight}px`;
+        setContentHeight(`calc(100% - ${newHeight}px)`);
+      }
+    }, 100),
+    [],
+  );
 
+  useEffect(() => {
+    return () => {
+      adjustTextareaHeight.cancel();
+    };
+  }, [adjustTextareaHeight]);
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey && !isComposing) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
+  const resetHeight = useCallback(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = "120px";
+      setContentHeight("calc(100% - 120px)");
+    }
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    adjustTextareaHeight();
+    setPrompt(e.target.value);
+  };
+
+  return (
+    <VStack height="100%">
+      <Box
+        ref={contentDomRef}
+        flex={1}
+        width="100%"
+        overflow="auto"
+        height={contentHeight}
+        transition="height 0.3s ease-in-out"
+        padding={[1, 1, 1, 2]}
+      >
+        <ul>
+          {aiChatHistory.map((item, index) => (
+            <li key={item._id} className="mt-4 w-full overflow-hidden">
+              <div className="flex">
+                <div className="mr-2 w-[24px]">
                   {item.isAi ? (
-                    <div className="mt-1 w-full flex-1 overflow-auto">
-                      <Markdown
-                        source={item.text}
-                        formatLink
-                        isChatting={index === aiChatHistory.length - 1 && generateCode.isLoading}
-                      />
-                    </div>
+                    <LafAILogoIcon className="mr-2" />
                   ) : (
-                    <div className="mt-1 flex-1 break-all">{item.text}</div>
+                    <Avatar className="mr-2" size="xs" />
                   )}
                 </div>
-              </li>
-            );
-          })}
+                <div className="mt-1 flex-1 overflow-auto">
+                  {item.isAi ? (
+                    <Markdown
+                      source={item.text}
+                      formatLink
+                      isChatting={index === aiChatHistory.length - 1 && generateCode.isLoading}
+                    />
+                  ) : (
+                    <div className="break-all">{item.text}</div>
+                  )}
+                </div>
+              </div>
+            </li>
+          ))}
         </ul>
-      </div>
-
-      <HStack className="h-[60px]">
-        <Input
-          h={"34px"}
-          placeholder={String(t("SendMessagePlaceHolder"))}
+      </Box>
+      <Box width="100%" position="relative" minHeight="120px" maxHeight="280px">
+        <Textarea
           value={prompt}
-          ref={inputRef}
-          onChange={(e) => {
-            setPrompt(e.target.value);
-          }}
-          onKeyPress={(event: any) => {
-            if (event.key === "Enter") {
-              handleSubmit();
-            }
+          onKeyDown={handleKeyDown}
+          onChange={handleChange}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setIsComposing(false)}
+          minHeight="120px"
+          maxHeight="280px"
+          overflow="auto"
+          ref={textareaRef}
+          resize="none"
+          transition="height 0.3s ease-in-out"
+          sx={{
+            "&::-webkit-scrollbar": {
+              width: "8px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "gray.300",
+              borderRadius: "4px",
+            },
           }}
         />
         <Button
-          rounded={"md"}
-          onClick={async () => {
-            handleSubmit();
-          }}
+          rounded="md"
+          onClick={handleSubmit}
+          position="absolute"
+          bottom="4"
+          right="4"
+          zIndex={1}
         >
           {generateCode.isLoading ? <FaRegStopCircle fontSize={22} /> : t("Send")}
         </Button>
-      </HStack>
-    </div>
+      </Box>
+    </VStack>
   );
 }

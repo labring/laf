@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { Cron, CronExpression } from '@nestjs/schedule'
 import {
   Application,
+  ApplicationPhase,
   ApplicationState,
 } from 'src/application/entities/application'
 import { ServerConfig, TASK_LOCK_INIT_TIME } from 'src/constants'
@@ -16,6 +17,11 @@ import { AccountTransaction } from 'src/account/entities/account-transaction'
 import Decimal from 'decimal.js'
 import { NotificationService } from 'src/notification/notification.service'
 import { NotificationType } from 'src/notification/notification-type'
+import {
+  DedicatedDatabase,
+  DedicatedDatabasePhase,
+  DedicatedDatabaseState,
+} from 'src/database/entities/dedicated-database'
 
 @Injectable()
 export class BillingPaymentTaskService {
@@ -150,12 +156,39 @@ export class BillingPaymentTaskService {
             { appid: billing.appid, state: ApplicationState.Running },
             {
               $set: {
+                phase: ApplicationPhase.Stopping,
                 state: ApplicationState.Stopped,
                 forceStoppedAt: new Date(),
               },
             },
             { session },
           )
+
+          const ddb = await db
+            .collection<DedicatedDatabase>('DedicatedDatabase')
+            .findOne(
+              {
+                appid: billing.appid,
+              },
+              { session },
+            )
+
+          if (ddb) {
+            await db
+              .collection<DedicatedDatabase>('DedicatedDatabase')
+              .updateOne(
+                {
+                  appid: billing.appid,
+                },
+                {
+                  $set: {
+                    phase: DedicatedDatabasePhase.Stopping,
+                    state: DedicatedDatabaseState.Stopped,
+                  },
+                },
+                { session },
+              )
+          }
 
           if (res.modifiedCount > 0) {
             this.logger.warn(

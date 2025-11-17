@@ -82,22 +82,22 @@ const AddDependenceModal = () => {
 
   const addPackageMutation = useAddPackageMutation(() => {
     onClose();
-    globalStore.updateCurrentApp(
-      globalStore.currentApp!,
-      globalStore.currentApp!.state === APP_STATUS.Stopped
-        ? APP_STATUS.Running
-        : APP_STATUS.Restarting,
-    );
+    if (globalStore.currentApp!.state === APP_STATUS.Stopped) {
+      globalStore.updateCurrentApp(globalStore.currentApp!, APP_STATUS.Running);
+    }
+    if (globalStore.currentApp.state === APP_STATUS.Running) {
+      globalStore.updateCurrentApp(globalStore.currentApp!, APP_STATUS.Restarting, true);
+    }
   });
 
   const editPackageMutation = useEditPackageMutation(() => {
     onClose();
-    globalStore.updateCurrentApp(
-      globalStore.currentApp!,
-      globalStore.currentApp!.state === APP_STATUS.Stopped
-        ? APP_STATUS.Running
-        : APP_STATUS.Restarting,
-    );
+    if (globalStore.currentApp!.state === APP_STATUS.Stopped) {
+      globalStore.updateCurrentApp(globalStore.currentApp!, APP_STATUS.Running);
+    }
+    if (globalStore.currentApp.state === APP_STATUS.Running) {
+      globalStore.updateCurrentApp(globalStore.currentApp!, APP_STATUS.Restarting, true);
+    }
   });
 
   const packageSearchQuery = usePackageSearchQuery(name, (data) => {
@@ -385,6 +385,7 @@ const AddDependenceModal = () => {
                   >
                     {t("FunctionPanel.Select")}:
                   </span>
+
                   <span className="mx-2 text-blue-500 ">
                     {isEdit ? (
                       packageList.length

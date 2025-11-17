@@ -669,9 +669,9 @@ export default function FunctionList() {
         title={
           <div className="flex">
             {t`FunctionPanel.FunctionList`}
-            {filterFunctions.length ? (
+            {allFunctionList.length ? (
               <Badge rounded={"full"} ml="1">
-                {filterFunctions.length}
+                {allFunctionList.length}
               </Badge>
             ) : null}
           </div>

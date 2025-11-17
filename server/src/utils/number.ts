@@ -37,3 +37,8 @@ export function PriceDiv(price1: number | string, price2: number | string) {
   const price2Num = Number(price2)
   return PriceRound(price1Num / price2Num)
 }
+
+export function extractNumber(value: string): number {
+  const match = value.match(/\d+/)
+  return match ? parseInt(match[0], 10) : null
+}

@@ -6,6 +6,7 @@ import ColorModeSwitch from "@/components/ColorModeSwitch";
 import { TextIcon } from "@/components/CommonIcon";
 import LanguageSwitch from "@/components/LanguageSwitch";
 import Panel from "@/components/Panel";
+import { APP_PHASE_STATUS, APP_STATUS } from "@/constants";
 
 import Icons from "../SideBar/Icons";
 
@@ -61,13 +62,17 @@ function StatusBar() {
           </div>
         </LogsModal>
         <MonitorBar />
-        <div className={clsx("mt-1")}>
-          <CreateAppModal application={currentApp as any} isCurrentApp type="change">
-            <a className="ml-2 text-primary-700" href="/edit">
-              {t("Change")}
-            </a>
-          </CreateAppModal>
-        </div>
+        {/* Only running applications can change configuration */}
+        {currentApp?.phase === APP_PHASE_STATUS.Started &&
+          currentApp?.state === APP_STATUS.Running && (
+            <div className={clsx("mt-1")}>
+              <CreateAppModal application={currentApp as any} isCurrentApp type="change">
+                <a className="ml-2 text-primary-700" href="/edit">
+                  {t("Change")}
+                </a>
+              </CreateAppModal>
+            </div>
+          )}
       </HStack>
     </Panel>
   );
