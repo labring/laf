@@ -73,10 +73,20 @@ const UseTemplateModal = (props: { children: any; templateId: string; packageLis
     });
 
     if (isAnyPackageNotInDependencyList && packageList.length > 0) {
-      updateAppStateMutation.mutate({
-        appid: appItem.appid,
-        state: appItem.phase === APP_STATUS.Stopped ? APP_STATUS.Running : APP_STATUS.Restarting,
-      });
+      if (appItem.phase === APP_STATUS.Stopped) {
+        updateAppStateMutation.mutate({
+          appid: appItem.appid,
+          state: APP_STATUS.Running,
+        });
+      }
+
+      if (appItem.phase === APP_STATUS.Running) {
+        updateAppStateMutation.mutate({
+          appid: appItem.appid,
+          state: APP_STATUS.Restarting,
+          onlyRuntimeFlag: true,
+        });
+      }
     }
 
     if (!res.error) {

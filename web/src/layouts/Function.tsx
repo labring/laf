@@ -7,7 +7,7 @@ import clsx from "clsx";
 import { APP_PHASE_STATUS, APP_STATUS, COLOR_MODE, Pages } from "@/constants/index";
 
 import { ApplicationControllerFindOne } from "@/apis/v1/applications";
-import InitLog from "@/pages/app/mods/StatusBar/LogsModal/initLog";
+import InitLog from "@/pages/app/mods/StatusBar/LogsModal/InitLog";
 import useGlobalStore from "@/pages/globalStore";
 
 export default function FunctionLayout() {
@@ -29,10 +29,11 @@ export default function FunctionLayout() {
     {
       enabled: !!appid,
       refetchInterval:
-        currentApp?.phase === APP_PHASE_STATUS.Started ||
-        (currentApp?.state === APP_PHASE_STATUS.Stopped &&
-          currentApp?.phase === APP_PHASE_STATUS.Stopped) ||
-        currentApp?.state === APP_PHASE_STATUS.Deleted
+        (currentApp?.phase === APP_PHASE_STATUS.Started &&
+          currentApp?.state === APP_STATUS.Running) ||
+        (currentApp?.phase === APP_PHASE_STATUS.Stopped &&
+          currentApp?.state === APP_STATUS.Stopped) ||
+        currentApp?.state === APP_STATUS.Deleted
           ? false
           : 1000,
       onSuccess(data) {

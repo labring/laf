@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Center, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
-import { APP_PHASE_STATUS } from "@/constants";
+import { APP_PHASE_STATUS, APP_STATUS } from "@/constants";
 
 import Empty from "./mods/Empty";
 import List from "./mods/List";
@@ -27,7 +27,8 @@ function HomePage() {
           data?.data?.filter(
             (item: any) =>
               !(
-                item?.phase === APP_PHASE_STATUS.Started || item?.phase === APP_PHASE_STATUS.Stopped
+                (item?.phase === APP_PHASE_STATUS.Started && item?.state === APP_STATUS.Running) ||
+                (item?.phase === APP_PHASE_STATUS.Stopped && item?.state === APP_STATUS.Stopped)
               ),
           ).length > 0,
         );

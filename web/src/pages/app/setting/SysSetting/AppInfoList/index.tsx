@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MdPlayCircleOutline, MdRestartAlt } from "react-icons/md";
 import { RiDeleteBin6Line, RiShutDownLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, HStack, useColorMode, VStack } from "@chakra-ui/react";
+import { Box, Button, Checkbox, HStack, useColorMode, VStack } from "@chakra-ui/react";
 import clsx from "clsx";
 
+import ConfirmButton from "@/components/ConfirmButton";
 import { APP_PHASE_STATUS, APP_STATUS, COLOR_MODE, Routes } from "@/constants/index";
 import { formatDate, formatSize } from "@/utils/format";
 
@@ -13,7 +15,6 @@ import InfoDetail from "./InfoDetail";
 import useGlobalStore from "@/pages/globalStore";
 import DeleteAppModal from "@/pages/home/mods/DeleteAppModal";
 import StatusBadge from "@/pages/home/mods/StatusBadge";
-
 interface AppEnvListProps {
   onClose?: () => void;
 }
@@ -26,12 +27,14 @@ const AppEnvList: React.FC<AppEnvListProps> = (props = {}) => {
   const { currentApp, updateCurrentApp, regions = [] } = useGlobalStore((state) => state);
   const darkMode = useColorMode().colorMode === COLOR_MODE.dark;
 
+  const [onlyRuntimeFlag, setOnlyRuntimeFlag] = useState(true);
+
+  const currentRegion = regions.find((item) => item._id === currentApp?.regionId);
+
   if (currentApp?.state === APP_PHASE_STATUS.Deleted) {
     navigate(Routes.dashboard);
     return <></>;
   }
-
-  const currentRegion = regions.find((item) => item._id === currentApp?.regionId);
 
   return (
     <>
@@ -55,78 +58,99 @@ const AppEnvList: React.FC<AppEnvListProps> = (props = {}) => {
               <span className="mr-2 inline-block h-[12px] rounded border border-grayModern-500"></span>
             }
           >
-            <Button
-              className="mr-2"
-              fontWeight={"semibold"}
-              size={"sm"}
-              isDisabled={
-                currentApp?.phase !== APP_PHASE_STATUS.Stopped &&
-                currentApp?.phase !== APP_PHASE_STATUS.Started
-              }
-              color={"grayModern.600"}
-              bg={"none"}
-              _hover={{ color: "primary.600" }}
-              onClick={() => {
-                updateCurrentApp(
-                  currentApp!,
-                  currentApp?.state === APP_STATUS.Stopped
-                    ? APP_STATUS.Running
-                    : APP_STATUS.Restarting,
-                );
-                //  when start close modal window
-                if (currentApp?.phase === APP_PHASE_STATUS.Stopped && onClose) {
-                  onClose();
-                }
-              }}
-            >
-              {currentApp?.phase === APP_PHASE_STATUS.Stopped ? (
-                <>
-                  <MdPlayCircleOutline size={16} className="mr-1" />
-                  {t("SettingPanel.Start")}
-                </>
-              ) : (
-                <>
-                  <MdRestartAlt size={16} className="mr-1" />
-                  {t("SettingPanel.Restart")}
-                </>
-              )}
-            </Button>
-            {currentApp?.phase === APP_PHASE_STATUS.Started ? (
+            {currentApp?.phase === APP_PHASE_STATUS.Stopped ? (
               <Button
                 className="mr-2"
                 fontWeight={"semibold"}
                 size={"sm"}
+                isDisabled={currentApp?.phase !== APP_PHASE_STATUS.Stopped}
                 color={"grayModern.600"}
                 bg={"none"}
                 _hover={{ color: "primary.600" }}
-                onClick={(event: any) => {
-                  event?.preventDefault();
-                  updateCurrentApp(currentApp!, APP_STATUS.Stopped);
+                onClick={() => {
+                  updateCurrentApp(currentApp!, APP_STATUS.Running);
+                  if (onClose) {
+                    onClose();
+                  }
                 }}
               >
-                <RiShutDownLine size={16} className="mr-1" />
-                {t("SettingPanel.Pause")}
+                <MdPlayCircleOutline size={16} className="mr-1" />
+                {t("SettingPanel.Start")}
               </Button>
             ) : null}
 
-            <DeleteAppModal
-              item={currentApp}
-              onSuccess={() => {
-                navigate(Routes.dashboard);
-              }}
-            >
-              <Button
-                className="mr-2"
-                fontWeight={"semibold"}
-                size={"sm"}
-                color={"grayModern.600"}
-                bg={"none"}
-                _hover={{ color: "error.500" }}
+            {currentApp?.phase === APP_PHASE_STATUS.Started ? (
+              <>
+                <ConfirmButton
+                  headerText={t("SettingPanel.Restart")}
+                  bodyText={
+                    <Checkbox
+                      colorScheme="primary"
+                      mt={4}
+                      isChecked={!onlyRuntimeFlag}
+                      onChange={(e) => setOnlyRuntimeFlag(!e.target.checked)}
+                    >
+                      {t("SettingPanel.RestartTips")}
+                    </Checkbox>
+                  }
+                  confirmButtonText={String(t("Confirm"))}
+                  onSuccessAction={async (event) => {
+                    event?.preventDefault();
+                    updateCurrentApp(currentApp!, APP_STATUS.Restarting, onlyRuntimeFlag);
+                    setOnlyRuntimeFlag(true);
+                  }}
+                >
+                  <Button
+                    className="mr-2"
+                    fontWeight={"semibold"}
+                    size={"sm"}
+                    color={"grayModern.600"}
+                    bg={"none"}
+                    _hover={{ color: "primary.600" }}
+                  >
+                    <MdRestartAlt size={16} className="mr-1" />
+                    {t("SettingPanel.Restart")}
+                  </Button>
+                </ConfirmButton>
+
+                <Button
+                  className="mr-2"
+                  fontWeight={"semibold"}
+                  size={"sm"}
+                  color={"grayModern.600"}
+                  bg={"none"}
+                  _hover={{ color: "primary.600" }}
+                  onClick={(event: any) => {
+                    event?.preventDefault();
+                    updateCurrentApp(currentApp!, APP_STATUS.Stopped);
+                  }}
+                >
+                  <RiShutDownLine size={16} className="mr-1" />
+                  {t("SettingPanel.Pause")}
+                </Button>
+              </>
+            ) : null}
+
+            {currentApp?.phase === APP_PHASE_STATUS.Stopped ? (
+              <DeleteAppModal
+                item={currentApp}
+                onSuccess={() => {
+                  navigate(Routes.dashboard);
+                }}
               >
-                <RiDeleteBin6Line size={16} className="mr-1" />
-                {t("SettingPanel.Delete")}
-              </Button>
-            </DeleteAppModal>
+                <Button
+                  className="mr-2"
+                  fontWeight={"semibold"}
+                  size={"sm"}
+                  color={"grayModern.600"}
+                  bg={"none"}
+                  _hover={{ color: "error.500" }}
+                >
+                  <RiDeleteBin6Line size={16} className="mr-1" />
+                  {t("SettingPanel.Delete")}
+                </Button>
+              </DeleteAppModal>
+            ) : null}
           </HStack>
         </VStack>
         <div className="mt-8 flex flex-grow justify-center space-x-5 overflow-auto">

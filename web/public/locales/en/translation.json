@@ -236,7 +236,7 @@
     "Balance": "Balance",
     "Pause": "Pause",
     "PauseTips": "Are you sure you want to pause this application?",
-    "RestartTips": "Are you sure you want to restart this application?",
+    "RestartTips": "Restart the database together?",
     "CommonSetting": "Common Settings",
     "EditorFont": "Editor Font",
     "FontSize": "Font Size",

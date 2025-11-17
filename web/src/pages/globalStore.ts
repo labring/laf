@@ -25,7 +25,7 @@ export type State = {
   currentApp: TApplicationDetail | any;
   setCurrentApp(app: TApplicationDetail | any): void;
   init(appid?: string): void;
-  updateCurrentApp(app: TApplicationDetail, state: APP_STATUS): void;
+  updateCurrentApp(app: TApplicationDetail, state: APP_STATUS, onlyRuntimeFlag?: boolean): void;
   deleteCurrentApp(): void;
   currentPageId: string | undefined;
   setCurrentPage: (pageId: string) => void;
@@ -117,12 +117,17 @@ const useGlobalStore = create<State>()(
         });
       },
 
-      updateCurrentApp: async (app: TApplicationDetail, newState: APP_STATUS) => {
+      updateCurrentApp: async (
+        app: TApplicationDetail,
+        newState: APP_STATUS,
+        onlyRuntimeFlag?: boolean,
+      ) => {
         if (!app) {
           return;
         }
         const restartRes = await ApplicationControllerUpdateState({
           state: newState,
+          onlyRuntimeFlag,
         });
         if (!restartRes.error) {
           set((state) => {

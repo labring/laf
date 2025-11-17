@@ -22,7 +22,7 @@ import { debounce } from "lodash";
 import _ from "lodash";
 
 import ChargeButton from "@/components/ChargeButton";
-import { APP_STATUS } from "@/constants/index";
+import { APP_PHASE_STATUS, APP_STATUS } from "@/constants/index";
 import { formatOriginalPrice, formatPrice } from "@/utils/format";
 
 import { APP_LIST_QUERY_KEY } from "../..";
@@ -74,14 +74,7 @@ const CreateAppModal = (props: {
   const { application, type, isCurrentApp } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const queryClient = useQueryClient();
-  const {
-    runtimes = [],
-    regions = [],
-    showSuccess,
-    currentApp,
-    setCurrentApp,
-    updateCurrentApp,
-  } = useGlobalStore();
+  const { runtimes = [], regions = [], showSuccess, currentApp, setCurrentApp } = useGlobalStore();
   const { data: accountRes } = useAccountQuery();
 
   const title = useMemo(
@@ -157,8 +150,8 @@ const CreateAppModal = (props: {
       application?.bundle.autoscaling?.targetMemoryUtilizationPercentage || null,
   };
 
-  const [bundle, setBundle] = useState(defaultBundle);
-  const [autoscaling, setAutoscaling] = useState(defaultAutoscaling);
+  const [bundle, setBundle] = useState<TypeBundle>(defaultBundle);
+  const [autoscaling, setAutoscaling] = useState<TypeAutoscaling>(defaultAutoscaling);
   const [totalPrice, setTotalPrice] = useState(0);
   const [calculating, setCalculating] = useState(false);
 
@@ -248,19 +241,16 @@ const CreateAppModal = (props: {
             resource: newResource,
             autoscaling: autoscaling,
           };
-          setCurrentApp({ ...currentApp, bundle: newBundle });
+
+          // Configuration changes will automatically restart the application. Only running applications can change configuration.
+          setCurrentApp({
+            ...currentApp,
+            bundle: newBundle,
+            state: APP_STATUS.Restarting,
+            phase: APP_PHASE_STATUS.Started,
+          });
         }
 
-        if (
-          currentApp &&
-          (bundle.cpu !== application?.bundle.resource.limitCPU ||
-            bundle.memory !== application?.bundle.resource.limitMemory)
-        ) {
-          updateCurrentApp(
-            currentApp!,
-            currentApp!.state === APP_STATUS.Stopped ? APP_STATUS.Running : APP_STATUS.Restarting,
-          );
-        }
         break;
 
       case "create":
