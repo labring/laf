@@ -626,6 +626,19 @@ export class ApplicationController {
               option.specs.some((spec) => spec.value === dto.memory) ||
               app.bundle.resource.limitMemory === dto.memory
             )
+          case 'databaseCapacity':
+            if (!dto.databaseCapacity) return true
+            return (
+              option.specs.some(
+                (spec) => spec.value === dto.databaseCapacity,
+              ) || app.bundle.resource.databaseCapacity === dto.databaseCapacity
+            )
+          case 'storageCapacity':
+            if (!dto.storageCapacity) return true
+            return (
+              option.specs.some((spec) => spec.value === dto.storageCapacity) ||
+              app.bundle.resource.storageCapacity === dto.storageCapacity
+            )
           // dedicated database
           case 'dedicatedDatabaseCPU':
             return (
@@ -676,6 +689,13 @@ export class ApplicationController {
           return option.specs.some((spec) => spec.value === dto.cpu)
         case 'memory':
           return option.specs.some((spec) => spec.value === dto.memory)
+        case 'databaseCapacity':
+          if (!dto.databaseCapacity) return true
+          return option.specs.some(
+            (spec) => spec.value === dto.databaseCapacity,
+          )
+        case 'storageCapacity':
+          return option.specs.some((spec) => spec.value === dto.storageCapacity)
         // dedicated database
         case 'dedicatedDatabaseCPU':
           return (
