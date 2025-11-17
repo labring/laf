@@ -81,37 +81,61 @@ const AppEnvList: React.FC<AppEnvListProps> = (props = {}) => {
 
             {currentApp?.phase === APP_PHASE_STATUS.Started ? (
               <>
-                <ConfirmButton
-                  headerText={t("SettingPanel.Restart")}
-                  bodyText={
-                    <Checkbox
-                      colorScheme="primary"
-                      mt={4}
-                      isChecked={!onlyRuntimeFlag}
-                      onChange={(e) => setOnlyRuntimeFlag(!e.target.checked)}
-                    >
-                      {t("SettingPanel.RestartTips")}
-                    </Checkbox>
-                  }
-                  confirmButtonText={String(t("Confirm"))}
-                  onSuccessAction={async (event) => {
-                    event?.preventDefault();
-                    updateCurrentApp(currentApp!, APP_STATUS.Restarting, onlyRuntimeFlag);
-                    setOnlyRuntimeFlag(true);
-                  }}
-                >
-                  <Button
-                    className="mr-2"
-                    fontWeight={"semibold"}
-                    size={"sm"}
-                    color={"grayModern.600"}
-                    bg={"none"}
-                    _hover={{ color: "primary.600" }}
+                {currentApp?.bundle?.resource?.dedicatedDatabase?.limitCPU ? (
+                  <ConfirmButton
+                    headerText={t("SettingPanel.Restart")}
+                    bodyText={
+                      <Checkbox
+                        colorScheme="primary"
+                        mt={4}
+                        isChecked={!onlyRuntimeFlag}
+                        onChange={(e) => setOnlyRuntimeFlag(!e.target.checked)}
+                      >
+                        {t("SettingPanel.RestartTips")}
+                      </Checkbox>
+                    }
+                    confirmButtonText={String(t("Confirm"))}
+                    onSuccessAction={async (event) => {
+                      event?.preventDefault();
+                      updateCurrentApp(currentApp!, APP_STATUS.Restarting, onlyRuntimeFlag);
+                      setOnlyRuntimeFlag(true);
+                    }}
                   >
-                    <MdRestartAlt size={16} className="mr-1" />
-                    {t("SettingPanel.Restart")}
-                  </Button>
-                </ConfirmButton>
+                    <Button
+                      className="mr-2"
+                      fontWeight={"semibold"}
+                      size={"sm"}
+                      color={"grayModern.600"}
+                      bg={"none"}
+                      _hover={{ color: "primary.600" }}
+                    >
+                      <MdRestartAlt size={16} className="mr-1" />
+                      {t("SettingPanel.Restart")}
+                    </Button>
+                  </ConfirmButton>
+                ) : (
+                  <ConfirmButton
+                    headerText={t("SettingPanel.Restart")}
+                    bodyText={t("SettingPanel.RestartTips1")}
+                    confirmButtonText={String(t("Confirm"))}
+                    onSuccessAction={async (event) => {
+                      event?.preventDefault();
+                      updateCurrentApp(currentApp!, APP_STATUS.Restarting);
+                    }}
+                  >
+                    <Button
+                      className="mr-2"
+                      fontWeight={"semibold"}
+                      size={"sm"}
+                      color={"grayModern.600"}
+                      bg={"none"}
+                      _hover={{ color: "primary.600" }}
+                    >
+                      <MdRestartAlt size={16} className="mr-1" />
+                      {t("SettingPanel.Restart")}
+                    </Button>
+                  </ConfirmButton>
+                )}
 
                 <Button
                   className="mr-2"

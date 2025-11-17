@@ -237,6 +237,7 @@
     "Pause": "Pause",
     "PauseTips": "Are you sure you want to pause this application?",
     "RestartTips": "Restart the database together?",
+    "RestartTips1": "Are you sure you want to restart the application?",
     "CommonSetting": "Common Settings",
     "EditorFont": "Editor Font",
     "FontSize": "Font Size",
