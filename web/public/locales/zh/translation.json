@@ -237,6 +237,7 @@
     "Pause": "暂停应用",
     "PauseTips": "确定要暂停此应用吗？",
     "RestartTips": "同时重启数据库?",
+    "RestartTips1": "确定要重启应用?",
     "CommonSetting": "常用设置",
     "EditorFont": "编辑器字体",
     "FontSize": "字体大小",

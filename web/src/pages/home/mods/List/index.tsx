@@ -199,7 +199,8 @@ function List(props: { appList: TApplicationItem[] }) {
                           )}
 
                         {item.phase === APP_PHASE_STATUS.Started &&
-                          item.state === APP_STATUS.Running && (
+                          item.state === APP_STATUS.Running &&
+                          (item.bundle.resource.dedicatedDatabase?.limitCPU ? (
                             <ConfirmButton
                               headerText={t("SettingPanel.Restart")}
                               bodyText={
@@ -245,7 +246,42 @@ function List(props: { appList: TApplicationItem[] }) {
                                 </span>
                               </MenuItem>
                             </ConfirmButton>
-                          )}
+                          ) : (
+                            <ConfirmButton
+                              headerText={t("SettingPanel.Restart")}
+                              bodyText={t("SettingPanel.RestartTips1")}
+                              confirmButtonText={String(t("Confirm"))}
+                              onSuccessAction={async (event) => {
+                                event?.preventDefault();
+                                const res = await updateAppStateMutation.mutateAsync({
+                                  appid: item.appid,
+                                  state: APP_STATUS.Restarting,
+                                });
+                                if (!res.error) {
+                                  queryClient.setQueryData(APP_LIST_QUERY_KEY, (old: any) => {
+                                    return {
+                                      ...old,
+                                      data: old.data.map((app: any) => {
+                                        if (app.appid === item.appid) {
+                                          return {
+                                            ...app,
+                                            phase: APP_STATUS.Restarting,
+                                          };
+                                        }
+                                        return app;
+                                      }),
+                                    };
+                                  });
+                                }
+                              }}
+                            >
+                              <MenuItem minH="40px" display={"block"}>
+                                <span className="text-primary block">
+                                  {t("SettingPanel.Restart")}
+                                </span>
+                              </MenuItem>
+                            </ConfirmButton>
+                          ))}
 
                         {item.phase === APP_PHASE_STATUS.Stopped &&
                           item.state === APP_STATUS.Stopped && (

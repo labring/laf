@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Outlet } from "react-router-dom";
 import { useColorMode } from "@chakra-ui/react";
@@ -14,13 +15,17 @@ export default function LoginReg() {
   const { colorMode } = useColorMode();
   const darkMode = colorMode === COLOR_MODE.dark;
   const { showInfo } = useGlobalStore(({ showInfo }) => ({ showInfo }));
-  showInfo(
-    <a href="https://bja.sealos.run" className="font-bold underline transition ease-in-out">
-      {t("Auth.migrationNotice")}
-    </a>,
-    null,
-    true,
-  );
+
+  useEffect(() => {
+    showInfo(
+      <a href="https://bja.sealos.run" className="font-bold underline transition ease-in-out">
+        {t("Auth.migrationNotice")}
+      </a>,
+      null,
+      true,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div
