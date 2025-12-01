@@ -20,6 +20,7 @@ import { ApplicationBundle } from 'src/application/entities/application-bundle'
 import * as assert from 'assert'
 import { extractNumber } from 'src/utils/number'
 import { formatK8sErrorAsJson } from 'src/utils/k8s-error'
+import { ServerConfig, KUBEBLOCK_V5_UPGRADE_API_TIMEOUT } from 'src/constants'
 
 const getDedicatedDatabaseName = (appid: string) => appid
 
@@ -142,6 +143,7 @@ export class DedicatedDatabaseService {
             appid,
             'horizontalScaling',
           )
+
         if (!OpsRequestManifest) {
           const result = await this.applyKubeBlockOpsRequestManifestForSpec(
             region,
@@ -149,6 +151,10 @@ export class DedicatedDatabaseService {
             spec,
             'horizontalScaling',
           )
+
+          // Call KubeBlock v5 compatibility API if needed
+          await this.handleKubeBlockV5Upgrade(appid, manifest, spec.replicas)
+
           results.push(result)
           this.logger.log(
             `Applied horizontalScaling ops request for ${appid}: replicas=${spec.replicas}`,
@@ -701,5 +707,117 @@ export class DedicatedDatabaseService {
       )
       return false
     }
+  }
+
+  /**
+   * Handle KubeBlock v5 upgrade API call for horizontal scaling
+   * This is a compatibility feature for KubeBlock v5 mongodb-5.0 clusters
+   *
+   * @param appid - Application ID
+   * @param manifest - Current deployment manifest
+   * @param replicas - Number of replicas
+   */
+  private async handleKubeBlockV5Upgrade(
+    appid: string,
+    manifest: KubernetesObject & { spec: any; status: any },
+    replicas: number,
+  ): Promise<void> {
+    try {
+      // Early return if not a v5 mongodb-5.0 cluster
+      if (!this.isKubeBlockV5MongoDb(manifest)) {
+        return
+      }
+
+      const url = ServerConfig.KUBEBLOCK_V5_UPGRADE_URL
+      if (!url) {
+        this.logger.warn(
+          `KubeBlock v5 upgrade URL not configured (KUBEBLOCK_V5_UPGRADE_URL env var not set) for ${appid}`,
+        )
+        return
+      }
+
+      await this.callKubeBlockV5UpgradeAPI(appid, manifest, replicas, url)
+    } catch (error) {
+      this.logger.error(
+        `Failed to call KubeBlock v5 upgrade API for ${appid}: ${error.message}`,
+      )
+      // Don't throw error, just log it as it's a compatibility feature
+    }
+  }
+
+  /**
+   * Check if the manifest is a KubeBlock v5 mongodb-5.0 cluster
+   */
+  private isKubeBlockV5MongoDb(
+    manifest: KubernetesObject & { spec: any; status: any },
+  ): boolean {
+    return (
+      manifest?.metadata?.labels?.['clusterversion.kubeblocks.io/name'] ===
+      'mongodb-5.0'
+    )
+  }
+
+  /**
+   * Call KubeBlock v5 upgrade API with timeout control
+   */
+  private async callKubeBlockV5UpgradeAPI(
+    appid: string,
+    manifest: KubernetesObject & { spec: any; status: any },
+    replicas: number,
+    url: string,
+  ): Promise<void> {
+    const clusterName = manifest.metadata.name
+    const namespace = manifest.metadata.namespace
+
+    // Create AbortController for timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      KUBEBLOCK_V5_UPGRADE_API_TIMEOUT,
+    )
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          namespace,
+          database_name: clusterName,
+          replicas,
+        }),
+        signal: controller.signal,
+      })
+
+      const responseData = await this.parseKubeBlockV5Response(response)
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error! status: ${response.status}, statusText: ${
+            response.statusText
+          }, body: ${JSON.stringify(responseData)}`,
+        )
+      }
+
+      this.logger.log(
+        `Called KubeBlock v5 upgrade API for ${appid}: cluster=${clusterName}, replicas=${replicas}, response: ${JSON.stringify(
+          responseData,
+        )}`,
+      )
+    } finally {
+      clearTimeout(timeoutId)
+    }
+  }
+
+  /**
+   * Parse response body from KubeBlock v5 API
+   */
+  private async parseKubeBlockV5Response(response: Response): Promise<any> {
+    const contentType = response.headers.get('content-type')
+    if (contentType?.includes('application/json')) {
+      return await response.json()
+    }
+    return await response.text()
   }
 }
