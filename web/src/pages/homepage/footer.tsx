@@ -16,6 +16,10 @@ const Footer = (props: Props) => {
   const darkMode = colorMode === COLOR_MODE.dark;
 
   const siteSettings = useSiteSettingStore((state) => state.siteSettings);
+  const siteFooter = (siteSettings.site_footer?.value || "").replace(
+    "珠海环界云计算有限公司版权所有",
+    "广州环际云计算有限公司版权所有",
+  );
 
   return (
     <>
@@ -179,7 +183,7 @@ const Footer = (props: Props) => {
               sealos. all rights reserved. © {new Date().getFullYear()}
               <div
                 dangerouslySetInnerHTML={{
-                  __html: siteSettings.site_footer?.value || "",
+                  __html: siteFooter,
                 }}
               />
             </div>
@@ -353,7 +357,7 @@ const Footer = (props: Props) => {
             laf. all rights reserved. © {new Date().getFullYear()}
             <div
               dangerouslySetInnerHTML={{
-                __html: siteSettings.site_footer?.value || "",
+                __html: siteFooter,
               }}
             />
           </div>
