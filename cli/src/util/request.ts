@@ -1,5 +1,5 @@
 // request.ts
-import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosRequestHeaders, AxiosResponse } from 'axios'
 import { UserSchema } from '../schema/user'
 
 export const request = axios.create({
@@ -46,53 +46,61 @@ request.interceptors.request.use(
   (error) => {
     error.data = {}
     error.data.msg = 'The server is abnormal, please contact the administrator!'
-    console.log('request error', error)
+    console.error('request error', error)
+    return Promise.reject(error)
   },
 )
 
-// response interceptor
-request.interceptors.response.use(
-  (response: AxiosResponse) => {
-    const { data, headers } = response
-    if (headers['content-type'] === 'application/octet-stream') {
-      return data
-    }
-    if (data.error == null) {
-      return data.data
-    }
-    console.error(data.error)
+export function handleResponseError(error: AxiosError<any>) {
+  if (axios.isCancel(error)) {
+    console.log('repeated request: ' + error.message)
     process.exit(1)
-  },
-  (error) => {
-    if (axios.isCancel(error)) {
-      console.log('repeated request: ' + error.message)
-      process.exit(1)
-    } else {
-      // handle error code
-      const { status, data } = error.response
-      if (status === 400) {
-        console.log('Bad request!')
-        console.log(data.message)
-        process.exit(1)
-      } else if (status === 401) {
-        console.log('User not logged in or expired, please log in again')
-        process.exit(1)
-      } else if (status == 403) {
-        console.log('Unauthorized resource request')
-        process.exit(1)
-      } else if (status === 500) {
-        console.log('Internal server error!')
-        process.exit(1)
-      } else if (status === 503) {
-        console.log('The server is abnormal, please contact the administrator!')
-        process.exit(1)
-      } else if (status === 404) {
-        console.log(`Request ${error.response.config.url} not found, please check remote server url`)
-        process.exit(1)
-      }
-      return Promise.reject(error.message)
-    }
-  },
-)
+  }
+
+  if (!error.response) {
+    const code = error.code ? ` (${error.code})` : ''
+    const method = error.config?.method?.toUpperCase()
+    const target = [method, error.config?.url].filter(Boolean).join(' ')
+    console.error(`Request failed before receiving a response${code}${target ? `: ${target}` : ''}`)
+    console.error(error.message)
+    return Promise.reject(error)
+  }
+
+  const { status, data } = error.response
+  if (status === 400) {
+    console.log('Bad request!')
+    console.log(data.message)
+    process.exit(1)
+  } else if (status === 401) {
+    console.log('User not logged in or expired, please log in again')
+    process.exit(1)
+  } else if (status == 403) {
+    console.log('Unauthorized resource request')
+    process.exit(1)
+  } else if (status === 500) {
+    console.log('Internal server error!')
+    process.exit(1)
+  } else if (status === 503) {
+    console.log('The server is abnormal, please contact the administrator!')
+    process.exit(1)
+  } else if (status === 404) {
+    console.log(`Request ${error.response.config.url} not found, please check remote server url`)
+    process.exit(1)
+  }
+  return Promise.reject(error)
+}
+
+// response interceptor
+request.interceptors.response.use((response: AxiosResponse) => {
+  const { data, headers } = response
+  if (headers['content-type'] === 'application/octet-stream') {
+    return data
+  }
+  if (data.error == null) {
+    return data.data
+  }
+  console.error(data.error)
+  process.exit(1)
+}, handleResponseError)
 
 export type RequestParams = any

@@ -4,6 +4,8 @@ laf-cli is a command-line tool designed to help developers quickly create, deplo
 
 ## Quick Start
 
+laf-cli requires Node.js 20 through 24.
+
 To install laf-cli, use npm:
 ```bash
 npm install -g laf-cli
