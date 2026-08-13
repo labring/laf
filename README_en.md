@@ -85,4 +85,4 @@
 
 ## 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=labring/laf&type=Date)](https://star-history.com/#labring/laf&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=labring/laf&type=Date)](https://star-history.dera.page/#labring/laf&Date)
